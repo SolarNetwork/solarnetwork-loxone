@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:osgix="http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.osgi.org/xmlns/blueprint/v1.0.0
+		http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+		http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium
+		http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium/gemini-blueprint-compendium.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util/spring-util-4.2.xsd">
+	
+	<reference id="settingDao" interface="net.solarnetwork.node.dao.SettingDao"/>
+	
+	<bean id="eventAdmin" class="net.solarnetwork.util.DynamicServiceTracker">
+		<property name="bundleContext" ref="bundleContext"/>
+		<property name="serviceClassName" value="org.osgi.service.event.EventAdmin"/>
+	</bean>
+
+	<reference id="dataSource" interface="javax.sql.DataSource" filter="(db=node)"/>
+	
+	<bean id="objectMapper" class="net.solarnetwork.util.ObjectMapperFactoryBean">
+		<property name="deserializers">
+			<list>
+				<bean class="net.solarnetwork.node.loxone.protocol.ws.UUIDDeserializer"/>
+			</list>
+		</property>
+		<property name="serializers">
+			<list>
+				<bean class="net.solarnetwork.node.loxone.protocol.ws.UUIDSerializer"/>
+			</list>
+		</property>
+		<property name="featuresToDisable">
+			<list>
+				<value>#{T(com.fasterxml.jackson.databind.DeserializationFeature).FAIL_ON_UNKNOWN_PROPERTIES}</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="categoryDao" class="net.solarnetwork.node.loxone.dao.jdbc.JdbcCategoryDao" init-method="init">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+
+	<bean id="configDao" class="net.solarnetwork.node.loxone.dao.jdbc.SettingsConfigDao">
+		<property name="settingDao" ref="settingDao"/>
+	</bean>
+
+	<bean id="controlDao" class="net.solarnetwork.node.loxone.dao.jdbc.JdbcControlDao" init-method="init">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+
+	<bean id="roomDao" class="net.solarnetwork.node.loxone.dao.jdbc.JdbcRoomDao" init-method="init">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+
+	<bean id="get-structure-cmd-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.GetStructureFileCommandHandler">
+		<property name="categoryDao" ref="categoryDao"/>
+		<property name="configDao" ref="configDao"/>
+		<property name="controlDao" ref="controlDao"/>
+		<property name="roomDao" ref="roomDao"/>
+		<property name="eventAdmin" ref="eventAdmin"/>
+		<property name="objectMapper" ref="objectMapper"/>
+	</bean>
+
+	<bean id="structure-file-last-mod-cmd-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.StructureFileLastModifiedDateCommandHandler">
+		<property name="eventAdmin" ref="eventAdmin"/>
+	</bean>
+
+	<bean id="value-event-cmd-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.ValueEventTableBinaryFileHandler">
+	</bean>
+	
+	<util:list id="binary-file-handlers">
+		<beans:ref bean="get-structure-cmd-handler"/>
+		<beans:ref bean="value-event-cmd-handler"/>
+	</util:list>
+
+	<util:list id="command-handlers">
+		<beans:ref bean="get-structure-cmd-handler"/>
+		<beans:ref bean="structure-file-last-mod-cmd-handler"/>
+	</util:list>
+
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames" value="net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint"/>
+	</bean>
+	
+	<!-- Published Services -->
+	
+	<service interface="net.solarnetwork.node.settings.SettingSpecifierProviderFactory">
+		<bean class="net.solarnetwork.node.settings.support.BasicSettingSpecifierProviderFactory">
+			<property name="displayName" value="Loxone Client"/>
+			<property name="factoryUID" value="net.solarnetwork.node.loxone.ws"/>
+			<property name="messageSource" ref="messageSource"/>
+		</bean>
+	</service>
+	
+	<osgix:managed-service-factory factory-pid="net.solarnetwork.node.loxone.ws" autowire-on-update="true">
+		<osgix:interfaces>
+			<beans:value>net.solarnetwork.node.settings.SettingSpecifierProvider</beans:value>
+			<beans:value>org.osgi.service.event.EventHandler</beans:value>
+		</osgix:interfaces>
+		<osgix:service-properties>
+			<beans:entry key="settingPid" value="net.solarnetwork.node.loxone.ws"/>
+			<beans:entry key="#{T(org.osgi.service.event.EventConstants).EVENT_TOPIC}">
+				<beans:array value-type="java.lang.String">
+					<beans:value>#{T(net.solarnetwork.node.loxone.protocol.ws.LoxoneEvents).STRUCTURE_FILE_MODIFICATION_DATE_EVENT}</beans:value>
+					<beans:value>#{T(net.solarnetwork.node.loxone.protocol.ws.LoxoneEvents).STRUCTURE_FILE_SAVED_EVENT}</beans:value>
+				</beans:array>
+			</beans:entry>
+		</osgix:service-properties>
+		<bean class="net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint" destroy-method="disconnect">
+			<property name="configDao" ref="configDao"/>
+			<property name="eventAdmin" ref="eventAdmin"/>
+			<property name="messageSource" ref="messageSource"/>
+			<property name="objectMapper" ref="objectMapper"/>
+			<property name="binaryFileHandlers" ref="binary-file-handlers"/>
+			<property name="commandHandlers" ref="command-handlers"/>
+		</bean>
+	</osgix:managed-service-factory>
+	
+</blueprint>

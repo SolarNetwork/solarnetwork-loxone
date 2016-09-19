@@ -1,0 +1,1425 @@
+{
+  "autopilot": {},
+  "cats": {
+    "0c89ebac-0031-030a-ffffa1b98ee6c71d": {
+      "color": "#83B817",
+      "defaultRating": 0,
+      "image": "00000000-0000-0001-2000000000000000.svg",
+      "isFavorite": false,
+      "name": "Not assigned",
+      "type": "undefined",
+      "uuid": "0c89ebac-0031-030a-ffffa1b98ee6c71d"
+    },
+    "0c89ebac-0031-030e-ffffa1b98ee6c71d": {
+      "color": "#83B817",
+      "defaultRating": 10,
+      "image": "00000000-0000-0002-2000000000000000.svg",
+      "isFavorite": true,
+      "name": "Lighting",
+      "type": "lights",
+      "uuid": "0c89ebac-0031-030e-ffffa1b98ee6c71d"
+    },
+    "0c89ebac-0032-0316-ffffa1b98ee6c71d": {
+      "color": "#83B817",
+      "defaultRating": 0,
+      "image": "00000000-0000-0004-2000000000000000.svg",
+      "isFavorite": false,
+      "name": "Heating",
+      "type": "indoortemperature",
+      "uuid": "0c89ebac-0032-0316-ffffa1b98ee6c71d"
+    },
+    "0c89ebac-0033-031e-ffffa1b98ee6c71d": {
+      "color": "#83B817",
+      "defaultRating": 0,
+      "image": "00000000-0000-0006-2000000000000000.svg",
+      "isFavorite": false,
+      "name": "Audio",
+      "type": "multimedia",
+      "uuid": "0c89ebac-0033-031e-ffffa1b98ee6c71d"
+    },
+    "0c89ebac-0033-0322-ffffa1b98ee6c71d": {
+      "color": "#83B817",
+      "defaultRating": 0,
+      "image": "00000000-0000-0007-2000000000000000.svg",
+      "isFavorite": false,
+      "name": "Sensor",
+      "type": "undefined",
+      "uuid": "0c89ebac-0033-0322-ffffa1b98ee6c71d"
+    },
+    "0c89ebac-0035-033a-ffffa1b98ee6c71d": {
+      "color": "#83B817",
+      "defaultRating": 0,
+      "image": "00000000-0000-0023-2000000000000000.svg",
+      "isFavorite": false,
+      "name": "Energy",
+      "type": "undefined",
+      "uuid": "0c89ebac-0035-033a-ffffa1b98ee6c71d"
+    },
+    "0c89ebac-0036-0342-ffffa1b98ee6c71d": {
+      "color": "#83B817",
+      "defaultRating": 0,
+      "image": "00000000-0000-000f-2000000000000000.svg",
+      "isFavorite": false,
+      "name": "Alarms",
+      "type": "undefined",
+      "uuid": "0c89ebac-0036-0342-ffffa1b98ee6c71d"
+    },
+    "0c89ebac-003e-0374-ffffa1b98ee6c71d": {
+      "color": "#83B817",
+      "defaultRating": 0,
+      "image": "00000000-0000-0022-2000000000000000.svg",
+      "isFavorite": false,
+      "name": "Appliances",
+      "type": "undefined",
+      "uuid": "0c89ebac-003e-0374-ffffa1b98ee6c71d"
+    },
+    "0cb250c2-0036-1593-ffffa1b98ee6c71d": {
+      "color": "#83B817",
+      "defaultRating": 0,
+      "image": "00000000-0000-0023-2000000000000000.svg",
+      "isFavorite": false,
+      "name": "Load Control",
+      "type": "undefined",
+      "uuid": "0cb250c2-0036-1593-ffffa1b98ee6c71d"
+    },
+    "0cb25449-02a9-ae22-ffffa1b98ee6c71d": {
+      "color": "#83B817",
+      "defaultRating": 0,
+      "image": "00000000-0000-0015-2000000000000000.svg",
+      "isFavorite": false,
+      "name": "Climate",
+      "type": "undefined",
+      "uuid": "0cb25449-02a9-ae22-ffffa1b98ee6c71d"
+    },
+    "0dcf4c06-0264-37ef-ffffa1b98ee6c71d": {
+      "color": "#83B817",
+      "defaultRating": 0,
+      "image": "00000000-0000-0020-2000000000000000.svg",
+      "isFavorite": false,
+      "name": "AIR",
+      "type": "undefined",
+      "uuid": "0dcf4c06-0264-37ef-ffffa1b98ee6c71d"
+    }
+  },
+  "controls": {
+    "0c89ebff-037f-15d6-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0031-030a-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Generator status",
+      "room": "0c89ebac-0041-0390-ffffa1b98ee6c71d",
+      "states": {
+        "active": "0c89ebff-037f-15d6-ffffa1b98ee6c71d"
+      },
+      "type": "Switch",
+      "uuidAction": "0c89ebff-037f-15d6-ffffa1b98ee6c71d"
+    },
+    "0c8d581b-01f9-1d3a-ffffa1b98ee6c71d": {
+      "cat": "0cb25449-02a9-ae22-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "format": "%.1f\u00b0C"
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Office Temperature",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "error": "0c8d581b-01f9-1d39-ffff0ba111982bed",
+        "value": "0c8d581b-01f9-1d3a-ffffa1b98ee6c71d"
+      },
+      "statistic": {
+        "frequency": 4,
+        "outputs": [
+          {
+            "format": "%.1f\u00b0C",
+            "id": 0,
+            "name": "Office Temperature",
+            "uuid": "0c8d581b-01f9-1d38-ffff0ba111982bed",
+            "visuType": 0
+          }
+        ]
+      },
+      "type": "InfoOnlyAnalog",
+      "uuidAction": "0c8d581b-01f9-1d3a-ffffa1b98ee6c71d"
+    },
+    "0c8d66ea-02a3-45bc-ffffa1b98ee6c71d": {
+      "cat": "0cb25449-02a9-ae22-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "format": "%.1f%%"
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Humidity",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "value": "0c8d66ea-02a3-45bc-ffffa1b98ee6c71d"
+      },
+      "statistic": {
+        "frequency": 4,
+        "outputs": [
+          {
+            "format": "%.1f%",
+            "id": 0,
+            "name": "Humidity",
+            "uuid": "0c8d66ea-02a3-45bb-ffff14a4f27c2e15",
+            "visuType": 0
+          }
+        ]
+      },
+      "type": "InfoOnlyAnalog",
+      "uuidAction": "0c8d66ea-02a3-45bc-ffffa1b98ee6c71d"
+    },
+    "0c8d6848-02eb-63b3-ffffa1b98ee6c71d": {
+      "cat": "0cb25449-02a9-ae22-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "format": "%.0f PPM"
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "CO2",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "value": "0c8d6848-02eb-63b3-ffffa1b98ee6c71d"
+      },
+      "statistic": {
+        "frequency": 4,
+        "outputs": [
+          {
+            "format": "%.0f PPM",
+            "id": 0,
+            "name": "CO2",
+            "uuid": "0c8d6848-02eb-63b2-ffff7d5dc7586b4c",
+            "visuType": 0
+          }
+        ]
+      },
+      "type": "InfoOnlyAnalog",
+      "uuidAction": "0c8d6848-02eb-63b3-ffffa1b98ee6c71d"
+    },
+    "0cb251df-030a-1c74-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0035-033a-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "actualFormat": "%.3fkW",
+        "totalFormat": "%.1fkWh"
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "E - Desk Energy Consumption",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "actual": "0cb251df-030a-1c69-ffff674167046f1e",
+        "total": "0cb251df-030a-1c68-ffff674167046f1e"
+      },
+      "statistic": {
+        "frequency": 4,
+        "outputs": [
+          {
+            "format": "%.1fkWh",
+            "id": 0,
+            "name": "Energy",
+            "uuid": "0cb251df-030a-1c68-ffff674167046f1e",
+            "visuType": 2
+          },
+          {
+            "format": "%.3fkW",
+            "id": 1,
+            "name": "Power",
+            "uuid": "0cb251df-030a-1c69-ffff674167046f1e",
+            "visuType": 0
+          }
+        ]
+      },
+      "type": "Meter",
+      "uuidAction": "0cb251df-030a-1c74-ffffa1b98ee6c71d"
+    },
+    "0cb25256-0322-4019-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0035-033a-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "actualFormat": "%.3fkW",
+        "totalFormat": "%.1fkWh"
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "E - Loxone",
+      "room": "0cb25281-0198-64a2-ffffa1b98ee6c71d",
+      "states": {
+        "actual": "0cb25256-0322-400e-ffff58864a49da2a",
+        "total": "0cb25256-0322-400d-ffff58864a49da2a"
+      },
+      "statistic": {
+        "frequency": 4,
+        "outputs": [
+          {
+            "format": "%.1fkWh",
+            "id": 0,
+            "name": "Energy",
+            "uuid": "0cb25256-0322-400d-ffff58864a49da2a",
+            "visuType": 2
+          },
+          {
+            "format": "%.3fkW",
+            "id": 1,
+            "name": "Power",
+            "uuid": "0cb25256-0322-400e-ffff58864a49da2a",
+            "visuType": 0
+          }
+        ]
+      },
+      "type": "Meter",
+      "uuidAction": "0cb25256-0322-4019-ffffa1b98ee6c71d"
+    },
+    "0ccba664-0032-322f-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0031-030e-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "movementScene": 1
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Multi extension air",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "activeScene": "0ccba664-0032-322c-ffff640cd6e5631a",
+        "sceneList": "0ccba664-0032-31f1-ffff640cd6e5631a"
+      },
+      "subControls": {},
+      "type": "LightController",
+      "uuidAction": "0ccba664-0032-322f-ffffa1b98ee6c71d"
+    },
+    "0ccba7b2-0372-8009-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0031-030e-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "movementScene": 1
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "DMX",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "activeScene": "0ccba7b2-0372-8006-ffff45d864a234ca",
+        "sceneList": "0ccba7b2-0372-7fcb-ffff45d864a234ca"
+      },
+      "subControls": {
+        "0ccba7b2-0372-8009-ffffa1b98ee6c71d/AI1": {
+          "defaultRating": 0,
+          "isFavorite": false,
+          "isSecured": false,
+          "name": "RGWB dimmerRGWB dimmer DMX actuator 1",
+          "states": {
+            "max": "0ccba7b2-0372-7ff1-ffff45d864a234ca",
+            "min": "0ccba7b2-0372-7ff0-ffff45d864a234ca",
+            "position": "0ccba7b2-0372-7ffa-ffff45d864a234ca",
+            "step": "0ccba7b2-0372-7fee-ffff45d864a234ca"
+          },
+          "type": "Dimmer",
+          "uuidAction": "0ccba7b2-0372-8009-ffffa1b98ee6c71d/AI1"
+        },
+        "0ccba7b2-0372-8009-ffffa1b98ee6c71d/AI2": {
+          "defaultRating": 0,
+          "isFavorite": false,
+          "isSecured": false,
+          "name": "RGWB dimmerRGWB dimmer DMX actuator 2",
+          "states": {
+            "max": "0ccba7b2-0372-7ff1-ffff45d864a234ca",
+            "min": "0ccba7b2-0372-7ff0-ffff45d864a234ca",
+            "position": "0ccba7b2-0372-7ffb-ffff45d864a234ca",
+            "step": "0ccba7b2-0372-7fee-ffff45d864a234ca"
+          },
+          "type": "Dimmer",
+          "uuidAction": "0ccba7b2-0372-8009-ffffa1b98ee6c71d/AI2"
+        },
+        "0ccba7b2-0372-8009-ffffa1b98ee6c71d/AI3": {
+          "defaultRating": 0,
+          "isFavorite": false,
+          "isSecured": false,
+          "name": "RGWB dimmerRGWB dimmer DMX actuator 3",
+          "states": {
+            "max": "0ccba7b2-0372-7ff1-ffff45d864a234ca",
+            "min": "0ccba7b2-0372-7ff0-ffff45d864a234ca",
+            "position": "0ccba7b2-0372-7ffc-ffff45d864a234ca",
+            "step": "0ccba7b2-0372-7fee-ffff45d864a234ca"
+          },
+          "type": "Dimmer",
+          "uuidAction": "0ccba7b2-0372-8009-ffffa1b98ee6c71d/AI3"
+        },
+        "0ccba7b2-0372-8009-ffffa1b98ee6c71d/AI4": {
+          "defaultRating": 0,
+          "isFavorite": false,
+          "isSecured": false,
+          "name": "RGWB dimmerRGWB dimmer DMX actuator 4",
+          "states": {
+            "max": "0ccba7b2-0372-7ff1-ffff45d864a234ca",
+            "min": "0ccba7b2-0372-7ff0-ffff45d864a234ca",
+            "position": "0ccba7b2-0372-7ffd-ffff45d864a234ca",
+            "step": "0ccba7b2-0372-7fee-ffff45d864a234ca"
+          },
+          "type": "Dimmer",
+          "uuidAction": "0ccba7b2-0372-8009-ffffa1b98ee6c71d/AI4"
+        }
+      },
+      "type": "LightController",
+      "uuidAction": "0ccba7b2-0372-8009-ffffa1b98ee6c71d"
+    },
+    "0ccdfba6-012d-44cf-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-003e-0374-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "actualFormat": "%.3fkW",
+        "totalFormat": "%.1fkWh"
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Coffee Machine",
+      "room": "0c89ebac-0043-03a0-ffffa1b98ee6c71d",
+      "states": {
+        "actual": "0ccdfba6-012d-44c4-ffff0b425cfcc135",
+        "total": "0ccdfba6-012d-44c3-ffff0b425cfcc135"
+      },
+      "statistic": {
+        "frequency": 6,
+        "outputs": [
+          {
+            "format": "%.1fkWh",
+            "id": 0,
+            "name": "Energy",
+            "uuid": "0ccdfba6-012d-44c3-ffff0b425cfcc135",
+            "visuType": 2
+          },
+          {
+            "format": "%.3fkW",
+            "id": 1,
+            "name": "Power",
+            "uuid": "0ccdfba6-012d-44c4-ffff0b425cfcc135",
+            "visuType": 0
+          }
+        ]
+      },
+      "type": "Meter",
+      "uuidAction": "0ccdfba6-012d-44cf-ffffa1b98ee6c71d"
+    },
+    "0ccdfbc0-0067-83fd-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-003e-0374-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "analog": false,
+        "text": {
+          "off": "Disabled",
+          "on": "Enabled"
+        }
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Timer _ schedule",
+      "room": "0c89ebac-0043-03a0-ffffa1b98ee6c71d",
+      "states": {
+        "entriesAndDefaultValue": "0ccdfbc0-0067-83fd-ffffa1b98ee6c71d",
+        "mode": "0ccdfbc0-0067-83f9-ffff5b2ba0834725",
+        "modeList": "0ccdfbc0-0067-83f1-ffff5b2ba0834725",
+        "needsActivation": "0ccdfbc0-0067-83f0-ffff5b2ba0834725",
+        "override": "0ccdfbc0-0067-83fc-ffff5b2ba0834725",
+        "value": "0ccdfbc0-0067-83f8-ffff5b2ba0834725"
+      },
+      "type": "Daytimer",
+      "uuidAction": "0ccdfbc0-0067-83fd-ffffa1b98ee6c71d"
+    },
+    "0cdb2405-0006-135d-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-003e-0374-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "COFFEE",
+      "room": "0c89ebac-0043-03a0-ffffa1b98ee6c71d",
+      "states": {
+        "active": "0cdb2405-0006-135c-ffffa0bdb31f6799"
+      },
+      "type": "Switch",
+      "uuidAction": "0cdb2405-0006-135d-ffffa1b98ee6c71d"
+    },
+    "0ce0d61d-0090-bef1-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0036-0342-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "alert": true,
+        "presenceConnected": true
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Burglar alarm",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "armed": "0ce0d61d-0090-bee4-ffffc8c083689b0d",
+        "armedDelay": "0ce0d61d-0090-beed-ffffc8c083689b0d",
+        "armedDelayTotal": "0ce0d61d-0090-bed7-ffffc8c083689b0d",
+        "disabledMove": "0ce0d61d-0090-bed5-ffffc8c083689b0d",
+        "level": "0d72dd01-001b-1d3f-ffffa1b98ee6c71d",
+        "nextLevel": "0d72dd01-001b-1d3c-ffffa1b98ee6c71d",
+        "nextLevelDelay": "0d72dd01-001b-1d3d-ffffa1b98ee6c71d",
+        "nextLevelDelayTotal": "0d72dd01-001b-1d3e-ffffa1b98ee6c71d",
+        "sensors": "0ce0d61d-0090-bef1-ffffa1b98ee6c71d",
+        "startTime": "0d72dd01-001b-1d40-ffffa1b98ee6c71d"
+      },
+      "subControls": {
+        "0ce0d61d-0090-bef1-ffffa1b98ee6c71d/sensors": {
+          "defaultRating": 0,
+          "details": {
+            "maxEntries": 40
+          },
+          "isFavorite": false,
+          "isSecured": false,
+          "name": "sensors",
+          "states": {
+            "entries": "0ce0d61d-0090-bef1-ffffa1b98ee6c71d"
+          },
+          "type": "Tracker",
+          "uuidAction": "0ce0d61d-0090-bef1-ffffa1b98ee6c71d/sensors"
+        }
+      },
+      "type": "Alarm",
+      "uuidAction": "0ce0d61d-0090-bef1-ffffa1b98ee6c71d"
+    },
+    "0ce0d64d-03e5-2289-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0036-0342-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Tigger alarm",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "active": "0ce0d64d-03e5-2289-ffffa1b98ee6c71d"
+      },
+      "type": "Pushbutton",
+      "uuidAction": "0ce0d64d-03e5-2289-ffffa1b98ee6c71d"
+    },
+    "0d0c4522-03b7-15a5-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0031-030a-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "format": "%.1f\u00b0"
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Kielowatts temp RH Temperature sensor",
+      "room": "0c89ebac-0041-0390-ffffa1b98ee6c71d",
+      "states": {
+        "error": "0d0c4522-03b7-15a4-ffffa4fd0525c8c7",
+        "value": "0d0c4522-03b7-15a5-ffffa1b98ee6c71d"
+      },
+      "type": "InfoOnlyAnalog",
+      "uuidAction": "0d0c4522-03b7-15a5-ffffa1b98ee6c71d"
+    },
+    "0d0c45a0-00fb-7d79-ffffa1b98ee6c71d": {
+      "cat": "0cb25449-02a9-ae22-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "format": "%.1f%%"
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "RH Kielowatts",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "value": "0d0c45a0-00fb-7d79-ffffa1b98ee6c71d"
+      },
+      "type": "InfoOnlyAnalog",
+      "uuidAction": "0d0c45a0-00fb-7d79-ffffa1b98ee6c71d"
+    },
+    "0d1d20c5-018a-6694-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0031-030a-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Maintenance counter",
+      "room": "0c89ebac-0041-0390-ffffa1b98ee6c71d",
+      "states": {
+        "active": "0d1d20c5-018a-6688-ffffef24ea1af555",
+        "lastActivation": "0d1d20c5-018a-6691-ffffef24ea1af555",
+        "maintenanceInterval": "0d1d20c5-018a-668e-ffffef24ea1af555",
+        "overdue": "0d1d20c5-018a-668f-ffffef24ea1af555",
+        "overdueSince": "0d1d20c5-018a-6689-ffffef24ea1af555",
+        "remaining": "0d1d20c5-018a-6692-ffffef24ea1af555",
+        "stateUnit": "0d1d20c5-018a-668d-ffffef24ea1af555",
+        "total": "0d1d20c5-018a-6690-ffffef24ea1af555"
+      },
+      "type": "Hourcounter",
+      "uuidAction": "0d1d20c5-018a-6694-ffffa1b98ee6c71d"
+    },
+    "0d7174a0-0160-493d-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0031-030e-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "EIB push-button",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "active": "0d7174a0-0160-493c-fffff9eed18e1965"
+      },
+      "type": "Switch",
+      "uuidAction": "0d7174a0-0160-493d-ffffa1b98ee6c71d"
+    },
+    "0d717d1b-034f-125d-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0031-030e-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "movementScene": 1
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Lighting controller",
+      "room": "0c89ebac-0041-0390-ffffa1b98ee6c71d",
+      "states": {
+        "activeScene": "0d717d1b-034f-125a-ffff8f91cebcb37b",
+        "sceneList": "0d717d1b-034f-121f-ffff8f91cebcb37b"
+      },
+      "subControls": {},
+      "type": "LightController",
+      "uuidAction": "0d717d1b-034f-125d-ffffa1b98ee6c71d"
+    },
+    "0d717daf-03ba-72f0-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0031-030e-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Actuator 2 EIB push",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "active": "0d717daf-03ba-72ef-ffff1b843e607b54"
+      },
+      "type": "Switch",
+      "uuidAction": "0d717daf-03ba-72f0-ffffa1b98ee6c71d"
+    },
+    "0d717dd5-02f4-a7bc-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0031-030e-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Actuator 2",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "active": "0d717dd5-02f4-a7bc-ffffa1b98ee6c71d"
+      },
+      "type": "Pushbutton",
+      "uuidAction": "0d717dd5-02f4-a7bc-ffffa1b98ee6c71d"
+    },
+    "0d7db2ab-0105-460d-ffffa1b98ee6c71d": {
+      "cat": "0dcf4c06-0264-37ef-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "format": "%.0f%%"
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Touch Air at Desks Battery Level",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "error": "0d7db2ab-0105-460c-ffff9d7f95109a7f",
+        "value": "0d7db2ab-0105-460d-ffffa1b98ee6c71d"
+      },
+      "statistic": {
+        "frequency": 6,
+        "outputs": [
+          {
+            "format": "%.0f%",
+            "id": 0,
+            "name": "Touch Air at Desks Battery Level",
+            "uuid": "0d7db2ab-0105-460b-ffff9d7f95109a7f",
+            "visuType": 0
+          }
+        ]
+      },
+      "type": "InfoOnlyAnalog",
+      "uuidAction": "0d7db2ab-0105-460d-ffffa1b98ee6c71d"
+    },
+    "0d7db2ab-0105-4611-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0032-0316-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "format": "%.1f\u00b0"
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Temperature (Air Touch)",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "error": "0d7db2ab-0105-4610-ffff9d7f95109a7f",
+        "value": "0d7db2ab-0105-4611-ffffa1b98ee6c71d"
+      },
+      "statistic": {
+        "frequency": 6,
+        "outputs": [
+          {
+            "format": "%.1f\u00b0",
+            "id": 0,
+            "name": "Temperature (Air Touch)",
+            "uuid": "0d7db2ab-0105-460f-ffff9d7f95109a7f",
+            "visuType": 0
+          }
+        ]
+      },
+      "type": "InfoOnlyAnalog",
+      "uuidAction": "0d7db2ab-0105-4611-ffffa1b98ee6c71d"
+    },
+    "0d7db2ab-0105-4615-ffffa1b98ee6c71d": {
+      "cat": "0cb250c2-0036-1593-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "format": "%.0f%%"
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Humidity (Air Touch)",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "error": "0d7db2ab-0105-4614-ffff9d7f95109a7f",
+        "value": "0d7db2ab-0105-4615-ffffa1b98ee6c71d"
+      },
+      "statistic": {
+        "frequency": 6,
+        "outputs": [
+          {
+            "format": "%.0f%",
+            "id": 0,
+            "name": "Humidity (Air Touch)",
+            "uuid": "0d7db2ab-0105-4613-ffff9d7f95109a7f",
+            "visuType": 0
+          }
+        ]
+      },
+      "type": "InfoOnlyAnalog",
+      "uuidAction": "0d7db2ab-0105-4615-ffffa1b98ee6c71d"
+    },
+    "0d814479-02c6-1925-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0032-0316-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "format": "%.1f\u00b0"
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Temperature (Air)",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "error": "0d814479-02c6-1924-ffffff09ff8d7d10",
+        "value": "0d814479-02c6-1925-ffffa1b98ee6c71d"
+      },
+      "statistic": {
+        "frequency": 6,
+        "outputs": [
+          {
+            "format": "%.1f\u00b0",
+            "id": 0,
+            "name": "Temperature (Air)",
+            "uuid": "0d814479-02c6-1923-ffffff09ff8d7d10",
+            "visuType": 0
+          }
+        ]
+      },
+      "type": "InfoOnlyAnalog",
+      "uuidAction": "0d814479-02c6-1925-ffffa1b98ee6c71d"
+    },
+    "0d814479-02c7-1929-ffffa1b98ee6c71d": {
+      "cat": "0cb250c2-0036-1593-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "format": "%.0f%%"
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Humidity (Air)",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "error": "0d814479-02c7-1928-ffffff09ff8d7d10",
+        "value": "0d814479-02c7-1929-ffffa1b98ee6c71d"
+      },
+      "statistic": {
+        "frequency": 6,
+        "outputs": [
+          {
+            "format": "%.0f%",
+            "id": 0,
+            "name": "Humidity (Air)",
+            "uuid": "0d814479-02c7-1927-ffffff09ff8d7d10",
+            "visuType": 0
+          }
+        ]
+      },
+      "type": "InfoOnlyAnalog",
+      "uuidAction": "0d814479-02c7-1929-ffffa1b98ee6c71d"
+    },
+    "0d8e96ad-018c-1969-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0031-030e-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "format": "%.1f"
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Brightness",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "error": "0d8e96ad-018c-1968-ffff7ded0f840591",
+        "value": "0d8e96ad-018c-1969-ffffa1b98ee6c71d"
+      },
+      "type": "InfoOnlyAnalog",
+      "uuidAction": "0d8e96ad-018c-1969-ffffa1b98ee6c71d"
+    },
+    "0d8e96b2-0374-229a-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0031-030e-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "color": {
+          "off": "#BE1624",
+          "on": "#73BA1B"
+        },
+        "text": {
+          "off": "Off",
+          "on": "On"
+        }
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Desk Presence (KNX)",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "active": "0d8e96b2-0374-229a-ffffa1b98ee6c71d"
+      },
+      "statistic": {
+        "frequency": 1,
+        "outputs": [
+          {
+            "id": 0,
+            "name": "Desk Presence (KNX)",
+            "uuid": "0d8e96b2-0374-2298-ffff6a1f54ecee36",
+            "visuType": 1
+          }
+        ]
+      },
+      "type": "InfoOnlyDigital",
+      "uuidAction": "0d8e96b2-0374-229a-ffffa1b98ee6c71d"
+    },
+    "0da7e861-0052-5b3b-ffffa1b98ee6c71d": {
+      "cat": "0cb250c2-0036-1593-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "movementScene": 1
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Desk power",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "activeScene": "0da7e861-0052-5b38-ffff93e9345a0716",
+        "sceneList": "0da7e861-0052-5afd-ffff93e9345a0716"
+      },
+      "subControls": {
+        "0da7e861-0052-5b3b-ffffa1b98ee6c71d/AI1": {
+          "defaultRating": 0,
+          "isFavorite": false,
+          "isSecured": false,
+          "name": "Q1 - Desk Power",
+          "states": {
+            "active": "0da7e861-0052-5b2c-ffff93e9345a0716"
+          },
+          "type": "Switch",
+          "uuidAction": "0da7e861-0052-5b3b-ffffa1b98ee6c71d/AI1"
+        }
+      },
+      "type": "LightController",
+      "uuidAction": "0da7e861-0052-5b3b-ffffa1b98ee6c71d"
+    },
+    "0daa88b1-0081-409a-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0036-0342-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "format": "%.1f",
+        "max": 10.0,
+        "min": 0.0,
+        "step": 0.5
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "ibuuton led 2",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "error": "0daa88b1-0081-4099-ffff581fb27720eb",
+        "value": "0daa88b1-0081-409a-ffffa1b98ee6c71d"
+      },
+      "type": "UpDownAnalog",
+      "uuidAction": "0daa88b1-0081-409a-ffffa1b98ee6c71d"
+    },
+    "0daa8915-0306-bdc0-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0036-0342-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "format": "%.1f",
+        "max": 10.0,
+        "min": 0.0,
+        "step": 0.5
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "ibutton led 1",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "error": "0daa8915-0306-bdbf-ffff245ee2ac7cf0",
+        "value": "0daa8915-0306-bdc0-ffffa1b98ee6c71d"
+      },
+      "type": "UpDownAnalog",
+      "uuidAction": "0daa8915-0306-bdc0-ffffa1b98ee6c71d"
+    },
+    "0dafcaa9-011c-9862-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0033-0322-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "format": "%.1f"
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "DEV.TEST",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "value": "0dafcaa9-011c-9862-ffffa1b98ee6c71d"
+      },
+      "type": "InfoOnlyAnalog",
+      "uuidAction": "0dafcaa9-011c-9862-ffffa1b98ee6c71d"
+    },
+    "0dafcadf-0019-b57c-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0031-030a-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "format": "%.1f"
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "M9",
+      "room": "0c89ebac-0041-0390-ffffa1b98ee6c71d",
+      "states": {
+        "error": "0dafcadf-0019-b57b-ffffe13a9256d177",
+        "value": "0dafcadf-0019-b57c-ffffa1b98ee6c71d"
+      },
+      "type": "InfoOnlyAnalog",
+      "uuidAction": "0dafcadf-0019-b57c-ffffa1b98ee6c71d"
+    },
+    "0dd0542b-0245-42ac-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0033-031e-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "clientType": 0,
+        "playerid": -1
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Music server zone",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "album": "0dd0542b-0245-426d-ffff6f167ce9b648",
+        "artist": "0dd0542b-0245-426e-ffff6f167ce9b648",
+        "clientState": "0dd0542b-0245-4272-ffff6f167ce9b648",
+        "cover": "0dd0542b-0245-4270-ffff6f167ce9b648",
+        "duration": "0dd0542b-0245-426c-ffff6f167ce9b648",
+        "genre": "0dd0542b-0245-426f-ffff6f167ce9b648",
+        "maxVolume": "0dd0542b-0245-4263-ffff6f167ce9b648",
+        "mute": "0dd0542b-0245-4266-ffff6f167ce9b648",
+        "playState": "0dd0542b-0245-4265-ffff6f167ce9b648",
+        "power": "0dd0542b-0245-4261-ffff6f167ce9b648",
+        "progress": "0dd0542b-0245-426b-ffff6f167ce9b648",
+        "repeat": "0dd0542b-0245-426a-ffff6f167ce9b648",
+        "serverState": "0dd0542b-0245-4271-ffff6f167ce9b648",
+        "shuffle": "0dd0542b-0245-4269-ffff6f167ce9b648",
+        "songName": "0dd0542b-0245-4267-ffff6f167ce9b648",
+        "source": "0e43bda2-01f6-0766-ffff504f941034e4",
+        "sourceList": "0dd0542b-0245-4268-ffff6f167ce9b648",
+        "station": "0dd0542b-0245-4274-ffff6f167ce9b648",
+        "volume": "0dd0542b-0245-4262-ffff6f167ce9b648",
+        "volumeStep": "0e43bda2-01f6-0767-ffff504f941034e4"
+      },
+      "type": "MediaClient",
+      "uuidAction": "0dd0542b-0245-42ac-ffffa1b98ee6c71d"
+    },
+    "0de8793c-0313-a7e8-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0031-030a-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "format": "%.0f",
+        "max": 10000.0,
+        "min": 0.0,
+        "step": 10.0
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "UDP test",
+      "room": "0c89ebac-0041-0390-ffffa1b98ee6c71d",
+      "states": {
+        "error": "0de8793c-0313-a7e7-ffff1dfc254932eb",
+        "value": "0de8793c-0313-a7e8-ffffa1b98ee6c71d"
+      },
+      "type": "Slider",
+      "uuidAction": "0de8793c-0313-a7e8-ffffa1b98ee6c71d"
+    },
+    "0e2a1f83-0184-d608-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0031-030a-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "format": "%.1f"
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Virtual state",
+      "room": "0c89ebac-0041-0390-ffffa1b98ee6c71d",
+      "states": {
+        "value": "0e2a1f83-0184-d608-ffffa1b98ee6c71d"
+      },
+      "type": "InfoOnlyAnalog",
+      "uuidAction": "0e2a1f83-0184-d608-ffffa1b98ee6c71d"
+    },
+    "0e2a210c-006a-2e01-fffff551d8609fcb": {
+      "cat": "0c89ebac-0031-030a-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "format": "%.1f"
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Virtual state",
+      "room": "0c89ebac-0041-0390-ffffa1b98ee6c71d",
+      "states": {
+        "value": "0e2a210c-006a-2e01-fffff551d8609fcb"
+      },
+      "type": "InfoOnlyAnalog",
+      "uuidAction": "0e2a210c-006a-2e01-fffff551d8609fcb"
+    },
+    "0e2bc5cf-01dc-684e-ffffa1b98ee6c71d": {
+      "cat": "0c89ebac-0035-033a-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "actualFormat": "%.3fkW",
+        "totalFormat": "%.1fkWh"
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "KNX power supply",
+      "room": "0cb25281-0198-64a2-ffffa1b98ee6c71d",
+      "states": {
+        "actual": "0e2bc5cf-01dc-6843-ffff7768e3bcc88c",
+        "total": "0e2bc5cf-01dc-6842-ffff7768e3bcc88c"
+      },
+      "type": "Meter",
+      "uuidAction": "0e2bc5cf-01dc-684e-ffffa1b98ee6c71d"
+    }
+  },
+  "globalStates": {
+    "modifications": "0c89ebac-0014-0290-ffffa1b98ee6c71d",
+    "notifications": "0c89ebac-0013-028f-ffffa1b98ee6c71d",
+    "operatingMode": "0c89ebac-0021-02be-ffffa1b98ee6c71d",
+    "pastTasks": "0c89ebac-007b-04e1-ffffd4670ea529f6",
+    "plannedTasks": "0c89ebac-007b-04e0-ffffd4670ea529f6",
+    "sunrise": "0c89ebac-0025-02d0-ffffa1b98ee6c71d",
+    "sunset": "0c89ebac-0026-02d3-ffffa1b98ee6c71d"
+  },
+  "lastModified": "2016-09-19 10:10:10",
+  "mediaServer": {
+    "0dd0543e-0303-4cd2-ffffa1b98ee6c71d": {
+      "host": "",
+      "name": "Loxone Music Server 1",
+      "states": {
+        "apiVersion": "0dd0543e-0303-4ccf-ffffce4c95603d5e",
+        "audioEvents": "0dd0543e-0303-4cd2-ffffa1b98ee6c71d",
+        "grouping": "0dd0543e-0303-4cd1-ffffce4c95603d5e",
+        "serverState": "0dd0543e-0303-4cd0-ffffce4c95603d5e"
+      },
+      "type": 1,
+      "uuidAction": "0dd0543e-0303-4cd2-ffffa1b98ee6c71d"
+    }
+  },
+  "msInfo": {
+    "catTitle": "AIR",
+    "coolPeriodEnd": "09-30",
+    "coolPeriodStart": "05-01",
+    "currency": "\u20ac",
+    "currentUser": {
+      "changePassword": true,
+      "isAdmin": false,
+      "name": "testuser",
+      "uuid": "0e839a0b-00d8-1ab1-ffffa1b98ee6c71d"
+    },
+    "heatPeriodEnd": "04-30",
+    "heatPeriodStart": "10-01",
+    "languageCode": "ENG",
+    "localUrl": "10.1.1.50",
+    "location": "3 Glenside Crescent, Auckland 1010",
+    "miniserverType": 0,
+    "msName": "Gateway",
+    "projectName": "Gateway",
+    "remoteUrl": "222.154.233.236:7777",
+    "roomTitle": "Room",
+    "serialNr": "504F941034E4",
+    "sortByRating": false,
+    "tempUnit": 0
+  },
+  "operatingModes": {
+    "-1": "Alarm",
+    "-2": "Presence simulation",
+    "-3": "Fabric Protection",
+    "-4": "Increased heating demand",
+    "-5": "Entertaining",
+    "-6": "All absent",
+    "-7": "Company Holidays",
+    "0": "Public Holiday",
+    "1": "Vacation",
+    "2": "Day off/School holidays",
+    "3": "Monday",
+    "4": "Tuesday",
+    "5": "Wednesday",
+    "6": "Thursday",
+    "7": "Friday",
+    "8": "Saturday",
+    "9": "Sunday"
+  },
+  "rooms": {
+    "0c89ebac-0041-0390-ffffa1b98ee6c71d": {
+      "defaultRating": 0,
+      "image": "00000000-0000-0001-2100000000000000.svg",
+      "isFavorite": false,
+      "name": "Not assigned",
+      "uuid": "0c89ebac-0041-0390-ffffa1b98ee6c71d"
+    },
+    "0c89ebac-0043-03a0-ffffa1b98ee6c71d": {
+      "defaultRating": 0,
+      "image": "00000000-0000-0005-2100000000000000.svg",
+      "isFavorite": false,
+      "name": "Kitchen",
+      "uuid": "0c89ebac-0043-03a0-ffffa1b98ee6c71d"
+    },
+    "0cb250c7-0318-1595-ffffa1b98ee6c71d": {
+      "defaultRating": 0,
+      "image": "00000000-0000-002f-2100000000000000.svg",
+      "isFavorite": false,
+      "name": "Desks",
+      "uuid": "0cb250c7-0318-1595-ffffa1b98ee6c71d"
+    },
+    "0cb25281-0198-64a2-ffffa1b98ee6c71d": {
+      "defaultRating": 0,
+      "image": "00000000-0000-002e-2100000000000000.svg",
+      "isFavorite": false,
+      "name": "Test Cabinet",
+      "uuid": "0cb25281-0198-64a2-ffffa1b98ee6c71d"
+    }
+  },
+  "times": {
+    "266": {
+      "analog": true,
+      "id": 266,
+      "name": "Days since 2009"
+    },
+    "267": {
+      "analog": true,
+      "id": 267,
+      "name": "Year"
+    },
+    "268": {
+      "analog": true,
+      "id": 268,
+      "name": "Month"
+    },
+    "269": {
+      "analog": true,
+      "id": 269,
+      "name": "Day"
+    },
+    "270": {
+      "analog": true,
+      "id": 270,
+      "name": "Weekday"
+    },
+    "271": {
+      "analog": true,
+      "id": 271,
+      "name": "Calendar type"
+    },
+    "272": {
+      "analog": true,
+      "id": 272,
+      "name": "Minutes past midnight"
+    },
+    "273": {
+      "analog": true,
+      "id": 273,
+      "name": "Hour"
+    },
+    "274": {
+      "analog": true,
+      "id": 274,
+      "name": "Minutes"
+    },
+    "275": {
+      "analog": true,
+      "id": 275,
+      "name": "Seconds"
+    },
+    "276": {
+      "analog": true,
+      "id": 276,
+      "name": "Seconds since boot"
+    },
+    "277": {
+      "analog": true,
+      "id": 277,
+      "name": "Time of sunrise"
+    },
+    "278": {
+      "analog": true,
+      "id": 278,
+      "name": "Time of sunset"
+    },
+    "281": {
+      "analog": false,
+      "id": 281,
+      "name": "Daylight"
+    },
+    "282": {
+      "analog": false,
+      "id": 282,
+      "name": "Daylight 30min"
+    },
+    "283": {
+      "analog": true,
+      "id": 283,
+      "name": "Time of dawn"
+    },
+    "284": {
+      "analog": true,
+      "id": 284,
+      "name": "Time of dusk"
+    },
+    "285": {
+      "analog": true,
+      "id": 285,
+      "name": "Sun elevation"
+    },
+    "286": {
+      "analog": true,
+      "id": 286,
+      "name": "Sun direction"
+    },
+    "287": {
+      "analog": false,
+      "id": 287,
+      "name": "Start pulse"
+    },
+    "288": {
+      "analog": false,
+      "id": 288,
+      "name": "Annual pulse"
+    },
+    "289": {
+      "analog": false,
+      "id": 289,
+      "name": "Pulse for month"
+    },
+    "290": {
+      "analog": false,
+      "id": 290,
+      "name": "Pulse for day"
+    },
+    "291": {
+      "analog": false,
+      "id": 291,
+      "name": "Pulse for hour"
+    },
+    "292": {
+      "analog": false,
+      "id": 292,
+      "name": "Pulse for minute"
+    },
+    "293": {
+      "analog": false,
+      "id": 293,
+      "name": "Pulse for second"
+    },
+    "294": {
+      "analog": false,
+      "id": 294,
+      "name": "Pulse for sunrise"
+    },
+    "295": {
+      "analog": false,
+      "id": 295,
+      "name": "Pulse for sunset"
+    },
+    "298": {
+      "analog": false,
+      "id": 298,
+      "name": "Pulse for dawn"
+    },
+    "299": {
+      "analog": false,
+      "id": 299,
+      "name": "Pulse for dusk"
+    }
+  },
+  "weatherServer": {
+    "format": {
+      "barometricPressure": "%.0fhPa",
+      "precipitation": "%.1fl/m\u00b2/h",
+      "relativeHumidity": "%.0f%%",
+      "temperature": "%.1f\u00b0",
+      "windSpeed": "%.0fkm/h"
+    },
+    "states": {
+      "actual": "0cb2539d-02f4-a196-ffffa1b98ee6c71d",
+      "forecast": "0cb2539d-02f4-a195-ffff5f21996808eb"
+    },
+    "weatherFieldTypes": {
+      "1": {
+        "analog": true,
+        "format": "%.1f",
+        "id": 1,
+        "name": "Temperature",
+        "unit": "\u00b0C"
+      },
+      "10": {
+        "analog": true,
+        "id": 10,
+        "name": "Weather type"
+      },
+      "11": {
+        "analog": true,
+        "format": "%.0f",
+        "id": 11,
+        "name": "Air pressure",
+        "unit": "hPa"
+      },
+      "2": {
+        "analog": true,
+        "format": "%.1f",
+        "id": 2,
+        "name": "Dewpoint",
+        "unit": "\u00b0C"
+      },
+      "26": {
+        "analog": true,
+        "format": "%.1f",
+        "id": 26,
+        "name": "Perceived temperature",
+        "unit": "\u00b0C"
+      },
+      "27": {
+        "analog": true,
+        "id": 27,
+        "name": "Solar Radiation"
+      },
+      "28": {
+        "analog": true,
+        "id": 28,
+        "name": "Chance of precipitation"
+      },
+      "29": {
+        "analog": true,
+        "id": 29,
+        "name": "Snow percentage"
+      },
+      "3": {
+        "analog": true,
+        "format": "%.0f%%",
+        "id": 3,
+        "name": "Rel. humidity"
+      },
+      "30": {
+        "analog": true,
+        "id": 30,
+        "name": "CAPE"
+      },
+      "31": {
+        "analog": true,
+        "id": 31,
+        "name": "Low clouds"
+      },
+      "32": {
+        "analog": true,
+        "id": 32,
+        "name": "Medium cloud cover"
+      },
+      "33": {
+        "analog": true,
+        "id": 33,
+        "name": "High cloud cover"
+      },
+      "34": {
+        "analog": false,
+        "id": 34,
+        "name": "Sunshine"
+      },
+      "4": {
+        "analog": true,
+        "format": "%.0f",
+        "id": 4,
+        "name": "Wind speed",
+        "unit": "km/h"
+      },
+      "5": {
+        "analog": true,
+        "id": 5,
+        "name": "Wind direction"
+      },
+      "6": {
+        "analog": true,
+        "id": 6,
+        "name": "Gusts"
+      },
+      "7": {
+        "analog": true,
+        "id": 7,
+        "name": "Abs. radiation"
+      },
+      "8": {
+        "analog": true,
+        "id": 8,
+        "name": "Rel. radiation"
+      },
+      "9": {
+        "analog": true,
+        "format": "%.1f",
+        "id": 9,
+        "name": "Precipitation",
+        "unit": "l/m\u00b2/h"
+      }
+    },
+    "weatherTypeTexts": {
+      "1": "Clear Sky",
+      "10": "Light rain",
+      "11": "Rain",
+      "12": "Heavy rain",
+      "13": "Drizzle",
+      "14": "Sleet",
+      "15": "Heavy freezing rain",
+      "16": "Light shower",
+      "17": "Heavy rain showers",
+      "18": "Thunderstorms",
+      "19": "Strong thunderstorms",
+      "2": "Clear",
+      "20": "Light snow",
+      "21": "Snow",
+      "22": "Heavy snow",
+      "23": "Light snow showers",
+      "24": "Heavy snow showers",
+      "25": "Light sleet",
+      "26": "Sleet",
+      "27": "Heavy Sleet",
+      "28": "Light sleet showers",
+      "29": "Heavy sleet showers",
+      "3": "Partly Cloudy",
+      "4": "Heavy Cloud Cover",
+      "5": "Cloudy",
+      "6": "Fog",
+      "7": "Overcast",
+      "8": "not in use",
+      "9": "not in use"
+    }
+  }
+}

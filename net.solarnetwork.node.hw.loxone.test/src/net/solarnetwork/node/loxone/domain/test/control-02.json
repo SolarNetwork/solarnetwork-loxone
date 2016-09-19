@@ -1,0 +1,34 @@
+{
+      "cat": "0c89ebac-0031-030e-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "details": {
+        "color": {
+          "off": "#BE1624",
+          "on": "#73BA1B"
+        },
+        "text": {
+          "off": "Off",
+          "on": "On"
+        }
+      },
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Desk Presence (KNX)",
+      "room": "0cb250c7-0318-1595-ffffa1b98ee6c71d",
+      "states": {
+        "active": "0d8e96b2-0374-229a-ffffa1b98ee6c71d"
+      },
+      "statistic": {
+        "frequency": 1,
+        "outputs": [
+          {
+            "id": 0,
+            "name": "Desk Presence (KNX)",
+            "uuid": "0d8e96b2-0374-2298-ffff6a1f54ecee36",
+            "visuType": 1
+          }
+        ]
+      },
+      "type": "InfoOnlyDigital",
+      "uuidAction": "0d8e96b2-0374-229a-ffffa1b98ee6c71d"
+}
