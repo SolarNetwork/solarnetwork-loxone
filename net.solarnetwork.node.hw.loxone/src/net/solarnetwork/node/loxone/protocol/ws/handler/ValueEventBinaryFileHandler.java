@@ -1,5 +1,5 @@
 /* ==================================================================
- * ValueEventTableBinaryFileHandler.java - 19/09/2016 6:23:50 AM
+ * ValueEventBinaryFileHandler.java - 19/09/2016 6:23:50 AM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -23,6 +23,7 @@
 package net.solarnetwork.node.loxone.protocol.ws.handler;
 
 import java.nio.ByteBuffer;
+import java.util.Date;
 import java.util.UUID;
 import javax.websocket.Session;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
@@ -36,7 +37,7 @@ import net.solarnetwork.node.loxone.protocol.ws.MessageType;
  * @author matt
  * @version 1.0
  */
-public class ValueEventTableBinaryFileHandler extends BaseEventBinaryFileHandler<ValueEvent> {
+public class ValueEventBinaryFileHandler extends BaseEventBinaryFileHandler<ValueEvent> {
 
 	@Override
 	public boolean supportsDataMessage(MessageHeader header, ByteBuffer buffer) {
@@ -47,12 +48,13 @@ public class ValueEventTableBinaryFileHandler extends BaseEventBinaryFileHandler
 	public boolean handleDataMessage(MessageHeader header, Session session, ByteBuffer buffer,
 			Long configId) {
 		int end = buffer.position() + (int) header.getLength();
+		Date now = new Date();
 		while ( buffer.hasRemaining() && buffer.position() < end ) {
 			UUID uuid = readUUID(buffer);
 			double value = buffer.asDoubleBuffer().get();
 			buffer.position(buffer.position() + 8);
 			log.trace("Parsed value event {} = {}", uuid, value);
-			ValueEvent ve = new ValueEvent(uuid, configId, value);
+			ValueEvent ve = new ValueEvent(uuid, configId, now, value);
 			eventDao.storeEvent(ve);
 		}
 		return true;

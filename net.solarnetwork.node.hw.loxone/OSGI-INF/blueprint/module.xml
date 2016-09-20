@@ -74,14 +74,19 @@
 		<property name="eventAdmin" ref="eventAdmin"/>
 	</bean>
 
-	<bean id="value-event-cmd-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.ValueEventTableBinaryFileHandler">
+	<bean id="value-event-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.ValueEventBinaryFileHandler">
 		<property name="eventAdmin" ref="eventAdmin"/>
 		<property name="genericEventDao" ref="valueEventDao"/>
 	</bean>
 	
+	<bean id="text-event-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.TextEventBinaryFileHandler">
+		<property name="eventAdmin" ref="eventAdmin"/>
+	</bean>
+	
 	<util:list id="binary-file-handlers">
 		<beans:ref bean="get-structure-cmd-handler"/>
-		<beans:ref bean="value-event-cmd-handler"/>
+		<beans:ref bean="value-event-handler"/>
+		<beans:ref bean="text-event-handler"/>
 	</util:list>
 
 	<util:list id="command-handlers">

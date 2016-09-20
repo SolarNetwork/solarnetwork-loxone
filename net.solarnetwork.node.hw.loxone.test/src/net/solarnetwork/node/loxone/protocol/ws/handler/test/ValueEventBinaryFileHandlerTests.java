@@ -1,5 +1,5 @@
 /* ==================================================================
- * ValueEventTableBinaryFileHandlerTests.java - 20/09/2016 2:31:08 PM
+ * ValueEventBinaryFileHandlerTests.java - 20/09/2016 2:31:08 PM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -46,20 +46,20 @@ import net.solarnetwork.node.loxone.domain.ValueEvent;
 import net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint;
 import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
 import net.solarnetwork.node.loxone.protocol.ws.MessageType;
-import net.solarnetwork.node.loxone.protocol.ws.handler.ValueEventTableBinaryFileHandler;
+import net.solarnetwork.node.loxone.protocol.ws.handler.ValueEventBinaryFileHandler;
 import net.solarnetwork.util.StaticOptionalService;
 
 /**
- * Unit tests for the {@link ValueEventTableBinaryFileHandler} class.
+ * Unit tests for the {@link ValueEventBinaryFileHandler} class.
  * 
  * @author matt
  * @version 1.0
  */
-public class ValueEventTableBinaryFileHandlerTests {
+public class ValueEventBinaryFileHandlerTests {
 
 	private static final Long TEST_CONFIG_ID = 123L;
 
-	private ValueEventTableBinaryFileHandler handler;
+	private ValueEventBinaryFileHandler handler;
 
 	private Session session;
 	private EventAdmin eventAdmin;
@@ -70,7 +70,7 @@ public class ValueEventTableBinaryFileHandlerTests {
 		session = EasyMock.createMock(Session.class);
 		eventAdmin = EasyMock.createMock(EventAdmin.class);
 		valueEventDao = EasyMock.createMock(ValueEventDao.class);
-		handler = new ValueEventTableBinaryFileHandler();
+		handler = new ValueEventBinaryFileHandler();
 		handler.setEventDao(valueEventDao);
 		handler.setEventAdmin(new StaticOptionalService<EventAdmin>(eventAdmin));
 	}
