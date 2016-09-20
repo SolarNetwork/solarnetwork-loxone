@@ -25,8 +25,12 @@ package net.solarnetwork.node.loxone.protocol.ws.handler;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.LongBuffer;
 import java.util.UUID;
 import javax.websocket.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.solarnetwork.node.loxone.dao.ValueEventDao;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
 import net.solarnetwork.node.loxone.protocol.ws.BinaryFileHandler;
@@ -43,6 +47,7 @@ import net.solarnetwork.node.loxone.protocol.ws.MessageType;
 public class ValueEventTableBinaryFileHandler implements BinaryFileHandler {
 
 	private ValueEventDao valueEventDao;
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Override
 	public boolean supportsTextMessage(MessageHeader header, Reader reader, int limit)
@@ -71,6 +76,9 @@ public class ValueEventTableBinaryFileHandler implements BinaryFileHandler {
 
 	@Override
 	public boolean handleDataMessage(MessageHeader header, Session session, ByteBuffer buffer) {
+		if ( buffer.order() != ByteOrder.LITTLE_ENDIAN ) {
+			buffer.order(ByteOrder.LITTLE_ENDIAN);
+		}
 		Long configId = getConfigId(session);
 		if ( configId == null ) {
 			return false;
@@ -78,47 +86,21 @@ public class ValueEventTableBinaryFileHandler implements BinaryFileHandler {
 		int end = buffer.position() + (int) header.getLength();
 		while ( buffer.hasRemaining() && buffer.position() < end ) {
 			UUID uuid = readUUID(buffer);
-			double value = buffer.getDouble();
+			double value = buffer.asDoubleBuffer().get();
+			buffer.position(buffer.position() + 8);
+			log.trace("Parsed value event {} = {}", uuid, value);
 			ValueEvent ve = new ValueEvent(uuid, configId, value);
-			valueEventDao.storeValueEvent(ve);
+			valueEventDao.storeEvent(ve);
 		}
 		return true;
 	}
 
 	private UUID readUUID(ByteBuffer buffer) {
-		StringBuilder buf = new StringBuilder();
-		int d1 = buffer.getInt();
-		short d2 = buffer.getShort();
-		short d3 = buffer.getShort();
-		byte[] d4 = new byte[8];
-		buffer.get(d4);
-		zeroPadUnsignedAppend(buf, d1);
-		buf.append('-');
-		zeroPadUnsignedAppend(buf, d2);
-		buf.append('-');
-		zeroPadUnsignedAppend(buf, d3);
-		buf.append('-');
-		for ( byte b : d4 ) {
-			zeroPadUnsignedAppend(buf, Byte.toUnsignedInt(b), 2);
-		}
-		return UUID.fromString(buf.toString());
-	}
-
-	private void zeroPadUnsignedAppend(StringBuilder buf, short value) {
-		zeroPadUnsignedAppend(buf, Short.toUnsignedInt(value), 4);
-	}
-
-	private void zeroPadUnsignedAppend(StringBuilder buf, int value) {
-		zeroPadUnsignedAppend(buf, value, 8);
-	}
-
-	private void zeroPadUnsignedAppend(StringBuilder buf, int value, int padLength) {
-		String s = Integer.toUnsignedString(value, 16);
-		int pads = (padLength - s.length());
-		for ( int i = 0; i < pads; i++ ) {
-			buf.append('0');
-		}
-		buf.append(s);
+		LongBuffer buf = buffer.order(ByteOrder.BIG_ENDIAN).asLongBuffer();
+		UUID uuid = new UUID(buf.get(), buf.get());
+		buffer.order(ByteOrder.LITTLE_ENDIAN);
+		buffer.position(buffer.position() + 16);
+		return uuid;
 	}
 
 	public void setValueEventDao(ValueEventDao valueEventDao) {

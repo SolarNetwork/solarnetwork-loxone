@@ -64,14 +64,14 @@ public class JdbcValueEventDaoTests extends AbstractNodeTransactionalTest {
 	@Test
 	public void insert() {
 		ValueEvent event = new ValueEvent(UUID.randomUUID(), TEST_CONFIG_ID, TEST_DOUBLE);
-		dao.storeValueEvent(event);
+		dao.storeEvent(event);
 		lastValueEvent = event;
 	}
 
 	@Test
 	public void getByPK() {
 		insert();
-		ValueEvent event = dao.getValueEvent(lastValueEvent.getUuid());
+		ValueEvent event = dao.loadEvent(lastValueEvent.getUuid());
 		Assert.assertNotNull("ValueEvent inserted", event);
 		Assert.assertEquals("UUID", lastValueEvent.getUuid(), event.getUuid());
 		Assert.assertEquals("Value", lastValueEvent.getValue(), event.getValue(), 0.1);
@@ -80,10 +80,10 @@ public class JdbcValueEventDaoTests extends AbstractNodeTransactionalTest {
 	@Test
 	public void update() {
 		insert();
-		ValueEvent orig = dao.getValueEvent(lastValueEvent.getUuid());
+		ValueEvent orig = dao.loadEvent(lastValueEvent.getUuid());
 		ValueEvent modified = new ValueEvent(orig.getUuid(), TEST_CONFIG_ID, 234.5);
-		dao.storeValueEvent(modified);
-		ValueEvent updated = dao.getValueEvent(orig.getUuid());
+		dao.storeEvent(modified);
+		ValueEvent updated = dao.loadEvent(orig.getUuid());
 		Assert.assertEquals("Same UUID", orig.getUuid(), updated.getUuid());
 		Assert.assertEquals("Updated value", modified.getValue(), updated.getValue(), 0.1);
 	}

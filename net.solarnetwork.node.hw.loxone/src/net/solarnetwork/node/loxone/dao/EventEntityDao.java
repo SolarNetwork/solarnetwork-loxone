@@ -1,5 +1,5 @@
 /* ==================================================================
- * ValueEventDao.java - 19/09/2016 7:26:17 AM
+ * EventEntityDao.java - 20/09/2016 2:48:24 PM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -22,14 +22,33 @@
 
 package net.solarnetwork.node.loxone.dao;
 
-import net.solarnetwork.node.loxone.domain.ValueEvent;
+import java.util.UUID;
+import net.solarnetwork.node.loxone.domain.BaseEventEntity;
 
 /**
- * DAO API for value events.
+ * DAO API for event entities.
  * 
  * @author matt
  * @version 1.0
  */
-public interface ValueEventDao extends EventEntityDao<ValueEvent> {
+public interface EventEntityDao<T extends BaseEventEntity> {
+
+	/**
+	 * Store (create or update) an event. The {@code uuid} value is the primary
+	 * key.
+	 * 
+	 * @param event
+	 *        The event to store.
+	 */
+	void storeEvent(T event);
+
+	/**
+	 * Get an event for a given UUID.
+	 * 
+	 * @param uuid
+	 *        The UUID of the event to get.
+	 * @return The associated event, or <em>null</em> if not available.
+	 */
+	T loadEvent(UUID uuid);
 
 }

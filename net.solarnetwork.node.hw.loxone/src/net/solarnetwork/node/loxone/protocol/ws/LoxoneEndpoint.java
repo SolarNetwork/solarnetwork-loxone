@@ -26,11 +26,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -182,6 +184,14 @@ public class LoxoneEndpoint extends Endpoint
 		MessageHeader h = headerQueue.poll();
 		if ( h != null ) {
 			log.debug("Got binary message {}", h);
+			if ( log.isTraceEnabled() ) {
+				try {
+					log.trace("Binary message {} payload (Base64):\n{}", h, new String(
+							Base64.getMimeEncoder().encode(buf.duplicate()).array(), "UTF-8"));
+				} catch ( UnsupportedEncodingException e ) {
+					// ignore
+				}
+			}
 			if ( !handleBinaryFileIfPossible(h, buf) ) {
 				// hmm, seems sometimes we get more than one response from Loxone
 				if ( !headerQueue.offer(h) ) {
@@ -245,16 +255,24 @@ public class LoxoneEndpoint extends Endpoint
 	 */
 	private class InternalCommandHandler extends BaseCommandHandler {
 
+		// Use the logger from LoxoneEndpoint directly
+		private final Logger log = LoxoneEndpoint.this.log;
+
 		@Override
 		public boolean supportsCommand(CommandType command) {
 			return (command == CommandType.GetAuthenticationKey || command == CommandType.Authenticate
-					|| command == CommandType.Auth || command == CommandType.KeepAlive);
+					|| command == CommandType.Auth || command == CommandType.EnableInputStatusUpdate
+					|| command == CommandType.KeepAlive);
 		}
 
 		@Override
 		public boolean handleCommandValue(CommandType command, MessageHeader header, Session session,
 				JsonNode parser, String value) throws IOException {
-			log.debug("Handling message {} command {}: {}", header, command, value);
+			if ( log.isTraceEnabled() ) {
+				log.trace("Handling message {} command {} data: {}", header, command, value);
+			} else {
+				log.debug("Handling message {} command {}", header, command);
+			}
 			if ( command == CommandType.GetAuthenticationKey ) {
 				byte[] key;
 				try {
@@ -378,24 +396,24 @@ public class LoxoneEndpoint extends Endpoint
 
 	private boolean handleCommandIfPossible(CommandType command, MessageHeader header, JsonNode tree)
 			throws IOException {
-		// first check if the command is supported directly, and if so handle it
-		if ( internalCommandHandler.supportsCommand(command) ) {
-			return internalCommandHandler.handleCommand(command, header, session, tree);
-		} else {
-			CommandHandler handler = getCommandHandlerForCommand(command);
-			if ( handler != null ) {
-				return handler.handleCommand(command, header, session, tree);
-			}
+		CommandHandler handler = getCommandHandlerForCommand(command);
+		if ( handler != null ) {
+			return handler.handleCommand(command, header, session, tree);
 		}
 		return false;
 	}
 
 	private CommandHandler getCommandHandlerForCommand(CommandType command) {
-		List<CommandHandler> list = getCommandHandlers();
-		if ( list != null ) {
-			for ( CommandHandler handler : list ) {
-				if ( handler.supportsCommand(command) ) {
-					return handler;
+		// first check if the command is supported directly, and if so handle it
+		if ( internalCommandHandler.supportsCommand(command) ) {
+			return internalCommandHandler;
+		} else {
+			List<CommandHandler> list = getCommandHandlers();
+			if ( list != null ) {
+				for ( CommandHandler handler : list ) {
+					if ( handler.supportsCommand(command) ) {
+						return handler;
+					}
 				}
 			}
 		}

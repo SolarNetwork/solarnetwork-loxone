@@ -30,8 +30,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import net.solarnetwork.node.loxone.dao.ValueEventDao;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
 
@@ -41,7 +39,7 @@ import net.solarnetwork.node.loxone.domain.ValueEvent;
  * @author matt
  * @version 1.0
  */
-public class JdbcValueEventDao extends BaseUUIDEntityDao<ValueEvent> implements ValueEventDao {
+public class JdbcValueEventDao extends BaseEventEntityDao<ValueEvent> implements ValueEventDao {
 
 	/** The default tables version. */
 	public static final int TABLES_VERSION = 1;
@@ -50,13 +48,7 @@ public class JdbcValueEventDao extends BaseUUIDEntityDao<ValueEvent> implements 
 	 * Constructor.
 	 */
 	public JdbcValueEventDao() {
-		super("vevent", TABLES_VERSION, new ValueEventRowMapper());
-	}
-
-	@Override
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-	public void storeValueEvent(final ValueEvent event) {
-		storeEntity(event);
+		super(ValueEvent.class, "vevent", TABLES_VERSION, new ValueEventRowMapper());
 	}
 
 	@Override
@@ -76,12 +68,6 @@ public class JdbcValueEventDao extends BaseUUIDEntityDao<ValueEvent> implements 
 		//       uuid_hi, uuid_lo
 		ps.setDouble(1, event.getValue());
 		prepareUUID(2, event.getUuid(), ps);
-	}
-
-	@Override
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-	public ValueEvent getValueEvent(UUID uuid) {
-		return getEntityByUUID(uuid);
 	}
 
 	private static final class ValueEventRowMapper implements RowMapper<ValueEvent> {
