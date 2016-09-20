@@ -83,10 +83,15 @@
 		<property name="eventAdmin" ref="eventAdmin"/>
 	</bean>
 	
+	<bean id="daytimer-event-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.DaytimerEventBinaryFileHandler">
+		<property name="eventAdmin" ref="eventAdmin"/>
+	</bean>
+	
 	<util:list id="binary-file-handlers">
 		<beans:ref bean="get-structure-cmd-handler"/>
 		<beans:ref bean="value-event-handler"/>
 		<beans:ref bean="text-event-handler"/>
+		<beans:ref bean="daytimer-event-handler"/>
 	</util:list>
 
 	<util:list id="command-handlers">
