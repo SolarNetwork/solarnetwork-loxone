@@ -47,6 +47,7 @@ import net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint;
 import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
 import net.solarnetwork.node.loxone.protocol.ws.MessageType;
 import net.solarnetwork.node.loxone.protocol.ws.handler.ValueEventTableBinaryFileHandler;
+import net.solarnetwork.util.StaticOptionalService;
 
 /**
  * Unit tests for the {@link ValueEventTableBinaryFileHandler} class.
@@ -61,7 +62,7 @@ public class ValueEventTableBinaryFileHandlerTests {
 	private ValueEventTableBinaryFileHandler handler;
 
 	private Session session;
-	private EventAdmin eventAdmin; // TODO
+	private EventAdmin eventAdmin;
 	private ValueEventDao valueEventDao;
 
 	@Before
@@ -70,7 +71,8 @@ public class ValueEventTableBinaryFileHandlerTests {
 		eventAdmin = EasyMock.createMock(EventAdmin.class);
 		valueEventDao = EasyMock.createMock(ValueEventDao.class);
 		handler = new ValueEventTableBinaryFileHandler();
-		handler.setValueEventDao(valueEventDao);
+		handler.setEventDao(valueEventDao);
+		handler.setEventAdmin(new StaticOptionalService<EventAdmin>(eventAdmin));
 	}
 
 	@Test
@@ -95,11 +97,11 @@ public class ValueEventTableBinaryFileHandlerTests {
 		valueEventDao.storeEvent(capture(valueEventCapture));
 		expectLastCall().times(111);
 
-		replay(session, valueEventDao);
+		replay(session, eventAdmin, valueEventDao);
 
 		boolean handled = handler.handleDataMessage(header, session, buffer);
 
-		verify(session, valueEventDao);
+		verify(session, eventAdmin, valueEventDao);
 
 		Assert.assertTrue("Handled", handled);
 
@@ -111,6 +113,7 @@ public class ValueEventTableBinaryFileHandlerTests {
 		int i = 0;
 		for ( Object[] eventData : expectedEventData ) {
 			ValueEvent event = valueEventCapture.getValues().get(i++);
+			Assert.assertNotNull("ValueEvent created date " + i, event.getCreated());
 			Assert.assertEquals("ValueEvent config ID " + i, TEST_CONFIG_ID, event.getConfigId());
 			Assert.assertEquals("ValueEvent UUID " + i, UUID.fromString((String) eventData[0]),
 					event.getUuid());

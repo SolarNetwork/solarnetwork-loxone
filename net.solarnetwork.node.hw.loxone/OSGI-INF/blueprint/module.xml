@@ -57,6 +57,10 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 
+	<bean id="valueEventDao" class="net.solarnetwork.node.loxone.dao.jdbc.JdbcValueEventDao" init-method="init">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+
 	<bean id="get-structure-cmd-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.GetStructureFileCommandHandler">
 		<property name="categoryDao" ref="categoryDao"/>
 		<property name="configDao" ref="configDao"/>
@@ -71,6 +75,8 @@
 	</bean>
 
 	<bean id="value-event-cmd-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.ValueEventTableBinaryFileHandler">
+		<property name="eventAdmin" ref="eventAdmin"/>
+		<property name="eventDao" ref="valueEventDao"/>
 	</bean>
 	
 	<util:list id="binary-file-handlers">

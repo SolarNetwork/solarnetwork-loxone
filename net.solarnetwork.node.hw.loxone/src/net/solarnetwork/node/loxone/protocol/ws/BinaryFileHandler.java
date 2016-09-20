@@ -84,8 +84,6 @@ public interface BinaryFileHandler {
 	 * @param buffer
 	 *        The byte buffer with the data to process.
 	 * @return <em>true</em> if the command was handled.
-	 * @throws IOException
-	 *         if any communication error occurs
 	 */
 	boolean handleDataMessage(MessageHeader header, Session session, ByteBuffer buffer);
 
