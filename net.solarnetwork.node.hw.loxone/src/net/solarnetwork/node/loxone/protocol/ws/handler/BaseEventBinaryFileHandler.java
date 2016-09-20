@@ -147,6 +147,21 @@ public abstract class BaseEventBinaryFileHandler<T extends BaseEventEntity>
 	}
 
 	/**
+	 * Work-around for OSGi Blueprint failures to populate via
+	 * {@link #setEventDao(EventEntityDao)}. Calls
+	 * {@link #setEventDao(EventEntityDao)}.
+	 * 
+	 * @param o
+	 *        The DAO to set.
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void setGenericEventDao(Object o) {
+		if ( o instanceof EventEntityDao ) {
+			setEventDao((EventEntityDao) o);
+		}
+	}
+
+	/**
 	 * Set an {@link EventAdmin} to publish events with.
 	 * 
 	 * @param eventAdmin

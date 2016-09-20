@@ -76,7 +76,7 @@
 
 	<bean id="value-event-cmd-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.ValueEventTableBinaryFileHandler">
 		<property name="eventAdmin" ref="eventAdmin"/>
-		<property name="eventDao" ref="valueEventDao"/>
+		<property name="genericEventDao" ref="valueEventDao"/>
 	</bean>
 	
 	<util:list id="binary-file-handlers">
