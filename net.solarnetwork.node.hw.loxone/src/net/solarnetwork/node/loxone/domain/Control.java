@@ -24,7 +24,7 @@ package net.solarnetwork.node.loxone.domain;
 
 import java.util.Map;
 import java.util.UUID;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.annotation.JsonSetter;
@@ -33,10 +33,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * An input/output device, sensor, etc.
  * 
+ * <b>Note</b> that when mapping from JSON either {@code uuid} or
+ * {@code uuidAction} can be used to set the {@code uuid} property value.
+ * However, when serializing into JSON the property will only be written as
+ * {@code uuid}.
+ * 
  * @author matt
  * @version 1.0
  */
-@JsonIgnoreProperties("uuid")
 public class Control extends BaseConfigurationEntity {
 
 	private ControlType type;
@@ -54,6 +58,7 @@ public class Control extends BaseConfigurationEntity {
 	 * 
 	 * @return The UUID.
 	 */
+	@JsonGetter("uuid")
 	public UUID getUuidAction() {
 		return getUuid();
 	}
@@ -64,6 +69,7 @@ public class Control extends BaseConfigurationEntity {
 	 * @param uuid
 	 *        The UUID to set.
 	 */
+	@JsonSetter("uuidAction")
 	public void setUuidAction(UUID uuid) {
 		setUuid(uuid);
 	}
