@@ -204,6 +204,7 @@ public class GetStructureFileCommandHandlerTests {
 				cat.getUuid());
 		assertEquals("Category name", "AIR", cat.getName());
 		assertEquals("Category color", "#83B817", cat.getColor());
+		assertEquals("Category image", "00000000-0000-0020-2000000000000000.svg", cat.getImage());
 
 		Control control = controlCapture.getValues().get(0);
 		assertEquals("Control config ID", TEST_CONFIG_ID, control.getConfigId());
@@ -220,7 +221,7 @@ public class GetStructureFileCommandHandlerTests {
 		assertEquals("Room UUID", UUID.fromString("0cb25281-0198-64a2-ffff-a1b98ee6c71d"),
 				room.getUuid());
 		assertEquals("Room name", "Test Cabinet", room.getName());
-		assertEquals("Room color", "00000000-0000-002e-2100000000000000.svg", room.getImage());
+		assertEquals("Room image", "00000000-0000-002e-2100000000000000.svg", room.getImage());
 	}
 
 }

@@ -32,6 +32,7 @@ public class Category extends BaseConfigurationEntity {
 
 	private String color;
 	private CategoryType type;
+	private String image;
 
 	public String getColor() {
 		return color;
@@ -47,6 +48,14 @@ public class Category extends BaseConfigurationEntity {
 
 	public void setType(CategoryType type) {
 		this.type = type;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 }

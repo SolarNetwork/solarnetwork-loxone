@@ -31,6 +31,7 @@ package net.solarnetwork.node.loxone.domain;
 public class Room extends BaseConfigurationEntity {
 
 	private String image;
+
 	public String getImage() {
 		return image;
 	}
