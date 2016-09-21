@@ -23,12 +23,17 @@
 package net.solarnetwork.node.setup.web;
 
 import java.util.Collection;
+import java.util.List;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.loxone.LoxoneService;
+import net.solarnetwork.node.loxone.domain.Category;
+import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
 import net.solarnetwork.node.loxone.domain.Control;
+import net.solarnetwork.node.loxone.domain.Room;
 import net.solarnetwork.web.domain.Response;
 
 /**
@@ -45,14 +50,28 @@ public class LoxoneConfigurationController extends BaseLoxoneWebServiceControlle
 		super();
 	}
 
-	@RequestMapping(value = "/config", method = RequestMethod.GET)
+	@RequestMapping(value = "/categories", method = RequestMethod.GET)
+	public Response<Collection<Category>> allCategories(@PathVariable("configId") Long configId) {
+		return getAllForConfigId(configId, Category.class, null);
+	}
+
+	@RequestMapping(value = "/controls", method = RequestMethod.GET)
 	public Response<Collection<Control>> allControls(@PathVariable("configId") Long configId) {
+		return getAllForConfigId(configId, Control.class, null);
+	}
+
+	@RequestMapping(value = "/rooms", method = RequestMethod.GET)
+	public Response<Collection<Room>> allRooms(@PathVariable("configId") Long configId) {
+		return getAllForConfigId(configId, Room.class, null);
+	}
+
+	private <T extends ConfigurationEntity> Response<Collection<T>> getAllForConfigId(Long configId,
+			Class<T> type, List<SortDescriptor> sortDescriptors) {
 		LoxoneService service = serviceForConfigId(configId);
 		if ( service == null ) {
-			return new Response<Collection<Control>>(Boolean.FALSE, "404", "Service not available",
-					null);
+			return new Response<Collection<T>>(Boolean.FALSE, "404", "Service not available", null);
 		}
-		Collection<Control> result = service.getAllConfiguration(Control.class, null);
+		Collection<T> result = service.getAllConfiguration(type, null);
 		return Response.response(result);
 	}
 
