@@ -30,17 +30,8 @@ package net.solarnetwork.node.loxone.domain;
  */
 public abstract class BaseConfigurationEntity extends BaseUUIDEntity implements ConfigurationEntity {
 
-	private Long configId;
 	private String name;
 	private Integer defaultRating;
-
-	public Long getConfigId() {
-		return configId;
-	}
-
-	public void setConfigId(Long configId) {
-		this.configId = configId;
-	}
 
 	@Override
 	public String getName() {

@@ -50,25 +50,28 @@ public class JdbcCategoryDao extends BaseConfigurationEntityDao<Category> implem
 
 	@Override
 	protected void setStoreStatementValues(Category category, PreparedStatement ps) throws SQLException {
-		// Row order is: uuid_hi, uuid_lo, config_id ,name, sort, ctype
+		// Row order is: uuid_hi, uuid_lo, config_id ,name, sort, image, ctype
 		prepareUUID(1, category.getUuid(), ps);
 		ps.setObject(3, category.getConfigId());
 		ps.setString(4, category.getName());
 		ps.setInt(5, (category.getDefaultRating() != null ? category.getDefaultRating().intValue() : 0));
-		ps.setShort(6, category.getType() != null ? category.getType().getIndex()
+		ps.setString(6, category.getImage());
+		ps.setShort(7, category.getType() != null ? category.getType().getIndex()
 				: CategoryType.Unknown.getIndex());
 	}
 
 	@Override
 	protected void setUpdateStatementValues(Category category, PreparedStatement ps)
 			throws SQLException {
-		// cols: name, sort, ctype
+		// cols: name, sort, image, ctype
 		//       uuid_hi, uuid_lo
 		ps.setString(1, category.getName());
 		ps.setInt(2, (category.getDefaultRating() != null ? category.getDefaultRating().intValue() : 0));
-		ps.setShort(3, category.getType() != null ? category.getType().getIndex()
+		ps.setString(3, category.getImage());
+		ps.setShort(4, category.getType() != null ? category.getType().getIndex()
 				: CategoryType.Unknown.getIndex());
-		prepareUUID(4, category.getUuid(), ps);
+		prepareUUID(5, category.getUuid(), ps);
+		ps.setObject(7, category.getConfigId());
 	}
 
 	private static final class CategoryRowMapper implements RowMapper<Category> {
@@ -81,7 +84,8 @@ public class JdbcCategoryDao extends BaseConfigurationEntityDao<Category> implem
 			row.setConfigId(rs.getLong(3));
 			row.setName(rs.getString(4));
 			row.setDefaultRating(rs.getInt(5));
-			row.setType(CategoryType.forIndexValue(rs.getShort(6)));
+			row.setImage(rs.getString(6));
+			row.setType(CategoryType.forIndexValue(rs.getShort(7)));
 			return row;
 		}
 	}

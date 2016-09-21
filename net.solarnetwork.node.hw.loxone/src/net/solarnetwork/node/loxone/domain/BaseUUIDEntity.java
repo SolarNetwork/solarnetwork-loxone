@@ -32,7 +32,16 @@ import java.util.UUID;
  */
 public abstract class BaseUUIDEntity {
 
+	private Long configId;
 	private UUID uuid;
+
+	public Long getConfigId() {
+		return configId;
+	}
+
+	public void setConfigId(Long configId) {
+		this.configId = configId;
+	}
 
 	public UUID getUuid() {
 		return uuid;

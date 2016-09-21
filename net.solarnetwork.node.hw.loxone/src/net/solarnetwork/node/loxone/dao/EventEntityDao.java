@@ -45,10 +45,12 @@ public interface EventEntityDao<T extends BaseEventEntity> {
 	/**
 	 * Get an event for a given UUID.
 	 * 
+	 * @param config
+	 *        ID The config ID to match.
 	 * @param uuid
 	 *        The UUID of the event to get.
 	 * @return The associated event, or <em>null</em> if not available.
 	 */
-	T loadEvent(UUID uuid);
+	T loadEvent(Long configId, UUID uuid);
 
 }

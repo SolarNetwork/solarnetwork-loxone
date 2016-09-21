@@ -125,21 +125,21 @@ public class GetStructureFileCommandHandler extends BaseCommandHandler implement
 							e.getMessage());
 				}
 			} else if ( "cats".equals(entry.getKey()) ) {
-				categoryDao.deleteAllForConfig(config);
+				categoryDao.deleteAllForConfig(configId);
 				for ( JsonNode node : entry.getValue() ) {
 					Category category = objectMapper.treeToValue(node, Category.class);
 					category.setConfigId(config.getId());
 					categoryDao.store(category);
 				}
 			} else if ( "controls".equals(entry.getKey()) ) {
-				controlDao.deleteAllForConfig(config);
+				controlDao.deleteAllForConfig(configId);
 				for ( JsonNode node : entry.getValue() ) {
 					Control control = objectMapper.treeToValue(node, Control.class);
 					control.setConfigId(config.getId());
 					controlDao.store(control);
 				}
 			} else if ( "rooms".equals(entry.getKey()) ) {
-				roomDao.deleteAllForConfig(config);
+				roomDao.deleteAllForConfig(configId);
 				for ( JsonNode node : entry.getValue() ) {
 					Room room = objectMapper.treeToValue(node, Room.class);
 					room.setConfigId(config.getId());

@@ -25,7 +25,6 @@ package net.solarnetwork.node.loxone.dao;
 import java.util.List;
 import java.util.UUID;
 import net.solarnetwork.domain.SortDescriptor;
-import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
 
 /**
@@ -55,20 +54,22 @@ public interface ConfigurationEntityDao<T extends ConfigurationEntity> {
 	/**
 	 * Get an entity for a given UUID.
 	 * 
+	 * @param configId
+	 *        The config ID to match.
 	 * @param uuid
 	 *        The UUID of the entity to get.
 	 * @return The associated entity, or <em>null</em> if not available.
 	 */
-	T load(UUID uuid);
+	T load(Long configId, UUID uuid);
 
 	/**
 	 * Delete all entities matching a given configuration.
 	 * 
-	 * @param config
-	 *        The configuration to match.
+	 * @param configId
+	 *        The config ID to match.
 	 * @return The count of deleted items.
 	 */
-	int deleteAllForConfig(Config config);
+	int deleteAllForConfig(Long configId);
 
 	/**
 	 * Get a list of persisted entities, optionally sorted in some way.

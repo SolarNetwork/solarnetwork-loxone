@@ -114,7 +114,7 @@ public abstract class BaseUUIDEntityDao<T extends BaseUUIDEntity> extends Abstra
 	 */
 	protected void storeEntity(final T entity) {
 		assert entity.getUuid() != null;
-		T existing = getEntityByUUID(entity.getUuid());
+		T existing = getEntityByUUID(entity.getConfigId(), entity.getUuid());
 		if ( existing != null ) {
 			updateDomainObject(entity, getSqlResource(SQL_UPDATE));
 		} else {
@@ -125,13 +125,15 @@ public abstract class BaseUUIDEntityDao<T extends BaseUUIDEntity> extends Abstra
 	/**
 	 * Load an entity by its UUID.
 	 * 
+	 * @param configId
+	 *        The config ID to match.
 	 * @param uuid
 	 *        The UUID of the entity to load.
 	 * @return The loaded entity, or <em>null</em> if no matching entity found.
 	 */
-	protected T getEntityByUUID(UUID uuid) {
+	protected T getEntityByUUID(Long configId, UUID uuid) {
 		List<T> results = getJdbcTemplate().query(getSqlResource(SQL_GET_BY_PK), rowMapper,
-				uuid.getMostSignificantBits(), uuid.getLeastSignificantBits());
+				uuid.getMostSignificantBits(), uuid.getLeastSignificantBits(), configId);
 		if ( results != null && results.size() > 0 ) {
 			return results.get(0);
 		}

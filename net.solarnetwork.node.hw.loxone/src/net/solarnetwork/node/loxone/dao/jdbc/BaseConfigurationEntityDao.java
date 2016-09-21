@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.loxone.dao.ConfigurationEntityDao;
 import net.solarnetwork.node.loxone.domain.BaseConfigurationEntity;
-import net.solarnetwork.node.loxone.domain.Config;
 
 /**
  * Base DAO for {@link BaseConfigurationEntity} classes.
@@ -80,14 +79,14 @@ public abstract class BaseConfigurationEntityDao<T extends BaseConfigurationEnti
 
 	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 	@Override
-	public T load(UUID uuid) {
-		return getEntityByUUID(uuid);
+	public T load(Long configId, UUID uuid) {
+		return getEntityByUUID(configId, uuid);
 	}
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	@Override
-	public int deleteAllForConfig(Config config) {
-		int result = getJdbcTemplate().update(getSqlResource(SQL_DELETE_FOR_CONFIG), config.getId());
+	public int deleteAllForConfig(Long configId) {
+		int result = getJdbcTemplate().update(getSqlResource(SQL_DELETE_FOR_CONFIG), configId);
 		return result;
 	}
 

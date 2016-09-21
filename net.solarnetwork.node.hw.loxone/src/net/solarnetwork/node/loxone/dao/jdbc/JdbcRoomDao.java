@@ -49,20 +49,23 @@ public class JdbcRoomDao extends BaseConfigurationEntityDao<Room> implements Roo
 
 	@Override
 	protected void setStoreStatementValues(Room room, PreparedStatement ps) throws SQLException {
-		// Row order is: uuid_hi, uuid_lo, config_id, name, sort
+		// Row order is: uuid_hi, uuid_lo, config_id, name, sort, image
 		prepareUUID(1, room.getUuid(), ps);
 		ps.setObject(3, room.getConfigId());
 		ps.setString(4, room.getName());
 		ps.setInt(5, (room.getDefaultRating() != null ? room.getDefaultRating().intValue() : 0));
+		ps.setString(6, room.getImage());
 	}
 
 	@Override
 	protected void setUpdateStatementValues(Room room, PreparedStatement ps) throws SQLException {
-		// cols: name, sort
-		//       uuid_hi, uuid_lo
+		// cols: name, sort, image
+		//       uuid_hi, uuid_lo, config_id
 		ps.setString(1, room.getName());
 		ps.setInt(2, (room.getDefaultRating() != null ? room.getDefaultRating().intValue() : 0));
-		prepareUUID(3, room.getUuid(), ps);
+		ps.setString(3, room.getImage());
+		prepareUUID(4, room.getUuid(), ps);
+		ps.setObject(6, room.getConfigId());
 	}
 
 	private static final class RoomRowMapper implements RowMapper<Room> {
@@ -70,11 +73,12 @@ public class JdbcRoomDao extends BaseConfigurationEntityDao<Room> implements Roo
 		@Override
 		public Room mapRow(ResultSet rs, int rowNum) throws SQLException {
 			Room row = new Room();
-			// Row order is: uuid_hi, uuid_lo, config_id, name, sort
+			// Row order is: uuid_hi, uuid_lo, config_id, name, sort, image
 			row.setUuid(readUUID(1, rs));
 			row.setConfigId(rs.getLong(3));
 			row.setName(rs.getString(4));
 			row.setDefaultRating(rs.getInt(5));
+			row.setImage(rs.getString(6));
 			return row;
 		}
 	}

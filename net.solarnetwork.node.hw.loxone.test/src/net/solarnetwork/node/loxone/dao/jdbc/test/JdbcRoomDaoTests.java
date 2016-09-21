@@ -30,7 +30,6 @@ import org.junit.Before;
 import org.junit.Test;
 import net.solarnetwork.node.dao.jdbc.DatabaseSetup;
 import net.solarnetwork.node.loxone.dao.jdbc.JdbcRoomDao;
-import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.Room;
 import net.solarnetwork.node.test.AbstractNodeTransactionalTest;
 
@@ -77,7 +76,7 @@ public class JdbcRoomDaoTests extends AbstractNodeTransactionalTest {
 	@Test
 	public void getByPK() {
 		insert();
-		Room room = dao.load(lastRoom.getUuid());
+		Room room = dao.load(TEST_CONFIG_ID, lastRoom.getUuid());
 		Assert.assertNotNull("Room inserted", room);
 		Assert.assertEquals("UUID", lastRoom.getUuid(), room.getUuid());
 		Assert.assertEquals("Config ID", lastRoom.getConfigId(), room.getConfigId());
@@ -88,11 +87,11 @@ public class JdbcRoomDaoTests extends AbstractNodeTransactionalTest {
 	@Test
 	public void update() {
 		insert();
-		Room orig = dao.load(lastRoom.getUuid());
+		Room orig = dao.load(TEST_CONFIG_ID, lastRoom.getUuid());
 		orig.setName("Updated Name");
 		orig.setDefaultRating(2);
 		dao.store(orig);
-		Room updated = dao.load(lastRoom.getUuid());
+		Room updated = dao.load(TEST_CONFIG_ID, lastRoom.getUuid());
 		Assert.assertEquals("Same UUID", orig.getUuid(), updated.getUuid());
 		Assert.assertEquals("Same Config ID", orig.getConfigId(), updated.getConfigId());
 		Assert.assertEquals("Updated name", orig.getName(), updated.getName());
@@ -103,9 +102,9 @@ public class JdbcRoomDaoTests extends AbstractNodeTransactionalTest {
 	@Test
 	public void deleteForConfig() {
 		insert();
-		int result = dao.deleteAllForConfig(new Config(TEST_CONFIG_ID));
+		int result = dao.deleteAllForConfig(TEST_CONFIG_ID);
 		Assert.assertEquals("Deleted count", 1, result);
-		Room room = dao.load(lastRoom.getUuid());
+		Room room = dao.load(TEST_CONFIG_ID, lastRoom.getUuid());
 		Assert.assertNull("Room no longer available", room);
 	}
 }

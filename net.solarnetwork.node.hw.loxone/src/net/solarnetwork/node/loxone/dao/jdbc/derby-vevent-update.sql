@@ -1,3 +1,3 @@
 UPDATE solarnode.loxone_vevent
 SET fvalue = ?
-WHERE uuid_hi = ? AND uuid_lo = ?
+WHERE uuid_hi = ? AND uuid_lo = ? AND config_id = ?

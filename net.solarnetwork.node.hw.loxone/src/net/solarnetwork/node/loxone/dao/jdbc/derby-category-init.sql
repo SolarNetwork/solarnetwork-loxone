@@ -4,8 +4,9 @@ CREATE TABLE solarnode.loxone_category (
 	config_id	BIGINT NOT NULL,
 	name		VARCHAR(255) NOT NULL,
 	sort		INTEGER NOT NULL WITH DEFAULT 0,
+	image		VARCHAR(48),
 	ctype		SMALLINT NOT NULL WITH DEFAULT -1,
-	CONSTRAINT loxone_category_pk PRIMARY KEY (uuid_hi, uuid_lo)
+	CONSTRAINT loxone_category_pk PRIMARY KEY (config_id, uuid_hi, uuid_lo)
 );
 
 INSERT INTO solarnode.sn_settings (skey, svalue) 

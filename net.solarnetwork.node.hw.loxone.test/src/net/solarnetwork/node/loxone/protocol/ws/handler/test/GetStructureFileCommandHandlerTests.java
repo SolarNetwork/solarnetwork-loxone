@@ -150,25 +150,25 @@ public class GetStructureFileCommandHandlerTests {
 		expect(configDao.getConfig(TEST_CONFIG_ID)).andReturn(null);
 
 		// now we find the categories; first delete existing...
-		Capture<Config> configCapture = new Capture<>();
 		Capture<Category> categoryCapture = new Capture<>();
-		expect(categoryDao.deleteAllForConfig(capture(configCapture))).andReturn(0);
+		expect(categoryDao.deleteAllForConfig(TEST_CONFIG_ID)).andReturn(0);
 		categoryDao.store(capture(categoryCapture));
 		expectLastCall().times(11);
 
 		// next up, controls
 		Capture<Control> controlCapture = new Capture<>();
-		expect(controlDao.deleteAllForConfig(capture(configCapture))).andReturn(0);
+		expect(controlDao.deleteAllForConfig(TEST_CONFIG_ID)).andReturn(0);
 		controlDao.store(capture(controlCapture));
 		expectLastCall().times(37);
 
 		// next up, rooms
 		Capture<Room> roomCapture = new Capture<>();
-		expect(roomDao.deleteAllForConfig(capture(configCapture))).andReturn(0);
+		expect(roomDao.deleteAllForConfig(TEST_CONFIG_ID)).andReturn(0);
 		roomDao.store(capture(roomCapture));
 		expectLastCall().times(4);
 
 		// store our config
+		Capture<Config> configCapture = new Capture<>();
 		configDao.storeConfig(capture(configCapture));
 
 		// post "last modified date" event

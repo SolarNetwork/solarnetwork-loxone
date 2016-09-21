@@ -33,18 +33,13 @@ import java.util.UUID;
  */
 public abstract class BaseEventEntity extends BaseUUIDEntity {
 
-	private final Long configId;
 	private final Date created;
 
 	public BaseEventEntity(UUID uuid, Long configId, Date created) {
 		super();
 		setUuid(uuid);
-		this.configId = configId;
+		setConfigId(configId);
 		this.created = (created == null ? new Date() : created);
-	}
-
-	public Long getConfigId() {
-		return configId;
 	}
 
 	public Date getCreated() {

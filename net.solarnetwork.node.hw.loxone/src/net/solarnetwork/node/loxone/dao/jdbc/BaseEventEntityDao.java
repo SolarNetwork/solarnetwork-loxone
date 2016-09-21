@@ -70,7 +70,7 @@ public abstract class BaseEventEntityDao<T extends BaseEventEntity> extends Base
 
 	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 	@Override
-	public T loadEvent(UUID uuid) {
-		return getEntityByUUID(uuid);
+	public T loadEvent(Long configId, UUID uuid) {
+		return getEntityByUUID(configId, uuid);
 	}
 }

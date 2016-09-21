@@ -32,7 +32,6 @@ import org.junit.Before;
 import org.junit.Test;
 import net.solarnetwork.node.dao.jdbc.DatabaseSetup;
 import net.solarnetwork.node.loxone.dao.jdbc.JdbcControlDao;
-import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.Control;
 import net.solarnetwork.node.loxone.domain.ControlType;
 import net.solarnetwork.node.test.AbstractNodeTransactionalTest;
@@ -105,7 +104,7 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 	@Test
 	public void getByPKWithStates() {
 		insertWithStates();
-		Control control = dao.load(lastControl.getUuid());
+		Control control = dao.load(TEST_CONFIG_ID, lastControl.getUuid());
 		Assert.assertNotNull("Control inserted", control);
 		Assert.assertEquals("UUID", lastControl.getUuid(), control.getUuid());
 		Assert.assertEquals("Config ID", lastControl.getConfigId(), lastControl.getConfigId());
@@ -121,7 +120,7 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 	@Test
 	public void getByPK() {
 		insert();
-		Control control = dao.load(lastControl.getUuid());
+		Control control = dao.load(TEST_CONFIG_ID, lastControl.getUuid());
 		Assert.assertNotNull("Control inserted", control);
 		Assert.assertEquals("UUID", lastControl.getUuid(), control.getUuid());
 		Assert.assertEquals("Config ID", lastControl.getConfigId(), lastControl.getConfigId());
@@ -136,14 +135,14 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 	@Test
 	public void update() {
 		insert();
-		Control orig = dao.load(lastControl.getUuid());
+		Control orig = dao.load(TEST_CONFIG_ID, lastControl.getUuid());
 		orig.setName("Updated Name");
 		orig.setDefaultRating(2);
 		orig.setType(ControlType.Dimmer);
 		orig.setRoom(UUID.randomUUID());
 		orig.setCategory(UUID.randomUUID());
 		dao.store(orig);
-		Control updated = dao.load(lastControl.getUuid());
+		Control updated = dao.load(TEST_CONFIG_ID, lastControl.getUuid());
 		Assert.assertEquals("Same UUID", orig.getUuid(), updated.getUuid());
 		Assert.assertEquals("Same Config ID", orig.getConfigId(), updated.getConfigId());
 		Assert.assertEquals("Updated name", orig.getName(), updated.getName());
@@ -157,7 +156,7 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 	@Test
 	public void updateWithStates() {
 		insertWithStates();
-		Control orig = dao.load(lastControl.getUuid());
+		Control orig = dao.load(TEST_CONFIG_ID, lastControl.getUuid());
 		orig.setName("Updated Name");
 		orig.setDefaultRating(2);
 		orig.setType(ControlType.Dimmer);
@@ -165,7 +164,7 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 		orig.setCategory(UUID.randomUUID());
 		orig.setStates(getTestStatesMap());
 		dao.store(orig);
-		Control updated = dao.load(lastControl.getUuid());
+		Control updated = dao.load(TEST_CONFIG_ID, lastControl.getUuid());
 		Assert.assertEquals("Same UUID", orig.getUuid(), updated.getUuid());
 		Assert.assertEquals("Same Config ID", orig.getConfigId(), updated.getConfigId());
 		Assert.assertEquals("Updated name", orig.getName(), updated.getName());
@@ -180,9 +179,9 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 	@Test
 	public void deleteForConfig() {
 		insert();
-		int result = dao.deleteAllForConfig(new Config(TEST_CONFIG_ID));
+		int result = dao.deleteAllForConfig(TEST_CONFIG_ID);
 		Assert.assertEquals("Deleted count", 1, result);
-		Control cat = dao.load(lastControl.getUuid());
+		Control cat = dao.load(TEST_CONFIG_ID, lastControl.getUuid());
 		Assert.assertNull("Control no longer available", cat);
 	}
 
@@ -199,7 +198,7 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 	@Test
 	public void getByPKWithoutRoomOrCategory() {
 		insertWithoutRoomOrCategory();
-		Control control = dao.load(lastControl.getUuid());
+		Control control = dao.load(TEST_CONFIG_ID, lastControl.getUuid());
 		Assert.assertNotNull("Control inserted", control);
 		Assert.assertEquals("UUID", lastControl.getUuid(), control.getUuid());
 		Assert.assertEquals("Config ID", lastControl.getConfigId(), lastControl.getConfigId());

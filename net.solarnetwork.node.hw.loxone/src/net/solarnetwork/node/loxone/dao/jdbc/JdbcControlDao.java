@@ -99,8 +99,8 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 
 	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 	@Override
-	public Control load(UUID uuid) {
-		final Control result = getEntityByUUID(uuid);
+	public Control load(Long configId, UUID uuid) {
+		final Control result = getEntityByUUID(configId, uuid);
 		if ( result != null ) {
 			final Map<String, UUID> stateMap = new LinkedHashMap<>(4);
 			getJdbcTemplate().query(new PreparedStatementCreator() {
@@ -144,7 +144,7 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 	@Override
 	protected void setUpdateStatementValues(Control control, PreparedStatement ps) throws SQLException {
 		// cols: name, sort, ctype, room_hi, room_lo, cat_hi, cat_lo
-		//       uuid_hi, uuid_lo
+		//       uuid_hi, uuid_lo, config_id
 		ps.setString(1, control.getName());
 		ps.setInt(2, (control.getDefaultRating() != null ? control.getDefaultRating().intValue() : 0));
 		ps.setShort(3, control.getType() != null ? control.getType().getIndex()
@@ -152,6 +152,7 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 		prepareUUID(4, control.getRoom(), ps);
 		prepareUUID(6, control.getCategory(), ps);
 		prepareUUID(8, control.getUuid(), ps);
+		ps.setObject(10, control.getConfigId());
 	}
 
 	private static final class ControlRowMapper implements RowMapper<Control> {

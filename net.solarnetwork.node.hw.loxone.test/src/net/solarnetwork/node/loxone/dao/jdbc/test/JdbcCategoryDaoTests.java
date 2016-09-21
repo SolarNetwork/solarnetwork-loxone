@@ -32,7 +32,6 @@ import net.solarnetwork.node.dao.jdbc.DatabaseSetup;
 import net.solarnetwork.node.loxone.dao.jdbc.JdbcCategoryDao;
 import net.solarnetwork.node.loxone.domain.Category;
 import net.solarnetwork.node.loxone.domain.CategoryType;
-import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.test.AbstractNodeTransactionalTest;
 
 /**
@@ -79,7 +78,7 @@ public class JdbcCategoryDaoTests extends AbstractNodeTransactionalTest {
 	@Test
 	public void getByPK() {
 		insert();
-		Category category = dao.load(lastCategory.getUuid());
+		Category category = dao.load(TEST_CONFIG_ID, lastCategory.getUuid());
 		Assert.assertNotNull("Category inserted", category);
 		Assert.assertEquals("UUID", lastCategory.getUuid(), category.getUuid());
 		Assert.assertEquals("Config ID", lastCategory.getConfigId(), category.getConfigId());
@@ -92,12 +91,12 @@ public class JdbcCategoryDaoTests extends AbstractNodeTransactionalTest {
 	@Test
 	public void update() {
 		insert();
-		Category orig = dao.load(lastCategory.getUuid());
+		Category orig = dao.load(TEST_CONFIG_ID, lastCategory.getUuid());
 		orig.setName("Updated Name");
 		orig.setDefaultRating(2);
 		orig.setType(CategoryType.Shading);
 		dao.store(orig);
-		Category updated = dao.load(lastCategory.getUuid());
+		Category updated = dao.load(TEST_CONFIG_ID, lastCategory.getUuid());
 		Assert.assertEquals("Same UUID", orig.getUuid(), updated.getUuid());
 		Assert.assertEquals("Same Config ID", orig.getConfigId(), updated.getConfigId());
 		Assert.assertEquals("Updated name", orig.getName(), updated.getName());
@@ -109,9 +108,9 @@ public class JdbcCategoryDaoTests extends AbstractNodeTransactionalTest {
 	@Test
 	public void deleteForConfig() {
 		insert();
-		int result = dao.deleteAllForConfig(new Config(TEST_CONFIG_ID));
+		int result = dao.deleteAllForConfig(TEST_CONFIG_ID);
 		Assert.assertEquals("Deleted count", 1, result);
-		Category cat = dao.load(lastCategory.getUuid());
+		Category cat = dao.load(TEST_CONFIG_ID, lastCategory.getUuid());
 		Assert.assertNull("Category no longer available", cat);
 	}
 

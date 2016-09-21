@@ -4,7 +4,7 @@ CREATE TABLE solarnode.loxone_vevent (
 	config_id	BIGINT NOT NULL,
 	created		TIMESTAMP NOT NULL WITH DEFAULT CURRENT_TIMESTAMP,
 	fvalue      DOUBLE NOT NULL,
-	CONSTRAINT loxone_vevent_pk PRIMARY KEY (uuid_hi, uuid_lo)
+	CONSTRAINT loxone_vevent_pk PRIMARY KEY (config_id, uuid_hi, uuid_lo)
 );
 
 INSERT INTO solarnode.sn_settings (skey, svalue) 
