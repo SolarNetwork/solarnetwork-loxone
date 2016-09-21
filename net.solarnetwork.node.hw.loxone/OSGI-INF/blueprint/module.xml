@@ -35,12 +35,12 @@
 	<bean id="objectMapper" class="net.solarnetwork.util.ObjectMapperFactoryBean">
 		<property name="deserializers">
 			<list>
-				<bean class="net.solarnetwork.node.loxone.protocol.ws.UUIDDeserializer"/>
+				<bean class="net.solarnetwork.node.loxone.domain.UUIDDeserializer"/>
 			</list>
 		</property>
 		<property name="serializers">
 			<list>
-				<bean class="net.solarnetwork.node.loxone.protocol.ws.UUIDSerializer"/>
+				<bean class="net.solarnetwork.node.loxone.domain.UUIDSerializer"/>
 			</list>
 		</property>
 		<property name="featuresToDisable">

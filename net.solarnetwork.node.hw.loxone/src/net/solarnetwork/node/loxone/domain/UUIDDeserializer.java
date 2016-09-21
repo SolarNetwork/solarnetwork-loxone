@@ -1,5 +1,5 @@
 /* ==================================================================
- * UUIDSerializer.java - 19/09/2016 4:36:53 PM
+ * UUIDDeserializer.java - 19/09/2016 3:30:29 PM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -20,38 +20,42 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.loxone.protocol.ws;
+package net.solarnetwork.node.loxone.domain;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.LongBuffer;
 import java.util.UUID;
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.deser.std.FromStringDeserializer;
 
 /**
- * JSON serializer for Loxone encoded {@link UUID} objects.
+ * Deserializer for Loxone encoded UUID values.
  * 
  * @author matt
  * @version 1.0
  */
-public class UUIDSerializer extends StdScalarSerializer<UUID> {
+public class UUIDDeserializer extends FromStringDeserializer<UUID> {
 
-	public UUIDSerializer() {
+	private static final long serialVersionUID = -2425483383178032052L;
+
+	public UUIDDeserializer() {
 		super(UUID.class);
 	}
 
 	@Override
-	public void serialize(UUID uuid, JsonGenerator generator, SerializerProvider provider)
-			throws IOException, JsonGenerationException {
-		if ( uuid == null ) {
-			generator.writeNull();
-		} else {
-			StringBuilder buf = new StringBuilder(uuid.toString());
-			buf.deleteCharAt(23);
-			generator.writeString(buf.toString());
+	protected UUID _deserialize(String value, DeserializationContext context) throws IOException {
+		byte[] data;
+		try {
+			data = Hex.decodeHex(value.replace("-", "").toCharArray());
+		} catch ( DecoderException e ) {
+			throw new IOException("Error decoding UUID value [" + value + "]", e);
 		}
-
+		LongBuffer buf = ByteBuffer.wrap(data).asLongBuffer();
+		UUID uuid = new UUID(buf.get(), buf.get());
+		return uuid;
 	}
 
 }

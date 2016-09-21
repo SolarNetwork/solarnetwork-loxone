@@ -29,7 +29,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.solarnetwork.node.loxone.protocol.ws.UUIDDeserializer;
+import net.solarnetwork.node.loxone.domain.UUIDDeserializer;
 import net.solarnetwork.util.ObjectMapperFactoryBean;
 
 /**

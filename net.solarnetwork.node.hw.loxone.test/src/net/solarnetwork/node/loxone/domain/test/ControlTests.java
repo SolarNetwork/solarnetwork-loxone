@@ -24,6 +24,7 @@ package net.solarnetwork.node.loxone.domain.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,8 +38,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.solarnetwork.node.loxone.domain.Control;
 import net.solarnetwork.node.loxone.domain.ControlType;
-import net.solarnetwork.node.loxone.protocol.ws.UUIDDeserializer;
-import net.solarnetwork.node.loxone.protocol.ws.UUIDSerializer;
+import net.solarnetwork.node.loxone.domain.UUIDDeserializer;
+import net.solarnetwork.node.loxone.domain.UUIDSerializer;
 import net.solarnetwork.util.ObjectMapperFactoryBean;
 
 /**
@@ -65,6 +66,7 @@ public class ControlTests {
 		InputStream in = getClass().getResourceAsStream("control-01.json");
 		Control control = objectMapper.readValue(in, Control.class);
 		assertNotNull(control);
+		assertEquals("UUID", UUID.fromString("0c89ebff-037f-15d6-ffff-a1b98ee6c71d"), control.getUuid());
 		assertEquals("Name", "Generator status", control.getName());
 		assertEquals("Default rating", Integer.valueOf(0), control.getDefaultRating());
 		assertEquals("Category", UUID.fromString("0c89ebac-0031-030a-ffff-a1b98ee6c71d"),
@@ -73,6 +75,44 @@ public class ControlTests {
 		assertEquals("States", Collections.singletonMap("active",
 				UUID.fromString("0c89ebff-037f-15d6-ffff-a1b98ee6c71d")), control.getStates());
 		assertEquals("Type", ControlType.Switch, control.getType());
+	}
+
+	@Test
+	public void jsonDeserializeWithNativeUUID() throws IOException {
+		InputStream in = getClass().getResourceAsStream("control-03.json");
+		Control control = objectMapper.readValue(in, Control.class);
+		assertNotNull(control);
+		assertEquals("UUID", UUID.fromString("0c89ebff-037f-15d6-ffff-a1b98ee6c71d"), control.getUuid());
+		assertEquals("Name", "Generator status", control.getName());
+		assertEquals("Default rating", Integer.valueOf(0), control.getDefaultRating());
+		assertEquals("Category", UUID.fromString("0c89ebac-0031-030a-ffff-a1b98ee6c71d"),
+				control.getCategory());
+		assertEquals("Room", UUID.fromString("0c89ebac-0041-0390-ffff-a1b98ee6c71d"), control.getRoom());
+		assertEquals("States", Collections.singletonMap("active",
+				UUID.fromString("0c89ebff-037f-15d6-ffff-a1b98ee6c71d")), control.getStates());
+		assertEquals("Type", ControlType.Switch, control.getType());
+	}
+
+	@Test
+	public void jsonSerialize() throws IOException {
+		InputStream in = getClass().getResourceAsStream("control-01.json");
+		Control control = objectMapper.readValue(in, Control.class);
+		assertNotNull(control);
+
+		// write out to JSON
+		String json = objectMapper.writeValueAsString(control);
+
+		// read back as tree
+		JsonNode tree = objectMapper.readTree(json);
+		assertEquals("UUID", "0c89ebff-037f-15d6-ffffa1b98ee6c71d", tree.path("uuid").textValue());
+		assertNull("uuidAction", tree.get("uuidAction"));
+		assertEquals("Name", "Generator status", tree.path("name").textValue());
+		assertEquals("Default rating", 0, tree.path("defaultRating").intValue());
+		assertEquals("Category", "0c89ebac-0031-030a-ffffa1b98ee6c71d", tree.path("cat").textValue());
+		assertEquals("Room", "0c89ebac-0041-0390-ffffa1b98ee6c71d", tree.path("room").textValue());
+		assertEquals("States", "0c89ebff-037f-15d6-ffffa1b98ee6c71d",
+				tree.path("states").path("active").textValue());
+		assertEquals("Type", "Switch", tree.path("type").textValue());
 	}
 
 	@Test
