@@ -1,5 +1,5 @@
 /* ==================================================================
- * BaseConfigurationEntity.java - 18/09/2016 6:11:22 AM
+ * ConfigurationEntity.java - 21/09/2016 4:29:08 PM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -22,42 +22,43 @@
 
 package net.solarnetwork.node.loxone.domain;
 
+import java.util.UUID;
+
 /**
- * A base entity object for Loxone configuration.
+ * API for a Loxone configuration entity.
  * 
  * @author matt
  * @version 1.0
  */
-public abstract class BaseConfigurationEntity extends BaseUUIDEntity implements ConfigurationEntity {
+public interface ConfigurationEntity {
 
-	private Long configId;
-	private String name;
-	private Integer defaultRating;
+	/**
+	 * The primary key for the entity.
+	 * 
+	 * @return The primary key.
+	 */
+	UUID getUuid();
 
-	public Long getConfigId() {
-		return configId;
-	}
+	/**
+	 * The ID of the {@link Config} this entity belongs to.
+	 * 
+	 * @return The config ID.
+	 */
+	Long getConfigId();
 
-	public void setConfigId(Long configId) {
-		this.configId = configId;
-	}
+	/**
+	 * Get a sorting priority. Higher values should be sorted before lower
+	 * values.
+	 * 
+	 * @return The sorting priority.
+	 */
+	Integer getDefaultRating();
 
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Override
-	public Integer getDefaultRating() {
-		return defaultRating;
-	}
-
-	public void setDefaultRating(Integer defaultRating) {
-		this.defaultRating = defaultRating;
-	}
+	/**
+	 * Get a display-friendly name.
+	 * 
+	 * @return The display name.
+	 */
+	String getName();
 
 }

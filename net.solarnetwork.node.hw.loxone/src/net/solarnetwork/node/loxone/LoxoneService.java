@@ -1,5 +1,5 @@
 /* ==================================================================
- * BaseConfigurationEntity.java - 18/09/2016 6:11:22 AM
+ * LoxoneService.java - 21/09/2016 4:26:33 PM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -20,44 +20,30 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.loxone.domain;
+package net.solarnetwork.node.loxone;
+
+import java.util.Collection;
+import java.util.List;
+import net.solarnetwork.domain.SortDescriptor;
+import net.solarnetwork.node.Identifiable;
+import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
 
 /**
- * A base entity object for Loxone configuration.
+ * API for a Loxone device.
  * 
  * @author matt
  * @version 1.0
  */
-public abstract class BaseConfigurationEntity extends BaseUUIDEntity implements ConfigurationEntity {
+public interface LoxoneService extends Identifiable {
 
-	private Long configId;
-	private String name;
-	private Integer defaultRating;
+	/**
+	 * Get the configuration ID associated with this service.
+	 * 
+	 * @return The configuration ID, or <em>null</em> if not known.
+	 */
+	public Long getConfigurationId();
 
-	public Long getConfigId() {
-		return configId;
-	}
-
-	public void setConfigId(Long configId) {
-		this.configId = configId;
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Override
-	public Integer getDefaultRating() {
-		return defaultRating;
-	}
-
-	public void setDefaultRating(Integer defaultRating) {
-		this.defaultRating = defaultRating;
-	}
+	<T extends ConfigurationEntity> Collection<T> getAllConfiguration(Class<T> type,
+			List<SortDescriptor> sortDescriptors);
 
 }

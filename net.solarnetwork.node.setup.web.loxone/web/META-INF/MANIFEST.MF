@@ -2,6 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Loxone
 Bundle-SymbolicName: net.solarnetwork.node.setup.web.loxone
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.1.0
 Fragment-Host: net.solarnetwork.node.setup.web;bundle-version="1.19.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Evident
+Bundle-ClassPath: WEB-INF/classes/
+Import-Package: 
+ net.solarnetwork.node.loxone;version="0.1.0",
+ net.solarnetwork.node.loxone.domain;version="0.1.0"

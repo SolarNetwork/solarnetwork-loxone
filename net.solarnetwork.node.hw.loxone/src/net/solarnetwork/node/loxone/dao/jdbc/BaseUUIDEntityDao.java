@@ -98,6 +98,15 @@ public abstract class BaseUUIDEntityDao<T extends BaseUUIDEntity> extends Abstra
 	}
 
 	/**
+	 * Get the default row mapper.
+	 * 
+	 * @return The row mapper.
+	 */
+	protected RowMapper<T> getRowMapper() {
+		return rowMapper;
+	}
+
+	/**
 	 * Insert or update an entity.
 	 * 
 	 * @param entity

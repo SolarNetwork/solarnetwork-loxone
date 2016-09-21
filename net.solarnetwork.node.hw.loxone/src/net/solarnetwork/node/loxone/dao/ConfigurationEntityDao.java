@@ -22,9 +22,11 @@
 
 package net.solarnetwork.node.loxone.dao;
 
+import java.util.List;
 import java.util.UUID;
-import net.solarnetwork.node.loxone.domain.BaseConfigurationEntity;
+import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.loxone.domain.Config;
+import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
 
 /**
  * DAO API for configuration entities.
@@ -32,7 +34,14 @@ import net.solarnetwork.node.loxone.domain.Config;
  * @author matt
  * @version 1.0
  */
-public interface ConfigurationEntityDao<T extends BaseConfigurationEntity> {
+public interface ConfigurationEntityDao<T extends ConfigurationEntity> {
+
+	/**
+	 * Get the class of the entity managed by this DAO.
+	 * 
+	 * @return The class.
+	 */
+	Class<T> entityClass();
 
 	/**
 	 * Store (create or update) an entity. The {@code uuid} value is the primary
@@ -61,4 +70,18 @@ public interface ConfigurationEntityDao<T extends BaseConfigurationEntity> {
 	 */
 	int deleteAllForConfig(Config config);
 
+	/**
+	 * Get a list of persisted entities, optionally sorted in some way.
+	 * 
+	 * The {@code sortDescriptors} parameter can be {@code null}, in which case
+	 * the sort order should default to the
+	 * {@link ConfigurationEntity#getDefaultRating()} followed by
+	 * {@link ConfigurationEntity#getName()}.
+	 * </p>
+	 * 
+	 * @param sortDescriptors
+	 *        list of sort descriptors to sort the results by
+	 * @return list of all persisted entities, or empty list if none available
+	 */
+	List<T> findAllForConfig(Long configId, List<SortDescriptor> sortDescriptors);
 }

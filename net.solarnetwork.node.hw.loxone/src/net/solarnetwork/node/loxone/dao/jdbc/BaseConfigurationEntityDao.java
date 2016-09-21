@@ -22,10 +22,12 @@
 
 package net.solarnetwork.node.loxone.dao.jdbc;
 
+import java.util.List;
 import java.util.UUID;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.loxone.dao.ConfigurationEntityDao;
 import net.solarnetwork.node.loxone.domain.BaseConfigurationEntity;
 import net.solarnetwork.node.loxone.domain.Config;
@@ -40,9 +42,14 @@ public abstract class BaseConfigurationEntityDao<T extends BaseConfigurationEnti
 		extends BaseUUIDEntityDao<T> implements ConfigurationEntityDao<T> {
 
 	public static final String SQL_DELETE_FOR_CONFIG = "delete-for-config";
+	public static final String SQL_FIND_FOR_CONFIG = "find-for-config";
 
-	@SuppressWarnings("unused")
 	private final Class<T> entityClass;
+
+	@Override
+	public Class<T> entityClass() {
+		return entityClass;
+	}
 
 	/**
 	 * Init with an an entity name and table version, deriving various names
@@ -82,6 +89,29 @@ public abstract class BaseConfigurationEntityDao<T extends BaseConfigurationEnti
 	public int deleteAllForConfig(Config config) {
 		int result = getJdbcTemplate().update(getSqlResource(SQL_DELETE_FOR_CONFIG), config.getId());
 		return result;
+	}
+
+	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Override
+	public List<T> findAllForConfig(Long configId, List<SortDescriptor> sortDescriptors) {
+		String sql = getSqlResource(SQL_FIND_FOR_CONFIG);
+		if ( sortDescriptors != null ) {
+			StringBuilder buf = new StringBuilder(sql);
+			buf.setLength(buf.lastIndexOf("ORDER BY"));
+			buf.append("ORDER BY");
+			for ( SortDescriptor sort : sortDescriptors ) {
+				boolean added = false;
+				if ( "name".equalsIgnoreCase(sort.getSortKey()) ) {
+					buf.append(" lower(name)");
+				}
+				if ( added ) {
+					buf.append(" ").append(sort.isDescending() ? "DESC" : "ASC");
+				}
+			}
+			sql = buf.toString();
+		}
+		List<T> results = getJdbcTemplate().query(sql, getRowMapper(), configId);
+		return results;
 	}
 
 }

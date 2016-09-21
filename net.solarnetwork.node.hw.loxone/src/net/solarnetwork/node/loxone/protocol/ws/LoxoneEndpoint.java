@@ -139,6 +139,15 @@ public class LoxoneEndpoint extends Endpoint
 	}
 
 	/**
+	 * Get the configuration for this service.
+	 * 
+	 * @return The configuration.
+	 */
+	protected Config getConfiguration() {
+		return configuration;
+	}
+
+	/**
 	 * Disconnect from the Loxone server.
 	 */
 	public synchronized void disconnect() {
