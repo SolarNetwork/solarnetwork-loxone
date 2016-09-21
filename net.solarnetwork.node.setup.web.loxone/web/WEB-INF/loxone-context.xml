@@ -29,6 +29,7 @@
 				<bean class="net.solarnetwork.util.JodaLocalDateSerializer"/>
 				<bean class="net.solarnetwork.util.JodaLocalDateTimeSerializer"/>
 				<bean class="net.solarnetwork.util.JodaLocalTimeSerializer"/>
+				<bean class="net.solarnetwork.node.loxone.domain.UUIDSerializer"/>
 			</list>
 		</property>
 		<property name="deserializers">
