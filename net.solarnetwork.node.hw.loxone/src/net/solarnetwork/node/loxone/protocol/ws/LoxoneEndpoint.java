@@ -237,8 +237,7 @@ public class LoxoneEndpoint extends Endpoint
 		this.session = session;
 
 		// setup our Config based on an ID derived from the host value
-		String hostDigest = DigestUtils.sha1Hex(host);
-		Long configId = Long.parseLong(hostDigest.substring(0, 16), 16);
+		Long configId = ByteBuffer.wrap(DigestUtils.sha1(host)).getLong();
 		session.getUserProperties().put(CONFIG_ID_USER_PROPERTY, configId);
 
 		configuration = configDao.getConfig(configId);
