@@ -21,6 +21,10 @@
 		http://www.springframework.org/schema/util
 		http://www.springframework.org/schema/util/spring-util-4.2.xsd">
 
+	<bean id="loxoneMessageSource" 
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
+		p:cacheSeconds="-1" p:basename="WEB-INF/loxone-messages"/>
+
 	<!-- Override the objectMapper from .setup.web to add Loxone UUID support -->
 	<bean id="objectMapper" class="net.solarnetwork.util.ObjectMapperFactoryBean" primary="true">
 		<property name="serializers">
