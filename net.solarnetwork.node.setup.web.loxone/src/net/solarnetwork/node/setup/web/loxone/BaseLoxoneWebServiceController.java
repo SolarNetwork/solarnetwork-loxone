@@ -20,7 +20,7 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.setup.web;
+package net.solarnetwork.node.setup.web.loxone;
 
 import java.util.List;
 import javax.annotation.Resource;
