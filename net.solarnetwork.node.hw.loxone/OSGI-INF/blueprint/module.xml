@@ -123,6 +123,14 @@
 		</property>
 	</bean>
 	
+	<bean id="settingResourceProvider" class="net.solarnetwork.node.setup.PatternMatchingSetupResourceProvider">
+		<property name="basenames">
+			<list>
+				<value>META-INF/settings/loxone-setting-console</value>
+			</list>
+		</property>
+	</bean>
+
 	<!-- Published Services -->
 	
 	<service interface="net.solarnetwork.node.settings.SettingSpecifierProviderFactory">
@@ -156,6 +164,7 @@
 			<property name="binaryFileHandlers" ref="binary-file-handlers"/>
 			<property name="commandHandlers" ref="command-handlers"/>
 			<property name="configurationDaos" ref="configuration-daos"/>
+			<property name="settingResourceProvider" ref="settingResourceProvider"/>
 		</bean>
 	</osgix:managed-service-factory>
 	

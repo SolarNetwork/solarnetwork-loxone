@@ -14,4 +14,26 @@
 	<osgi:list id="loxoneServices" availability="optional"
 		interface="net.solarnetwork.node.loxone.LoxoneService"/>
 	
+	<!-- 
+		Inject some JavaScript directly into SolarNode Setup Web. This provides the action
+		to undertake in the SolarNode Settings GUI when the custom "Configure" button
+		is pressed.
+	 -->
+	<osgi:service interface="net.solarnetwork.node.setup.SetupResourceProvider">
+		<bean class="net.solarnetwork.node.setup.SimpleSetupResourceProvider">
+			<property name="resources">
+				<list>
+					<bean class="net.solarnetwork.node.setup.ClasspathSetupResource"> 
+						<constructor-arg value="loxone-settings-integration.js"/>
+						<constructor-arg value="loxone-settings-integration.js"/>
+						<constructor-arg value="net.solarnetwork.node.setup.web.loxone.LoxoneHomeController"/>
+						<constructor-arg value="#{T(net.solarnetwork.node.setup.SetupResource).JAVASCRIPT_CONTENT_TYPE}"/>
+						<constructor-arg value="#{T(net.solarnetwork.node.setup.SetupResource).WEB_CONSUMER_TYPES}"/>
+						<constructor-arg value="#{T(net.solarnetwork.node.setup.SetupResource).USER_ROLES}"/>
+					</bean>
+				</list>
+			</property>
+		</bean>
+	</osgi:service>
+	
 </beans>

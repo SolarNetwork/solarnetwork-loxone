@@ -23,7 +23,9 @@
 package net.solarnetwork.node.loxone.impl;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import net.solarnetwork.domain.SortDescriptor;
@@ -33,8 +35,10 @@ import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
 import net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint;
 import net.solarnetwork.node.settings.SettingSpecifier;
+import net.solarnetwork.node.settings.support.BasicSetupResourceSettingSpecifier;
 import net.solarnetwork.node.settings.support.BasicTextFieldSettingSpecifier;
 import net.solarnetwork.node.settings.support.BasicTitleSettingSpecifier;
+import net.solarnetwork.node.setup.SetupResourceProvider;
 
 /**
  * Websocket based implementation of {@link LoxoneService}.
@@ -49,6 +53,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 	private String uid = DEFAULT_UID;
 	private String groupUID;
 	private List<ConfigurationEntityDao<ConfigurationEntity>> configurationDaos;
+	private SetupResourceProvider settingResourceProvider;
 
 	@Override
 	public Long getConfigurationId() {
@@ -91,6 +96,10 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 		return groupUID;
 	}
 
+	public void setGroupUID(String groupUID) {
+		this.groupUID = groupUID;
+	}
+
 	@Override
 	public List<SettingSpecifier> getSettingSpecifiers() {
 		List<SettingSpecifier> results = super.getSettingSpecifiers();
@@ -102,12 +111,22 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 			results.add(
 					new BasicTitleSettingSpecifier("configurationId", configurationId.toString(), true));
 		}
+
+		if ( settingResourceProvider != null ) {
+			Map<String, Object> setupProps = Collections.singletonMap("config-id", getConfigurationId());
+			results.add(new BasicSetupResourceSettingSpecifier(settingResourceProvider, setupProps));
+		}
+
 		return results;
 	}
 
 	public void setConfigurationDaos(
 			List<ConfigurationEntityDao<ConfigurationEntity>> configurationDaos) {
 		this.configurationDaos = configurationDaos;
+	}
+
+	public void setSettingResourceProvider(SetupResourceProvider settingResourceProvider) {
+		this.settingResourceProvider = settingResourceProvider;
 	}
 
 }
