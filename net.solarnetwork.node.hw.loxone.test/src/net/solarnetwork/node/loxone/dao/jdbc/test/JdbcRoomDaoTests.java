@@ -22,12 +22,18 @@
 
 package net.solarnetwork.node.loxone.dao.jdbc.test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import net.solarnetwork.domain.SimpleSortDescriptor;
+import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.dao.jdbc.DatabaseSetup;
 import net.solarnetwork.node.loxone.dao.jdbc.JdbcRoomDao;
 import net.solarnetwork.node.loxone.domain.Room;
@@ -62,13 +68,18 @@ public class JdbcRoomDaoTests extends AbstractNodeTransactionalTest {
 		dao.init();
 	}
 
-	@Test
-	public void insert() {
+	private Room createTestRoom(String name, Integer defaultRating) {
 		Room room = new Room();
 		room.setUuid(UUID.randomUUID());
 		room.setConfigId(TEST_CONFIG_ID);
-		room.setName(TEST_NAME);
-		room.setDefaultRating(TEST_DEFAULT_RATING);
+		room.setName(name);
+		room.setDefaultRating(defaultRating);
+		return room;
+	}
+
+	@Test
+	public void insert() {
+		Room room = createTestRoom(TEST_NAME, TEST_DEFAULT_RATING);
 		dao.store(room);
 		lastRoom = room;
 	}
@@ -107,4 +118,143 @@ public class JdbcRoomDaoTests extends AbstractNodeTransactionalTest {
 		Room room = dao.load(TEST_CONFIG_ID, lastRoom.getUuid());
 		Assert.assertNull("Room no longer available", room);
 	}
+
+	@Test
+	public void findForConfigNoMatch() {
+		insert();
+		List<Room> results = dao.findAllForConfig(-1L, null);
+		Assert.assertNotNull(results);
+		Assert.assertEquals("No matches", 0, results.size());
+	}
+
+	@Test
+	public void findForConfigSingleMatch() {
+		insert();
+		List<Room> results = dao.findAllForConfig(TEST_CONFIG_ID, null);
+		Assert.assertNotNull(results);
+		Assert.assertEquals("Match count", 1, results.size());
+		Assert.assertEquals("Found object", lastRoom.getUuid(), results.get(0).getUuid());
+	}
+
+	@Test
+	public void findForConfigMultiMatch() {
+		List<Room> all = new ArrayList<>(4);
+
+		// insert rooms in descending order, to verify sort order of query
+		for ( int i = 4; i > 0; i-- ) {
+			Room r = createTestRoom("Room " + i, TEST_DEFAULT_RATING);
+			dao.store(r);
+			all.add(r);
+		}
+
+		// store some other rooms for a different config
+		for ( int i = 0; i < 4; i++ ) {
+			Room r = createTestRoom("Room " + i, TEST_DEFAULT_RATING);
+			r.setConfigId(-1L);
+			dao.store(r);
+			all.add(r);
+		}
+
+		// verify query with default sort order applied (ascending by name)
+		List<Room> results = dao.findAllForConfig(TEST_CONFIG_ID, null);
+		Assert.assertNotNull(results);
+		Assert.assertEquals("Match count", 4, results.size());
+		for ( int i = 0; i < 4; i++ ) {
+			Assert.assertEquals("Found object " + (i + 1), all.get(3 - i).getUuid(),
+					results.get(i).getUuid());
+		}
+	}
+
+	@Test
+	public void findForConfigDefaultRatingSort() {
+		List<Room> all = new ArrayList<>(4);
+
+		// insert rooms in descending order, to verify sort order of query
+		for ( int i = 4; i > 0; i-- ) {
+			Room r = createTestRoom("Room " + i, i);
+			dao.store(r);
+			all.add(r);
+		}
+
+		// store some other rooms for a different config
+		for ( int i = 0; i < 4; i++ ) {
+			Room r = createTestRoom("Room " + i, TEST_DEFAULT_RATING);
+			r.setConfigId(-1L);
+			dao.store(r);
+			all.add(r);
+		}
+
+		// verify query with default sort order applied (descending by defaultRating)
+		List<Room> results = dao.findAllForConfig(TEST_CONFIG_ID, null);
+		Assert.assertNotNull(results);
+		Assert.assertEquals("Match count", 4, results.size());
+		for ( int i = 0; i < 4; i++ ) {
+			Assert.assertEquals("Found object " + (i + 1), all.get(i).getUuid(),
+					results.get(i).getUuid());
+		}
+	}
+
+	@Test
+	public void findForConfigDefaultRatingThenNameSort() {
+		List<Room> all = new ArrayList<>(4);
+
+		// insert rooms with two at same defaultRating, so name sort applied
+		all.add(createTestRoom("Room C", 2));
+		all.add(createTestRoom("Room B", 1));
+		all.add(createTestRoom("Room A", 1));
+		for ( Room r : all ) {
+			dao.store(r);
+		}
+
+		List<Room> results = dao.findAllForConfig(TEST_CONFIG_ID, null);
+		Assert.assertNotNull(results);
+		Assert.assertEquals("Match count", 3, results.size());
+		Assert.assertEquals("Found object 1", all.get(0).getUuid(), results.get(0).getUuid());
+		Assert.assertEquals("Found object 2", all.get(2).getUuid(), results.get(1).getUuid());
+		Assert.assertEquals("Found object 3", all.get(1).getUuid(), results.get(2).getUuid());
+	}
+
+	@Test
+	public void findForConfigCustomNameSort() {
+		List<SortDescriptor> sorts = Collections.singletonList(new SimpleSortDescriptor("name", true));
+		List<Room> all = new ArrayList<>(4);
+
+		// insert rooms with two at same defaultRating, so name sort applied
+		all.add(createTestRoom("Room A", 3));
+		all.add(createTestRoom("Room B", 2));
+		all.add(createTestRoom("Room C", 1));
+		for ( Room r : all ) {
+			dao.store(r);
+		}
+
+		List<Room> results = dao.findAllForConfig(TEST_CONFIG_ID, sorts);
+		Assert.assertNotNull(results);
+		Assert.assertEquals("Match count", 3, results.size());
+		Assert.assertEquals("Found object 1", all.get(2).getUuid(), results.get(0).getUuid());
+		Assert.assertEquals("Found object 2", all.get(1).getUuid(), results.get(1).getUuid());
+		Assert.assertEquals("Found object 3", all.get(0).getUuid(), results.get(2).getUuid());
+	}
+
+	@Test
+	public void findForConfigCustomNameAndDefaultRatingSort() {
+		List<SortDescriptor> sorts = Arrays.asList(new SimpleSortDescriptor("name", true),
+				new SimpleSortDescriptor("defaultRating", false));
+		List<Room> all = new ArrayList<>(4);
+
+		// insert rooms with two at same defaultRating, so name sort applied
+		all.add(createTestRoom("Room A", 3));
+		all.add(createTestRoom("Room A", 2));
+		all.add(createTestRoom("Room C", 1));
+		for ( Room r : all ) {
+			dao.store(r);
+		}
+
+		List<Room> results = dao.findAllForConfig(TEST_CONFIG_ID, sorts);
+		Assert.assertNotNull(results);
+		Assert.assertEquals("Match count", 3, results.size());
+		Assert.assertEquals("Found object 1", all.get(2).getUuid(), results.get(0).getUuid());
+		Assert.assertEquals("Found object 2", all.get(1).getUuid(), results.get(1).getUuid());
+		Assert.assertEquals("Found object 3", all.get(0).getUuid(), results.get(2).getUuid());
+	}
+
 }
