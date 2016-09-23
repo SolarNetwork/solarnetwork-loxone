@@ -30,6 +30,8 @@ package net.solarnetwork.node.loxone.protocol.ws;
  */
 public enum MessageType {
 
+	Unknown(0xFF),
+
 	TextMessage(0),
 
 	BinaryFile(1),
@@ -81,6 +83,9 @@ public enum MessageType {
 
 			case (byte) 0x06:
 				return Keepalive;
+
+			case (byte) 0xFF:
+				return Unknown;
 
 		}
 		throw new IllegalArgumentException("0x" + Integer.toHexString(data) + " is not a valid value");

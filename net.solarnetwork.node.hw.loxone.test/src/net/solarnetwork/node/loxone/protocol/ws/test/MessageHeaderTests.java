@@ -70,4 +70,35 @@ public class MessageHeaderTests {
 				header.toString());
 	}
 
+	@Test
+	public void constructKeepAliveMessageHeaderFromByteBuffer() {
+		final long length = 0x0;
+		final ByteBuffer buf = ByteBuffer.wrap(new byte[] { 0x03, 0x06, 0x00, 0x00,
+				(byte) (length & 0xFF), (byte) ((length >> 8) & 0xFF), (byte) ((length >> 16) & 0xFF),
+				(byte) ((length >> 24) & 0xFF) });
+		MessageHeader header = new MessageHeader(buf);
+		assertEquals(MessageType.Keepalive, header.getType());
+		assertNotNull(header.getInfo());
+		assertTrue(header.getInfo().isEmpty());
+		assertEquals("Message length encoded little endian", length, header.getLength());
+		assertEquals("Buffer positioned at end of header", 8, buf.position());
+		assertEquals("MessageHeader{Keepalive; length=" + length + "}", header.toString());
+	}
+
+	@Test
+	public void constructUnknownMessageHeaderFromByteBuffer() {
+		final long length = 0x0;
+		final ByteBuffer buf = ByteBuffer.wrap(new byte[] { 0x03, 0x22, 0x00, 0x00,
+				(byte) (length & 0xFF), (byte) ((length >> 8) & 0xFF), (byte) ((length >> 16) & 0xFF),
+				(byte) ((length >> 24) & 0xFF) });
+		MessageHeader header = new MessageHeader(buf);
+		assertEquals(MessageType.Unknown, header.getType());
+		assertEquals("Raw type", (byte) 0x22, header.getRawType());
+		assertNotNull(header.getInfo());
+		assertTrue(header.getInfo().isEmpty());
+		assertEquals("Message length encoded little endian", length, header.getLength());
+		assertEquals("Buffer positioned at end of header", 8, buf.position());
+		assertEquals("MessageHeader{0x22; length=" + length + "}", header.toString());
+	}
+
 }

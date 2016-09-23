@@ -41,12 +41,15 @@ public class MessageHeader {
 	private final Set<MessageInfo> info;
 	private final long length;
 
+	private final byte rawType;
+
 	/**
 	 * Construct with values.
 	 */
 	public MessageHeader(MessageType type, Set<MessageInfo> info, long length) {
 		super();
 		this.type = type;
+		this.rawType = type.getRawValue();
 		this.info = info;
 		this.length = length;
 	}
@@ -72,7 +75,17 @@ public class MessageHeader {
 		if ( buf.order() != ByteOrder.LITTLE_ENDIAN ) {
 			buf.order(ByteOrder.LITTLE_ENDIAN);
 		}
-		this.type = MessageType.forRawDataValue(buf.get());
+
+		// stash the raw type value so if it is an unsupported value we can still see what it was
+		this.rawType = buf.get();
+		MessageType t;
+		try {
+			t = MessageType.forRawDataValue(this.rawType);
+		} catch ( IllegalArgumentException e ) {
+			t = MessageType.Unknown;
+		}
+		this.type = t;
+
 		this.info = MessageInfo.forRawDataValue(buf.get());
 		buf.position(buf.position() + 1); // skip next bytes
 		this.length = buf.getInt() & 0xFFFFFFFFL; // read last 4 bytes as unsigned int
@@ -81,7 +94,11 @@ public class MessageHeader {
 	@Override
 	public String toString() {
 		StringBuilder buf = new StringBuilder("MessageHeader{");
-		buf.append(type);
+		if ( type == MessageType.Unknown ) {
+			buf.append("0x").append(Integer.toHexString(rawType));
+		} else {
+			buf.append(type);
+		}
 		if ( info != null && !info.isEmpty() ) {
 			buf.append("; flags=");
 			for ( MessageInfo flag : info ) {
@@ -121,6 +138,16 @@ public class MessageHeader {
 	 */
 	public long getLength() {
 		return length;
+	}
+
+	/**
+	 * Get the raw type value. If {@link #getType()} returns {@code Unknown}
+	 * this method can be used to see what the actual data was.
+	 * 
+	 * @return The raw message header type.
+	 */
+	public byte getRawType() {
+		return rawType;
 	}
 
 }
