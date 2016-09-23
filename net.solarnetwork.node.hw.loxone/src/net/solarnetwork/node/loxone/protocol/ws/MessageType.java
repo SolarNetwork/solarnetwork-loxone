@@ -79,7 +79,7 @@ public enum MessageType {
 			case (byte) 0x05:
 				return OutOfServiceIndicator;
 
-			case (byte) 0xFF:
+			case (byte) 0x06:
 				return Keepalive;
 
 		}
