@@ -1,4 +1,8 @@
-SELECT uuid_hi, uuid_lo, config_id, name, sort, ctype, room_hi, room_lo, cat_hi, cat_lo
-FROM  solarnode.loxone_control
-WHERE config_id = ?
-ORDER BY sort DESC, lower(name) ASC
+SELECT co.uuid_hi, co.uuid_lo, co.config_id, co.name, co.sort, co.ctype, 
+	co.room_hi, co.room_lo, co.cat_hi, co.cat_lo,
+	st.name AS state_name, st.event_hi, st.event_lo
+FROM  solarnode.loxone_control co
+LEFT OUTER JOIN solarnode.loxone_control_state st 
+	ON st.uuid_hi = co.uuid_hi AND st.uuid_lo = co.uuid_lo AND st.config_id = co.config_id
+WHERE co.config_id = ?
+ORDER BY co.sort DESC, lower(co.name) ASC

@@ -26,16 +26,21 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.loxone.dao.ControlDao;
 import net.solarnetwork.node.loxone.domain.Control;
 import net.solarnetwork.node.loxone.domain.ControlType;
@@ -128,6 +133,24 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 		return result;
 	}
 
+	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Override
+	public List<Control> findAllForConfig(Long configId, List<SortDescriptor> sortDescriptors) {
+		String sql = getSqlResource(SQL_FIND_FOR_CONFIG);
+		sql = handleSortDescriptors(sql, sortDescriptors, sortDescriptorColumnMapping());
+		List<Control> results = getJdbcTemplate().query(sql,
+				new ControlWithStateRowMapper(getRowMapper()), configId);
+		return results;
+	}
+
+	@Override
+	protected Map<String, String> sortDescriptorColumnMapping() {
+		Map<String, String> m = new HashMap<String, String>();
+		m.put("name", "lower(co.name)");
+		m.put("defaultrating", "co.sort");
+		return m;
+	}
+
 	@Override
 	protected void setStoreStatementValues(Control control, PreparedStatement ps) throws SQLException {
 		// Row order is: uuid_hi, uuid_lo, config_id, name, sort, room_hi, room_lo, cat_hi, cat_lo
@@ -170,6 +193,43 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 			row.setCategory(readUUID(9, rs));
 			return row;
 		}
+	}
+
+	private static final class ControlWithStateRowMapper implements ResultSetExtractor<List<Control>> {
+
+		private Control lastControl;
+		private final RowMapper<Control> rowMapper;
+
+		private ControlWithStateRowMapper(RowMapper<Control> rowMapper) {
+			super();
+			this.rowMapper = rowMapper;
+		}
+
+		@Override
+		public List<Control> extractData(ResultSet rs) throws SQLException, DataAccessException {
+			List<Control> results = new ArrayList<>(64);
+			int i = 0;
+			while ( rs.next() ) {
+				Control row = rowMapper.mapRow(rs, i++);
+				if ( lastControl == null || !lastControl.getUuid().equals(row.getUuid()) ) {
+					// starting a new control
+					results.add(row);
+					lastControl = row;
+				}
+				Map<String, UUID> states = lastControl.getStates();
+				if ( states == null ) {
+					states = new LinkedHashMap<>(4);
+					lastControl.setStates(states);
+				}
+				String state = rs.getString(11);
+				UUID uuid = readUUID(12, rs);
+				if ( state != null && uuid != null ) {
+					states.put(state, uuid);
+				}
+			}
+			return results;
+		}
+
 	}
 
 }

@@ -23,6 +23,7 @@
 package net.solarnetwork.node.loxone.dao.jdbc.test;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Resource;
@@ -118,6 +119,15 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 	}
 
 	@Test
+	public void deleteForConfigWithStates() {
+		insertWithStates();
+		int result = dao.deleteAllForConfig(TEST_CONFIG_ID);
+		Assert.assertEquals("Deleted count", 1, result);
+		Control cat = dao.load(TEST_CONFIG_ID, lastControl.getUuid());
+		Assert.assertNull("Control no longer available", cat);
+	}
+
+	@Test
 	public void getByPK() {
 		insert();
 		Control control = dao.load(TEST_CONFIG_ID, lastControl.getUuid());
@@ -209,4 +219,30 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 		Assert.assertNull("No category", control.getCategory());
 	}
 
+	@Test
+	public void findForConfigNoMatch() {
+		insert();
+		List<Control> results = dao.findAllForConfig(-1L, null);
+		Assert.assertNotNull(results);
+		Assert.assertEquals("No matches", 0, results.size());
+	}
+
+	@Test
+	public void findForConfigSingleMatch() {
+		insert();
+		List<Control> results = dao.findAllForConfig(TEST_CONFIG_ID, null);
+		Assert.assertNotNull(results);
+		Assert.assertEquals("Match count", 1, results.size());
+		Assert.assertEquals("Found object", lastControl.getUuid(), results.get(0).getUuid());
+	}
+
+	@Test
+	public void findForConfigWithStatesSingleMatch() {
+		insertWithStates();
+		List<Control> results = dao.findAllForConfig(TEST_CONFIG_ID, null);
+		Assert.assertNotNull(results);
+		Assert.assertEquals("Match count", 1, results.size());
+		Assert.assertEquals("Found object", lastControl.getUuid(), results.get(0).getUuid());
+		Assert.assertEquals("State map", lastControl.getStates(), results.get(0).getStates());
+	}
 }
