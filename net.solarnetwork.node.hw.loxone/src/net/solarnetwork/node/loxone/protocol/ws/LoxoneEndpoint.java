@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -390,16 +391,18 @@ public class LoxoneEndpoint extends Endpoint
 	 * 
 	 * @param command
 	 *        The command to send.
+	 * @param args
+	 *        Optional arguments to send with the command
 	 * @return <em>true</em> if a handler was found and it handled the command
 	 * @throws IOException
 	 *         if a communication error occurs
 	 */
-	private boolean sendCommandIfPossible(CommandType command) throws IOException {
+	protected Future<?> sendCommandIfPossible(CommandType command, Object... args) throws IOException {
 		CommandHandler handler = getCommandHandlerForCommand(command);
 		if ( handler != null ) {
-			return handler.sendCommand(command, session);
+			return handler.sendCommand(command, session, args);
 		}
-		return false;
+		return null;
 	}
 
 	private boolean handleCommandIfPossible(CommandType command, MessageHeader header, JsonNode tree)

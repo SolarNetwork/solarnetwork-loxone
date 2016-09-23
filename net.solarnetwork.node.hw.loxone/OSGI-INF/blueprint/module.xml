@@ -102,16 +102,22 @@
 		<property name="eventAdmin" ref="eventAdmin"/>
 	</bean>
 	
+	<bean id="get-image-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.GetIconBinaryFileHandler">
+		<property name="eventAdmin" ref="eventAdmin"/>
+	</bean>
+	
 	<util:list id="binary-file-handlers">
 		<beans:ref bean="get-structure-cmd-handler"/>
 		<beans:ref bean="value-event-handler"/>
 		<beans:ref bean="text-event-handler"/>
 		<beans:ref bean="daytimer-event-handler"/>
+		<beans:ref bean="get-image-handler"/>
 	</util:list>
 
 	<util:list id="command-handlers">
 		<beans:ref bean="get-structure-cmd-handler"/>
 		<beans:ref bean="structure-file-last-mod-cmd-handler"/>
+		<beans:ref bean="get-image-handler"/>
 	</util:list>
 
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">

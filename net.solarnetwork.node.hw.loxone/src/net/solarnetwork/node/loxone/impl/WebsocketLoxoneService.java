@@ -26,6 +26,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
+import org.springframework.core.io.Resource;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import net.solarnetwork.domain.SortDescriptor;
@@ -76,6 +78,12 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public synchronized Future<Resource> getImage(String name) {
+		// TODO
+		return null;
 	}
 
 	@Override

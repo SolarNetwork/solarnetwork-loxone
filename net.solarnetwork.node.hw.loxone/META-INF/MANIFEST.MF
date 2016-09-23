@@ -60,4 +60,5 @@ Import-Package:
  org.springframework.scheduling.quartz;version="[4.2,5.0)",
  org.springframework.transaction;version="[4.2,5.0)",
  org.springframework.transaction.annotation;version="[4.2,5.0)",
- org.springframework.transaction.support;version="[4.2,5.0)"
+ org.springframework.transaction.support;version="[4.2,5.0)",
+ org.springframework.util;version="[4.2,5.0)"

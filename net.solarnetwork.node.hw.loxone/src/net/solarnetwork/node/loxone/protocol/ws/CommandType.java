@@ -50,6 +50,9 @@ public enum CommandType {
 	/** Enable receiving status updates from the server. */
 	EnableInputStatusUpdate("jdev/sps/enablebinstatusupdate"),
 
+	/** Icons are requested by sending the desired icon name as the command. */
+	GetIcon("00000000-0000-0020-2000000000000000", "^(?i)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{16}"),
+
 	/**
 	 * Ping message to server does not disconnect the client after 5 minutes of
 	 * inactivity.

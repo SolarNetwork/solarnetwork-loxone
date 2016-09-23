@@ -23,6 +23,7 @@
 package net.solarnetwork.node.loxone.protocol.ws;
 
 import java.io.IOException;
+import java.util.concurrent.Future;
 import javax.websocket.Session;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -68,10 +69,14 @@ public interface CommandHandler {
 	 *        The command.
 	 * @param session
 	 *        The websocket session.
-	 * @return <em>true</em> if the command was sent.
+	 * @param args
+	 *        Any optional arguments to pass with the command. These are command
+	 *        specific.
+	 * @return A {@link Future} if the command supports a reply object, or
+	 *         {@code null} otherwise.
 	 * @throws IOException
 	 *         if any communication error occurs
 	 */
-	boolean sendCommand(CommandType command, Session session) throws IOException;
+	Future<?> sendCommand(CommandType command, Session session, Object... args) throws IOException;
 
 }

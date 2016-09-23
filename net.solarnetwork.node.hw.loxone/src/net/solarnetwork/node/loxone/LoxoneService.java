@@ -24,6 +24,8 @@ package net.solarnetwork.node.loxone;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Future;
+import org.springframework.core.io.Resource;
 import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.Identifiable;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
@@ -43,7 +45,26 @@ public interface LoxoneService extends Identifiable {
 	 */
 	public Long getConfigurationId();
 
+	/**
+	 * Get all available configuration entities of a specific type.
+	 * 
+	 * @param type
+	 *        The type of configuration to get.
+	 * @param sortDescriptors
+	 *        The optional sort descriptors. If not provided, a default sort
+	 *        will be used.
+	 * @return The configuration entities.
+	 */
 	<T extends ConfigurationEntity> Collection<T> getAllConfiguration(Class<T> type,
 			List<SortDescriptor> sortDescriptors);
+
+	/**
+	 * Asynchronously get an image based on its name.
+	 * 
+	 * @param name
+	 *        The name of the image to get.
+	 * @return A future {@link Resource} for the image.
+	 */
+	Future<Resource> getImage(String name);
 
 }

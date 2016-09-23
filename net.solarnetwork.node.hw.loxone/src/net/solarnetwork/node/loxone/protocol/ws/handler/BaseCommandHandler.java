@@ -23,6 +23,7 @@
 package net.solarnetwork.node.loxone.protocol.ws.handler;
 
 import java.io.IOException;
+import java.util.concurrent.Future;
 import javax.websocket.Session;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
@@ -118,15 +119,15 @@ public abstract class BaseCommandHandler implements CommandHandler {
 	/**
 	 * Provides a default implementation that sends just the command's control
 	 * value asynchronously, as long as {@link #supportsCommand(CommandType)}
-	 * returns <em>true</em>.
+	 * returns {@code null}.
 	 */
 	@Override
-	public boolean sendCommand(CommandType command, Session session) throws IOException {
+	public Future<?> sendCommand(CommandType command, Session session, Object... args)
+			throws IOException {
 		if ( supportsCommand(command) ) {
 			session.getBasicRemote().sendText(command.getControlValue());
-			return true;
 		}
-		return false;
+		return null;
 	}
 
 	/**
