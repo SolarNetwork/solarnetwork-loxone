@@ -375,7 +375,8 @@ public class LoxoneEndpoint extends Endpoint
 				} catch ( IOException e ) {
 					logConciseException("Error parsing text command {}", e, header);
 				}
-			} else if ( header.getType() == MessageType.BinaryFile ) {
+			} else if ( header.getType() == MessageType.BinaryFile
+					|| header.getType() == MessageType.Unknown ) {
 				try (Reader reader = new StringReader(payload)) {
 					handleBinaryFileIfPossible(header, reader);
 				} catch ( IOException e ) {

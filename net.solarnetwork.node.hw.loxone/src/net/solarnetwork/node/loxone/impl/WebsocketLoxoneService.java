@@ -22,6 +22,7 @@
 
 package net.solarnetwork.node.loxone.impl;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -31,10 +32,12 @@ import org.springframework.core.io.Resource;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import net.solarnetwork.domain.SortDescriptor;
+import net.solarnetwork.node.RemoteServiceException;
 import net.solarnetwork.node.loxone.LoxoneService;
 import net.solarnetwork.node.loxone.dao.ConfigurationEntityDao;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
+import net.solarnetwork.node.loxone.protocol.ws.CommandType;
 import net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint;
 import net.solarnetwork.node.settings.SettingSpecifier;
 import net.solarnetwork.node.settings.support.BasicSetupResourceSettingSpecifier;
@@ -80,10 +83,16 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized Future<Resource> getImage(String name) {
-		// TODO
-		return null;
+		Future<Resource> result;
+		try {
+			result = (Future<Resource>) sendCommandIfPossible(CommandType.GetIcon, name);
+		} catch ( IOException e ) {
+			throw new RemoteServiceException(e);
+		}
+		return result;
 	}
 
 	@Override

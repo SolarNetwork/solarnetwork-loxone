@@ -177,7 +177,7 @@ public class GetIconBinaryFileHandler extends BaseCommandHandler implements Bina
 
 	private void handleImageData(byte[] data) {
 		String name = nextImageName();
-		log.debug("Got PNG image {}", name);
+		log.debug("Got image {}", name);
 		GetImageFuture f = iconRequests.remove(name);
 		if ( f != null ) {
 			f.setResource(new ByteArrayIconResource(data, name));
