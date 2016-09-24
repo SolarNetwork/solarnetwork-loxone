@@ -28,8 +28,11 @@
 		class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
 		p:cacheSeconds="-1" p:basename="WEB-INF/loxone-messages"/>
 
+	<bean class="org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean">
+	</bean>
+
 	<websocket:message-broker application-destination-prefix="/app">
-		<websocket:stomp-endpoint path="/a/loxone-ws">
+		<websocket:stomp-endpoint path="/loxone-ws">
 			<!--websocket:sockjs/-->
 		</websocket:stomp-endpoint>
 		<websocket:simple-broker prefix="/topic, /queue"/>

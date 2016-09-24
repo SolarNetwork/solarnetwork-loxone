@@ -9,10 +9,9 @@
 		http://www.springframework.org/schema/security/spring-security-4.1.xsd">
 
 	<websocket-message-broker>
-		<intercept-message pattern="/a/**" access="hasRole('USER')" />
-	</websocket-message-broker>
-
-	<websocket-message-broker>
+		<intercept-message pattern="/**" access="hasRole('USER')" />
+	
+	<!--
 		<intercept-message type="CONNECT" access="permitAll" />
 		<intercept-message type="UNSUBSCRIBE" access="permitAll" />
 		<intercept-message type="DISCONNECT" access="permitAll" />
@@ -26,6 +25,7 @@
 		<intercept-message type="SUBSCRIBE" access="denyAll" />
 		
 		<intercept-message pattern="/**" access="denyAll" />
+	-->
 	</websocket-message-broker>
 	
 	<beans:bean id="springSecurityMessagePathMatcher" class="org.springframework.util.AntPathMatcher"/>
