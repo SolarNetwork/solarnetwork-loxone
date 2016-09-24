@@ -4,4 +4,9 @@
 	<meta name="csrf" content="${_csrf.token}"/>
 	<meta name="csrf_header" content="${_csrf.headerName}"/>
 	<c:import url="/WEB-INF/jsp/default-head-resources.jsp"/>
+	<script type="application/javascript" src="<c:url value='/js/stomp.js'/>"></script>
+	<script type="application/javascript" src="<c:url value='/js/loxone-websocket.js'/>"></script>
+	<c:if test="${not empty(configId)}">
+		<meta name="loxone-config-id" content="${configId}"/>
+	</c:if>
 </head>

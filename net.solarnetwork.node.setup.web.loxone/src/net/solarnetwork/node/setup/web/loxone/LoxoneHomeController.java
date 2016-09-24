@@ -23,6 +23,8 @@
 package net.solarnetwork.node.setup.web.loxone;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -37,6 +39,12 @@ public class LoxoneHomeController extends BaseLoxoneWebServiceController {
 
 	@RequestMapping("/")
 	public String home() {
+		return "a/loxone/home";
+	}
+
+	@RequestMapping("/{configId}")
+	public String home(@PathVariable("configId") Long configId, Model model) {
+		model.addAttribute("configId", configId);
 		return "a/loxone/home";
 	}
 
