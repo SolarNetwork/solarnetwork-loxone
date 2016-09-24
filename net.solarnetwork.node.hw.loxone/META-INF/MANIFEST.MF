@@ -30,7 +30,7 @@ Import-Package:
  net.solarnetwork.node.setup;version="1.8.0",
  net.solarnetwork.node.support;version="1.13.1",
  net.solarnetwork.node.util;version="1.6.1",
- net.solarnetwork.util;version="1.21.0",
+ net.solarnetwork.util;version="1.22.0",
  org.aopalliance.aop;version="1.0.0",
  org.apache.commons.codec;version="1.10.0",
  org.apache.commons.codec.binary;version="[1.10,2.0)",

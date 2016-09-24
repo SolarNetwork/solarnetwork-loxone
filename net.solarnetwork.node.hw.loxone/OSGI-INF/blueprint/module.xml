@@ -17,13 +17,20 @@
 		http://www.springframework.org/schema/util
 		http://www.springframework.org/schema/util/spring-util-4.2.xsd">
 	
-	<reference id="txManager" interface="org.springframework.transaction.PlatformTransactionManager"
-		filter="(db=node)"/>
-	
 	<!-- Use Java @Transactional annotations to declare transactions. -->
 	<tx:annotation-driven transaction-manager="txManager"/>
 
+	<reference id="objectMapperService" 
+		interface="net.solarnetwork.util.ObjectMapperService"
+		 filter="(function=node)"/>
+	
+	<reference id="txManager" interface="org.springframework.transaction.PlatformTransactionManager"
+		filter="(db=node)"/>
+	
 	<reference id="settingDao" interface="net.solarnetwork.node.dao.SettingDao"/>
+	
+	<bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" 
+		factory-ref="objectMapperService" factory-method="getObjectMapper"/>
 	
 	<bean id="eventAdmin" class="net.solarnetwork.util.DynamicServiceTracker">
 		<property name="bundleContext" ref="bundleContext"/>
@@ -32,24 +39,22 @@
 
 	<reference id="dataSource" interface="javax.sql.DataSource" filter="(db=node)"/>
 	
-	<bean id="objectMapper" class="net.solarnetwork.util.ObjectMapperFactoryBean">
-		<property name="deserializers">
-			<list>
-				<bean class="net.solarnetwork.node.loxone.domain.UUIDDeserializer"/>
-			</list>
-		</property>
+	<!-- Add Loxone UUID support to the platform ObjectMapper -->
+	<bean class="net.solarnetwork.util.ObjectMapperModuleContributor" init-method="setupModule">
+		<property name="moduleName" value="Loxone"/>
+		<property name="objectMapperService" ref="objectMapperService"/>
 		<property name="serializers">
 			<list>
 				<bean class="net.solarnetwork.node.loxone.domain.UUIDSerializer"/>
 			</list>
 		</property>
-		<property name="featuresToDisable">
+		<property name="deserializers">
 			<list>
-				<value>#{T(com.fasterxml.jackson.databind.DeserializationFeature).FAIL_ON_UNKNOWN_PROPERTIES}</value>
+				<bean class="net.solarnetwork.node.loxone.domain.UUIDDeserializer"/>
 			</list>
 		</property>
 	</bean>
-
+	
 	<bean id="categoryDao" class="net.solarnetwork.node.loxone.dao.jdbc.JdbcCategoryDao" init-method="init">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>

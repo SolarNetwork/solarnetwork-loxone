@@ -25,27 +25,4 @@
 		class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
 		p:cacheSeconds="-1" p:basename="WEB-INF/loxone-messages"/>
 
-	<!-- Override the objectMapper from .setup.web to add Loxone UUID support -->
-	<bean id="objectMapper" class="net.solarnetwork.util.ObjectMapperFactoryBean" primary="true">
-		<property name="serializers">
-			<list>
-				<bean class="net.solarnetwork.util.JodaDateTimeSerializer"/>
-				<bean class="net.solarnetwork.util.JodaLocalDateSerializer"/>
-				<bean class="net.solarnetwork.util.JodaLocalDateTimeSerializer"/>
-				<bean class="net.solarnetwork.util.JodaLocalTimeSerializer"/>
-				<bean class="net.solarnetwork.node.loxone.domain.UUIDSerializer"/>
-			</list>
-		</property>
-		<property name="deserializers">
-			<list>
-				<bean class="net.solarnetwork.node.loxone.domain.UUIDDeserializer"/>
-			</list>
-		</property>
-		<property name="featuresToDisable">
-			<list>
-				<value>#{T(com.fasterxml.jackson.databind.DeserializationFeature).FAIL_ON_UNKNOWN_PROPERTIES}</value>
-			</list>
-		</property>
-	</bean>
-	
 </beans>
