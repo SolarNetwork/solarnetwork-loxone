@@ -22,8 +22,10 @@
 
 package net.solarnetwork.node.loxone.dao;
 
+import java.util.List;
 import java.util.UUID;
-import net.solarnetwork.node.loxone.domain.BaseEventEntity;
+import net.solarnetwork.domain.SortDescriptor;
+import net.solarnetwork.node.loxone.domain.EventEntity;
 
 /**
  * DAO API for event entities.
@@ -31,7 +33,14 @@ import net.solarnetwork.node.loxone.domain.BaseEventEntity;
  * @author matt
  * @version 1.0
  */
-public interface EventEntityDao<T extends BaseEventEntity> {
+public interface EventEntityDao<T extends EventEntity> {
+
+	/**
+	 * Get the class of the entity managed by this DAO.
+	 * 
+	 * @return The class.
+	 */
+	Class<T> entityClass();
 
 	/**
 	 * Store (create or update) an event. The {@code uuid} value is the primary
@@ -52,5 +61,20 @@ public interface EventEntityDao<T extends BaseEventEntity> {
 	 * @return The associated event, or <em>null</em> if not available.
 	 */
 	T loadEvent(Long configId, UUID uuid);
+
+	/**
+	 * Get a list of persisted entities, optionally sorted in some way.
+	 * 
+	 * The {@code sortDescriptors} parameter can be {@code null}, in which case
+	 * the sort order should default to the {@link EventEntity#getCreated()} in
+	 * descending order followed by {@link EventEntity#getUuid()} in ascending
+	 * order.
+	 * </p>
+	 * 
+	 * @param sortDescriptors
+	 *        list of sort descriptors to sort the results by
+	 * @return list of all persisted entities, or empty list if none available
+	 */
+	List<T> findAllForConfig(Long configId, List<SortDescriptor> sortDescriptors);
 
 }

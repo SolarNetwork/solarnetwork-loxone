@@ -22,6 +22,7 @@
 
 package net.solarnetwork.node.loxone.dao.jdbc.test;
 
+import java.util.List;
 import java.util.UUID;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -86,6 +87,23 @@ public class JdbcValueEventDaoTests extends AbstractNodeTransactionalTest {
 		ValueEvent updated = dao.loadEvent(TEST_CONFIG_ID, orig.getUuid());
 		Assert.assertEquals("Same UUID", orig.getUuid(), updated.getUuid());
 		Assert.assertEquals("Updated value", modified.getValue(), updated.getValue(), 0.1);
+	}
+
+	@Test
+	public void findForConfigNoMatch() {
+		insert();
+		List<ValueEvent> results = dao.findAllForConfig(-1L, null);
+		Assert.assertNotNull(results);
+		Assert.assertEquals("No matches", 0, results.size());
+	}
+
+	@Test
+	public void findForConfigSingleMatch() {
+		insert();
+		List<ValueEvent> results = dao.findAllForConfig(TEST_CONFIG_ID, null);
+		Assert.assertNotNull(results);
+		Assert.assertEquals("Match count", 1, results.size());
+		Assert.assertEquals("Found object", lastValueEvent.getUuid(), results.get(0).getUuid());
 	}
 
 }

@@ -1,5 +1,5 @@
 /* ==================================================================
- * BaseEventEntity.java - 19/09/2016 9:01:26 AM
+ * EventEntity.java - 26/09/2016 11:03:54 AM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -26,25 +26,32 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
- * Base class for event entities.
+ * API for Loxone event entities.
  * 
  * @author matt
  * @version 1.0
  */
-public abstract class BaseEventEntity extends BaseUUIDEntity implements EventEntity {
+public interface EventEntity {
 
-	private final Date created;
+	/**
+	 * The primary key for the entity.
+	 * 
+	 * @return The primary key.
+	 */
+	UUID getUuid();
 
-	public BaseEventEntity(UUID uuid, Long configId, Date created) {
-		super();
-		setUuid(uuid);
-		setConfigId(configId);
-		this.created = (created == null ? new Date() : created);
-	}
+	/**
+	 * The ID of the {@link Config} this entity belongs to.
+	 * 
+	 * @return The config ID.
+	 */
+	Long getConfigId();
 
-	@Override
-	public Date getCreated() {
-		return created;
-	}
+	/**
+	 * Get the event creation date.
+	 * 
+	 * @return The created date.
+	 */
+	Date getCreated();
 
 }

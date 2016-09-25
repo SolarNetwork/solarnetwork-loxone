@@ -35,8 +35,10 @@ import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.RemoteServiceException;
 import net.solarnetwork.node.loxone.LoxoneService;
 import net.solarnetwork.node.loxone.dao.ConfigurationEntityDao;
+import net.solarnetwork.node.loxone.dao.EventEntityDao;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
+import net.solarnetwork.node.loxone.domain.EventEntity;
 import net.solarnetwork.node.loxone.protocol.ws.CommandType;
 import net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint;
 import net.solarnetwork.node.settings.SettingSpecifier;
@@ -58,6 +60,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 	private String uid = DEFAULT_UID;
 	private String groupUID;
 	private List<ConfigurationEntityDao<ConfigurationEntity>> configurationDaos;
+	private List<EventEntityDao<EventEntity>> eventDaos;
 	private SetupResourceProvider settingResourceProvider;
 
 	@Override
@@ -67,18 +70,27 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 	}
 
 	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends ConfigurationEntity> Collection<T> getAllConfiguration(Class<T> type,
 			List<SortDescriptor> sortDescriptors) {
 		Collection<T> result = null;
 		Config config = getConfiguration();
-		if ( configurationDaos != null && config.getId() != null ) {
-			for ( ConfigurationEntityDao<ConfigurationEntity> dao : configurationDaos ) {
-				if ( type.isAssignableFrom(dao.entityClass()) ) {
-					result = (List<T>) dao.findAllForConfig(config.getId(), sortDescriptors);
-				}
-			}
+		ConfigurationEntityDao<T> dao = configurationDaoForType(type);
+		if ( dao != null && config.getId() != null ) {
+			result = dao.findAllForConfig(config.getId(), sortDescriptors);
+		}
+		return result;
+	}
+
+	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Override
+	public <T extends EventEntity> Collection<T> getAllEvents(Class<T> type,
+			List<SortDescriptor> sortDescriptors) {
+		Collection<T> result = null;
+		Config config = getConfiguration();
+		EventEntityDao<T> dao = eventDaoForType(type);
+		if ( dao != null && config.getId() != null ) {
+			result = dao.findAllForConfig(config.getId(), sortDescriptors);
 		}
 		return result;
 	}
@@ -93,6 +105,31 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 			throw new RemoteServiceException(e);
 		}
 		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T extends ConfigurationEntity> ConfigurationEntityDao<T> configurationDaoForType(
+			Class<T> type) {
+		if ( configurationDaos != null ) {
+			for ( ConfigurationEntityDao<ConfigurationEntity> dao : configurationDaos ) {
+				if ( type.isAssignableFrom(dao.entityClass()) ) {
+					return (ConfigurationEntityDao<T>) dao;
+				}
+			}
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T extends EventEntity> EventEntityDao<T> eventDaoForType(Class<T> type) {
+		if ( configurationDaos != null ) {
+			for ( EventEntityDao<EventEntity> dao : eventDaos ) {
+				if ( type.isAssignableFrom(dao.entityClass()) ) {
+					return (EventEntityDao<T>) dao;
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -140,6 +177,10 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 	public void setConfigurationDaos(
 			List<ConfigurationEntityDao<ConfigurationEntity>> configurationDaos) {
 		this.configurationDaos = configurationDaos;
+	}
+
+	public void setEventDaos(List<EventEntityDao<EventEntity>> eventDaos) {
+		this.eventDaos = eventDaos;
 	}
 
 	public void setSettingResourceProvider(SetupResourceProvider settingResourceProvider) {
