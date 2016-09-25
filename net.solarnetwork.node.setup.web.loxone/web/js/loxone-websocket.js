@@ -3,7 +3,13 @@ $(document).ready(function() {
 	var configId = $("meta[name='loxone-config-id']").attr("content");
 	
 	function processValueEvents(list) {
+		var container = $('#loxone-event-console'),
+			group = $('<section><h2>' + new Date()+'</h2></section>');
 		console.log('Got value events: %s', JSON.stringify(list, null, 2));
+		list.forEach(function(ve) {
+			$('<div class="alert alert-info"/>').html('<b>'+ve.uuid +'</b> = ' +ve.value).appendTo(group);
+		});
+		container.prepend(group);
 	}
 	
 	(function() {
