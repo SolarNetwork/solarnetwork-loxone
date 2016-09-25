@@ -24,15 +24,15 @@ package net.solarnetwork.node.setup.web.loxone;
 
 import java.security.Principal;
 import java.util.Collection;
-import java.util.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import net.solarnetwork.node.loxone.LoxoneService;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
+import net.solarnetwork.web.domain.Response;
 
 /**
  * Controller for websocket event publishing.
@@ -55,15 +55,15 @@ public class WebsocketEventController extends BaseLoxoneWebServiceController {
 	}
 
 	@SubscribeMapping("/{configId}/events/values")
-	public Collection<ValueEvent> subscribeToValueEvents(@PathVariable Long configId,
+	public Response<Collection<ValueEvent>> subscribeToValueEvents(@DestinationVariable Long configId,
 			Principal principal) {
 		log.info("Subscribing {} to {} value evnets", principal, configId);
 		LoxoneService service = serviceForConfigId(configId);
 		if ( service == null ) {
-			return null;
+			return new Response<>(false, "404", "Configuration ID not available.", null);
 		}
-		// TODO
-		return Collections.emptyList();
+		Collection<ValueEvent> results = service.getAllEvents(ValueEvent.class, null);
+		return Response.response(results);
 	}
 
 }
