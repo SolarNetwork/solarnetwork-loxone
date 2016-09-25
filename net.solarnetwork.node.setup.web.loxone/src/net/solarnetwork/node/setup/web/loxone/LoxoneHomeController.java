@@ -26,6 +26,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import net.solarnetwork.node.loxone.LoxoneService;
 
 /**
  * Entry point for Loxone app.
@@ -37,15 +38,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/a/loxone")
 public class LoxoneHomeController extends BaseLoxoneWebServiceController {
 
-	@RequestMapping("/")
-	public String home() {
+	@RequestMapping({ "", "/" })
+	public String home(Model model) {
+		StringBuilder allIds = new StringBuilder();
+		if ( loxoneServices != null ) {
+			for ( LoxoneService service : loxoneServices ) {
+				if ( allIds.length() > 0 ) {
+					allIds.append(',');
+				}
+				allIds.append(service.getConfigurationId());
+			}
+			model.addAttribute("configIds", allIds.toString());
+		}
 		return "a/loxone/home";
 	}
 
 	@RequestMapping("/{configId}")
 	public String home(@PathVariable("configId") Long configId, Model model) {
 		model.addAttribute("configId", configId);
-		return "a/loxone/home";
+		return home(model);
 	}
 
 }
