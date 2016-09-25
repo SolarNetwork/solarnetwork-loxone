@@ -27,7 +27,5 @@
 		<intercept-message pattern="/**" access="denyAll" />
 	-->
 	</websocket-message-broker>
-	
-	<beans:bean id="springSecurityMessagePathMatcher" class="org.springframework.util.AntPathMatcher"/>
 
 </beans:beans>
