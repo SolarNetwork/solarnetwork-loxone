@@ -36,6 +36,12 @@
 		<property name="bundleContext" ref="bundleContext"/>
 		<property name="serviceClassName" value="org.osgi.service.event.EventAdmin"/>
 	</bean>
+	
+	<bean id="messageSendingOperations" class="net.solarnetwork.util.DynamicServiceTracker">
+		<property name="bundleContext" ref="bundleContext"/>
+		<property name="serviceClassName" value="org.springframework.messaging.simp.SimpMessageSendingOperations"/>
+		<property name="serviceFilter" value="(&amp;(function=loxone)(channel=brokerChannel))"/>
+	</bean>
 
 	<reference id="dataSource" interface="javax.sql.DataSource" filter="(db=node)"/>
 	
@@ -101,6 +107,7 @@
 	<bean id="value-event-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.ValueEventBinaryFileHandler">
 		<property name="eventAdmin" ref="eventAdmin"/>
 		<property name="genericEventDao" ref="valueEventDao"/>
+		<property name="messageSendingOps" ref="messageSendingOperations"/>
 	</bean>
 	
 	<bean id="text-event-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.TextEventBinaryFileHandler">

@@ -36,4 +36,15 @@
 		</bean>
 	</osgi:service>
 	
+	<osgi:service interface="org.springframework.messaging.simp.SimpMessageSendingOperations">
+		<osgi:service-properties>
+			<entry key="channel" value="brokerChannel"/>
+			<entry key="function" value="loxone"/>
+		</osgi:service-properties>
+		<bean class="org.springframework.messaging.simp.SimpMessagingTemplate">
+			<!-- The websocket:simple-broker element will expose this channel -->
+			<constructor-arg ref="brokerChannel"/>
+		</bean>
+	</osgi:service>
+	
 </beans>

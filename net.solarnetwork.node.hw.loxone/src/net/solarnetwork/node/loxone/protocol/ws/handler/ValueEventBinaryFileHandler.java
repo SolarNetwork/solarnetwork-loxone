@@ -23,11 +23,14 @@
 package net.solarnetwork.node.loxone.protocol.ws.handler;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import javax.websocket.Session;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
 import net.solarnetwork.node.loxone.protocol.ws.BinaryFileHandler;
+import net.solarnetwork.node.loxone.protocol.ws.LoxoneEvents;
 import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
 import net.solarnetwork.node.loxone.protocol.ws.MessageType;
 
@@ -49,13 +52,28 @@ public class ValueEventBinaryFileHandler extends BaseEventBinaryFileHandler<Valu
 			Long configId) {
 		int end = buffer.position() + (int) header.getLength();
 		Date now = new Date();
+		List<ValueEvent> updated = new ArrayList<>();
 		while ( buffer.hasRemaining() && buffer.position() < end ) {
 			UUID uuid = readUUID(buffer);
 			double value = buffer.asDoubleBuffer().get();
 			buffer.position(buffer.position() + 8);
 			log.trace("Parsed value event {} = {}", uuid, value);
-			ValueEvent ve = new ValueEvent(uuid, configId, now, value);
-			eventDao.storeEvent(ve);
+
+			// check existing value first, so we don't emit an event for a value that has not changed
+			ValueEvent existing = eventDao.loadEvent(configId, uuid);
+			if ( existing != null && Double.compare(existing.getValue(), value) == 0 ) {
+				log.trace("ValueEvent {} unchanged: {}", uuid, value);
+			} else {
+				ValueEvent ve = new ValueEvent(uuid, configId, now, value);
+				eventDao.storeEvent(ve);
+				updated.add(ve);
+			}
+		}
+
+		// post updated values to message channel
+		if ( !updated.isEmpty() ) {
+			String dest = String.format(LoxoneEvents.VALUE_EVENT_MESSAGE_TOPIC, configId);
+			postMessage(dest, updated);
 		}
 		return true;
 	}
