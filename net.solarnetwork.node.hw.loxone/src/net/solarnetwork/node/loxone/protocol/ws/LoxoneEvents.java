@@ -24,6 +24,8 @@ package net.solarnetwork.node.loxone.protocol.ws;
 
 import org.springframework.messaging.Message;
 import net.solarnetwork.node.loxone.domain.Config;
+import net.solarnetwork.node.loxone.domain.TextEvent;
+import net.solarnetwork.node.loxone.domain.ValueEvent;
 
 /**
  * Event constants and utilities.
@@ -57,12 +59,21 @@ public abstract class LoxoneEvents {
 	public static final String EVENT_PROPERTY_DATE = "date";
 
 	/**
-	 * A {@link Message} destination for value events tied to a specific
-	 * {@link Config}.
+	 * A {@link Message} destination for {@link ValueEvent} objects tied to a
+	 * specific {@link Config}.
 	 * 
 	 * The template accepts a single string parameter, which is expected to be
 	 * the string version of {@link Config#getId()};
 	 */
 	public static final String VALUE_EVENT_MESSAGE_TOPIC = "/topic/%s/events/values";
+
+	/**
+	 * A {@link Message} destination for {@link TextEvent} objects tied to a
+	 * specific {@link Config}.
+	 * 
+	 * The template accepts a single string parameter, which is expected to be
+	 * the string version of {@link Config#getId()};
+	 */
+	public static final String TEXT_EVENT_MESSAGE_TOPIC = "/topic/%s/events/texts";
 
 }

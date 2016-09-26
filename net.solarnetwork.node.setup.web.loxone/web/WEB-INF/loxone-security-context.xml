@@ -10,22 +10,6 @@
 
 	<websocket-message-broker>
 		<intercept-message pattern="/**" access="hasRole('USER')" />
-	
-	<!--
-		<intercept-message type="CONNECT" access="permitAll" />
-		<intercept-message type="UNSUBSCRIBE" access="permitAll" />
-		<intercept-message type="DISCONNECT" access="permitAll" />
-		
-		<intercept-message pattern="/app/**" access="hasRole('USER')" />
-		
-		<intercept-message pattern="/user/**" access="hasRole('USER')" />
-		<intercept-message pattern="/topic/**" access="hasRole('USER')" />
-		
-		<intercept-message type="MESSAGE" access="denyAll" />
-		<intercept-message type="SUBSCRIBE" access="denyAll" />
-		
-		<intercept-message pattern="/**" access="denyAll" />
-	-->
 	</websocket-message-broker>
 
 </beans:beans>

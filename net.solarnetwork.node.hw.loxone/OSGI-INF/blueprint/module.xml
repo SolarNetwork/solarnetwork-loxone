@@ -112,6 +112,7 @@
 	
 	<bean id="text-event-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.TextEventBinaryFileHandler">
 		<property name="eventAdmin" ref="eventAdmin"/>
+		<property name="messageSendingOps" ref="messageSendingOperations"/>
 	</bean>
 	
 	<bean id="daytimer-event-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.DaytimerEventBinaryFileHandler">

@@ -11,6 +11,7 @@
 		http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium
 		http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium/gemini-blueprint-compendium.xsd">
 
+	<!-- All available LoxoneService instances -->
 	<osgi:list id="loxoneServices" availability="optional"
 		interface="net.solarnetwork.node.loxone.LoxoneService"/>
 	
@@ -36,15 +37,17 @@
 		</bean>
 	</osgi:service>
 	
+	<!-- A SimpMessagingTemplate for the 'brokerChannel' configured for Loxone messages -->
 	<osgi:service interface="org.springframework.messaging.simp.SimpMessageSendingOperations">
 		<osgi:service-properties>
 			<entry key="channel" value="brokerChannel"/>
 			<entry key="function" value="loxone"/>
 		</osgi:service-properties>
-		<bean class="org.springframework.messaging.simp.SimpMessagingTemplate">
-			<!-- The websocket:simple-broker element will expose this channel -->
-			<constructor-arg ref="brokerChannel"/>
-		</bean>
+		<!-- The websocket:message-broker element will expose a SimpMessageSendingTemplate
+		     for the broker channel automatically, but under a generated ID. As we want to 
+		     expose that template as a service, use SimpMessageSendingOperationsFactoryBean to
+		     get that instance via auto-wiring, then expose it as our service bean here. -->
+		<bean class="net.solarnetwork.util.SimpMessageSendingOperationsFactoryBean" autowire="byType"/>
 	</osgi:service>
 	
 </beans>

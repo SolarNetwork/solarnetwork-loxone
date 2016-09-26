@@ -14,6 +14,7 @@ Import-Package:
  net.solarnetwork.node.loxone.domain;version="0.1.0",
  org.springframework.context.annotation;version="4.2.6.RELEASE",
  org.springframework.messaging;version="4.2.6.RELEASE",
+ org.springframework.messaging.converter;version="4.2.6.RELEASE",
  org.springframework.messaging.handler.annotation;version="4.2.6.RELEASE",
  org.springframework.messaging.simp;version="4.2.6.RELEASE",
  org.springframework.messaging.simp.annotation;version="4.2.6.RELEASE",
