@@ -22,10 +22,12 @@
 
 package net.solarnetwork.node.loxone.dao.jdbc;
 
+import java.util.List;
 import java.util.UUID;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.loxone.dao.EventEntityDao;
 import net.solarnetwork.node.loxone.domain.BaseEventEntity;
 
@@ -37,9 +39,6 @@ import net.solarnetwork.node.loxone.domain.BaseEventEntity;
  */
 public abstract class BaseEventEntityDao<T extends BaseEventEntity> extends BaseUUIDEntityDao<T>
 		implements EventEntityDao<T> {
-
-	@SuppressWarnings("unused")
-	private final Class<T> entityClass;
 
 	/**
 	 * Init with an an entity name and table version, deriving various names
@@ -58,8 +57,7 @@ public abstract class BaseEventEntityDao<T extends BaseEventEntity> extends Base
 	 */
 	public BaseEventEntityDao(Class<T> entityClass, String entityName, int version,
 			RowMapper<T> rowMapper) {
-		super(entityName, version, rowMapper);
-		this.entityClass = entityClass;
+		super(entityClass, entityName, version, rowMapper);
 	}
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
@@ -73,4 +71,11 @@ public abstract class BaseEventEntityDao<T extends BaseEventEntity> extends Base
 	public T loadEvent(Long configId, UUID uuid) {
 		return getEntityByUUID(configId, uuid);
 	}
+
+	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Override
+	public List<T> findAllForConfig(Long configId, List<SortDescriptor> sortDescriptors) {
+		return findAllEntitiesForConfig(configId, sortDescriptors);
+	}
+
 }

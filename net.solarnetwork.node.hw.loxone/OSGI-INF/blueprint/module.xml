@@ -36,6 +36,12 @@
 		<property name="bundleContext" ref="bundleContext"/>
 		<property name="serviceClassName" value="org.osgi.service.event.EventAdmin"/>
 	</bean>
+	
+	<bean id="messageSendingOperations" class="net.solarnetwork.util.DynamicServiceTracker">
+		<property name="bundleContext" ref="bundleContext"/>
+		<property name="serviceClassName" value="org.springframework.messaging.simp.SimpMessageSendingOperations"/>
+		<property name="serviceFilter" value="(&amp;(function=loxone)(channel=brokerChannel))"/>
+	</bean>
 
 	<reference id="dataSource" interface="javax.sql.DataSource" filter="(db=node)"/>
 	
@@ -81,6 +87,10 @@
 		<beans:ref bean="roomDao"/>
 	</util:list>
 
+	<util:list id="event-daos">
+		<beans:ref bean="valueEventDao"/>
+	</util:list>
+
 	<bean id="get-structure-cmd-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.GetStructureFileCommandHandler">
 		<property name="categoryDao" ref="categoryDao"/>
 		<property name="configDao" ref="configDao"/>
@@ -97,6 +107,7 @@
 	<bean id="value-event-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.ValueEventBinaryFileHandler">
 		<property name="eventAdmin" ref="eventAdmin"/>
 		<property name="genericEventDao" ref="valueEventDao"/>
+		<property name="messageSendingOps" ref="messageSendingOperations"/>
 	</bean>
 	
 	<bean id="text-event-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.TextEventBinaryFileHandler">
@@ -175,6 +186,7 @@
 			<property name="binaryFileHandlers" ref="binary-file-handlers"/>
 			<property name="commandHandlers" ref="command-handlers"/>
 			<property name="configurationDaos" ref="configuration-daos"/>
+			<property name="eventDaos" ref="event-daos"/>
 			<property name="settingResourceProvider" ref="settingResourceProvider"/>
 		</bean>
 	</osgix:managed-service-factory>

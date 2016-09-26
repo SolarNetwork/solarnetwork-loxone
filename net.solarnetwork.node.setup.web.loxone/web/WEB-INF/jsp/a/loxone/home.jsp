@@ -4,4 +4,5 @@
 	<fmt:message key='loxone.home.intro'>
 		<fmt:param><sec:authentication property="principal.username" /></fmt:param>
 	</fmt:message>
+	<div id="loxone-event-console"></div>
 </p>

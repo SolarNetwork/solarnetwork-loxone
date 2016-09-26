@@ -29,6 +29,7 @@ import org.springframework.core.io.Resource;
 import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.Identifiable;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
+import net.solarnetwork.node.loxone.domain.EventEntity;
 
 /**
  * API for a Loxone device.
@@ -56,6 +57,19 @@ public interface LoxoneService extends Identifiable {
 	 * @return The configuration entities.
 	 */
 	<T extends ConfigurationEntity> Collection<T> getAllConfiguration(Class<T> type,
+			List<SortDescriptor> sortDescriptors);
+
+	/**
+	 * Get all available event entities of a specific type.
+	 * 
+	 * @param type
+	 *        The type of events to get.
+	 * @param sortDescriptors
+	 *        The optional sort descriptors. If not provided, a default sort
+	 *        will be used.
+	 * @return The event entities.
+	 */
+	<T extends EventEntity> Collection<T> getAllEvents(Class<T> type,
 			List<SortDescriptor> sortDescriptors);
 
 	/**
