@@ -40,7 +40,7 @@
 	<bean id="messageSendingOperations" class="net.solarnetwork.util.DynamicServiceTracker">
 		<property name="bundleContext" ref="bundleContext"/>
 		<property name="serviceClassName" value="org.springframework.messaging.simp.SimpMessageSendingOperations"/>
-		<property name="serviceFilter" value="(&amp;(function=loxone)(channel=brokerChannel))"/>
+		<property name="serviceFilter" value="(channel=broker)"/>
 	</bean>
 
 	<reference id="dataSource" interface="javax.sql.DataSource" filter="(db=node)"/>
