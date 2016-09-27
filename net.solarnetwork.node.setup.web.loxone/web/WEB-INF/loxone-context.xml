@@ -20,23 +20,10 @@
 		http://www.springframework.org/schema/tx
 		http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
 		http://www.springframework.org/schema/util
-		http://www.springframework.org/schema/util/spring-util-4.2.xsd
-		http://www.springframework.org/schema/websocket
-        http://www.springframework.org/schema/websocket/spring-websocket.xsd">
+		http://www.springframework.org/schema/util/spring-util-4.2.xsd">
 
 	<bean id="loxoneMessageSource" 
 		class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
 		p:cacheSeconds="-1" p:basename="WEB-INF/loxone-messages"/>
-
-	<websocket:message-broker application-destination-prefix="/app">
-		<websocket:stomp-endpoint path="/loxone-ws"/>
-		<websocket:simple-broker prefix="/topic, /queue"/>
-		<websocket:message-converters register-defaults="true">
-			<bean class="org.springframework.messaging.converter.MappingJackson2MessageConverter">
-				<!--  Assuming the host bundle is providing our objectMapper bean here -->
-				<property name="objectMapper" ref="objectMapper"/>
-			</bean>
-		</websocket:message-converters>
-	</websocket:message-broker>
 
 </beans>

@@ -24,7 +24,7 @@ $(document).ready(function() {
 	
 	(function() {
 		var csrf = SolarNode.csrfData;
-		var url = 'ws://' +document.location.host +SolarNode.context.path('/loxone-ws');
+		var url = 'ws://' +document.location.host +SolarNode.context.path('/ws');
 		var socket = new WebSocket(url);
 		var client = Stomp.over(socket);
 		client.debug = null;

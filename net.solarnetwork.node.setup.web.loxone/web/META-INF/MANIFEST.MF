@@ -3,20 +3,10 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Loxone
 Bundle-SymbolicName: net.solarnetwork.node.setup.web.loxone
 Bundle-Version: 0.1.0
-Fragment-Host: net.solarnetwork.node.setup.web;bundle-version="1.19.0"
+Fragment-Host: net.solarnetwork.node.setup.web;bundle-version="1.20.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Evident
 Bundle-ClassPath: WEB-INF/classes/
 Import-Package: 
- javax.websocket;version="1.1.0",
- javax.websocket.server;version="1.1.0",
  net.solarnetwork.node.loxone;version="0.1.0",
- net.solarnetwork.node.loxone.domain;version="0.1.0",
- org.springframework.context.annotation;version="4.2.6.RELEASE",
- org.springframework.messaging;version="4.2.6.RELEASE",
- org.springframework.messaging.converter;version="4.2.6.RELEASE",
- org.springframework.messaging.handler.annotation;version="4.2.6.RELEASE",
- org.springframework.messaging.simp;version="4.2.6.RELEASE",
- org.springframework.messaging.simp.annotation;version="4.2.6.RELEASE",
- org.springframework.security.messaging.util.matcher;version="[4.1,5.0)",
- org.springframework.web.socket.server.standard;version="[4.1,5.0)"
+ net.solarnetwork.node.loxone.domain;version="0.1.0"
