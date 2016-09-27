@@ -34,7 +34,8 @@ import org.junit.Before;
 import org.junit.Test;
 import net.solarnetwork.node.dao.jdbc.DatabaseSetup;
 import net.solarnetwork.node.loxone.dao.jdbc.JdbcDatumUUIDSetDao;
-import net.solarnetwork.node.loxone.domain.BasicUUIDEntity;
+import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntity;
+import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
 import net.solarnetwork.node.test.AbstractNodeTransactionalTest;
 
 /**
@@ -51,7 +52,7 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 	private DataSource dataSource;
 
 	private JdbcDatumUUIDSetDao dao;
-	private BasicUUIDEntity lastEntity;
+	private BasicDatumUUIDEntity lastEntity;
 
 	@Before
 	public void setup() {
@@ -64,25 +65,25 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 		dao.init();
 	}
 
-	private BasicUUIDEntity createTestBasicUUIDEntity() {
-		BasicUUIDEntity room = new BasicUUIDEntity();
-		room.setUuid(UUID.randomUUID());
-		room.setConfigId(TEST_CONFIG_ID);
-		return room;
+	private BasicDatumUUIDEntity createTestBasicDatumUUIDEntity() {
+		BasicDatumUUIDEntity entity = new BasicDatumUUIDEntity();
+		entity.setUuid(UUID.randomUUID());
+		entity.setConfigId(TEST_CONFIG_ID);
+		return entity;
 	}
 
 	@Test
 	public void insert() {
-		BasicUUIDEntity room = createTestBasicUUIDEntity();
-		dao.store(room);
-		lastEntity = room;
+		BasicDatumUUIDEntity entity = createTestBasicDatumUUIDEntity();
+		dao.store(entity);
+		lastEntity = entity;
 	}
 
 	@Test
 	public void existsByPK() {
 		insert();
 		boolean found = dao.contains(TEST_CONFIG_ID, lastEntity.getUuid());
-		Assert.assertTrue("BasicUUIDEntity found", found);
+		Assert.assertTrue("BasicDatumUUIDEntity found", found);
 	}
 
 	@Test
@@ -90,7 +91,7 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 		insert();
 		dao.store(lastEntity);
 		boolean found = dao.contains(TEST_CONFIG_ID, lastEntity.getUuid());
-		Assert.assertTrue("BasicUUIDEntity found", found);
+		Assert.assertTrue("BasicDatumUUIDEntity found", found);
 	}
 
 	@Test
@@ -99,7 +100,7 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 		int result = dao.deleteAllForConfig(TEST_CONFIG_ID);
 		Assert.assertEquals("Deleted count", 1, result);
 		boolean found = dao.contains(TEST_CONFIG_ID, lastEntity.getUuid());
-		Assert.assertFalse("BasicUUIDEntity no longer found", found);
+		Assert.assertFalse("BasicDatumUUIDEntity no longer found", found);
 	}
 
 	@Test
@@ -108,13 +109,13 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 		int result = dao.delete(TEST_CONFIG_ID, lastEntity.getUuid());
 		Assert.assertEquals("Deleted count", 1, result);
 		boolean found = dao.contains(TEST_CONFIG_ID, lastEntity.getUuid());
-		Assert.assertFalse("BasicUUIDEntity no longer found", found);
+		Assert.assertFalse("BasicDatumUUIDEntity no longer found", found);
 	}
 
 	@Test
 	public void findForConfigNoMatch() {
 		insert();
-		List<BasicUUIDEntity> results = dao.findAllForConfig(-1L, null);
+		List<DatumUUIDEntity> results = dao.findAllForConfig(-1L, null);
 		Assert.assertNotNull(results);
 		Assert.assertEquals("No matches", 0, results.size());
 	}
@@ -122,7 +123,7 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 	@Test
 	public void findForConfigSingleMatch() {
 		insert();
-		List<BasicUUIDEntity> results = dao.findAllForConfig(TEST_CONFIG_ID, null);
+		List<DatumUUIDEntity> results = dao.findAllForConfig(TEST_CONFIG_ID, null);
 		Assert.assertNotNull(results);
 		Assert.assertEquals("Match count", 1, results.size());
 		Assert.assertEquals("Found object", lastEntity.getUuid(), results.get(0).getUuid());
@@ -130,25 +131,25 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 
 	@Test
 	public void findForConfigMultiMatch() {
-		List<BasicUUIDEntity> all = new ArrayList<>(4);
+		List<BasicDatumUUIDEntity> all = new ArrayList<>(4);
 
-		// insert rooms in descending order, to verify sort order of query
+		// insert entitys in descending order, to verify sort order of query
 		for ( int i = 4; i > 0; i-- ) {
-			BasicUUIDEntity r = createTestBasicUUIDEntity();
+			BasicDatumUUIDEntity r = createTestBasicDatumUUIDEntity();
 			dao.store(r);
 			all.add(r);
 		}
 
-		// store some other rooms for a different config
+		// store some other entitys for a different config
 		for ( int i = 0; i < 4; i++ ) {
-			BasicUUIDEntity r = createTestBasicUUIDEntity();
+			BasicDatumUUIDEntity r = createTestBasicDatumUUIDEntity();
 			r.setConfigId(-1L);
 			dao.store(r);
 			all.add(r);
 		}
 
 		// verify query with default sort order applied (ascending by UUID)
-		List<BasicUUIDEntity> results = dao.findAllForConfig(TEST_CONFIG_ID, null);
+		List<DatumUUIDEntity> results = dao.findAllForConfig(TEST_CONFIG_ID, null);
 		Assert.assertNotNull(results);
 		Assert.assertEquals("Match count", 4, results.size());
 		UUID lastUUID = null;
@@ -171,7 +172,7 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 		Set<UUID> add = Collections.singleton(UUID.randomUUID());
 		dao.updateSetForConfig(TEST_CONFIG_ID, add, null);
 		boolean found = dao.contains(TEST_CONFIG_ID, add.iterator().next());
-		Assert.assertTrue("BasicUUIDEntity found", found);
+		Assert.assertTrue("BasicDatumUUIDEntity found", found);
 	}
 
 	@Test
@@ -180,7 +181,7 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 		Set<UUID> add = Collections.singleton(lastEntity.getUuid());
 		dao.updateSetForConfig(TEST_CONFIG_ID, add, null);
 		boolean found = dao.contains(TEST_CONFIG_ID, add.iterator().next());
-		Assert.assertTrue("BasicUUIDEntity found", found);
+		Assert.assertTrue("BasicDatumUUIDEntity found", found);
 	}
 
 	@Test
@@ -189,7 +190,7 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 		Set<UUID> remove = Collections.singleton(lastEntity.getUuid());
 		dao.updateSetForConfig(TEST_CONFIG_ID, null, remove);
 		boolean found = dao.contains(TEST_CONFIG_ID, remove.iterator().next());
-		Assert.assertFalse("BasicUUIDEntity deleted", found);
+		Assert.assertFalse("BasicDatumUUIDEntity deleted", found);
 	}
 
 	@Test
@@ -198,7 +199,7 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 		Set<UUID> uuids = Collections.singleton(lastEntity.getUuid());
 		dao.updateSetForConfig(TEST_CONFIG_ID, uuids, uuids);
 		boolean found = dao.contains(TEST_CONFIG_ID, uuids.iterator().next());
-		Assert.assertFalse("BasicUUIDEntity deleted", found);
+		Assert.assertFalse("BasicDatumUUIDEntity deleted", found);
 	}
 
 	@Test
@@ -208,9 +209,9 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 		Set<UUID> remove = Collections.singleton(lastEntity.getUuid());
 		dao.updateSetForConfig(TEST_CONFIG_ID, add, remove);
 		boolean found = dao.contains(TEST_CONFIG_ID, add.iterator().next());
-		Assert.assertTrue("BasicUUIDEntity added", found);
+		Assert.assertTrue("BasicDatumUUIDEntity added", found);
 		found = dao.contains(TEST_CONFIG_ID, remove.iterator().next());
-		Assert.assertFalse("BasicUUIDEntity deleted", found);
+		Assert.assertFalse("BasicDatumUUIDEntity deleted", found);
 	}
 
 }
