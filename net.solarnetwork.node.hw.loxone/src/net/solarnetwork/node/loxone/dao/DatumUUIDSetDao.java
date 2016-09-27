@@ -1,5 +1,5 @@
 /* ==================================================================
- * BasicUUIDEntity.java - 19/09/2016 7:29:42 AM
+ * DatumUUIDSetDao.java - 27/09/2016 3:45:35 PM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -20,37 +20,17 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.loxone.domain;
+package net.solarnetwork.node.loxone.dao;
 
-import java.util.UUID;
+import net.solarnetwork.node.loxone.domain.BasicUUIDEntity;
 
 /**
- * Base entity that uses a UUID as its primary key.
+ * DAO to track a list of UUID values that should be allowed to be persisted as
+ * {@link net.solarnetwork.node.domain.Datum} objects.
  * 
  * @author matt
  * @version 1.0
  */
-public class BasicUUIDEntity implements UUIDEntity {
-
-	private Long configId;
-	private UUID uuid;
-
-	@Override
-	public Long getConfigId() {
-		return configId;
-	}
-
-	public void setConfigId(Long configId) {
-		this.configId = configId;
-	}
-
-	@Override
-	public UUID getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(UUID uuid) {
-		this.uuid = uuid;
-	}
+public interface DatumUUIDSetDao extends UUIDSetDao<BasicUUIDEntity> {
 
 }

@@ -93,6 +93,10 @@ public class ValueEventBinaryFileHandlerTests {
 		expect(session.getUserProperties()).andReturn(
 				Collections.singletonMap(LoxoneEndpoint.CONFIG_ID_USER_PROPERTY, TEST_CONFIG_ID));
 
+		// should query for existing data, to only store updated values
+		expect(valueEventDao.loadEvent(EasyMock.anyObject(Long.class), EasyMock.anyObject(UUID.class)))
+				.andReturn(null).times(111);
+
 		Capture<ValueEvent> valueEventCapture = new Capture<>(CaptureType.ALL);
 		valueEventDao.storeEvent(capture(valueEventCapture));
 		expectLastCall().times(111);

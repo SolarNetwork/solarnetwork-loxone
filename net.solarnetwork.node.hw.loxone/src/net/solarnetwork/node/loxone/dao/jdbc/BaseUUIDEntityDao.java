@@ -72,7 +72,21 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 	public static final String SQL_UPDATE = "update";
 	public static final String SQL_GET_BY_PK = "get-pk";
 
+	/**
+	 * SQL resource to delete by config ID. Accepts a {@code configId}.
+	 */
 	public static final String SQL_DELETE_FOR_CONFIG = "delete-for-config";
+
+	/**
+	 * SQL resource to delete by primary key. Accepts the high {@code uuid} bits
+	 * as a {@code long}, the low {@code uuid} bits as a {@code long}, and a
+	 * {@code configId}.
+	 */
+	public static final String SQL_DELETE_BY_PK = "delete-pk";
+
+	/**
+	 * SQL resource to find by config ID. Accepts a {@code configId}.
+	 */
 	public static final String SQL_FIND_FOR_CONFIG = "find-for-config";
 
 	/** A static calendar in the UTC time zone, to use for reference only. */
@@ -227,6 +241,23 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 	 */
 	protected int deleteAllEntitiesForConfig(Long configId) {
 		int result = getJdbcTemplate().update(getSqlResource(SQL_DELETE_FOR_CONFIG), configId);
+		return result;
+	}
+
+	/**
+	 * Delete an entity matching a specific {@code configId} and {@code uuid}.
+	 * 
+	 * The {@link BaseUUIDEntityDao#SQL_DELETE_BY_PK} resource is used.
+	 * 
+	 * @param configId
+	 *        The ID of the {@link Config} of the entity to delete.
+	 * @param uuid
+	 *        The UUID of the entity to delete.
+	 * @return The number of deleted entities
+	 */
+	protected int deleteEntity(Long configId, UUID uuid) {
+		int result = getJdbcTemplate().update(getSqlResource(SQL_DELETE_BY_PK),
+				uuid.getMostSignificantBits(), uuid.getLeastSignificantBits(), configId);
 		return result;
 	}
 
