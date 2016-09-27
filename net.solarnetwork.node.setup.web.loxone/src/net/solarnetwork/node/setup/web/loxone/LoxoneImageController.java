@@ -22,20 +22,17 @@
 
 package net.solarnetwork.node.setup.web.loxone;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import net.solarnetwork.node.loxone.LoxoneService;
 
 /**
@@ -50,37 +47,23 @@ public class LoxoneImageController extends BaseLoxoneWebServiceController {
 
 	@RequestMapping("/{name:.+}")
 	@ResponseBody
-	public Callable<ResponseEntity<StreamingResponseBody>> getImage(
-			@PathVariable("configId") Long configId, @PathVariable("name") String name) {
+	public ResponseEntity<Resource> getImage(@PathVariable("configId") Long configId,
+			@PathVariable("name") String name) {
 		LoxoneService service = serviceForConfigId(configId);
 		if ( service == null ) {
-			return new Callable<ResponseEntity<StreamingResponseBody>>() {
-
-				@Override
-				public ResponseEntity<StreamingResponseBody> call() throws Exception {
-					return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-				}
-			};
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		final Future<Resource> future = service.getImage(name);
-		return new Callable<ResponseEntity<StreamingResponseBody>>() {
-
-			@Override
-			public ResponseEntity<StreamingResponseBody> call() throws Exception {
-				final Resource r = future.get();
-				HttpHeaders headers = new HttpHeaders();
-				headers.setContentLength(r.contentLength());
-				ResponseEntity<StreamingResponseBody> result = new ResponseEntity<StreamingResponseBody>(
-						new StreamingResponseBody() {
-
-							@Override
-							public void writeTo(OutputStream out) throws IOException {
-								FileCopyUtils.copy(r.getInputStream(), out);
-							}
-						}, headers, HttpStatus.OK);
-				return result;
-			}
-		};
+		try {
+			final Resource r = future.get(30, TimeUnit.SECONDS);
+			return new ResponseEntity<>(r, HttpStatus.OK);
+		} catch ( InterruptedException e ) {
+			return new ResponseEntity<>(HttpStatus.GATEWAY_TIMEOUT);
+		} catch ( ExecutionException e ) {
+			return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
+		} catch ( TimeoutException e ) {
+			return new ResponseEntity<>(HttpStatus.GATEWAY_TIMEOUT);
+		}
 	}
 
 }
