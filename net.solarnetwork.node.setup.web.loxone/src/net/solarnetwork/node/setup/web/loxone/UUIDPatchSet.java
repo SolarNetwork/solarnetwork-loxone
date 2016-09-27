@@ -1,5 +1,5 @@
 /* ==================================================================
- * BaseConfigurationEntity.java - 18/09/2016 6:11:22 AM
+ * UUIDPatchSet.java - 27/09/2016 6:10:29 PM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -20,35 +20,47 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.loxone.domain;
+package net.solarnetwork.node.setup.web.loxone;
+
+import java.util.List;
+import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * A base entity object for Loxone configuration.
+ * Data bean to support UUID set patching by specifying a set of UUIDs to be
+ * added or removed from a UUID set.
  * 
  * @author matt
  * @version 1.0
  */
-public abstract class BaseConfigurationEntity extends BasicUUIDEntity implements ConfigurationEntity {
+public class UUIDPatchSet {
 
-	private String name;
-	private Integer defaultRating;
+	private final List<UUID> add;
+	private final List<UUID> remove;
 
-	@Override
-	public String getName() {
-		return name;
+	/**
+	 * Construct with a list of UUIDs to add and a list of UUIDs to remove.
+	 * 
+	 * @param add
+	 *        The UUIDs to be added.
+	 * @param remove
+	 *        The UUIDs to be removed.
+	 */
+	@JsonCreator
+	public UUIDPatchSet(@JsonProperty(value = "add", required = false) List<UUID> add,
+			@JsonProperty(value = "remove", required = false) List<UUID> remove) {
+		super();
+		this.add = add;
+		this.remove = remove;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public List<UUID> getAdd() {
+		return add;
 	}
 
-	@Override
-	public Integer getDefaultRating() {
-		return defaultRating;
-	}
-
-	public void setDefaultRating(Integer defaultRating) {
-		this.defaultRating = defaultRating;
+	public List<UUID> getRemove() {
+		return remove;
 	}
 
 }

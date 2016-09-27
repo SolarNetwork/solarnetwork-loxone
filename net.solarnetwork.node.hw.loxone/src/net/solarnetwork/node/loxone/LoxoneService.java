@@ -24,12 +24,14 @@ package net.solarnetwork.node.loxone;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Future;
 import org.springframework.core.io.Resource;
 import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.Identifiable;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
 import net.solarnetwork.node.loxone.domain.EventEntity;
+import net.solarnetwork.node.loxone.domain.UUIDEntity;
 
 /**
  * API for a Loxone device.
@@ -81,4 +83,32 @@ public interface LoxoneService extends Identifiable {
 	 */
 	Future<Resource> getImage(String name);
 
+	/**
+	 * Get all available UUID values of a specific {@code UUIDEntity} set type.
+	 * 
+	 * @param type
+	 *        The type of UUID to get.
+	 * @param sortDescriptors
+	 *        The optional sort descriptors. If not provided, a default sort
+	 *        will be used.
+	 * @return The UUIDs.
+	 */
+	<T extends UUIDEntity> Collection<UUID> getUUIDSet(Class<T> type,
+			List<SortDescriptor> sortDescriptors);
+
+	/**
+	 * Update a "UUID set" associated with a given {@code UUIDEntity}.
+	 * 
+	 * If a UUID exists in both {@code add} and {@code remove}, it will be
+	 * removed.
+	 * 
+	 * @param type
+	 *        The set type to update.
+	 * @param add
+	 *        An optional set of UUIDs that should be added to the UUID set.
+	 * @param remove
+	 *        An optional set of UUIDs that should be removed from the UUID set.
+	 */
+	<T extends UUIDEntity> void updateUUIDSet(Class<T> type, Collection<UUID> add,
+			Collection<UUID> remove);
 }

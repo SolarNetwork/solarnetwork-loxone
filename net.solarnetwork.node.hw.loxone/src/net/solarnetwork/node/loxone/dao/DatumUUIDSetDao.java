@@ -1,5 +1,5 @@
 /* ==================================================================
- * BaseConfigurationEntity.java - 18/09/2016 6:11:22 AM
+ * DatumUUIDSetDao.java - 27/09/2016 3:45:35 PM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -20,35 +20,17 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.loxone.domain;
+package net.solarnetwork.node.loxone.dao;
+
+import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
 
 /**
- * A base entity object for Loxone configuration.
+ * DAO to track a list of UUID values that should be allowed to be persisted as
+ * {@link net.solarnetwork.node.domain.Datum} objects.
  * 
  * @author matt
  * @version 1.0
  */
-public abstract class BaseConfigurationEntity extends BasicUUIDEntity implements ConfigurationEntity {
-
-	private String name;
-	private Integer defaultRating;
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Override
-	public Integer getDefaultRating() {
-		return defaultRating;
-	}
-
-	public void setDefaultRating(Integer defaultRating) {
-		this.defaultRating = defaultRating;
-	}
+public interface DatumUUIDSetDao extends UUIDSetDao<DatumUUIDEntity> {
 
 }

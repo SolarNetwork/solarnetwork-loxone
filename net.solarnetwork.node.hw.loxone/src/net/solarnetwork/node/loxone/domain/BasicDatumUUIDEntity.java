@@ -1,5 +1,5 @@
 /* ==================================================================
- * BaseConfigurationEntity.java - 18/09/2016 6:11:22 AM
+ * BasicDatumUUIDEntity.java - 27/09/2016 5:58:06 PM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -23,32 +23,11 @@
 package net.solarnetwork.node.loxone.domain;
 
 /**
- * A base entity object for Loxone configuration.
+ * Basic implementation of {@link DatumUUIDEntity}.
  * 
  * @author matt
  * @version 1.0
  */
-public abstract class BaseConfigurationEntity extends BasicUUIDEntity implements ConfigurationEntity {
-
-	private String name;
-	private Integer defaultRating;
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Override
-	public Integer getDefaultRating() {
-		return defaultRating;
-	}
-
-	public void setDefaultRating(Integer defaultRating) {
-		this.defaultRating = defaultRating;
-	}
+public class BasicDatumUUIDEntity extends BasicUUIDEntity implements DatumUUIDEntity {
 
 }

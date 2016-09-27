@@ -31,7 +31,7 @@ import java.util.UUID;
  * @author matt
  * @version 1.0
  */
-public abstract class BaseEventEntity extends BaseUUIDEntity implements EventEntity {
+public abstract class BaseEventEntity extends BasicUUIDEntity implements EventEntity {
 
 	private final Date created;
 

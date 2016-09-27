@@ -8,5 +8,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Evident
 Bundle-ClassPath: WEB-INF/classes/
 Import-Package: 
+ com.fasterxml.jackson.annotation;version="[2.4,3.0)",
  net.solarnetwork.node.loxone;version="0.1.0",
  net.solarnetwork.node.loxone.domain;version="0.1.0"

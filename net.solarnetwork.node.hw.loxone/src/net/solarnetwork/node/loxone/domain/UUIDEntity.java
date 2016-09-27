@@ -1,5 +1,5 @@
 /* ==================================================================
- * BaseUUIDEntity.java - 19/09/2016 7:29:42 AM
+ * UUIDEntity.java - 27/09/2016 3:38:41 PM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -25,30 +25,25 @@ package net.solarnetwork.node.loxone.domain;
 import java.util.UUID;
 
 /**
- * Base entity that uses a UUID as its primary key.
+ * Basic entity based on a UUID and {@link Config#getId()} value.
  * 
  * @author matt
  * @version 1.0
  */
-public abstract class BaseUUIDEntity {
+public interface UUIDEntity {
 
-	private Long configId;
-	private UUID uuid;
+	/**
+	 * The primary key for the entity.
+	 * 
+	 * @return The primary key.
+	 */
+	UUID getUuid();
 
-	public Long getConfigId() {
-		return configId;
-	}
-
-	public void setConfigId(Long configId) {
-		this.configId = configId;
-	}
-
-	public UUID getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(UUID uuid) {
-		this.uuid = uuid;
-	}
+	/**
+	 * The ID of the {@link Config} this entity belongs to.
+	 * 
+	 * @return The config ID.
+	 */
+	Long getConfigId();
 
 }
