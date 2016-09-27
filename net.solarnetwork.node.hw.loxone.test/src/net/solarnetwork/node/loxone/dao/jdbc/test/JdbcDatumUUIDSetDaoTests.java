@@ -23,7 +23,9 @@
 package net.solarnetwork.node.loxone.dao.jdbc.test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -44,8 +46,6 @@ import net.solarnetwork.node.test.AbstractNodeTransactionalTest;
 public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 
 	private static final Long TEST_CONFIG_ID = 123L;
-	private static final String TEST_NAME = "Test Name";
-	private static final Integer TEST_DEFAULT_RATING = 1;
 
 	@Resource(name = "dataSource")
 	private DataSource dataSource;
@@ -64,7 +64,7 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 		dao.init();
 	}
 
-	private BasicUUIDEntity createTestBasicUUIDEntity(String name, Integer defaultRating) {
+	private BasicUUIDEntity createTestBasicUUIDEntity() {
 		BasicUUIDEntity room = new BasicUUIDEntity();
 		room.setUuid(UUID.randomUUID());
 		room.setConfigId(TEST_CONFIG_ID);
@@ -73,7 +73,7 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 
 	@Test
 	public void insert() {
-		BasicUUIDEntity room = createTestBasicUUIDEntity(TEST_NAME, TEST_DEFAULT_RATING);
+		BasicUUIDEntity room = createTestBasicUUIDEntity();
 		dao.store(room);
 		lastEntity = room;
 	}
@@ -134,14 +134,14 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 
 		// insert rooms in descending order, to verify sort order of query
 		for ( int i = 4; i > 0; i-- ) {
-			BasicUUIDEntity r = createTestBasicUUIDEntity("BasicUUIDEntity " + i, TEST_DEFAULT_RATING);
+			BasicUUIDEntity r = createTestBasicUUIDEntity();
 			dao.store(r);
 			all.add(r);
 		}
 
 		// store some other rooms for a different config
 		for ( int i = 0; i < 4; i++ ) {
-			BasicUUIDEntity r = createTestBasicUUIDEntity("BasicUUIDEntity " + i, TEST_DEFAULT_RATING);
+			BasicUUIDEntity r = createTestBasicUUIDEntity();
 			r.setConfigId(-1L);
 			dao.store(r);
 			all.add(r);
@@ -159,6 +159,58 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 			}
 			lastUUID = results.get(i).getUuid();
 		}
+	}
+
+	@Test
+	public void manageSetPassNulls() {
+		dao.updateSetForConfig(TEST_CONFIG_ID, null, null);
+	}
+
+	@Test
+	public void manageSetAddOnly() {
+		Set<UUID> add = Collections.singleton(UUID.randomUUID());
+		dao.updateSetForConfig(TEST_CONFIG_ID, add, null);
+		boolean found = dao.contains(TEST_CONFIG_ID, add.iterator().next());
+		Assert.assertTrue("BasicUUIDEntity found", found);
+	}
+
+	@Test
+	public void manageSetAddDuplicate() {
+		insert();
+		Set<UUID> add = Collections.singleton(lastEntity.getUuid());
+		dao.updateSetForConfig(TEST_CONFIG_ID, add, null);
+		boolean found = dao.contains(TEST_CONFIG_ID, add.iterator().next());
+		Assert.assertTrue("BasicUUIDEntity found", found);
+	}
+
+	@Test
+	public void manageSetRemove() {
+		insert();
+		Set<UUID> remove = Collections.singleton(lastEntity.getUuid());
+		dao.updateSetForConfig(TEST_CONFIG_ID, null, remove);
+		boolean found = dao.contains(TEST_CONFIG_ID, remove.iterator().next());
+		Assert.assertFalse("BasicUUIDEntity deleted", found);
+	}
+
+	@Test
+	public void manageSetAddAndRemoveSame() {
+		insert();
+		Set<UUID> uuids = Collections.singleton(lastEntity.getUuid());
+		dao.updateSetForConfig(TEST_CONFIG_ID, uuids, uuids);
+		boolean found = dao.contains(TEST_CONFIG_ID, uuids.iterator().next());
+		Assert.assertFalse("BasicUUIDEntity deleted", found);
+	}
+
+	@Test
+	public void manageSetAddAndRemove() {
+		insert();
+		Set<UUID> add = Collections.singleton(UUID.randomUUID());
+		Set<UUID> remove = Collections.singleton(lastEntity.getUuid());
+		dao.updateSetForConfig(TEST_CONFIG_ID, add, remove);
+		boolean found = dao.contains(TEST_CONFIG_ID, add.iterator().next());
+		Assert.assertTrue("BasicUUIDEntity added", found);
+		found = dao.contains(TEST_CONFIG_ID, remove.iterator().next());
+		Assert.assertFalse("BasicUUIDEntity deleted", found);
 	}
 
 }

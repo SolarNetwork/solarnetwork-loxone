@@ -1,5 +1,5 @@
 /* ==================================================================
- * DatumUUIDSetDao.java - 27/09/2016 3:45:35 PM
+ * BasicDatumUUIDEntity.java - 27/09/2016 5:58:06 PM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -20,17 +20,14 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.loxone.dao;
-
-import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
+package net.solarnetwork.node.loxone.domain;
 
 /**
- * DAO to track a list of UUID values that should be allowed to be persisted as
- * {@link net.solarnetwork.node.domain.Datum} objects.
+ * Basic implementation of {@link DatumUUIDEntity}.
  * 
  * @author matt
  * @version 1.0
  */
-public interface DatumUUIDSetDao extends UUIDSetDao<DatumUUIDEntity> {
+public class BasicDatumUUIDEntity extends BasicUUIDEntity implements DatumUUIDEntity {
 
 }

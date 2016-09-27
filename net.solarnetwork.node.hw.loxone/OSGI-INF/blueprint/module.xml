@@ -81,6 +81,10 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
+	<bean id="datumUuidSetDao" class="net.solarnetwork.node.loxone.dao.jdbc.JdbcDatumUUIDSetDao" init-method="init">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
 	<util:list id="configuration-daos">
 		<beans:ref bean="categoryDao"/>
 		<beans:ref bean="controlDao"/>
@@ -89,6 +93,10 @@
 
 	<util:list id="event-daos">
 		<beans:ref bean="valueEventDao"/>
+	</util:list>
+
+	<util:list id="uuid-set-daos">
+		<beans:ref bean="datumUuidSetDao"/>
 	</util:list>
 
 	<bean id="get-structure-cmd-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.GetStructureFileCommandHandler">
@@ -188,6 +196,7 @@
 			<property name="commandHandlers" ref="command-handlers"/>
 			<property name="configurationDaos" ref="configuration-daos"/>
 			<property name="eventDaos" ref="event-daos"/>
+			<property name="uuidSetDaos" ref="uuid-set-daos"/>
 			<property name="settingResourceProvider" ref="settingResourceProvider"/>
 		</bean>
 	</osgix:managed-service-factory>

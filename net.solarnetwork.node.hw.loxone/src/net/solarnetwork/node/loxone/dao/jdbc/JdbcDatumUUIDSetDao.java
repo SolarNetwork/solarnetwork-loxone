@@ -22,8 +22,12 @@
 
 package net.solarnetwork.node.loxone.dao.jdbc;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import org.springframework.jdbc.core.RowMapper;
 import net.solarnetwork.node.loxone.dao.DatumUUIDSetDao;
-import net.solarnetwork.node.loxone.domain.BasicUUIDEntity;
+import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntity;
+import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
 
 /**
  * JDBC implementation of {@link DatumUUIDSetDao}.
@@ -31,14 +35,26 @@ import net.solarnetwork.node.loxone.domain.BasicUUIDEntity;
  * @author matt
  * @version 1.0
  */
-public class JdbcDatumUUIDSetDao extends BaseUUIDSetDao<BasicUUIDEntity> implements DatumUUIDSetDao {
+public class JdbcDatumUUIDSetDao extends BaseUUIDSetDao<DatumUUIDEntity> implements DatumUUIDSetDao {
 
 	/** The default tables version. */
 	public static final int TABLES_VERSION = 1;
 
 	public JdbcDatumUUIDSetDao() {
-		super(BasicUUIDEntity.class, "datumset", TABLES_VERSION,
-				new BaseUUIDSetDao.UUIDEntityRowMapper());
+		super(DatumUUIDEntity.class, "datumset", TABLES_VERSION, new DatumUUIDEntityRowMapper());
+	}
+
+	private static final class DatumUUIDEntityRowMapper implements RowMapper<DatumUUIDEntity> {
+
+		@Override
+		public DatumUUIDEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+			BasicDatumUUIDEntity row = new BasicDatumUUIDEntity();
+			// Row order is: uuid_hi, uuid_lo, config_id
+			row.setUuid(readUUID(1, rs));
+			row.setConfigId(rs.getLong(3));
+			return row;
+		}
+
 	}
 
 }

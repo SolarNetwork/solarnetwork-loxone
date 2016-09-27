@@ -22,17 +22,24 @@
 
 package net.solarnetwork.node.loxone.dao.jdbc;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.loxone.dao.UUIDSetDao;
-import net.solarnetwork.node.loxone.domain.BasicUUIDEntity;
 import net.solarnetwork.node.loxone.domain.UUIDEntity;
 
 /**
@@ -121,18 +128,79 @@ public abstract class BaseUUIDSetDao<T extends UUIDEntity> extends BaseUUIDEntit
 		ps.setObject(3, entity.getConfigId());
 	}
 
-	/**
-	 * A {@link RowMapper} that maps rows to {@link BasicUUIDEntity} instances.
-	 */
-	public static final class UUIDEntityRowMapper implements RowMapper<BasicUUIDEntity> {
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	@Override
+	public void updateSetForConfig(final Long configId, final Collection<UUID> add,
+			final Collection<UUID> remove) {
+		final String getSql = getSqlResource(SQL_GET_BY_PK);
+		final String addSql = getSqlResource(SQL_INSERT);
+		final Set<UUID> toAdd = (add != null ? new LinkedHashSet<UUID>(add) : Collections.emptySet());
+		getJdbcTemplate().execute(new ConnectionCallback<Object>() {
 
-		@Override
-		public BasicUUIDEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
-			BasicUUIDEntity row = new BasicUUIDEntity();
-			// Row order is: uuid_hi, uuid_lo, config_id
-			row.setUuid(readUUID(1, rs));
-			row.setConfigId(rs.getLong(3));
-			return row;
-		}
+			@Override
+			public Object doInConnection(Connection con) throws SQLException, DataAccessException {
+				// find existing rows we don't need to add, removing them from toAdd
+				if ( !toAdd.isEmpty() ) {
+					PreparedStatement ps = con.prepareStatement(getSql);
+					try {
+						for ( Iterator<UUID> itr = toAdd.iterator(); itr.hasNext(); ) {
+							prepareUUID(1, itr.next(), ps);
+							ps.setObject(3, configId);
+							ResultSet rs = ps.executeQuery();
+							try {
+								if ( rs.next() ) {
+									itr.remove();
+								}
+							} finally {
+								if ( rs != null ) {
+									rs.close();
+								}
+							}
+						}
+					} finally {
+						if ( ps != null ) {
+							ps.close();
+						}
+					}
+
+					// now insert add values
+					if ( !toAdd.isEmpty() ) {
+						ps = con.prepareStatement(addSql);
+						try {
+							for ( UUID uuid : toAdd ) {
+								prepareUUID(1, uuid, ps);
+								ps.setObject(3, configId);
+								ps.addBatch();
+							}
+							ps.executeBatch();
+						} finally {
+							if ( ps != null ) {
+								ps.close();
+							}
+						}
+					}
+				}
+
+				// finally delete remove values
+				if ( remove != null ) {
+					PreparedStatement ps = con.prepareStatement(getSqlResource(SQL_DELETE_BY_PK));
+					try {
+						for ( UUID uuid : remove ) {
+							prepareUUID(1, uuid, ps);
+							ps.setObject(3, configId);
+							ps.addBatch();
+						}
+						ps.executeBatch();
+					} finally {
+						if ( ps != null ) {
+							ps.close();
+						}
+					}
+				}
+
+				return null;
+			}
+		});
 	}
+
 }

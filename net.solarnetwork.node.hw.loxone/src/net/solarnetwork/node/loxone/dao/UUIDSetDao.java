@@ -22,6 +22,7 @@
 
 package net.solarnetwork.node.loxone.dao;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import net.solarnetwork.domain.SortDescriptor;
@@ -97,10 +98,26 @@ public interface UUIDSetDao<T extends UUIDEntity> {
 	 * {@link ConfigurationEntity#getName()}.
 	 * </p>
 	 * 
+	 * @param configId
+	 *        The config ID to match.
 	 * @param sortDescriptors
 	 *        list of sort descriptors to sort the results by
 	 * @return list of all persisted entities, or empty list if none available
 	 */
 	List<T> findAllForConfig(Long configId, List<SortDescriptor> sortDescriptors);
 
+	/**
+	 * Add and remove UUIDs from the set managed by this DAO.
+	 * 
+	 * If a UUID exists in both {@code add} and {@code remove}, it will be
+	 * removed.
+	 * 
+	 * @param configId
+	 *        The config ID to match.
+	 * @param add
+	 *        An optional set of UUIDs that should be added to the UUID set.
+	 * @param remove
+	 *        An optional set of UUIDs that should be removed from the UUID set.
+	 */
+	void updateSetForConfig(Long configId, Collection<UUID> add, Collection<UUID> remove);
 }
