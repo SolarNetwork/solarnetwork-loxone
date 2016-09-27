@@ -50,14 +50,22 @@ public class LoxoneUUIDSetController extends BaseLoxoneWebServiceController {
 	 * Get all available datum UUID set values.
 	 * 
 	 * @param configId
-	 * @param name
-	 * @return
+	 *        The config ID to get the datum UUIDs for.
+	 * @return All available UUIDs.
 	 */
 	@RequestMapping(value = "/datum", method = RequestMethod.GET)
 	public Response<Collection<UUID>> getDatumUUIDSet(@PathVariable("configId") Long configId) {
 		return getUUIDSetForConfigId(configId, DatumUUIDEntity.class, null);
 	}
 
+	/**
+	 * Add or remove datum UUID set values.
+	 * 
+	 * @param configId
+	 *        The config ID to add or remove UUIDs to or from.
+	 * @param patchSet
+	 * @return
+	 */
 	@RequestMapping(value = "/datum", method = RequestMethod.PATCH)
 	public Response<Object> updateDatumUUIDSet(@PathVariable("configId") Long configId,
 			@RequestBody UUIDPatchSet patchSet) {
