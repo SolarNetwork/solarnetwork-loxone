@@ -23,7 +23,6 @@
 package net.solarnetwork.node.loxone.domain;
 
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * API for Loxone event entities.
@@ -31,21 +30,7 @@ import java.util.UUID;
  * @author matt
  * @version 1.0
  */
-public interface EventEntity {
-
-	/**
-	 * The primary key for the entity.
-	 * 
-	 * @return The primary key.
-	 */
-	UUID getUuid();
-
-	/**
-	 * The ID of the {@link Config} this entity belongs to.
-	 * 
-	 * @return The config ID.
-	 */
-	Long getConfigId();
+public interface EventEntity extends UUIDEntity {
 
 	/**
 	 * Get the event creation date.

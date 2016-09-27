@@ -22,29 +22,13 @@
 
 package net.solarnetwork.node.loxone.domain;
 
-import java.util.UUID;
-
 /**
  * API for a Loxone configuration entity.
  * 
  * @author matt
  * @version 1.0
  */
-public interface ConfigurationEntity {
-
-	/**
-	 * The primary key for the entity.
-	 * 
-	 * @return The primary key.
-	 */
-	UUID getUuid();
-
-	/**
-	 * The ID of the {@link Config} this entity belongs to.
-	 * 
-	 * @return The config ID.
-	 */
-	Long getConfigId();
+public interface ConfigurationEntity extends UUIDEntity {
 
 	/**
 	 * Get a sorting priority. Higher values should be sorted before lower

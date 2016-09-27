@@ -36,16 +36,16 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.RowMapper;
 import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.dao.jdbc.AbstractJdbcDao;
-import net.solarnetwork.node.loxone.domain.BaseUUIDEntity;
 import net.solarnetwork.node.loxone.domain.Config;
+import net.solarnetwork.node.loxone.domain.UUIDEntity;
 
 /**
- * Base class for supporting DAO operations on {@link BaseUUIDEntity} objects.
+ * Base class for supporting DAO operations on {@link UUIDEntity} objects.
  * 
  * @author matt
  * @version 1.0
  */
-public abstract class BaseUUIDEntityDao<T extends BaseUUIDEntity> extends AbstractJdbcDao<T> {
+public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJdbcDao<T> {
 
 	/** The table name format for data, e.g. {@code loxone_N}. */
 	public static final String TABLE_NAME_FORMAT = "loxone_%s";

@@ -1,5 +1,5 @@
 /* ==================================================================
- * BaseConfigurationEntity.java - 18/09/2016 6:11:22 AM
+ * BasicUUIDEntity.java - 19/09/2016 7:29:42 AM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -22,33 +22,33 @@
 
 package net.solarnetwork.node.loxone.domain;
 
+import java.util.UUID;
+
 /**
- * A base entity object for Loxone configuration.
+ * Base entity that uses a UUID as its primary key.
  * 
  * @author matt
  * @version 1.0
  */
-public abstract class BaseConfigurationEntity extends BasicUUIDEntity implements ConfigurationEntity {
+public class BasicUUIDEntity {
 
-	private String name;
-	private Integer defaultRating;
+	private Long configId;
+	private UUID uuid;
 
-	@Override
-	public String getName() {
-		return name;
+	public Long getConfigId() {
+		return configId;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setConfigId(Long configId) {
+		this.configId = configId;
 	}
 
-	@Override
-	public Integer getDefaultRating() {
-		return defaultRating;
+	public UUID getUuid() {
+		return uuid;
 	}
 
-	public void setDefaultRating(Integer defaultRating) {
-		this.defaultRating = defaultRating;
+	public void setUuid(UUID uuid) {
+		this.uuid = uuid;
 	}
 
 }
