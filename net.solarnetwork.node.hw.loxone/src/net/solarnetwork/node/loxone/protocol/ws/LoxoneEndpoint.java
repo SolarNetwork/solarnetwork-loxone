@@ -144,7 +144,7 @@ public class LoxoneEndpoint extends Endpoint
 	 * 
 	 * @return The configuration.
 	 */
-	protected Config getConfiguration() {
+	public Config getConfiguration() {
 		return configuration;
 	}
 

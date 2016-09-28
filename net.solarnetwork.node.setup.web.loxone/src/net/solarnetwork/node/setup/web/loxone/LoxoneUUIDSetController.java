@@ -54,7 +54,7 @@ public class LoxoneUUIDSetController extends BaseLoxoneWebServiceController {
 	 * @return All available UUIDs.
 	 */
 	@RequestMapping(value = "/datum", method = RequestMethod.GET)
-	public Response<Collection<UUID>> getDatumUUIDSet(@PathVariable("configId") Long configId) {
+	public Response<Collection<UUID>> getDatumUUIDSet(@PathVariable("configId") String configId) {
 		return getUUIDSetForConfigId(configId, DatumUUIDEntity.class, null);
 	}
 
@@ -67,13 +67,13 @@ public class LoxoneUUIDSetController extends BaseLoxoneWebServiceController {
 	 * @return
 	 */
 	@RequestMapping(value = "/datum", method = RequestMethod.PATCH)
-	public Response<Object> updateDatumUUIDSet(@PathVariable("configId") Long configId,
+	public Response<Object> updateDatumUUIDSet(@PathVariable("configId") String configId,
 			@RequestBody UUIDPatchSet patchSet) {
 		return updateUUIDSetForConfigId(configId, DatumUUIDEntity.class, patchSet.getAdd(),
 				patchSet.getRemove());
 	}
 
-	private <T extends UUIDEntity> Response<Collection<UUID>> getUUIDSetForConfigId(Long configId,
+	private <T extends UUIDEntity> Response<Collection<UUID>> getUUIDSetForConfigId(String configId,
 			Class<T> type, List<SortDescriptor> sortDescriptors) {
 		LoxoneService service = serviceForConfigId(configId);
 		if ( service == null ) {
@@ -83,7 +83,7 @@ public class LoxoneUUIDSetController extends BaseLoxoneWebServiceController {
 		return Response.response(result);
 	}
 
-	private <T extends UUIDEntity> Response<Object> updateUUIDSetForConfigId(Long configId,
+	private <T extends UUIDEntity> Response<Object> updateUUIDSetForConfigId(String configId,
 			Class<T> type, Collection<UUID> add, Collection<UUID> remove) {
 		LoxoneService service = serviceForConfigId(configId);
 		if ( service == null ) {

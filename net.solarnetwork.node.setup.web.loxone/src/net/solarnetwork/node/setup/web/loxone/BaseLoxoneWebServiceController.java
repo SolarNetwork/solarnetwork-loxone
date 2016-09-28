@@ -31,6 +31,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import net.solarnetwork.node.loxone.LoxoneService;
+import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.web.domain.Response;
 
 /**
@@ -54,12 +55,13 @@ public class BaseLoxoneWebServiceController {
 	 *        The UID value to get.
 	 * @return
 	 */
-	protected LoxoneService serviceForConfigId(Long configId) {
+	protected LoxoneService serviceForConfigId(String configId) {
 		if ( loxoneServices == null ) {
 			return null;
 		}
 		for ( LoxoneService service : loxoneServices ) {
-			if ( configId.equals(service.getConfigurationId()) ) {
+			Config config = service.getConfiguration();
+			if ( config != null && configId.equalsIgnoreCase(config.idToExternalForm()) ) {
 				return service;
 			}
 		}

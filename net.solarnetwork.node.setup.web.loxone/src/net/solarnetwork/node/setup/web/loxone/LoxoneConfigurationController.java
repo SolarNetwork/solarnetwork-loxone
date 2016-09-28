@@ -51,21 +51,21 @@ public class LoxoneConfigurationController extends BaseLoxoneWebServiceControlle
 	}
 
 	@RequestMapping(value = "/categories", method = RequestMethod.GET)
-	public Response<Collection<Category>> allCategories(@PathVariable("configId") Long configId) {
+	public Response<Collection<Category>> allCategories(@PathVariable("configId") String configId) {
 		return getAllForConfigId(configId, Category.class, null);
 	}
 
 	@RequestMapping(value = "/controls", method = RequestMethod.GET)
-	public Response<Collection<Control>> allControls(@PathVariable("configId") Long configId) {
+	public Response<Collection<Control>> allControls(@PathVariable("configId") String configId) {
 		return getAllForConfigId(configId, Control.class, null);
 	}
 
 	@RequestMapping(value = "/rooms", method = RequestMethod.GET)
-	public Response<Collection<Room>> allRooms(@PathVariable("configId") Long configId) {
+	public Response<Collection<Room>> allRooms(@PathVariable("configId") String configId) {
 		return getAllForConfigId(configId, Room.class, null);
 	}
 
-	private <T extends ConfigurationEntity> Response<Collection<T>> getAllForConfigId(Long configId,
+	private <T extends ConfigurationEntity> Response<Collection<T>> getAllForConfigId(String configId,
 			Class<T> type, List<SortDescriptor> sortDescriptors) {
 		LoxoneService service = serviceForConfigId(configId);
 		if ( service == null ) {

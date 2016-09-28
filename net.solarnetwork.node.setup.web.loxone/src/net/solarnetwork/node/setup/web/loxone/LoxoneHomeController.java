@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import net.solarnetwork.node.loxone.LoxoneService;
+import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.web.domain.Response;
 
 /**
@@ -45,10 +46,14 @@ public class LoxoneHomeController extends BaseLoxoneWebServiceController {
 		StringBuilder allIds = new StringBuilder();
 		if ( loxoneServices != null ) {
 			for ( LoxoneService service : loxoneServices ) {
+				Config config = service.getConfiguration();
+				if ( config == null || config.getId() == null ) {
+					continue;
+				}
 				if ( allIds.length() > 0 ) {
 					allIds.append(',');
 				}
-				allIds.append(service.getConfigurationId());
+				allIds.append(config.idToExternalForm());
 			}
 			model.addAttribute("configIds", allIds.toString());
 		}
@@ -56,7 +61,7 @@ public class LoxoneHomeController extends BaseLoxoneWebServiceController {
 	}
 
 	@RequestMapping("/{configId}")
-	public String home(@PathVariable("configId") Long configId, Model model) {
+	public String home(@PathVariable("configId") String configId, Model model) {
 		model.addAttribute("configId", configId);
 		return home(model);
 	}

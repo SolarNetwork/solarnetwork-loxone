@@ -47,7 +47,7 @@ public class LoxoneImageController extends BaseLoxoneWebServiceController {
 
 	@RequestMapping("/{name:.+}")
 	@ResponseBody
-	public ResponseEntity<Resource> getImage(@PathVariable("configId") Long configId,
+	public ResponseEntity<Resource> getImage(@PathVariable("configId") String configId,
 			@PathVariable("name") String name) {
 		LoxoneService service = serviceForConfigId(configId);
 		if ( service == null ) {

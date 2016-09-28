@@ -28,6 +28,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import javax.websocket.Session;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
 import net.solarnetwork.node.loxone.protocol.ws.BinaryFileHandler;
 import net.solarnetwork.node.loxone.protocol.ws.LoxoneEvents;
@@ -47,6 +49,7 @@ public class ValueEventBinaryFileHandler extends BaseEventBinaryFileHandler<Valu
 		return (MessageType.EventTableValueStates == header.getType());
 	}
 
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	@Override
 	public boolean handleDataMessage(MessageHeader header, Session session, ByteBuffer buffer,
 			Long configId) {

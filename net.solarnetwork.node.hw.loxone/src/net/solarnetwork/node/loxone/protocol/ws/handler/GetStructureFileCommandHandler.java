@@ -119,7 +119,7 @@ public class GetStructureFileCommandHandler extends BaseCommandHandler implement
 				sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 				try {
 					Date d = sdf.parse(entry.getValue().textValue());
-					config.setLastModified(d);
+					config = config.withLastModified(d);
 				} catch ( ParseException e ) {
 					log.warn("Error parsing last modified date [{}]: {}", entry.getValue().asText(),
 							e.getMessage());

@@ -29,6 +29,7 @@ import java.util.concurrent.Future;
 import org.springframework.core.io.Resource;
 import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.Identifiable;
+import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
 import net.solarnetwork.node.loxone.domain.EventEntity;
 import net.solarnetwork.node.loxone.domain.UUIDEntity;
@@ -42,11 +43,11 @@ import net.solarnetwork.node.loxone.domain.UUIDEntity;
 public interface LoxoneService extends Identifiable {
 
 	/**
-	 * Get the configuration ID associated with this service.
+	 * Get the configuration associated with this service.
 	 * 
-	 * @return The configuration ID, or <em>null</em> if not known.
+	 * @return The configuration, or <em>null</em> if not known.
 	 */
-	public Long getConfigurationId();
+	Config getConfiguration();
 
 	/**
 	 * Get all available configuration entities of a specific type.

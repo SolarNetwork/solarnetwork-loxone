@@ -33,23 +33,93 @@ import java.util.Date;
 public class Config {
 
 	private final Long id;
-	private Date lastModified;
+	private final Date lastModified;
 
+	/**
+	 * Construct with just an ID.
+	 * 
+	 * The modified date will be set to {@code null}.
+	 * 
+	 * @param configId
+	 *        The config ID.
+	 */
 	public Config(Long configId) {
-		super();
-		this.id = configId;
+		this(configId, null);
 	}
 
+	/**
+	 * Construct with values.
+	 * 
+	 * @param configId
+	 *        The config ID.
+	 * @param lastModified
+	 *        The modified date.
+	 */
+	public Config(Long configId, Date lastModified) {
+		super();
+		this.id = configId;
+		this.lastModified = lastModified;
+	}
+
+	/**
+	 * Get the unique ID of this configuration.
+	 * 
+	 * @return The unique ID.
+	 */
 	public Long getId() {
 		return id;
 	}
 
+	/**
+	 * Get the last modified date.
+	 * 
+	 * @return The modified date, or {@code null}.
+	 */
 	public Date getLastModified() {
 		return lastModified;
 	}
 
-	public void setLastModified(Date lastModified) {
-		this.lastModified = lastModified;
+	/**
+	 * Get a copy of this config with an updated modification date.
+	 * 
+	 * @param lastModified
+	 *        The last modified date.
+	 * @return The copy.
+	 */
+	public Config withLastModified(Date lastModified) {
+		return new Config(id, lastModified);
+	}
+
+	/**
+	 * Get an external representation of {@code #getId()} in string form.
+	 * 
+	 * This string form is meant to be passed to external applications. Use
+	 * {@link #idFromExternalForm(String)} to translate the string back to a
+	 * {@code Long}.
+	 * 
+	 * @return The external ID form.
+	 * @see #idFromExternalForm(String)
+	 */
+	public String idToExternalForm() {
+		return Long.toUnsignedString(id.longValue(), 16);
+	}
+
+	/**
+	 * Get a {@code Long} ID value from an external representation.
+	 * 
+	 * This is the reverse of the {@link #idToExternalForm()} method.
+	 * 
+	 * @param s
+	 *        The ID in external form.
+	 * @return The {@code Long} value, or {@code null} if the string cannot be
+	 *         parsed.
+	 */
+	public static final Long idFromExternalForm(String s) {
+		try {
+			return Long.parseUnsignedLong(s, 16);
+		} catch ( NumberFormatException e ) {
+			return null;
+		}
 	}
 
 }

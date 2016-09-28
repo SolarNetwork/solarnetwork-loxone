@@ -55,7 +55,7 @@ public class WebsocketEventController extends BaseLoxoneWebServiceController {
 	}
 
 	@SubscribeMapping("/{configId}/events/values")
-	public Response<Collection<ValueEvent>> subscribeToValueEvents(@DestinationVariable Long configId,
+	public Response<Collection<ValueEvent>> subscribeToValueEvents(@DestinationVariable String configId,
 			Principal principal) {
 		log.info("Subscribing {} to {} value evnets", principal, configId);
 		LoxoneService service = serviceForConfigId(configId);

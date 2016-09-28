@@ -68,12 +68,6 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 	private List<UUIDSetDao<UUIDEntity>> uuidSetDaos;
 	private SetupResourceProvider settingResourceProvider;
 
-	@Override
-	public Long getConfigurationId() {
-		Config config = getConfiguration();
-		return (config == null ? null : config.getId());
-	}
-
 	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 	@Override
 	public <T extends ConfigurationEntity> Collection<T> getAllConfiguration(Class<T> type,
@@ -201,20 +195,24 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 		this.groupUID = groupUID;
 	}
 
+	private String getConfigurationIdExternalForm() {
+		Config config = getConfiguration();
+		return (config == null ? null : config.idToExternalForm());
+	}
+
 	@Override
 	public List<SettingSpecifier> getSettingSpecifiers() {
 		List<SettingSpecifier> results = super.getSettingSpecifiers();
 		results.add(0, new BasicTextFieldSettingSpecifier("uid", DEFAULT_UID));
 		results.add(0, new BasicTextFieldSettingSpecifier("groupUID", null));
 
-		Long configurationId = getConfigurationId();
+		String configurationId = getConfigurationIdExternalForm();
 		if ( configurationId != null ) {
-			results.add(
-					new BasicTitleSettingSpecifier("configurationId", configurationId.toString(), true));
+			results.add(new BasicTitleSettingSpecifier("configurationId", configurationId, true));
 		}
 
 		if ( settingResourceProvider != null ) {
-			Map<String, Object> setupProps = Collections.singletonMap("config-id", getConfigurationId());
+			Map<String, Object> setupProps = Collections.singletonMap("config-id", configurationId);
 			results.add(new BasicSetupResourceSettingSpecifier(settingResourceProvider, setupProps));
 		}
 

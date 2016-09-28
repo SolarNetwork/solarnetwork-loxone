@@ -69,8 +69,7 @@ public class SettingsConfigDao implements ConfigDao {
 		if ( ts < 0 ) {
 			return null;
 		}
-		Config result = new Config(id);
-		result.setLastModified(new Date(ts));
+		Config result = new Config(id, new Date(ts));
 		return result;
 	}
 
