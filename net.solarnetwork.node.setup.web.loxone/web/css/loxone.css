@@ -1,0 +1,99 @@
+body {
+  background-color: #e0e0e0;
+}
+
+.loxone-heading {
+  width: calc(100% - 40px);
+  padding:20px 20px;
+  background-color: #fff;
+}
+
+.loxone-heading .title {
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+
+.loxone-list {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.loxone-list .row {
+  width: calc(100% - 40px);
+  height: 20px;
+  padding: 15px 20px;
+  margin: 5px 0px;
+  background-color: #fff;
+}
+
+.loxone-heading #filter-input {
+  width: 300px;
+  height: 14px;
+  margin: 20px 0px;
+}
+
+.loxone-heading .table-heading {
+  font-size: 16px;
+  cursor: pointer;
+  height: 10px;
+}
+
+.sort-icon {
+  width: 16px;
+  height: 16px;
+  float: left;
+}
+
+.ascending {
+  background-image: url("/img/sort-arrow.svg");
+}
+
+.descending {
+  background-image: url("/img/sort-arrow.svg");
+  transform: rotate(180deg);
+}
+
+.heading-column .name {
+  float: left;
+}
+
+.name-column {
+  width: 40%;
+  float: left;
+}
+
+.category-column {
+  width: 20%;
+  float: left;
+}
+
+.room-column {
+  width: 20%;
+  float: left;
+}
+
+.value-column {
+  width: 10%;
+  float: left;
+}
+
+.enable-column {
+  width: 10%;
+  float: left;
+}
+
+.enable-button {
+  width: 10%;
+  height: 30px;
+  background-color: #d6d6d6;
+  border: none;
+  border-radius: 3px;
+  position: relative;
+  top: -5px;
+}
+
+.enabled {
+  background-color: #639316;
+  color: #fff;
+
+}
