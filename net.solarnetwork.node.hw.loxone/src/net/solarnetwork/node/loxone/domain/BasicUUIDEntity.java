@@ -23,6 +23,7 @@
 package net.solarnetwork.node.loxone.domain;
 
 import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Base entity that uses a UUID as its primary key.
@@ -36,10 +37,12 @@ public class BasicUUIDEntity implements UUIDEntity {
 	private UUID uuid;
 
 	@Override
+	@JsonIgnore
 	public Long getConfigId() {
 		return configId;
 	}
 
+	@JsonIgnore
 	public void setConfigId(Long configId) {
 		this.configId = configId;
 	}
