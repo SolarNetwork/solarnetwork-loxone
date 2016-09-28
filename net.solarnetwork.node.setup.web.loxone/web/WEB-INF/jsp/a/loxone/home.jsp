@@ -1,4 +1,4 @@
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div class="loxone-heading">
 	<div class="title">Device configuration</div>
@@ -29,5 +29,5 @@
 
 <div id="device-view" class="loxone-list"></div>
 
-<script type="application/javascript" src="/js/loxone-control-view.js"></script>
-<script type="application/javascript" src="/js/loxone-websocket.js"></script>
+<script type="application/javascript" src="<c:url value='/js/loxone-control-view.js'/>"></script>
+<script type="application/javascript" src="<c:url value='/js/loxone-websocket.js'/>"></script>

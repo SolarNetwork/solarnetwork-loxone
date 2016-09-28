@@ -2,7 +2,7 @@ function API(configID) {
 
 	this.configID = document.querySelector('meta[name=\'loxone-config-id\']').getAttribute('content');
 
-	this.url = 'http://localhost:8080/a/loxone/';
+	this.url = SolarNode.context.path('/a/loxone/');
 
 	this.request = function(method, url, headers, body, csrf, next) {
 		var xmlhttp = new XMLHttpRequest();
