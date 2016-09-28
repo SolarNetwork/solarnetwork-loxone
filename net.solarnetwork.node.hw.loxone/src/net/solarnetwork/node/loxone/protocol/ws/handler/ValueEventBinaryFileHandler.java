@@ -31,6 +31,7 @@ import javax.websocket.Session;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
+import net.solarnetwork.node.loxone.impl.ValueEventDatumGenerator;
 import net.solarnetwork.node.loxone.protocol.ws.BinaryFileHandler;
 import net.solarnetwork.node.loxone.protocol.ws.LoxoneEvents;
 import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
@@ -44,12 +45,20 @@ import net.solarnetwork.node.loxone.protocol.ws.MessageType;
  */
 public class ValueEventBinaryFileHandler extends BaseEventBinaryFileHandler<ValueEvent> {
 
+	private ValueEventDatumGenerator datumGenerator;
+
 	@Override
 	public boolean supportsDataMessage(MessageHeader header, ByteBuffer buffer) {
 		return (MessageType.EventTableValueStates == header.getType());
 	}
 
+	// wrap super with @Transactional
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	@Override
+	public boolean handleDataMessage(MessageHeader header, Session session, ByteBuffer buffer) {
+		return super.handleDataMessage(header, session, buffer);
+	}
+
 	@Override
 	public boolean handleDataMessage(MessageHeader header, Session session, ByteBuffer buffer,
 			Long configId) {
@@ -78,7 +87,24 @@ public class ValueEventBinaryFileHandler extends BaseEventBinaryFileHandler<Valu
 			String dest = String.format(LoxoneEvents.VALUE_EVENT_MESSAGE_TOPIC, configId);
 			postMessage(dest, updated);
 		}
+
+		// translate into Datum
+		if ( datumGenerator != null ) {
+			int result = datumGenerator.handleValueEvents(updated, now);
+			log.debug("Saved {} value events as datum", result);
+		}
+
 		return true;
+	}
+
+	/**
+	 * Set a generator to translate value events into {@code Datum} instances.
+	 * 
+	 * @param datumGenerator
+	 *        The generator to use.
+	 */
+	public void setDatumGenerator(ValueEventDatumGenerator datumGenerator) {
+		this.datumGenerator = datumGenerator;
 	}
 
 }
