@@ -101,6 +101,22 @@ public class Config {
 	 * @see #idFromExternalForm(String)
 	 */
 	public String idToExternalForm() {
+		return idFromExternalForm(id);
+	}
+
+	/**
+	 * Get an external representation of a {@code Config.configId} in string
+	 * form.
+	 * 
+	 * @param id
+	 *        The ID to translate into external form.
+	 * @return The external ID form, or {@code null} if {code id} is
+	 *         {@code null}.
+	 */
+	public static final String idFromExternalForm(Long id) {
+		if ( id == null ) {
+			return null;
+		}
 		return Long.toUnsignedString(id.longValue(), 16);
 	}
 
