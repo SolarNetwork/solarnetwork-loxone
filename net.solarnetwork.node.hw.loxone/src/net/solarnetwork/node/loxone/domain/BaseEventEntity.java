@@ -22,13 +22,8 @@
 
 package net.solarnetwork.node.loxone.domain;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.LongBuffer;
 import java.util.Date;
 import java.util.UUID;
-import org.apache.commons.codec.binary.Base64;
-import com.fasterxml.jackson.annotation.JsonGetter;
 
 /**
  * Base class for event entities.
@@ -45,34 +40,6 @@ public abstract class BaseEventEntity extends BasicUUIDEntity implements EventEn
 		setUuid(uuid);
 		setConfigId(configId);
 		this.created = (created == null ? new Date() : created);
-	}
-
-	/**
-	 * Get a derived {@code sourceId} value from this event.
-	 * 
-	 * The {@code sourceId} value is suitable for using as a
-	 * {@code Datum.sourceId} value.
-	 * 
-	 * @return The source ID.
-	 * @throws IllegalArgumentException
-	 *         if {@code configId} or {@code uuid} are {@code null}
-	 */
-	@JsonGetter
-	public String getSourceId() {
-		// source IDs are limited to 32 characters, so we could do MD5 as hex, or Base64 SHA1
-		// choose Base64 SHA1 for larger address space
-		Long configId = getConfigId();
-		UUID uuid = getUuid();
-		if ( configId == null || uuid == null ) {
-			throw new IllegalArgumentException(
-					"Both configId and uuid values are required from " + this);
-		}
-		byte[] bytes = new byte[24];
-		LongBuffer buf = ByteBuffer.wrap(bytes).order(ByteOrder.BIG_ENDIAN).asLongBuffer();
-		buf.put(configId);
-		buf.put(uuid.getMostSignificantBits());
-		buf.put(uuid.getLeastSignificantBits());
-		return Base64.encodeBase64URLSafeString(bytes);
 	}
 
 	@Override

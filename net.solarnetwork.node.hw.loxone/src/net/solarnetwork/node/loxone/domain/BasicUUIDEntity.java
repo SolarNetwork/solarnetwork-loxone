@@ -23,6 +23,7 @@
 package net.solarnetwork.node.loxone.domain;
 
 import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -45,6 +46,17 @@ public class BasicUUIDEntity implements UUIDEntity {
 	@JsonIgnore
 	public void setConfigId(Long configId) {
 		this.configId = configId;
+	}
+
+	/**
+	 * Get a derived {@code sourceId} value from this event.
+	 * 
+	 * @return The source ID, or {@code null} if unavailable.
+	 * @see UUIDEntity#sourceIdForUUIDEntity(UUIDEntity)
+	 */
+	@JsonGetter
+	public String getSourceId() {
+		return UUIDEntity.sourceIdForUUIDEntity(this);
 	}
 
 	@Override
