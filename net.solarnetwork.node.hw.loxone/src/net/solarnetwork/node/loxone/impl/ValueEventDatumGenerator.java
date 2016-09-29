@@ -25,12 +25,13 @@ package net.solarnetwork.node.loxone.impl;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.solarnetwork.node.dao.DatumDao;
 import net.solarnetwork.node.domain.Datum;
 import net.solarnetwork.node.domain.GeneralNodeDatum;
 import net.solarnetwork.node.loxone.dao.DatumUUIDSetDao;
 import net.solarnetwork.node.loxone.dao.UUIDSetDao;
-import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
 import net.solarnetwork.util.OptionalService;
 
@@ -50,6 +51,8 @@ public class ValueEventDatumGenerator {
 
 	private final DatumUUIDSetDao uuidSetDao;
 	private final OptionalService<DatumDao<Datum>> datumDao;
+
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	/**
 	 * Construct with a UUIDSetDao.
@@ -96,35 +99,20 @@ public class ValueEventDatumGenerator {
 		int processed = 0;
 		for ( ValueEvent ve : valueEvents ) {
 			if ( uuidSetDao.contains(ve.getConfigId(), ve.getUuid()) ) {
-				GeneralNodeDatum datum = new GeneralNodeDatum();
-				datum.setSourceId(sourceIdForValueEvent(ve));
-				datum.setCreated(created);
-				datum.putInstantaneousSampleValue(sampleKeyForValueEvent(ve), ve.getValue());
-				dao.storeDatum(datum);
-				processed++;
+				try {
+					GeneralNodeDatum datum = new GeneralNodeDatum();
+					datum.setSourceId(ve.getSourceId());
+					datum.setCreated(created);
+					datum.putInstantaneousSampleValue(sampleKeyForValueEvent(ve), ve.getValue());
+					dao.storeDatum(datum);
+					processed++;
+				} catch ( IllegalArgumentException e ) {
+					// ignore this
+					log.warn("Ignoring ValueEvent with invalid source ID data: {}", ve);
+				}
 			}
 		}
 		return processed;
-	}
-
-	/**
-	 * Get a {@link Datum#getSourceId()} value for a value event.
-	 * 
-	 * @param valueEvent
-	 *        The event to get the source ID for.
-	 * @return The source ID.
-	 * @throws IllegalArgumentException
-	 *         if {@code valueEvent} or any necessary property on it are
-	 *         {@code null}
-	 */
-	private String sourceIdForValueEvent(ValueEvent valueEvent) {
-		Long configId = (valueEvent != null ? valueEvent.getConfigId() : null);
-		UUID uuid = (valueEvent != null ? valueEvent.getUuid() : null);
-		if ( configId == null || uuid == null ) {
-			throw new IllegalArgumentException(
-					"Both configId and uuid values are required from " + valueEvent);
-		}
-		return String.format("%s/%s", Config.idFromExternalForm(configId), uuid);
 	}
 
 	private String sampleKeyForValueEvent(ValueEvent valueEvent) {
