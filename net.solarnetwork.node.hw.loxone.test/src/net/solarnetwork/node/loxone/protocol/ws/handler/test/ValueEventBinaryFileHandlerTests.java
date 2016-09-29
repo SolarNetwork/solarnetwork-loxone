@@ -110,9 +110,9 @@ public class ValueEventBinaryFileHandlerTests {
 		Assert.assertTrue("Handled", handled);
 
 		// test just the first few values
-		Object[][] expectedEventData = { { "aceb890c-2100-be02-ffff-a1b98ee6c71d", 4.0 },
-				{ "aceb890c-2500-d002-ffff-a1b98ee6c71d", 376.0 },
-				{ "aceb890c-2600-d302-ffff-a1b98ee6c71d", 1093.0 }, };
+		Object[][] expectedEventData = { { "0c89ebac-0021-02be-ffff-a1b98ee6c71d", 4.0 },
+				{ "0c89ebac-0025-02d0-ffff-a1b98ee6c71d", 376.0 },
+				{ "0c89ebac-0026-02d3-ffff-a1b98ee6c71d", 1093.0 }, };
 
 		int i = 0;
 		for ( Object[] eventData : expectedEventData ) {

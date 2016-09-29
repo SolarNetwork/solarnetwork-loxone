@@ -84,6 +84,7 @@ public class ValueEventBinaryFileHandler extends BaseEventBinaryFileHandler<Valu
 
 		// post updated values to message channel
 		if ( !updated.isEmpty() ) {
+			log.trace("Got updated value events: {}", updated);
 			String dest = String.format(LoxoneEvents.VALUE_EVENT_MESSAGE_TOPIC, configId);
 			postMessage(dest, updated);
 		}

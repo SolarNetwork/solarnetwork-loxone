@@ -48,4 +48,9 @@ public class ValueEvent extends BaseEventEntity {
 		return value;
 	}
 
+	@Override
+	public String toString() {
+		return "ValueEvent{uuid=" + getUuid() + ",value=" + value + "}";
+	}
+
 }

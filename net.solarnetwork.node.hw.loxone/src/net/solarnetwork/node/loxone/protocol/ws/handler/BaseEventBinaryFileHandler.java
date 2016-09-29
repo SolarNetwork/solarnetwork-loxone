@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.LongBuffer;
 import java.util.UUID;
 import javax.websocket.Session;
 import org.osgi.service.event.Event;
@@ -136,10 +135,12 @@ public abstract class BaseEventBinaryFileHandler<T extends BaseEventEntity>
 	 * @return The parsed UUID.
 	 */
 	protected UUID readUUID(ByteBuffer buffer) {
-		LongBuffer buf = buffer.order(ByteOrder.BIG_ENDIAN).asLongBuffer();
-		UUID uuid = new UUID(buf.get(), buf.get());
-		buffer.order(ByteOrder.LITTLE_ENDIAN);
-		buffer.position(buffer.position() + 16);
+		ByteBuffer buf = buffer.order(ByteOrder.LITTLE_ENDIAN);
+		long d1 = Integer.toUnsignedLong(buf.getInt());
+		long d2 = Short.toUnsignedLong(buf.getShort());
+		long d3 = Short.toUnsignedLong(buf.getShort());
+		UUID uuid = new UUID(((d1 << 32) | (d2 << 16) | d3), buf.order(ByteOrder.BIG_ENDIAN).getLong());
+		buf.order(ByteOrder.LITTLE_ENDIAN);
 		return uuid;
 	}
 
