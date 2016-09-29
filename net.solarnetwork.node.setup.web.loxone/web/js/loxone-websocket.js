@@ -1,14 +1,6 @@
 function websocket() {
 	var configId = $("meta[name='loxone-config-id']").attr("content");
 
-  function formatUUID(uuid) {
-    var segments = uuid.split('-');
-    var s1 = segments[0].match(/.{1,2}/g);
-    var s2 = segments[1].match(/.{1,2}/g);
-    var s3 = segments[2].match(/.{1,2}/g);
-    return `${s1[3] + s1[2] + s1[1] + s1[0]}-${s2[1] + s2[0]}-${s3[1] + s3[0]}-${segments[3]}`
-  }
-
 	function processValueEvents(list) {
 		var container = $('#loxone-event-console'),
 			group = $(`<section><h2>${new Date()}</h2></section>`);
@@ -16,12 +8,10 @@ function websocket() {
 		list.forEach(function(ve) {
 			// $('<div class="alert alert-info"/>').html(`<b>${ve.uuid}</b> = ${ve.value}`).appendTo(group);
 
-      var valueUUID = formatUUID(ve.uuid);
-
       for(var c in controller.controls) {
         if(controller.controls[c].states != null) {
           for(var s in controller.controls[c].states) {
-            if(controller.controls[c].states[s] == valueUUID) {
+            if(controller.controls[c].states[s] == ve.uuid) {
               controller.controls[c].value = parseFloat(ve.value.toFixed(2));
               var valueElement = document.getElementById(`value-${controller.controls[c].uuid}`);
               if(valueElement) {
