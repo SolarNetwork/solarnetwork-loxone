@@ -40,6 +40,7 @@ import net.solarnetwork.node.dao.DatumDao;
 import net.solarnetwork.node.domain.Datum;
 import net.solarnetwork.node.domain.GeneralNodeDatum;
 import net.solarnetwork.node.loxone.dao.DatumUUIDSetDao;
+import net.solarnetwork.node.loxone.domain.UUIDEntity;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
 import net.solarnetwork.node.loxone.impl.ValueEventDatumGenerator;
 import net.solarnetwork.util.StaticOptionalService;
@@ -118,7 +119,7 @@ public class ValueEventGeneratorTests {
 
 		GeneralNodeDatum gnd = datumCapture.getValue();
 
-		assertEquals("Source ID in Base64(SHA1(configId+uuid)) form", "AAAAAAAAAHusQzH_laZAN7Qd9Lq8vBKp",
+		assertEquals("Source ID in Base64(configId+uuid) form", UUIDEntity.sourceIdForUUIDEntity(event),
 				gnd.getSourceId());
 		Map<String, ?> sampleData = gnd.getSamples().getSampleData();
 		Assert.assertNotNull("Sample data created", sampleData);
