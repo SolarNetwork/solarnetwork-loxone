@@ -1,5 +1,5 @@
 /* ==================================================================
- * DatumUUIDSetDao.java - 27/09/2016 3:45:35 PM
+ * DatumUUIDEntityParameters.java - 1/10/2016 11:17:27 AM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -20,18 +20,25 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.loxone.dao;
-
-import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
-import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
+package net.solarnetwork.node.loxone.domain;
 
 /**
- * DAO to track a list of UUID values that should be allowed to be persisted as
- * {@link net.solarnetwork.node.domain.Datum} objects.
+ * Parameters for {@link DatumUUIDEntity} objects.
  * 
  * @author matt
  * @version 1.0
  */
-public interface DatumUUIDSetDao extends UUIDSetDao<DatumUUIDEntity, DatumUUIDEntityParameters> {
+public interface DatumUUIDEntityParameters extends UUIDEntityParameters {
+
+	/**
+	 * Get a maximum number of seconds at which {@code Datum} objects should be
+	 * saved from the associated entity value.
+	 * 
+	 * This is meant to serve as a limiting function to how frequently datum
+	 * objects are uploaded to SolarNetwork.
+	 * 
+	 * @return A maximum number of seconds, or {@code 0} for no limit.
+	 */
+	int getSaveFrequencySeconds();
 
 }

@@ -1,5 +1,5 @@
 /* ==================================================================
- * DatumUUIDSetDao.java - 27/09/2016 3:45:35 PM
+ * UUIDSetEntity.java - 1/10/2016 11:51:49 AM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -20,18 +20,23 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.loxone.dao;
-
-import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
-import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
+package net.solarnetwork.node.loxone.domain;
 
 /**
- * DAO to track a list of UUID values that should be allowed to be persisted as
- * {@link net.solarnetwork.node.domain.Datum} objects.
+ * An entity designed to work as a UUID set.
  * 
  * @author matt
  * @version 1.0
+ * @param <P>
+ *        the parameters type
  */
-public interface DatumUUIDSetDao extends UUIDSetDao<DatumUUIDEntity, DatumUUIDEntityParameters> {
+public interface UUIDSetEntity<P> extends UUIDEntity {
+
+	/**
+	 * Get an optional parameters object.
+	 * 
+	 * @return A parameters object, or {@code null}.
+	 */
+	P getParameters();
 
 }

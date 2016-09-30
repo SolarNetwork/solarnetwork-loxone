@@ -22,12 +22,16 @@
 
 package net.solarnetwork.node.loxone.dao.jdbc;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 import org.springframework.jdbc.core.RowMapper;
 import net.solarnetwork.node.loxone.dao.DatumUUIDSetDao;
 import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntity;
+import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
+import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
 
 /**
  * JDBC implementation of {@link DatumUUIDSetDao}.
@@ -35,13 +39,35 @@ import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
  * @author matt
  * @version 1.0
  */
-public class JdbcDatumUUIDSetDao extends BaseUUIDSetDao<DatumUUIDEntity> implements DatumUUIDSetDao {
+public class JdbcDatumUUIDSetDao extends BaseUUIDSetDao<DatumUUIDEntity, DatumUUIDEntityParameters>
+		implements DatumUUIDSetDao {
 
 	/** The default tables version. */
 	public static final int TABLES_VERSION = 1;
 
 	public JdbcDatumUUIDSetDao() {
-		super(DatumUUIDEntity.class, "datumset", TABLES_VERSION, new DatumUUIDEntityRowMapper());
+		super(DatumUUIDEntity.class, DatumUUIDEntityParameters.class, "datumset", TABLES_VERSION,
+				new DatumUUIDEntityRowMapper());
+	}
+
+	@Override
+	protected void setStoreStatementValues(PreparedStatement ps, Long configId, UUID uuid,
+			DatumUUIDEntityParameters parameters) throws SQLException {
+		super.setStoreStatementValues(ps, configId, uuid, parameters);
+		ps.setInt(4, parameters != null ? parameters.getSaveFrequencySeconds() : 0);
+	}
+
+	@Override
+	protected int setUpdateStatementValues(PreparedStatement ps, Long configId, UUID uuid,
+			DatumUUIDEntityParameters parameters) throws SQLException {
+		ps.setInt(1, parameters != null ? parameters.getSaveFrequencySeconds() : 0);
+		return 2;
+	}
+
+	@Override
+	protected void updateResultSetValues(ResultSet set, DatumUUIDEntityParameters parameters)
+			throws SQLException {
+		set.updateInt(1, parameters != null ? parameters.getSaveFrequencySeconds() : 0);
 	}
 
 	private static final class DatumUUIDEntityRowMapper implements RowMapper<DatumUUIDEntity> {
@@ -52,6 +78,11 @@ public class JdbcDatumUUIDSetDao extends BaseUUIDSetDao<DatumUUIDEntity> impleme
 			// Row order is: uuid_hi, uuid_lo, config_id
 			row.setUuid(readUUID(1, rs));
 			row.setConfigId(rs.getLong(3));
+
+			BasicDatumUUIDEntityParameters params = new BasicDatumUUIDEntityParameters();
+			row.setParameters(params);
+			params.setSaveFrequencySeconds(rs.getInt(4));
+
 			return row;
 		}
 

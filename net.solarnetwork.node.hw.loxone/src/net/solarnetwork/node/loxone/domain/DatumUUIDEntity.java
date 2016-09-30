@@ -29,6 +29,6 @@ package net.solarnetwork.node.loxone.domain;
  * @author matt
  * @version 1.0
  */
-public interface DatumUUIDEntity extends UUIDEntity {
+public interface DatumUUIDEntity extends UUIDSetEntity<DatumUUIDEntityParameters> {
 
 }

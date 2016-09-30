@@ -29,8 +29,10 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.dao.DataAccessException;
@@ -40,7 +42,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.loxone.dao.UUIDSetDao;
-import net.solarnetwork.node.loxone.domain.UUIDEntity;
+import net.solarnetwork.node.loxone.domain.UUIDEntityParameters;
+import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
 
 /**
  * Base implementation of {@link UUIDSetDao}.
@@ -48,8 +51,8 @@ import net.solarnetwork.node.loxone.domain.UUIDEntity;
  * @author matt
  * @version 1.0
  */
-public abstract class BaseUUIDSetDao<T extends UUIDEntity> extends BaseUUIDEntityDao<T>
-		implements UUIDSetDao<T> {
+public abstract class BaseUUIDSetDao<T extends UUIDSetEntity<P>, P extends UUIDEntityParameters>
+		extends BaseUUIDEntityDao<T> implements UUIDSetDao<T, P> {
 
 	/**
 	 * SQL resource to get a count by {@code configId} and {@code uuid}. Accepts
@@ -58,12 +61,16 @@ public abstract class BaseUUIDSetDao<T extends UUIDEntity> extends BaseUUIDEntit
 	 */
 	public static final String SQL_COUNT_FOR_PK = "count-for-pk";
 
+	private final Class<P> parametersClass;
+
 	/**
 	 * Construct with an an entity name and table version, deriving various
 	 * names based on conventions.
 	 * 
 	 * @param entityClass
 	 *        The class of the entity managed by this DAO.
+	 * @param parametersClass
+	 *        The class of the parameters managed by this DAO.
 	 * @param entityName
 	 *        The entity name to use. This name forms the basis of the default
 	 *        SQL resource prefix, table name, tables version query, and SQL
@@ -73,8 +80,15 @@ public abstract class BaseUUIDSetDao<T extends UUIDEntity> extends BaseUUIDEntit
 	 * @param rowMapper
 	 *        A row mapper to use when mapping entity query results.
 	 */
-	public BaseUUIDSetDao(Class<T> entityClass, String entityName, int version, RowMapper<T> rowMapper) {
+	public BaseUUIDSetDao(Class<T> entityClass, Class<P> parametersClass, String entityName, int version,
+			RowMapper<T> rowMapper) {
 		super(entityClass, entityName, version, rowMapper);
+		this.parametersClass = parametersClass;
+	}
+
+	@Override
+	public Class<P> parametersClass() {
+		return parametersClass;
 	}
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
@@ -109,46 +123,117 @@ public abstract class BaseUUIDSetDao<T extends UUIDEntity> extends BaseUUIDEntit
 		return findAllEntitiesForConfig(configId, sortDescriptors);
 	}
 
-	/**
-	 * Overrides {@link BaseUUIDEntityDao#storeEntity(UUIDEntity)} to only
-	 * perform inserts, with the assumption there are no columns to update.
-	 */
 	@Override
-	protected void storeEntity(final T entity) {
-		assert entity.getUuid() != null;
-		if ( !contains(entity.getConfigId(), entity.getUuid()) ) {
-			insertDomainObject(entity, getSqlResource(SQL_INSERT));
-		}
+	protected final void setStoreStatementValues(T entity, PreparedStatement ps) throws SQLException {
+		setStoreStatementValues(ps, entity.getConfigId(), entity.getUuid(), entity.getParameters());
+	}
+
+	/**
+	 * Called from
+	 * {@link #setStoreStatementValues(UUIDSetEntity, PreparedStatement)} as
+	 * well as {@link #updateSetForConfig(Long, Collection, Collection, Map)} to
+	 * set prepared statement values for inserting rows.
+	 * 
+	 * This method will set the UUID and config ID column values, so extending
+	 * classes can start on column {@code 4}.
+	 * 
+	 * @param ps
+	 *        The prepared statement.
+	 * @param configId
+	 *        The config ID.
+	 * @param uuid
+	 *        The UUID.
+	 * @param parameters
+	 *        The parameters.
+	 * @throws SQLException
+	 *         If any SQL error occurs.
+	 */
+	protected void setStoreStatementValues(PreparedStatement ps, Long configId, UUID uuid, P parameters)
+			throws SQLException {
+		// Row order is: uuid_hi, uuid_lo, config_id
+		prepareUUID(1, uuid, ps);
+		ps.setObject(3, configId);
 	}
 
 	@Override
-	protected void setStoreStatementValues(T entity, PreparedStatement ps) throws SQLException {
-		// Row order is: uuid_hi, uuid_lo, config_id
-		prepareUUID(1, entity.getUuid(), ps);
-		ps.setObject(3, entity.getConfigId());
+	protected final void setUpdateStatementValues(T entity, PreparedStatement ps) throws SQLException {
+		int col = setUpdateStatementValues(ps, entity.getConfigId(), entity.getUuid(),
+				entity.getParameters());
+		prepareUUID(col, entity.getUuid(), ps);
+		col += 2;
+		ps.setObject(col, entity.getConfigId());
 	}
+
+	/**
+	 * Called from
+	 * {@link #setUpdateStatementValues(UUIDSetEntity, PreparedStatement)} as
+	 * well as {@link #updateSetForConfig(Long, Collection, Collection, Map)} to
+	 * set prepared statement values for updating rows.
+	 * 
+	 * @param ps
+	 *        The prepared statement.
+	 * @param configId
+	 *        The config ID.
+	 * @param uuid
+	 *        The UUID.
+	 * @param parameters
+	 *        The parameters.
+	 * @return The next colum value to use, for setting the UUID and config ID
+	 *         parameters
+	 * @throws SQLException
+	 *         If any SQL error occurs.
+	 */
+	protected abstract int setUpdateStatementValues(PreparedStatement ps, Long configId, UUID uuid,
+			P parameters) throws SQLException;
+
+	/**
+	 * Called from
+	 * {@link #updateSetForConfig(Long, Collection, Collection, Map)} to update
+	 * existing row parameter values.
+	 * 
+	 * The {@link #SQL_GET_BY_PK} SQL will have been used, so updated columns
+	 * must match that query.
+	 * 
+	 * @param set
+	 *        An updatable result set.
+	 * @param parameters
+	 *        The parameters to update.
+	 * @throws SQLException
+	 *         If any SQL error occurs.
+	 */
+	protected abstract void updateResultSetValues(ResultSet set, P parameters) throws SQLException;
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	@Override
 	public void updateSetForConfig(final Long configId, final Collection<UUID> add,
-			final Collection<UUID> remove) {
+			final Collection<UUID> remove, final Map<UUID, P> parameters) {
 		final String getSql = getSqlResource(SQL_GET_BY_PK);
 		final String addSql = getSqlResource(SQL_INSERT);
-		final Set<UUID> toAdd = (add != null ? new LinkedHashSet<UUID>(add) : Collections.emptySet());
+		final Set<UUID> toAdd = (add != null ? new LinkedHashSet<>(add) : Collections.emptySet());
+		final Map<UUID, P> paramsToAdd = (parameters != null ? new LinkedHashMap<>(parameters)
+				: Collections.emptyMap());
 		getJdbcTemplate().execute(new ConnectionCallback<Object>() {
 
 			@Override
 			public Object doInConnection(Connection con) throws SQLException, DataAccessException {
-				// find existing rows we don't need to add, removing them from toAdd
+				// find existing rows we don't need to add, removing them from toAdd after 
+				// applying any parameters update as necessary
 				if ( !toAdd.isEmpty() ) {
-					PreparedStatement ps = con.prepareStatement(getSql);
+					PreparedStatement ps = con.prepareStatement(getSql, ResultSet.TYPE_SCROLL_SENSITIVE,
+							ResultSet.CONCUR_UPDATABLE);
 					try {
 						for ( Iterator<UUID> itr = toAdd.iterator(); itr.hasNext(); ) {
-							prepareUUID(1, itr.next(), ps);
+							UUID uuid = itr.next();
+							prepareUUID(1, uuid, ps);
 							ps.setObject(3, configId);
 							ResultSet rs = ps.executeQuery();
 							try {
 								if ( rs.next() ) {
+									P params = paramsToAdd.remove(uuid);
+									if ( params != null ) {
+										updateResultSetValues(rs, params);
+										rs.updateRow();
+									}
 									itr.remove();
 								}
 							} finally {
@@ -168,8 +253,8 @@ public abstract class BaseUUIDSetDao<T extends UUIDEntity> extends BaseUUIDEntit
 						ps = con.prepareStatement(addSql);
 						try {
 							for ( UUID uuid : toAdd ) {
-								prepareUUID(1, uuid, ps);
-								ps.setObject(3, configId);
+								P params = paramsToAdd.remove(uuid);
+								setStoreStatementValues(ps, configId, uuid, params);
 								ps.addBatch();
 							}
 							ps.executeBatch();
@@ -177,6 +262,22 @@ public abstract class BaseUUIDSetDao<T extends UUIDEntity> extends BaseUUIDEntit
 							if ( ps != null ) {
 								ps.close();
 							}
+						}
+					}
+				}
+
+				// now any UUIDs left in paramsToAdd are updates to existing UUIDs
+				if ( !paramsToAdd.isEmpty() ) {
+					PreparedStatement ps = con.prepareStatement(getSqlResource(SQL_UPDATE));
+					try {
+						for ( Map.Entry<UUID, P> me : paramsToAdd.entrySet() ) {
+							setUpdateStatementValues(ps, configId, me.getKey(), me.getValue());
+							ps.addBatch();
+						}
+						ps.executeBatch();
+					} finally {
+						if ( ps != null ) {
+							ps.close();
 						}
 					}
 				}

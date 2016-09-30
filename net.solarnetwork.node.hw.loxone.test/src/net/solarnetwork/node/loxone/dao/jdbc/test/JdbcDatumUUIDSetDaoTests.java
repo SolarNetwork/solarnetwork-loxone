@@ -164,13 +164,13 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 
 	@Test
 	public void manageSetPassNulls() {
-		dao.updateSetForConfig(TEST_CONFIG_ID, null, null);
+		dao.updateSetForConfig(TEST_CONFIG_ID, null, null, null);
 	}
 
 	@Test
 	public void manageSetAddOnly() {
 		Set<UUID> add = Collections.singleton(UUID.randomUUID());
-		dao.updateSetForConfig(TEST_CONFIG_ID, add, null);
+		dao.updateSetForConfig(TEST_CONFIG_ID, add, null, null);
 		boolean found = dao.contains(TEST_CONFIG_ID, add.iterator().next());
 		Assert.assertTrue("BasicDatumUUIDEntity found", found);
 	}
@@ -179,7 +179,7 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 	public void manageSetAddDuplicate() {
 		insert();
 		Set<UUID> add = Collections.singleton(lastEntity.getUuid());
-		dao.updateSetForConfig(TEST_CONFIG_ID, add, null);
+		dao.updateSetForConfig(TEST_CONFIG_ID, add, null, null);
 		boolean found = dao.contains(TEST_CONFIG_ID, add.iterator().next());
 		Assert.assertTrue("BasicDatumUUIDEntity found", found);
 	}
@@ -188,7 +188,7 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 	public void manageSetRemove() {
 		insert();
 		Set<UUID> remove = Collections.singleton(lastEntity.getUuid());
-		dao.updateSetForConfig(TEST_CONFIG_ID, null, remove);
+		dao.updateSetForConfig(TEST_CONFIG_ID, null, remove, null);
 		boolean found = dao.contains(TEST_CONFIG_ID, remove.iterator().next());
 		Assert.assertFalse("BasicDatumUUIDEntity deleted", found);
 	}
@@ -197,7 +197,7 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 	public void manageSetAddAndRemoveSame() {
 		insert();
 		Set<UUID> uuids = Collections.singleton(lastEntity.getUuid());
-		dao.updateSetForConfig(TEST_CONFIG_ID, uuids, uuids);
+		dao.updateSetForConfig(TEST_CONFIG_ID, uuids, uuids, null);
 		boolean found = dao.contains(TEST_CONFIG_ID, uuids.iterator().next());
 		Assert.assertFalse("BasicDatumUUIDEntity deleted", found);
 	}
@@ -207,7 +207,7 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 		insert();
 		Set<UUID> add = Collections.singleton(UUID.randomUUID());
 		Set<UUID> remove = Collections.singleton(lastEntity.getUuid());
-		dao.updateSetForConfig(TEST_CONFIG_ID, add, remove);
+		dao.updateSetForConfig(TEST_CONFIG_ID, add, remove, null);
 		boolean found = dao.contains(TEST_CONFIG_ID, add.iterator().next());
 		Assert.assertTrue("BasicDatumUUIDEntity added", found);
 		found = dao.contains(TEST_CONFIG_ID, remove.iterator().next());

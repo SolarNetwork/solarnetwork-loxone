@@ -24,10 +24,12 @@ package net.solarnetwork.node.loxone.dao;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
-import net.solarnetwork.node.loxone.domain.UUIDEntity;
+import net.solarnetwork.node.loxone.domain.UUIDEntityParameters;
+import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
 
 /**
  * DAO to track a list of UUID values.
@@ -41,7 +43,7 @@ import net.solarnetwork.node.loxone.domain.UUIDEntity;
  * @author matt
  * @version 1.0
  */
-public interface UUIDSetDao<T extends UUIDEntity> {
+public interface UUIDSetDao<T extends UUIDSetEntity<P>, P extends UUIDEntityParameters> {
 
 	/**
 	 * Get the class of the entity managed by this DAO.
@@ -49,6 +51,13 @@ public interface UUIDSetDao<T extends UUIDEntity> {
 	 * @return The class.
 	 */
 	Class<T> entityClass();
+
+	/**
+	 * Get the class of the parameters managed by this DAO.
+	 * 
+	 * @return The class.
+	 */
+	Class<P> parametersClass();
 
 	/**
 	 * Store (create or update) an entity. The {@code uuid} value is the primary
@@ -118,6 +127,10 @@ public interface UUIDSetDao<T extends UUIDEntity> {
 	 *        An optional set of UUIDs that should be added to the UUID set.
 	 * @param remove
 	 *        An optional set of UUIDs that should be removed from the UUID set.
+	 * @param parameters
+	 *        An optional map of UUID to parameter objects to apply to any UUID
+	 *        value.
 	 */
-	void updateSetForConfig(Long configId, Collection<UUID> add, Collection<UUID> remove);
+	void updateSetForConfig(Long configId, Collection<UUID> add, Collection<UUID> remove,
+			Map<UUID, P> parameters);
 }
