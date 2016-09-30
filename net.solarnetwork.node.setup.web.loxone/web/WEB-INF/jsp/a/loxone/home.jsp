@@ -27,7 +27,6 @@
   </div>
 </div>
 
-<div id="device-view" class="loxone-list"></div>
+<div id="control-view" class="loxone-list"></div>
 
-<script type="application/javascript" src="<c:url value='/js/loxone-control-view.js'/>"></script>
-<script type="application/javascript" src="<c:url value='/js/loxone-websocket.js'/>"></script>
+<script type="application/javascript" src="<c:url value='/js/loxone-view-control.js'/>"></script>
