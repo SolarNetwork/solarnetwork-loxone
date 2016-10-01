@@ -22,6 +22,7 @@
 
 package net.solarnetwork.node.setup.web.loxone;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,9 +65,12 @@ public class DatumUUIDPatchSet extends UUIDPatchSet {
 			@JsonProperty(value = "remove", required = false) List<UUID> remove,
 			@JsonDeserialize(keyUsing = UUIDKeyDeserializer.class) @JsonProperty(value = "parameters", required = false) Map<UUID, BasicDatumUUIDEntityParameters> parameters) {
 		super(add, remove);
-
-		this.parameters = new LinkedHashMap<>();
-		this.parameters.putAll(parameters);
+		if ( parameters != null ) {
+			this.parameters = new LinkedHashMap<>();
+			this.parameters.putAll(parameters);
+		} else {
+			this.parameters = Collections.emptyMap();
+		}
 	}
 
 	public Map<UUID, DatumUUIDEntityParameters> getParameters() {
