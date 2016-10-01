@@ -39,6 +39,15 @@ public interface DatumUUIDEntityParameters extends UUIDEntityParameters {
 	 * 
 	 * @return A maximum number of seconds, or {@code 0} for no limit.
 	 */
-	int getSaveFrequencySeconds();
+	Integer getSaveFrequencySeconds();
+
+	/**
+	 * Get the type of value this UUID's associated values should be represented
+	 * as when translated into a {@code Datum} instance.
+	 * 
+	 * @return The datum value type, or {@code null} to be treated in a default
+	 *         manner.
+	 */
+	DatumValueType getDatumValueType();
 
 }

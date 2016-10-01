@@ -39,6 +39,7 @@ import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntity;
 import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
 import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
+import net.solarnetwork.node.loxone.domain.DatumValueType;
 import net.solarnetwork.node.test.AbstractNodeTransactionalTest;
 
 /**
@@ -78,6 +79,7 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 	private void addParameters(BasicDatumUUIDEntity e) {
 		BasicDatumUUIDEntityParameters p = new BasicDatumUUIDEntityParameters();
 		p.setSaveFrequencySeconds(300);
+		p.setDatumValueType(DatumValueType.Instantaneous);
 		e.setParameters(p);
 	}
 
@@ -247,16 +249,20 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 		insertWithParameters();
 		Set<UUID> add = Collections.singleton(UUID.randomUUID());
 		Set<UUID> remove = Collections.singleton(lastEntity.getUuid());
+		BasicDatumUUIDEntityParameters params = new BasicDatumUUIDEntityParameters(500);
+		params.setDatumValueType(DatumValueType.Accumulating);
 		Map<UUID, DatumUUIDEntityParameters> parameters = Collections.singletonMap(add.iterator().next(),
-				new BasicDatumUUIDEntityParameters(500));
+				params);
 		dao.updateSetForConfig(TEST_CONFIG_ID, add, remove, parameters);
 
 		DatumUUIDEntity found = dao.load(lastEntity.getConfigId(), add.iterator().next());
 		Assert.assertNotNull("BasicDatumUUIDEntity found", found);
 		Assert.assertNotNull("Parameters returned", found.getParameters());
-		Assert.assertEquals("Save frequency value",
-				parameters.values().iterator().next().getSaveFrequencySeconds(),
+
+		Assert.assertEquals("Save frequency value", params.getSaveFrequencySeconds(),
 				found.getParameters().getSaveFrequencySeconds());
+		Assert.assertEquals("Datum type value", params.getDatumValueType(),
+				found.getParameters().getDatumValueType());
 
 		boolean exists = dao.contains(TEST_CONFIG_ID, remove.iterator().next());
 		Assert.assertFalse("BasicDatumUUIDEntity deleted", exists);
@@ -265,32 +271,56 @@ public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 	@Test
 	public void manageSetUpdateParameters() {
 		insertWithParameters();
+		BasicDatumUUIDEntityParameters params = new BasicDatumUUIDEntityParameters(500);
+		params.setDatumValueType(DatumValueType.Accumulating);
 		Map<UUID, DatumUUIDEntityParameters> parameters = Collections.singletonMap(lastEntity.getUuid(),
-				new BasicDatumUUIDEntityParameters(500));
+				params);
 		dao.updateSetForConfig(TEST_CONFIG_ID, null, null, parameters);
 
 		DatumUUIDEntity found = dao.load(lastEntity.getConfigId(), lastEntity.getUuid());
 		Assert.assertNotNull("BasicDatumUUIDEntity found", found);
 		Assert.assertNotNull("Parameters returned", found.getParameters());
-		Assert.assertEquals("Save frequency value",
-				parameters.values().iterator().next().getSaveFrequencySeconds(),
+		Assert.assertEquals("Save frequency value", params.getSaveFrequencySeconds(),
 				found.getParameters().getSaveFrequencySeconds());
+		Assert.assertEquals("Datum type value", params.getDatumValueType(),
+				found.getParameters().getDatumValueType());
 	}
 
 	@Test
 	public void manageSetAddDuplicateAndUpdateParameters() {
 		insertWithParameters();
 		Set<UUID> add = Collections.singleton(lastEntity.getUuid());
+		BasicDatumUUIDEntityParameters params = new BasicDatumUUIDEntityParameters(500);
+		params.setDatumValueType(DatumValueType.Accumulating);
 		Map<UUID, DatumUUIDEntityParameters> parameters = Collections.singletonMap(lastEntity.getUuid(),
-				new BasicDatumUUIDEntityParameters(500));
+				params);
 		dao.updateSetForConfig(TEST_CONFIG_ID, add, null, parameters);
 
 		DatumUUIDEntity found = dao.load(lastEntity.getConfigId(), lastEntity.getUuid());
 		Assert.assertNotNull("BasicDatumUUIDEntity found", found);
 		Assert.assertNotNull("Parameters returned", found.getParameters());
-		Assert.assertEquals("Save frequency value",
-				parameters.values().iterator().next().getSaveFrequencySeconds(),
+		Assert.assertEquals("Save frequency value", params.getSaveFrequencySeconds(),
 				found.getParameters().getSaveFrequencySeconds());
+		Assert.assertEquals("Datum type value", params.getDatumValueType(),
+				found.getParameters().getDatumValueType());
+	}
+
+	@Test
+	public void manageSetAddDuplicateAndUpdateOnlySaveFrequencyParameter() {
+		insertWithParameters();
+		Set<UUID> add = Collections.singleton(lastEntity.getUuid());
+		BasicDatumUUIDEntityParameters params = new BasicDatumUUIDEntityParameters(500);
+		Map<UUID, DatumUUIDEntityParameters> parameters = Collections.singletonMap(lastEntity.getUuid(),
+				params);
+		dao.updateSetForConfig(TEST_CONFIG_ID, add, null, parameters);
+
+		DatumUUIDEntity found = dao.load(lastEntity.getConfigId(), lastEntity.getUuid());
+		Assert.assertNotNull("BasicDatumUUIDEntity found", found);
+		Assert.assertNotNull("Parameters returned", found.getParameters());
+		Assert.assertEquals("Save frequency value", params.getSaveFrequencySeconds(),
+				found.getParameters().getSaveFrequencySeconds());
+		Assert.assertEquals("Datum type value unchanged", lastEntity.getParameters().getDatumValueType(),
+				found.getParameters().getDatumValueType());
 	}
 
 }

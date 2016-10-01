@@ -1,5 +1,5 @@
 /* ==================================================================
- * BasicDatumUUIDEntityParameters.java - 1/10/2016 11:25:04 AM
+ * DatumValueType.java - 2/10/2016 10:09:41 AM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -23,46 +23,57 @@
 package net.solarnetwork.node.loxone.domain;
 
 /**
- * Basic implementation of {@link DatumUUIDEntityParameters}.
+ * An enumeration of possible datum value types.
  * 
  * @author matt
  * @version 1.0
  */
-public class BasicDatumUUIDEntityParameters implements DatumUUIDEntityParameters {
+public enum DatumValueType {
 
-	private Integer saveFrequencySeconds;
-	private DatumValueType datumValueType;
+	Unknown(0),
 
-	public BasicDatumUUIDEntityParameters() {
-		super();
+	Instantaneous(1),
+
+	Accumulating(2),
+
+	Status(3);
+
+	private final int code;
+
+	private DatumValueType(int code) {
+		this.code = code;
 	}
 
-	public BasicDatumUUIDEntityParameters(Integer saveFrequencySeconds) {
-		super();
-		this.saveFrequencySeconds = saveFrequencySeconds;
+	/**
+	 * Get an enum from a code value.
+	 * 
+	 * @param code
+	 *        The code value.
+	 * @return The enum.
+	 */
+	public static DatumValueType forCodeValue(int code) {
+		switch (code) {
+			case 1:
+				return Instantaneous;
+
+			case 2:
+				return Accumulating;
+
+			case 3:
+				return Status;
+
+			default:
+				return Unknown;
+		}
 	}
 
-	public BasicDatumUUIDEntityParameters(Integer saveFrequencySeconds, DatumValueType datumValueType) {
-		super();
-		this.datumValueType = datumValueType;
-	}
-
-	@Override
-	public Integer getSaveFrequencySeconds() {
-		return saveFrequencySeconds;
-	}
-
-	public void setSaveFrequencySeconds(int saveFrequencySeconds) {
-		this.saveFrequencySeconds = saveFrequencySeconds;
-	}
-
-	@Override
-	public DatumValueType getDatumValueType() {
-		return datumValueType;
-	}
-
-	public void setDatumValueType(DatumValueType datumValueType) {
-		this.datumValueType = datumValueType;
+	/**
+	 * Get a code value from this enum.
+	 * 
+	 * @return The code value.
+	 */
+	public int getCode() {
+		return code;
 	}
 
 }

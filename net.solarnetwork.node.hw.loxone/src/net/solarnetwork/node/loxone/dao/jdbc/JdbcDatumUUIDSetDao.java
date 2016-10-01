@@ -32,6 +32,7 @@ import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntity;
 import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
 import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
+import net.solarnetwork.node.loxone.domain.DatumValueType;
 
 /**
  * JDBC implementation of {@link DatumUUIDSetDao}.
@@ -54,20 +55,33 @@ public class JdbcDatumUUIDSetDao extends BaseUUIDSetDao<DatumUUIDEntity, DatumUU
 	protected void setStoreStatementValues(PreparedStatement ps, Long configId, UUID uuid,
 			DatumUUIDEntityParameters parameters) throws SQLException {
 		super.setStoreStatementValues(ps, configId, uuid, parameters);
-		ps.setInt(4, parameters != null ? parameters.getSaveFrequencySeconds() : 0);
+		ps.setInt(4, parameters != null && parameters.getSaveFrequencySeconds() != null
+				? parameters.getSaveFrequencySeconds() : 0);
+		ps.setShort(5, parameters != null && parameters.getDatumValueType() != null
+				? (short) parameters.getDatumValueType().getCode() : (short) 0);
 	}
 
 	@Override
 	protected int setUpdateStatementValues(PreparedStatement ps, Long configId, UUID uuid,
 			DatumUUIDEntityParameters parameters) throws SQLException {
-		ps.setInt(1, parameters != null ? parameters.getSaveFrequencySeconds() : 0);
-		return 2;
+		ps.setInt(1, parameters != null && parameters.getSaveFrequencySeconds() != null
+				? parameters.getSaveFrequencySeconds() : 0);
+		ps.setShort(2, parameters != null && parameters.getDatumValueType() != null
+				? (short) parameters.getDatumValueType().getCode() : (short) 0);
+		return 3;
 	}
 
 	@Override
 	protected void updateResultSetValues(ResultSet set, DatumUUIDEntityParameters parameters)
 			throws SQLException {
-		set.updateInt(4, parameters != null ? parameters.getSaveFrequencySeconds() : 0);
+		if ( parameters != null ) {
+			if ( parameters.getSaveFrequencySeconds() != null ) {
+				set.updateInt(4, parameters.getSaveFrequencySeconds());
+			}
+			if ( parameters.getDatumValueType() != null ) {
+				set.updateShort(5, (short) parameters.getDatumValueType().getCode());
+			}
+		}
 	}
 
 	private static final class DatumUUIDEntityRowMapper implements RowMapper<DatumUUIDEntity> {
@@ -79,9 +93,14 @@ public class JdbcDatumUUIDSetDao extends BaseUUIDSetDao<DatumUUIDEntity, DatumUU
 			row.setUuid(readUUID(1, rs));
 			row.setConfigId(rs.getLong(3));
 
+			// Add params instance, as long as some property is not a default value
 			BasicDatumUUIDEntityParameters params = new BasicDatumUUIDEntityParameters();
-			row.setParameters(params);
 			params.setSaveFrequencySeconds(rs.getInt(4));
+			params.setDatumValueType(DatumValueType.forCodeValue(rs.getShort(5)));
+			if ( params.getSaveFrequencySeconds() != 0
+					|| params.getDatumValueType() != DatumValueType.Unknown ) {
+				row.setParameters(params);
+			}
 
 			return row;
 		}

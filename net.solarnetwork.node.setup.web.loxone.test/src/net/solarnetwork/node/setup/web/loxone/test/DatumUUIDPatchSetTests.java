@@ -75,7 +75,7 @@ public class DatumUUIDPatchSetTests extends AbstractNodeTest {
 				patch.getRemove());
 		assertEquals("Parameters key", UUID.fromString("0d717dd5-02f4-a7bc-ffff-a1b98ee6c71f"),
 				patch.getParameters().keySet().iterator().next());
-		assertEquals("Parameters saveFrequencySeconds", 500,
+		assertEquals("Parameters saveFrequencySeconds", Integer.valueOf(500),
 				patch.getParameters().values().iterator().next().getSaveFrequencySeconds());
 	}
 
