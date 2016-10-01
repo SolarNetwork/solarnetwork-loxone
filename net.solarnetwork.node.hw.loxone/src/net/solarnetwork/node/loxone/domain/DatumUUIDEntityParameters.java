@@ -37,7 +37,8 @@ public interface DatumUUIDEntityParameters extends UUIDEntityParameters {
 	 * This is meant to serve as a limiting function to how frequently datum
 	 * objects are uploaded to SolarNetwork.
 	 * 
-	 * @return A maximum number of seconds, or {@code 0} for no limit.
+	 * @return A maximum number of seconds, or {@code 0} for a default limit, or
+	 *         {@code -1} for no limit.
 	 */
 	Integer getSaveFrequencySeconds();
 
