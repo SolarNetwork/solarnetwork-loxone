@@ -47,6 +47,20 @@ public class UUIDDeserializer extends FromStringDeserializer<UUID> {
 
 	@Override
 	protected UUID _deserialize(String value, DeserializationContext context) throws IOException {
+		return deserializeUUID(value);
+	}
+
+	/**
+	 * Utility method for deserializing a Loxone UUID value. "Regular" Java
+	 * style UUID strings are supported, too.
+	 * 
+	 * @param value
+	 *        The Loxone UUID string value.
+	 * @return The parsed UUID object.
+	 * @throws IOException
+	 *         If any parsing error occurs.
+	 */
+	public static final UUID deserializeUUID(String value) throws IOException {
 		byte[] data;
 		try {
 			data = Hex.decodeHex(value.replace("-", "").toCharArray());

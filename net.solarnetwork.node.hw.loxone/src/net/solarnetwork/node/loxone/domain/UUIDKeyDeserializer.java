@@ -1,5 +1,5 @@
 /* ==================================================================
- * DatumUUIDSetDao.java - 27/09/2016 3:45:35 PM
+ * UUIDKeyDeserializer.java - 1/10/2016 4:52:45 PM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -20,18 +20,37 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.loxone.dao;
+package net.solarnetwork.node.loxone.domain;
 
-import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
-import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
+import java.io.IOException;
+import java.util.UUID;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.KeyDeserializer;
+import net.solarnetwork.util.TypedKeyDeserializer;
 
 /**
- * DAO to track a list of UUID values that should be allowed to be persisted as
- * {@link net.solarnetwork.node.domain.Datum} objects.
+ * A {@link KeyDeserializer} for Loxone UUID values.
  * 
  * @author matt
  * @version 1.0
  */
-public interface DatumUUIDSetDao extends UUIDSetDao<DatumUUIDEntity, DatumUUIDEntityParameters> {
+public class UUIDKeyDeserializer extends KeyDeserializer implements TypedKeyDeserializer {
+
+	@Override
+	public Class<?> getKeyType() {
+		return UUID.class;
+	}
+
+	@Override
+	public KeyDeserializer getKeyDeserializer() {
+		return this;
+	}
+
+	@Override
+	public Object deserializeKey(String key, DeserializationContext context)
+			throws IOException, JsonProcessingException {
+		return UUIDDeserializer.deserializeUUID(key);
+	}
 
 }

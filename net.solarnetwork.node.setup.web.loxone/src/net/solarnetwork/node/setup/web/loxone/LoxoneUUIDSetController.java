@@ -24,6 +24,7 @@ package net.solarnetwork.node.setup.web.loxone;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,7 +34,8 @@ import org.springframework.web.bind.annotation.RestController;
 import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.loxone.LoxoneService;
 import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
-import net.solarnetwork.node.loxone.domain.UUIDEntity;
+import net.solarnetwork.node.loxone.domain.UUIDEntityParameters;
+import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
 import net.solarnetwork.web.domain.Response;
 
 /**
@@ -68,13 +70,13 @@ public class LoxoneUUIDSetController extends BaseLoxoneWebServiceController {
 	 */
 	@RequestMapping(value = "/datum", method = RequestMethod.PATCH)
 	public Response<Object> updateDatumUUIDSet(@PathVariable("configId") String configId,
-			@RequestBody UUIDPatchSet patchSet) {
+			@RequestBody DatumUUIDPatchSet patchSet) {
 		return updateUUIDSetForConfigId(configId, DatumUUIDEntity.class, patchSet.getAdd(),
-				patchSet.getRemove());
+				patchSet.getRemove(), patchSet.getParameters());
 	}
 
-	private <T extends UUIDEntity> Response<Collection<UUID>> getUUIDSetForConfigId(String configId,
-			Class<T> type, List<SortDescriptor> sortDescriptors) {
+	private <T extends UUIDSetEntity<P>, P extends UUIDEntityParameters> Response<Collection<UUID>> getUUIDSetForConfigId(
+			String configId, Class<T> type, List<SortDescriptor> sortDescriptors) {
 		LoxoneService service = serviceForConfigId(configId);
 		if ( service == null ) {
 			return new Response<Collection<UUID>>(Boolean.FALSE, "404", "Service not available", null);
@@ -83,13 +85,14 @@ public class LoxoneUUIDSetController extends BaseLoxoneWebServiceController {
 		return Response.response(result);
 	}
 
-	private <T extends UUIDEntity> Response<Object> updateUUIDSetForConfigId(String configId,
-			Class<T> type, Collection<UUID> add, Collection<UUID> remove) {
+	private <T extends UUIDSetEntity<P>, P extends UUIDEntityParameters> Response<Object> updateUUIDSetForConfigId(
+			String configId, Class<T> type, Collection<UUID> add, Collection<UUID> remove,
+			Map<UUID, P> parameters) {
 		LoxoneService service = serviceForConfigId(configId);
 		if ( service == null ) {
 			return new Response<Object>(Boolean.FALSE, "404", "Service not available", null);
 		}
-		service.updateUUIDSet(type, add, remove);
+		service.updateUUIDSet(type, add, remove, parameters);
 		return Response.response(null);
 	}
 
