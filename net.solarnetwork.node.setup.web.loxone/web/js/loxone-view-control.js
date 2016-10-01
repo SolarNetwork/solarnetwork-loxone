@@ -60,11 +60,7 @@ Loxone.controlView = (function() {
               for (var i = 0; i < rooms.length; i++) {
                 if(controls[c].room == rooms[i].uuid){ controls[c].room = rooms[i].name; break; }
               }
-              var enabled = false;
-              for (var i = 0; i < enables.length; i++) {
-                if(controls[c].uuid == enables[i]) enabled = true; break;
-              }
-              controls[c].enabled = enabled;
+              controls[c].enabled = !!enables[controls[c].uuid];
             }
 
             var filter = document.getElementById('filter-input').value.toLowerCase();

@@ -52,12 +52,7 @@ Loxone.api = (function() {
 
   this.isEnabled = function(uuid, next) {
     this.getResourceList('uuidsets/datum', function(err, enables) {
-      for(var e = 0; e < enables.length; e++) {
-        if(enables[e] == uuid) {
-          return next(true);
-        }
-      }
-      next(false);
+      next(!!enables[uuid]);
     })
   }
 
