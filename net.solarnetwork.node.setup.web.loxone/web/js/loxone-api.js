@@ -62,7 +62,7 @@ Loxone.api = (function() {
   }
 
   this.setEnable = function(uuid, enabled, next) {
-    var body = enabled ? { add: [uuid] } : { remove: [uuid] };
+    var body = JSON.stringify(enabled ? { add: [uuid] } : { remove: [uuid] });
     this.api.request({ method: 'PATCH', path: 'uuidsets/datum', headers: {'Content-Type': 'application/json'}, body: body, csrf: true }, next);
   }
 
