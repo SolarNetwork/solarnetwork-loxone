@@ -1,5 +1,5 @@
 /* ==================================================================
- * DatumUUIDSetDao.java - 27/09/2016 3:45:35 PM
+ * BasicDatumUUIDEntityParameters.java - 1/10/2016 11:25:04 AM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -20,18 +20,34 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.loxone.dao;
-
-import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
-import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
+package net.solarnetwork.node.loxone.domain;
 
 /**
- * DAO to track a list of UUID values that should be allowed to be persisted as
- * {@link net.solarnetwork.node.domain.Datum} objects.
+ * Basic implementation of {@link DatumUUIDEntityParameters}.
  * 
  * @author matt
  * @version 1.0
  */
-public interface DatumUUIDSetDao extends UUIDSetDao<DatumUUIDEntity, DatumUUIDEntityParameters> {
+public class BasicDatumUUIDEntityParameters implements DatumUUIDEntityParameters {
+
+	private int saveFrequencySeconds;
+
+	public BasicDatumUUIDEntityParameters() {
+		super();
+	}
+
+	public BasicDatumUUIDEntityParameters(int saveFrequencySeconds) {
+		super();
+		this.saveFrequencySeconds = saveFrequencySeconds;
+	}
+
+	@Override
+	public int getSaveFrequencySeconds() {
+		return saveFrequencySeconds;
+	}
+
+	public void setSaveFrequencySeconds(int saveFrequencySeconds) {
+		this.saveFrequencySeconds = saveFrequencySeconds;
+	}
 
 }

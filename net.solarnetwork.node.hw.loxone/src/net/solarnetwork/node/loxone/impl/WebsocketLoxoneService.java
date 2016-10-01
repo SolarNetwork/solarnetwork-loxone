@@ -42,7 +42,8 @@ import net.solarnetwork.node.loxone.dao.UUIDSetDao;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
 import net.solarnetwork.node.loxone.domain.EventEntity;
-import net.solarnetwork.node.loxone.domain.UUIDEntity;
+import net.solarnetwork.node.loxone.domain.UUIDEntityParameters;
+import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
 import net.solarnetwork.node.loxone.protocol.ws.CommandType;
 import net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint;
 import net.solarnetwork.node.settings.SettingSpecifier;
@@ -65,7 +66,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 	private String groupUID;
 	private List<ConfigurationEntityDao<ConfigurationEntity>> configurationDaos;
 	private List<EventEntityDao<EventEntity>> eventDaos;
-	private List<UUIDSetDao<UUIDEntity>> uuidSetDaos;
+	private List<UUIDSetDao<UUIDSetEntity<UUIDEntityParameters>, UUIDEntityParameters>> uuidSetDaos;
 	private SetupResourceProvider settingResourceProvider;
 
 	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
@@ -107,10 +108,10 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 	}
 
 	@Override
-	public <T extends UUIDEntity> Collection<UUID> getUUIDSet(Class<T> type,
-			List<SortDescriptor> sortDescriptors) {
+	public <T extends UUIDSetEntity<P>, P extends UUIDEntityParameters> Collection<UUID> getUUIDSet(
+			Class<T> type, List<SortDescriptor> sortDescriptors) {
 		Config config = getConfiguration();
-		UUIDSetDao<T> dao = uuidSetDaoForType(type);
+		UUIDSetDao<T, P> dao = uuidSetDaoForType(type);
 		Collection<T> entities = null;
 		if ( dao != null && config.getId() != null ) {
 			entities = dao.findAllForConfig(config.getId(), sortDescriptors);
@@ -127,12 +128,12 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	@Override
-	public <T extends UUIDEntity> void updateUUIDSet(Class<T> type, Collection<UUID> add,
-			Collection<UUID> remove) {
+	public <T extends UUIDSetEntity<P>, P extends UUIDEntityParameters> void updateUUIDSet(Class<T> type,
+			Collection<UUID> add, Collection<UUID> remove, Map<UUID, P> parameters) {
 		Config config = getConfiguration();
-		UUIDSetDao<T> dao = uuidSetDaoForType(type);
+		UUIDSetDao<T, P> dao = uuidSetDaoForType(type);
 		if ( dao != null && config.getId() != null ) {
-			dao.updateSetForConfig(config.getId(), add, remove);
+			dao.updateSetForConfig(config.getId(), add, remove, parameters);
 		}
 	}
 
@@ -162,11 +163,12 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T extends UUIDEntity> UUIDSetDao<T> uuidSetDaoForType(Class<T> type) {
+	private <T extends UUIDSetEntity<P>, P extends UUIDEntityParameters> UUIDSetDao<T, P> uuidSetDaoForType(
+			Class<T> type) {
 		if ( uuidSetDaos != null ) {
-			for ( UUIDSetDao<UUIDEntity> dao : uuidSetDaos ) {
+			for ( UUIDSetDao<UUIDSetEntity<UUIDEntityParameters>, UUIDEntityParameters> dao : uuidSetDaos ) {
 				if ( type.isAssignableFrom(dao.entityClass()) ) {
-					return (UUIDSetDao<T>) dao;
+					return (UUIDSetDao<T, P>) dao;
 				}
 			}
 		}
@@ -228,7 +230,8 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 		this.eventDaos = eventDaos;
 	}
 
-	public void setUuidSetDaos(List<UUIDSetDao<UUIDEntity>> uuidSetDaos) {
+	public void setUuidSetDaos(
+			List<UUIDSetDao<UUIDSetEntity<UUIDEntityParameters>, UUIDEntityParameters>> uuidSetDaos) {
 		this.uuidSetDaos = uuidSetDaos;
 	}
 

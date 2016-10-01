@@ -2,6 +2,7 @@ CREATE TABLE solarnode.loxone_datumset (
 	uuid_hi		BIGINT NOT NULL,
 	uuid_lo		BIGINT NOT NULL,
 	config_id	BIGINT NOT NULL,
+	fsecs       INTEGER NOT NULL WITH DEFAULT 0,
 	CONSTRAINT loxone_datumset_pk PRIMARY KEY (config_id, uuid_hi, uuid_lo)
 );
 

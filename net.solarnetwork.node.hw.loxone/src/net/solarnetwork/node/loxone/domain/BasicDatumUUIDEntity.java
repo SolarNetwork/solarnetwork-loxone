@@ -30,4 +30,15 @@ package net.solarnetwork.node.loxone.domain;
  */
 public class BasicDatumUUIDEntity extends BasicUUIDEntity implements DatumUUIDEntity {
 
+	private DatumUUIDEntityParameters parameters;
+
+	public void setParameters(DatumUUIDEntityParameters parameters) {
+		this.parameters = parameters;
+	}
+
+	@Override
+	public DatumUUIDEntityParameters getParameters() {
+		return parameters;
+	}
+
 }

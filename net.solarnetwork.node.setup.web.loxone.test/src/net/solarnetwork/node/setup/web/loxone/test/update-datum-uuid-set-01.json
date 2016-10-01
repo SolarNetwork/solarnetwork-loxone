@@ -1,0 +1,13 @@
+{
+	"add" : [
+		"0d717dd5-02f4-a7bc-ffffa1b98ee6c71d"
+	],
+	"remove" : [
+		"0d717dd5-02f4-a7bc-ffffa1b98ee6c71e"
+	],
+	"parameters" : {
+		"0d717dd5-02f4-a7bc-ffffa1b98ee6c71f" : {
+			"saveFrequencySeconds" : 500
+		}
+	}
+}

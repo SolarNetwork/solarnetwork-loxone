@@ -24,6 +24,7 @@ package net.solarnetwork.node.loxone;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Future;
 import org.springframework.core.io.Resource;
@@ -32,7 +33,8 @@ import net.solarnetwork.node.Identifiable;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
 import net.solarnetwork.node.loxone.domain.EventEntity;
-import net.solarnetwork.node.loxone.domain.UUIDEntity;
+import net.solarnetwork.node.loxone.domain.UUIDEntityParameters;
+import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
 
 /**
  * API for a Loxone device.
@@ -94,8 +96,8 @@ public interface LoxoneService extends Identifiable {
 	 *        will be used.
 	 * @return The UUIDs.
 	 */
-	<T extends UUIDEntity> Collection<UUID> getUUIDSet(Class<T> type,
-			List<SortDescriptor> sortDescriptors);
+	<T extends UUIDSetEntity<P>, P extends UUIDEntityParameters> Collection<UUID> getUUIDSet(
+			Class<T> type, List<SortDescriptor> sortDescriptors);
 
 	/**
 	 * Update a "UUID set" associated with a given {@code UUIDEntity}.
@@ -109,7 +111,10 @@ public interface LoxoneService extends Identifiable {
 	 *        An optional set of UUIDs that should be added to the UUID set.
 	 * @param remove
 	 *        An optional set of UUIDs that should be removed from the UUID set.
+	 * @param parameters
+	 *        An optional map of UUID to parameter objects to apply to any UUID
+	 *        value.
 	 */
-	<T extends UUIDEntity> void updateUUIDSet(Class<T> type, Collection<UUID> add,
-			Collection<UUID> remove);
+	<T extends UUIDSetEntity<P>, P extends UUIDEntityParameters> void updateUUIDSet(Class<T> type,
+			Collection<UUID> add, Collection<UUID> remove, Map<UUID, P> parameters);
 }
