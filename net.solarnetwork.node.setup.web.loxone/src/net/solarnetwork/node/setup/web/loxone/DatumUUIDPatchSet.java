@@ -22,7 +22,6 @@
 
 package net.solarnetwork.node.setup.web.loxone;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +29,11 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.UUIDKeyDeserializer;
+import net.solarnetwork.node.loxone.domain.UUIDSerializer;
 
 /**
  * Extension of {@link UUIDPatchSet} to support
@@ -69,10 +70,11 @@ public class DatumUUIDPatchSet extends UUIDPatchSet {
 			this.parameters = new LinkedHashMap<>();
 			this.parameters.putAll(parameters);
 		} else {
-			this.parameters = Collections.emptyMap();
+			this.parameters = null;
 		}
 	}
 
+	@JsonSerialize(keyUsing = UUIDSerializer.class)
 	public Map<UUID, DatumUUIDEntityParameters> getParameters() {
 		return parameters;
 	}
