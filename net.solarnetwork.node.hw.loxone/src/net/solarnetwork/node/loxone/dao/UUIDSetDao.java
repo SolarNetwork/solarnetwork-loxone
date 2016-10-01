@@ -69,6 +69,17 @@ public interface UUIDSetDao<T extends UUIDSetEntity<P>, P extends UUIDEntityPara
 	void store(T entity);
 
 	/**
+	 * Get an entity for a given UUID.
+	 * 
+	 * @param configId
+	 *        The config ID to match.
+	 * @param uuid
+	 *        The UUID of the entity to get.
+	 * @return The associated entity, or <em>null</em> if not available.
+	 */
+	T load(Long configId, UUID uuid);
+
+	/**
 	 * Test if an entity exists for a given UUID.
 	 * 
 	 * @param configId

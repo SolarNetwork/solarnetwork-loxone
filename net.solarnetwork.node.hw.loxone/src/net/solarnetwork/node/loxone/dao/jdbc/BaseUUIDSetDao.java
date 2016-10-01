@@ -123,6 +123,12 @@ public abstract class BaseUUIDSetDao<T extends UUIDSetEntity<P>, P extends UUIDE
 		return findAllEntitiesForConfig(configId, sortDescriptors);
 	}
 
+	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Override
+	public T load(Long configId, UUID uuid) {
+		return getEntityByUUID(configId, uuid);
+	}
+
 	@Override
 	protected final void setStoreStatementValues(T entity, PreparedStatement ps) throws SQLException {
 		setStoreStatementValues(ps, entity.getConfigId(), entity.getUuid(), entity.getParameters());
@@ -271,7 +277,10 @@ public abstract class BaseUUIDSetDao<T extends UUIDSetEntity<P>, P extends UUIDE
 					PreparedStatement ps = con.prepareStatement(getSqlResource(SQL_UPDATE));
 					try {
 						for ( Map.Entry<UUID, P> me : paramsToAdd.entrySet() ) {
-							setUpdateStatementValues(ps, configId, me.getKey(), me.getValue());
+							int col = setUpdateStatementValues(ps, configId, me.getKey(), me.getValue());
+							prepareUUID(col, me.getKey(), ps);
+							col += 2;
+							ps.setObject(col, configId);
 							ps.addBatch();
 						}
 						ps.executeBatch();

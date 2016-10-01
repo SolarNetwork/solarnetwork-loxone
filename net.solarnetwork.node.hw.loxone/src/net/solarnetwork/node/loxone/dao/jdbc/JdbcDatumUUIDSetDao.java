@@ -67,7 +67,7 @@ public class JdbcDatumUUIDSetDao extends BaseUUIDSetDao<DatumUUIDEntity, DatumUU
 	@Override
 	protected void updateResultSetValues(ResultSet set, DatumUUIDEntityParameters parameters)
 			throws SQLException {
-		set.updateInt(1, parameters != null ? parameters.getSaveFrequencySeconds() : 0);
+		set.updateInt(4, parameters != null ? parameters.getSaveFrequencySeconds() : 0);
 	}
 
 	private static final class DatumUUIDEntityRowMapper implements RowMapper<DatumUUIDEntity> {

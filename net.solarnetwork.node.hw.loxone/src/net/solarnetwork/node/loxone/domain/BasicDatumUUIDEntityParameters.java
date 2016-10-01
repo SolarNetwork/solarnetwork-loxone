@@ -32,6 +32,15 @@ public class BasicDatumUUIDEntityParameters implements DatumUUIDEntityParameters
 
 	private int saveFrequencySeconds;
 
+	public BasicDatumUUIDEntityParameters() {
+		super();
+	}
+
+	public BasicDatumUUIDEntityParameters(int saveFrequencySeconds) {
+		super();
+		this.saveFrequencySeconds = saveFrequencySeconds;
+	}
+
 	@Override
 	public int getSaveFrequencySeconds() {
 		return saveFrequencySeconds;
