@@ -28,10 +28,13 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.UUID;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.UUIDDeserializer;
+import net.solarnetwork.node.loxone.domain.UUIDSerializer;
 import net.solarnetwork.node.setup.web.loxone.DatumUUIDPatchSet;
 import net.solarnetwork.node.setup.web.loxone.LoxoneUUIDSetController;
 import net.solarnetwork.node.test.AbstractNodeTest;
@@ -50,6 +53,7 @@ public class DatumUUIDPatchSetTests extends AbstractNodeTest {
 	@Before
 	public void setup() throws Exception {
 		ObjectMapperFactoryBean factory = new ObjectMapperFactoryBean();
+		factory.setSerializers(Arrays.asList(new UUIDSerializer()));
 		factory.setDeserializers(Arrays.asList(new UUIDDeserializer()));
 		objectMapper = factory.getObject();
 	}
@@ -75,4 +79,33 @@ public class DatumUUIDPatchSetTests extends AbstractNodeTest {
 				patch.getParameters().values().iterator().next().getSaveFrequencySeconds());
 	}
 
+	@Test
+	public void generateAddJSON() throws IOException {
+		UUID uuid = new UUID(123, 456);
+		DatumUUIDPatchSet set = new DatumUUIDPatchSet(Arrays.asList(uuid), null, null);
+		String result = objectMapper.writeValueAsString(set);
+		Assert.assertEquals("Generated JSON", "{\"add\":[\"00000000-0000-007b-00000000000001c8\"]}",
+				result);
+	}
+
+	@Test
+	public void generateRemoveJSON() throws IOException {
+		UUID uuid = new UUID(123, 456);
+		DatumUUIDPatchSet set = new DatumUUIDPatchSet(null, Arrays.asList(uuid), null);
+		String result = objectMapper.writeValueAsString(set);
+		Assert.assertEquals("Generated JSON", "{\"remove\":[\"00000000-0000-007b-00000000000001c8\"]}",
+				result);
+	}
+
+	@Test
+	public void generateParametersJSON() throws IOException {
+		UUID uuid = new UUID(123, 456);
+		BasicDatumUUIDEntityParameters params = new BasicDatumUUIDEntityParameters(500);
+		DatumUUIDPatchSet set = new DatumUUIDPatchSet(null, null,
+				Collections.singletonMap(uuid, params));
+		String result = objectMapper.writeValueAsString(set);
+		Assert.assertEquals("Generated JSON",
+				"{\"parameters\":{\"00000000-0000-007b-00000000000001c8\":{\"saveFrequencySeconds\":500}}}",
+				result);
+	}
 }
