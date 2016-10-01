@@ -23,9 +23,9 @@
 package net.solarnetwork.node.loxone.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -108,7 +108,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 	}
 
 	@Override
-	public <T extends UUIDSetEntity<P>, P extends UUIDEntityParameters> Collection<UUID> getUUIDSet(
+	public <T extends UUIDSetEntity<P>, P extends UUIDEntityParameters> Map<UUID, P> getUUIDSet(
 			Class<T> type, List<SortDescriptor> sortDescriptors) {
 		Config config = getConfiguration();
 		UUIDSetDao<T, P> dao = uuidSetDaoForType(type);
@@ -116,11 +116,11 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 		if ( dao != null && config.getId() != null ) {
 			entities = dao.findAllForConfig(config.getId(), sortDescriptors);
 		}
-		Collection<UUID> result = null;
+		Map<UUID, P> result = null;
 		if ( entities != null ) {
-			result = new ArrayList<UUID>(entities.size());
+			result = new LinkedHashMap<>(entities.size());
 			for ( T entity : entities ) {
-				result.add(entity.getUuid());
+				result.put(entity.getUuid(), entity.getParameters());
 			}
 		}
 		return result;

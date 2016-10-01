@@ -87,7 +87,8 @@ public interface LoxoneService extends Identifiable {
 	Future<Resource> getImage(String name);
 
 	/**
-	 * Get all available UUID values of a specific {@code UUIDEntity} set type.
+	 * Get all available UUID values of a specific {@code UUIDEntity} set type,
+	 * and their associated parameters.
 	 * 
 	 * @param type
 	 *        The type of UUID to get.
@@ -96,8 +97,8 @@ public interface LoxoneService extends Identifiable {
 	 *        will be used.
 	 * @return The UUIDs.
 	 */
-	<T extends UUIDSetEntity<P>, P extends UUIDEntityParameters> Collection<UUID> getUUIDSet(
-			Class<T> type, List<SortDescriptor> sortDescriptors);
+	<T extends UUIDSetEntity<P>, P extends UUIDEntityParameters> Map<UUID, P> getUUIDSet(Class<T> type,
+			List<SortDescriptor> sortDescriptors);
 
 	/**
 	 * Update a "UUID set" associated with a given {@code UUIDEntity}.
