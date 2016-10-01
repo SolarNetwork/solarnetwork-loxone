@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.loxone.LoxoneService;
 import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
+import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.UUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
 import net.solarnetwork.web.domain.Response;
@@ -56,7 +57,8 @@ public class LoxoneUUIDSetController extends BaseLoxoneWebServiceController {
 	 * @return All available UUIDs.
 	 */
 	@RequestMapping(value = "/datum", method = RequestMethod.GET)
-	public Response<Collection<UUID>> getDatumUUIDSet(@PathVariable("configId") String configId) {
+	public Response<Map<UUID, DatumUUIDEntityParameters>> getDatumUUIDSet(
+			@PathVariable("configId") String configId) {
 		return getUUIDSetForConfigId(configId, DatumUUIDEntity.class, null);
 	}
 
@@ -75,13 +77,16 @@ public class LoxoneUUIDSetController extends BaseLoxoneWebServiceController {
 				patchSet.getRemove(), patchSet.getParameters());
 	}
 
-	private <T extends UUIDSetEntity<P>, P extends UUIDEntityParameters> Response<Collection<UUID>> getUUIDSetForConfigId(
+	private <T extends UUIDSetEntity<P>, P extends UUIDEntityParameters> Response<Map<UUID, P>> getUUIDSetForConfigId(
 			String configId, Class<T> type, List<SortDescriptor> sortDescriptors) {
 		LoxoneService service = serviceForConfigId(configId);
 		if ( service == null ) {
-			return new Response<Collection<UUID>>(Boolean.FALSE, "404", "Service not available", null);
+			return new Response<Map<UUID, P>>(Boolean.FALSE, "404", "Service not available", null);
 		}
-		Collection<UUID> result = service.getUUIDSet(type, sortDescriptors);
+		Map<UUID, P> result = service.getUUIDSet(type, sortDescriptors);
+		if ( result != null ) {
+			result = new UUIDMap<>(result);
+		}
 		return Response.response(result);
 	}
 
