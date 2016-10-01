@@ -49,7 +49,12 @@ public class UUIDSerializer extends StdScalarSerializer<UUID> {
 		} else {
 			StringBuilder buf = new StringBuilder(uuid.toString());
 			buf.deleteCharAt(23);
-			generator.writeString(buf.toString());
+			if ( generator.getOutputContext().inObject()
+					&& generator.getOutputContext().getCurrentName() == null ) {
+				generator.writeFieldName(buf.toString());
+			} else {
+				generator.writeString(buf.toString());
+			}
 		}
 
 	}
