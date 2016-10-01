@@ -22,6 +22,8 @@
 
 package net.solarnetwork.node.loxone.domain;
 
+import java.util.UUID;
+
 /**
  * Basic implementation of {@link DatumUUIDEntity}.
  * 
@@ -31,6 +33,17 @@ package net.solarnetwork.node.loxone.domain;
 public class BasicDatumUUIDEntity extends BasicUUIDEntity implements DatumUUIDEntity {
 
 	private DatumUUIDEntityParameters parameters;
+
+	public BasicDatumUUIDEntity() {
+		super();
+	}
+
+	public BasicDatumUUIDEntity(Long configId, UUID uuid, DatumUUIDEntityParameters parameters) {
+		super();
+		setConfigId(configId);
+		setUuid(uuid);
+		setParameters(parameters);
+	}
 
 	public void setParameters(DatumUUIDEntityParameters parameters) {
 		this.parameters = parameters;
