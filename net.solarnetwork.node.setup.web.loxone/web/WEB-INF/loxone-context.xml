@@ -26,4 +26,20 @@
 		class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
 		p:cacheSeconds="-1" p:basename="WEB-INF/loxone-messages"/>
 
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/a/loxone/**"/>
+			<bean class="org.springframework.web.servlet.mvc.WebContentInterceptor" p:cacheSeconds="0" p:alwaysUseFullPath="true" >
+			    <property name="cacheMappings">
+			        <props>
+			            <prop key="/a/loxone/*/categories">600</prop><!-- 10 minutes -->
+			            <prop key="/a/loxone/*/controls">600</prop>
+			            <prop key="/a/loxone/*/image/**">2592000</prop><!-- 30 days -->
+			            <prop key="/a/loxone/*/rooms">600</prop>
+			        </props>
+			    </property>
+			</bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+
 </beans>

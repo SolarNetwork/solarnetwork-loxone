@@ -22,6 +22,7 @@
 
 package net.solarnetwork.node.setup.web.loxone;
 
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +34,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.WebRequest;
 import net.solarnetwork.node.loxone.LoxoneService;
 
 /**
@@ -48,10 +50,14 @@ public class LoxoneImageController extends BaseLoxoneWebServiceController {
 	@RequestMapping("/{name:.+}")
 	@ResponseBody
 	public ResponseEntity<Resource> getImage(@PathVariable("configId") String configId,
-			@PathVariable("name") String name) {
+			@PathVariable("name") String name, WebRequest webRequest) {
 		LoxoneService service = serviceForConfigId(configId);
 		if ( service == null ) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		Date lastModified = service.getConfiguration().getLastModified();
+		if ( lastModified != null && webRequest.checkNotModified(lastModified.getTime()) ) {
+			return null;
 		}
 		final Future<Resource> future = service.getImage(name);
 		try {
