@@ -110,7 +110,8 @@ public class LoxoneEndpoint extends Endpoint
 	private MessageSource messageSource;
 	private ConfigDao configDao;
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	/** A class-level logger. */
+	protected final Logger log = LoggerFactory.getLogger(getClass());
 
 	// create a fixed size queue for handling message headers
 	private final Queue<MessageHeader> headerQueue = new ArrayBlockingQueue<>(1, true);
@@ -140,12 +141,44 @@ public class LoxoneEndpoint extends Endpoint
 	}
 
 	/**
+	 * Initialize after all properties are configured.
+	 */
+	public void init() {
+		// subslasses might do something
+	}
+
+	/**
 	 * Get the configuration for this service.
 	 * 
 	 * @return The configuration.
 	 */
 	public Config getConfiguration() {
 		return configuration;
+	}
+
+	private void setConfiguration(Config config) {
+		if ( config == configuration ) {
+			return;
+		}
+		boolean newId = false;
+		if ( configuration == null && config != null && config.getId() != null ) {
+			newId = true;
+		} else if ( configuration != null && ((configuration.getId() == null && config.getId() != null)
+				|| !configuration.getId().equals(config.getId())) ) {
+			newId = true;
+		}
+		configuration = config;
+		if ( newId ) {
+			configurationIdDidChange();
+		}
+	}
+
+	/**
+	 * Called when the configuration at {@link #getConfiguration()} ID has
+	 * changed.
+	 */
+	protected void configurationIdDidChange() {
+		// subclasses can do something interesting here
 	}
 
 	/**
@@ -241,7 +274,7 @@ public class LoxoneEndpoint extends Endpoint
 		Long configId = ByteBuffer.wrap(DigestUtils.sha1(host)).getLong();
 		session.getUserProperties().put(CONFIG_ID_USER_PROPERTY, configId);
 
-		configuration = configDao.getConfig(configId);
+		setConfiguration(configDao.getConfig(configId));
 
 		// add binary handler to decode message headers and other binary messages
 		session.addMessageHandler(this);
@@ -517,8 +550,8 @@ public class LoxoneEndpoint extends Endpoint
 			}
 		} else if ( LoxoneEvents.STRUCTURE_FILE_SAVED_EVENT.equals(topic) ) {
 			log.info("Loxone configuration saved; enabling status updates.");
-			configuration = configDao
-					.getConfig((Long) session.getUserProperties().get(CONFIG_ID_USER_PROPERTY));
+			setConfiguration(configDao
+					.getConfig((Long) session.getUserProperties().get(CONFIG_ID_USER_PROPERTY)));
 			try {
 				sendCommandIfPossible(CommandType.EnableInputStatusUpdate);
 			} catch ( IOException e ) {

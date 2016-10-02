@@ -32,6 +32,9 @@ import net.solarnetwork.node.domain.Datum;
 import net.solarnetwork.node.domain.GeneralNodeDatum;
 import net.solarnetwork.node.loxone.dao.DatumUUIDSetDao;
 import net.solarnetwork.node.loxone.dao.UUIDSetDao;
+import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
+import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
+import net.solarnetwork.node.loxone.domain.DatumValueType;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
 import net.solarnetwork.util.OptionalService;
 
@@ -98,12 +101,29 @@ public class ValueEventDatumGenerator {
 		}
 		int processed = 0;
 		for ( ValueEvent ve : valueEvents ) {
-			if ( uuidSetDao.contains(ve.getConfigId(), ve.getUuid()) ) {
+			DatumUUIDEntity uuid = uuidSetDao.load(ve.getConfigId(), ve.getUuid());
+			if ( uuid != null ) {
+				DatumUUIDEntityParameters params = uuid.getParameters();
+				if ( params == null || params.getSaveFrequencySeconds() >= 0 ) {
+					// only save as Datum if frequency < 0
+					continue;
+				}
+				String sampleKey = sampleKeyForValueEvent(ve);
 				try {
 					GeneralNodeDatum datum = new GeneralNodeDatum();
 					datum.setSourceId(ve.getSourceId());
 					datum.setCreated(created);
-					datum.putInstantaneousSampleValue(sampleKeyForValueEvent(ve), ve.getValue());
+
+					if ( params == null || params.getDatumValueType() == null
+							|| params.getDatumValueType() == DatumValueType.Unknown
+							|| params.getDatumValueType() == DatumValueType.Instantaneous ) {
+						datum.putInstantaneousSampleValue(sampleKey, ve.getValue());
+					} else if ( params.getDatumValueType() == DatumValueType.Accumulating ) {
+						datum.putAccumulatingSampleValue(sampleKey, ve.getValue());
+					} else {
+						datum.putStatusSampleValue(sampleKey, ve.getValue());
+					}
+
 					dao.storeDatum(datum);
 					processed++;
 				} catch ( IllegalArgumentException e ) {

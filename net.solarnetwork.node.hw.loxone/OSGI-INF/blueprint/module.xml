@@ -20,6 +20,8 @@
 	<!-- Use Java @Transactional annotations to declare transactions. -->
 	<tx:annotation-driven transaction-manager="txManager"/>
 
+	<reference id="scheduler" interface="org.quartz.Scheduler" filter="(function=node)"/>
+
 	<reference id="objectMapperService" 
 		interface="net.solarnetwork.util.ObjectMapperService"
 		filter="(function=node)"/>
@@ -199,7 +201,7 @@
 				</beans:array>
 			</beans:entry>
 		</osgix:service-properties>
-		<bean class="net.solarnetwork.node.loxone.impl.WebsocketLoxoneService" destroy-method="disconnect">
+		<bean class="net.solarnetwork.node.loxone.impl.WebsocketLoxoneService" init-method="init" destroy-method="disconnect">
 			<property name="configDao" ref="configDao"/>
 			<property name="eventAdmin" ref="eventAdmin"/>
 			<property name="messageSource" ref="messageSource"/>
@@ -210,6 +212,10 @@
 			<property name="eventDaos" ref="event-daos"/>
 			<property name="uuidSetDaos" ref="uuid-set-daos"/>
 			<property name="settingResourceProvider" ref="settingResourceProvider"/>
+			<property name="scheduler" ref="scheduler"/>
+			<property name="valueEventDao" ref="valueEventDao"/>
+			<property name="datumDao" ref="generalNodeDatumDao"/>
+			<property name="settingDao" ref="settingDao"/>
 		</bean>
 	</osgix:managed-service-factory>
 	

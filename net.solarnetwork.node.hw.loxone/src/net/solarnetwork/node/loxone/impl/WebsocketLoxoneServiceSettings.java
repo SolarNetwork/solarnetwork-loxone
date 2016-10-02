@@ -1,5 +1,5 @@
 /* ==================================================================
- * ValueEventDao.java - 19/09/2016 7:26:17 AM
+ * WebsocketLoxoneServiceSettings.java - 2/10/2016 5:44:21 PM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -20,29 +20,28 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.loxone.dao;
-
-import java.util.List;
-import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
-import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
-import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
-import net.solarnetwork.node.loxone.domain.ValueEvent;
+package net.solarnetwork.node.loxone.impl;
 
 /**
- * DAO API for value events.
+ * Internal API to allow bean managed Configuration Admin settings to be
+ * applied.
+ * 
+ * This is necessary because the bean is wrapped with a transaction proxy, and
+ * only interface methods are available afterwards.
  * 
  * @author matt
  * @version 1.0
  */
-public interface ValueEventDao extends EventEntityDao<ValueEvent> {
+public interface WebsocketLoxoneServiceSettings {
 
-	/**
-	 * Get a list of persisted entities associated with {@link DatumUUIDEntity}.
-	 * 
-	 * @return list of all persisted entities that have associated
-	 *         {@link DatumUUIDEntity} values, or empty list if none available
-	 */
-	List<UUIDEntityParametersPair<ValueEvent, DatumUUIDEntityParameters>> findAllForDatumUUIDEntities(
-			Long configId);
+	void setHost(String host);
+
+	void setUsername(String username);
+
+	void setPassword(String password);
+
+	ValueEventDatumDataSource getDatumDataSource();
+
+	void setDatumLoggerFrequencySeconds(int datumLoggerFrequencySeconds);
 
 }

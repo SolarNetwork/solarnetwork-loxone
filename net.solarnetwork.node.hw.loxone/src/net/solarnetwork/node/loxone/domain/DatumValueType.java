@@ -1,5 +1,5 @@
 /* ==================================================================
- * ValueEventDao.java - 19/09/2016 7:26:17 AM
+ * DatumValueType.java - 2/10/2016 10:09:41 AM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -20,29 +20,60 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.loxone.dao;
-
-import java.util.List;
-import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
-import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
-import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
-import net.solarnetwork.node.loxone.domain.ValueEvent;
+package net.solarnetwork.node.loxone.domain;
 
 /**
- * DAO API for value events.
+ * An enumeration of possible datum value types.
  * 
  * @author matt
  * @version 1.0
  */
-public interface ValueEventDao extends EventEntityDao<ValueEvent> {
+public enum DatumValueType {
+
+	Unknown(0),
+
+	Instantaneous(1),
+
+	Accumulating(2),
+
+	Status(3);
+
+	private final int code;
+
+	private DatumValueType(int code) {
+		this.code = code;
+	}
 
 	/**
-	 * Get a list of persisted entities associated with {@link DatumUUIDEntity}.
+	 * Get an enum from a code value.
 	 * 
-	 * @return list of all persisted entities that have associated
-	 *         {@link DatumUUIDEntity} values, or empty list if none available
+	 * @param code
+	 *        The code value.
+	 * @return The enum.
 	 */
-	List<UUIDEntityParametersPair<ValueEvent, DatumUUIDEntityParameters>> findAllForDatumUUIDEntities(
-			Long configId);
+	public static DatumValueType forCodeValue(int code) {
+		switch (code) {
+			case 1:
+				return Instantaneous;
+
+			case 2:
+				return Accumulating;
+
+			case 3:
+				return Status;
+
+			default:
+				return Unknown;
+		}
+	}
+
+	/**
+	 * Get a code value from this enum.
+	 * 
+	 * @return The code value.
+	 */
+	public int getCode() {
+		return code;
+	}
 
 }

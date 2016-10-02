@@ -101,7 +101,7 @@ public class Config {
 	 * @see #idFromExternalForm(String)
 	 */
 	public String idToExternalForm() {
-		return idFromExternalForm(id);
+		return Config.idToExternalForm(id);
 	}
 
 	/**
@@ -113,7 +113,7 @@ public class Config {
 	 * @return The external ID form, or {@code null} if {code id} is
 	 *         {@code null}.
 	 */
-	public static final String idFromExternalForm(Long id) {
+	public static final String idToExternalForm(Long id) {
 		if ( id == null ) {
 			return null;
 		}
