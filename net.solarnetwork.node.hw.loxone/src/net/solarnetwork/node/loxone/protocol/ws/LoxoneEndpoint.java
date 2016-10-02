@@ -27,7 +27,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -51,6 +54,8 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.HmacUtils;
+import org.glassfish.tyrus.client.ClientManager;
+import org.glassfish.tyrus.container.jdk.client.JdkClientContainer;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 import org.osgi.service.event.EventHandler;
@@ -91,6 +96,8 @@ import net.solarnetwork.util.OptionalService;
 public class LoxoneEndpoint extends Endpoint
 		implements MessageHandler.Whole<ByteBuffer>, EventHandler, SettingSpecifierProvider {
 
+	private static final String WEBSOCKET_CONNECT_PATH = "/ws/rfc6455";
+
 	/**
 	 * A session user property key that must provide the {@link Config} ID value
 	 * to use.
@@ -125,19 +132,61 @@ public class LoxoneEndpoint extends Endpoint
 	private Config configuration = null;
 
 	private synchronized void connect() {
-		javax.websocket.WebSocketContainer container = org.glassfish.tyrus.client.ClientManager
-				.createClient(
-						org.glassfish.tyrus.container.jdk.client.JdkClientContainer.class.getName());
+		ClientManager container = ClientManager.createClient(JdkClientContainer.class.getName());
 		ClientEndpointConfig config = ClientEndpointConfig.Builder.create()
 				.preferredSubprotocols(Arrays.asList("remotecontrol")).build();
 		session = null;
 		connectFuture = null;
+		URI wsURI;
 		try {
-			log.debug("Opening Loxone websocket connection to ws://{}", host);
-			session = container.connectToServer(this, config, new URI("ws://" + host));
+			wsURI = getWebsocketURI();
 		} catch ( Exception e ) {
-			logConciseException("Error connecting to ws://{}", e, host);
+			logConciseException("Error establishing websocket URI to {}", e, host);
+			return;
 		}
+		try {
+			log.debug("Opening Loxone websocket connection to {}", wsURI);
+			session = container.connectToServer(this, config, wsURI);
+		} catch ( Exception e ) {
+			logConciseException("Error connecting to {}", e, wsURI);
+		}
+	}
+
+	/**
+	 * Get the URI to connect to a Loxone websocket, with support for Loxone's
+	 * CloudDNS style redirects.
+	 * 
+	 * @return The URI to use.
+	 * @throws IOException
+	 *         If a problem occurs connecting to the host.
+	 * @throws URISyntaxException
+	 *         If a problem occurs parsing the host string.
+	 */
+	private URI getWebsocketURI() throws IOException, URISyntaxException {
+		log.debug("Testing Loxone connection to {} for HTTP redirect", host);
+		URL connUrl = new URL("http://" + host);
+		HttpURLConnection conn = (HttpURLConnection) connUrl.openConnection();
+		conn.setRequestMethod("HEAD");
+		conn.setConnectTimeout(30000);
+		conn.setReadTimeout(10000);
+		conn.setUseCaches(false);
+		conn.setInstanceFollowRedirects(false);
+
+		switch (conn.getResponseCode()) {
+			case 301:
+			case 302:
+			case 303:
+			case 307:
+				String loc = conn.getHeaderField("Location");
+				if ( loc != null ) {
+					URL locURL = new URL(loc);
+					return new URI("ws://" + locURL.getHost() + ":" + locURL.getPort()
+							+ WEBSOCKET_CONNECT_PATH);
+				}
+				break;
+		}
+		return new URI(
+				"ws://" + host + (host.contains(WEBSOCKET_CONNECT_PATH) ? "" : WEBSOCKET_CONNECT_PATH));
 	}
 
 	/**
