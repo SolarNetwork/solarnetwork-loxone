@@ -84,7 +84,8 @@ public class ValueEventDatumDataSourceTests {
 	}
 
 	private String settingKey() {
-		return ValueEventDatumDataSource.SETTING_KEY_PREFIX + Long.toString(TEST_CONFIG_ID, 16);
+		return String.format(ValueEventDatumDataSource.SETTING_KEY_TEMPLATE,
+				Long.toString(TEST_CONFIG_ID, 16));
 	}
 
 	@Test

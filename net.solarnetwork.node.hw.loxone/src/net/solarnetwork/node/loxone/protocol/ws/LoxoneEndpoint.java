@@ -141,6 +141,13 @@ public class LoxoneEndpoint extends Endpoint
 	}
 
 	/**
+	 * Initialize after all properties are configured.
+	 */
+	public void init() {
+		// subslasses might do something
+	}
+
+	/**
 	 * Get the configuration for this service.
 	 * 
 	 * @return The configuration.

@@ -38,7 +38,7 @@ public class SettingsConfigDao implements ConfigDao {
 	private SettingDao settingDao;
 
 	private String lastModifiedDateSettingKey(Long configId) {
-		return "loxone/" + configId + "/lastModified";
+		return "loxone/" + Config.idToExternalForm(configId) + "/lastModified";
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class SettingsConfigDao implements ConfigDao {
 			return;
 		}
 		settingDao.storeSetting(lastModifiedDateSettingKey(configId),
-				String.valueOf(lastModified.getTime()));
+				Long.toString(lastModified.getTime(), 16));
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class SettingsConfigDao implements ConfigDao {
 		String value = settingDao.getSetting(lastModifiedDateSettingKey(id));
 		long ts = -1;
 		try {
-			ts = Long.parseLong(value);
+			ts = Long.parseLong(value, 16);
 		} catch ( NumberFormatException e ) {
 			// ignore
 		} catch ( NullPointerException e ) {

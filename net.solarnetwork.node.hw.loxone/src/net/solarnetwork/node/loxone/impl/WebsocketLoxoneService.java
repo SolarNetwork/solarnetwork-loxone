@@ -76,7 +76,8 @@ import net.solarnetwork.util.OptionalService;
  * @author matt
  * @version 1.0
  */
-public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneService {
+public class WebsocketLoxoneService extends LoxoneEndpoint
+		implements LoxoneService, WebsocketLoxoneServiceSettings {
 
 	/**
 	 * The name used to schedule the {@link PostOfflineChargeSessionsJob} as.
@@ -109,10 +110,15 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 	private OptionalService<DatumDao<GeneralNodeDatum>> datumDao;
 	private Scheduler scheduler;
 	private int datumLoggerFrequencySeconds = DATUM_LOGGER_JOB_INTERVAL;
-	private int defaultDatumLoggerValueFrequencySeconds = DATUM_LOGGER_JOB_INTERVAL;
 
 	private ValueEventDatumDataSource datumDataSource;
 	private SimpleTrigger datumLoggerTrigger;
+
+	@Override
+	public void init() {
+		super.init();
+		datumDataSource = new ValueEventDatumDataSource(null, valueEventDao, settingDao);
+	}
 
 	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 	@Override
@@ -252,6 +258,10 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 		List<SettingSpecifier> results = super.getSettingSpecifiers();
 		results.add(0, new BasicTextFieldSettingSpecifier("uid", DEFAULT_UID));
 		results.add(0, new BasicTextFieldSettingSpecifier("groupUID", null));
+		results.add(new BasicTextFieldSettingSpecifier("datumLoggerFrequencySeconds",
+				String.valueOf(DATUM_LOGGER_JOB_INTERVAL)));
+		results.add(new BasicTextFieldSettingSpecifier("datumDataSource.defaultFrequencySeconds",
+				String.valueOf(ValueEventDatumDataSource.DEFAULT_FREQUENCY_SECONDS)));
 
 		String configurationId = getConfigurationIdExternalForm();
 		if ( configurationId != null ) {
@@ -272,14 +282,9 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 		configureLoxoneDatumLoggerJob(0);
 		Config config = getConfiguration();
 		if ( config == null || config.getId() == null ) {
-			datumDataSource = null;
 			return;
 		}
-		if ( datumDataSource == null ) {
-			datumDataSource = new ValueEventDatumDataSource(config.getId(), valueEventDao, settingDao);
-		}
 		datumDataSource.setConfigId(config.getId());
-		datumDataSource.setDefaultFrequencySeconds(defaultDatumLoggerValueFrequencySeconds);
 		configureLoxoneDatumLoggerJob(datumLoggerFrequencySeconds * 1000L);
 	}
 
@@ -310,6 +315,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 			if ( interval == 0 ) {
 				try {
 					sched.unscheduleJob(trigger.getKey());
+					log.info("Unscheduled Loxone datum logger job");
 				} catch ( SchedulerException e ) {
 					log.error("Error unscheduling Loxone datum logger job", e);
 				} finally {
@@ -352,7 +358,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 						.startAt(new Date(System.currentTimeMillis() + interval))
 						.usingJobData(new JobDataMap(jd))
 						.withSchedule(
-								SimpleScheduleBuilder.repeatMinutelyForever((int) (interval / (60000L)))
+								SimpleScheduleBuilder.repeatSecondlyForever((int) (interval / (1000L)))
 										.withMisfireHandlingInstructionNextWithExistingCount())
 						.build();
 				sched.scheduleJob(trigger);
@@ -380,10 +386,16 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 		this.uuidSetDaos = uuidSetDaos;
 	}
 
+	@Override
+	public ValueEventDatumDataSource getDatumDataSource() {
+		return datumDataSource;
+	}
+
 	public void setSettingResourceProvider(SetupResourceProvider settingResourceProvider) {
 		this.settingResourceProvider = settingResourceProvider;
 	}
 
+	@Override
 	public void setDatumLoggerFrequencySeconds(int datumLoggerFrequencySeconds) {
 		if ( datumLoggerFrequencySeconds == this.datumLoggerFrequencySeconds ) {
 			return;
@@ -407,13 +419,6 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 
 	public void setValueEventDao(ValueEventDao valueEventDao) {
 		this.valueEventDao = valueEventDao;
-	}
-
-	public void setDefaultDatumLoggerValueFrequencySeconds(int defaultDatumLoggerValueFrequencySeconds) {
-		this.defaultDatumLoggerValueFrequencySeconds = defaultDatumLoggerValueFrequencySeconds;
-		if ( datumDataSource != null ) {
-			datumDataSource.setDefaultFrequencySeconds(defaultDatumLoggerValueFrequencySeconds);
-		}
 	}
 
 }

@@ -53,12 +53,21 @@ import net.solarnetwork.node.support.KeyValuePair;
 public class ValueEventDatumDataSource
 		implements MultiDatumDataSource<GeneralNodeDatum>, DatumDataSource<GeneralNodeDatum> {
 
+	/**
+	 * The default interval at which to save {@code Datum} instances from Loxone
+	 * value event data, in seconds, if not configured otherwise.
+	 */
+	public static final int DEFAULT_FREQUENCY_SECONDS = 60;
+
 	private final ValueEventDao valueEventDao;
 	private final SettingDao settingDao;
 	private Long configId;
-	private int defaultFrequencySeconds = 60;
+	private int defaultFrequencySeconds = DEFAULT_FREQUENCY_SECONDS;
 
-	public static final String SETTING_KEY_PREFIX = "LoxoneValue.";
+	/**
+	 * A setting key tempalte, takes a single string parameter (the config ID).
+	 */
+	public static final String SETTING_KEY_TEMPLATE = "loxone/%s/valueCaptured";
 
 	public ValueEventDatumDataSource(Long configId, ValueEventDao valueEventDao, SettingDao settingDao) {
 		super();
@@ -155,7 +164,8 @@ public class ValueEventDatumDataSource
 	}
 
 	private String settingKey() {
-		return SETTING_KEY_PREFIX + (configId == null ? "0" : Config.idToExternalForm(configId));
+		return String.format(SETTING_KEY_TEMPLATE,
+				(configId == null ? "0" : Config.idToExternalForm(configId)));
 	}
 
 	private Map<String, String> loadCreationSettings(String key) {
