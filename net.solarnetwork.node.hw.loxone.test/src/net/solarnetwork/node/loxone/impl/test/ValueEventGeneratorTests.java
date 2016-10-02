@@ -40,6 +40,8 @@ import net.solarnetwork.node.dao.DatumDao;
 import net.solarnetwork.node.domain.Datum;
 import net.solarnetwork.node.domain.GeneralNodeDatum;
 import net.solarnetwork.node.loxone.dao.DatumUUIDSetDao;
+import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntity;
+import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.UUIDEntity;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
 import net.solarnetwork.node.loxone.impl.ValueEventDatumGenerator;
@@ -101,10 +103,12 @@ public class ValueEventGeneratorTests {
 	@Test
 	public void generateSingle() {
 		ValueEvent event = new ValueEvent(UUID.randomUUID(), TEST_CONFIG_ID, 1.23);
+		BasicDatumUUIDEntity uuidEntity = new BasicDatumUUIDEntity(TEST_CONFIG_ID, event.getUuid(),
+				new BasicDatumUUIDEntityParameters(-1));
 		List<ValueEvent> events = Collections.singletonList(event);
 		Date now = new Date();
 
-		expect(uuidSetDao.contains(event.getConfigId(), event.getUuid())).andReturn(true);
+		expect(uuidSetDao.load(event.getConfigId(), event.getUuid())).andReturn(uuidEntity);
 
 		Capture<GeneralNodeDatum> datumCapture = new Capture<>();
 		datumDao.storeDatum(capture(datumCapture));
