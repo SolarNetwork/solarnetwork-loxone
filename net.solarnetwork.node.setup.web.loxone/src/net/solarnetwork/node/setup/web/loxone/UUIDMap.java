@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import net.solarnetwork.node.loxone.domain.UUIDSerializer;
+import net.solarnetwork.node.loxone.domain.UUIDSerializer.UUIDKeySerializer;
 
 /**
  * Map annoated with JSON configuration to use Loxone specific UUID serializer.
@@ -34,7 +34,7 @@ import net.solarnetwork.node.loxone.domain.UUIDSerializer;
  * @author matt
  * @version 1.0
  */
-@JsonSerialize(keyUsing = UUIDSerializer.class)
+@JsonSerialize(keyUsing = UUIDKeySerializer.class)
 public class UUIDMap<V> extends LinkedHashMap<java.util.UUID, V> {
 
 	private static final long serialVersionUID = -2935767201748175368L;

@@ -37,8 +37,29 @@ import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
  */
 public class UUIDSerializer extends StdScalarSerializer<UUID> {
 
+	/**
+	 * A specialized JSON serializer for Loxone UUID values used as keys in a
+	 * {@code Map}.
+	 * 
+	 * @author matt
+	 * @version 1.0
+	 */
+	public static final class UUIDKeySerializer extends UUIDSerializer {
+
+		public UUIDKeySerializer() {
+			super(true);
+		}
+	}
+
+	private final boolean keyMode;
+
 	public UUIDSerializer() {
+		this(false);
+	}
+
+	private UUIDSerializer(boolean keyMode) {
 		super(UUID.class);
+		this.keyMode = keyMode;
 	}
 
 	@Override
@@ -49,8 +70,7 @@ public class UUIDSerializer extends StdScalarSerializer<UUID> {
 		} else {
 			StringBuilder buf = new StringBuilder(uuid.toString());
 			buf.deleteCharAt(23);
-			if ( generator.getOutputContext().inObject()
-					&& generator.getOutputContext().getCurrentName() == null ) {
+			if ( keyMode ) {
 				generator.writeFieldName(buf.toString());
 			} else {
 				generator.writeString(buf.toString());
