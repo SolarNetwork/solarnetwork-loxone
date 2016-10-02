@@ -50,11 +50,12 @@ import net.solarnetwork.node.support.KeyValuePair;
  * @author matt
  * @version 1.0
  */
-public class ValueEventDatumDataSource implements MultiDatumDataSource<GeneralNodeDatum> {
+public class ValueEventDatumDataSource
+		implements MultiDatumDataSource<GeneralNodeDatum>, DatumDataSource<GeneralNodeDatum> {
 
 	private final ValueEventDao valueEventDao;
 	private final SettingDao settingDao;
-	private final Long configId;
+	private Long configId;
 	private int defaultFrequencySeconds = 60;
 
 	public static final String SETTING_KEY_PREFIX = "LoxoneValue.";
@@ -74,6 +75,17 @@ public class ValueEventDatumDataSource implements MultiDatumDataSource<GeneralNo
 	@Override
 	public String getGroupUID() {
 		return null;
+	}
+
+	@Override
+	public Class<? extends GeneralNodeDatum> getDatumType() {
+		return GeneralNodeDatum.class;
+	}
+
+	@Override
+	public GeneralNodeDatum readCurrentDatum() {
+		Collection<GeneralNodeDatum> multi = readMultipleDatum();
+		return (multi == null || multi.isEmpty() ? null : multi.iterator().next());
 	}
 
 	@Override
@@ -160,6 +172,10 @@ public class ValueEventDatumDataSource implements MultiDatumDataSource<GeneralNo
 
 	public void setDefaultFrequencySeconds(int defaultFrequencySeconds) {
 		this.defaultFrequencySeconds = defaultFrequencySeconds;
+	}
+
+	public void setConfigId(Long configId) {
+		this.configId = configId;
 	}
 
 }

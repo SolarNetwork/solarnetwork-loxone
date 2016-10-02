@@ -25,20 +25,37 @@ package net.solarnetwork.node.loxone.impl;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Future;
+import org.quartz.JobBuilder;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SimpleScheduleBuilder;
+import org.quartz.SimpleTrigger;
+import org.quartz.TriggerBuilder;
+import org.quartz.TriggerKey;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.RemoteServiceException;
+import net.solarnetwork.node.dao.DatumDao;
+import net.solarnetwork.node.dao.SettingDao;
+import net.solarnetwork.node.domain.GeneralNodeDatum;
+import net.solarnetwork.node.job.DatumDataSourceLoggerJob;
 import net.solarnetwork.node.loxone.LoxoneService;
 import net.solarnetwork.node.loxone.dao.ConfigurationEntityDao;
 import net.solarnetwork.node.loxone.dao.EventEntityDao;
 import net.solarnetwork.node.loxone.dao.UUIDSetDao;
+import net.solarnetwork.node.loxone.dao.ValueEventDao;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
 import net.solarnetwork.node.loxone.domain.EventEntity;
@@ -51,6 +68,7 @@ import net.solarnetwork.node.settings.support.BasicSetupResourceSettingSpecifier
 import net.solarnetwork.node.settings.support.BasicTextFieldSettingSpecifier;
 import net.solarnetwork.node.settings.support.BasicTitleSettingSpecifier;
 import net.solarnetwork.node.setup.SetupResourceProvider;
+import net.solarnetwork.util.OptionalService;
 
 /**
  * Websocket based implementation of {@link LoxoneService}.
@@ -60,6 +78,24 @@ import net.solarnetwork.node.setup.SetupResourceProvider;
  */
 public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneService {
 
+	/**
+	 * The name used to schedule the {@link PostOfflineChargeSessionsJob} as.
+	 */
+	public static final String DATUM_LOGGER_JOB_NAME = "Loxone_DatumLogger";
+
+	/**
+	 * The job and trigger group used to schedule the
+	 * {@link DatumDataSourceLoggerJob} with. Note the trigger name will be the
+	 * {@link #getUID()} property value.
+	 */
+	public static final String SCHEDULER_GROUP = "Loxone";
+
+	/**
+	 * The default minimum interval at which to save {@code Datum} instances
+	 * from Loxone value event data, in seconds.
+	 */
+	public static final int DATUM_LOGGER_JOB_INTERVAL = 60;
+
 	private static final String DEFAULT_UID = "Loxone";
 
 	private String uid = DEFAULT_UID;
@@ -68,6 +104,15 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 	private List<EventEntityDao<EventEntity>> eventDaos;
 	private List<UUIDSetDao<UUIDSetEntity<UUIDEntityParameters>, UUIDEntityParameters>> uuidSetDaos;
 	private SetupResourceProvider settingResourceProvider;
+	private SettingDao settingDao;
+	private ValueEventDao valueEventDao;
+	private OptionalService<DatumDao<GeneralNodeDatum>> datumDao;
+	private Scheduler scheduler;
+	private int datumLoggerFrequencySeconds = DATUM_LOGGER_JOB_INTERVAL;
+	private int defaultDatumLoggerValueFrequencySeconds = DATUM_LOGGER_JOB_INTERVAL;
+
+	private ValueEventDatumDataSource datumDataSource;
+	private SimpleTrigger datumLoggerTrigger;
 
 	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 	@Override
@@ -221,6 +266,106 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 		return results;
 	}
 
+	@Override
+	protected void configurationIdDidChange() {
+		super.configurationIdDidChange();
+		configureLoxoneDatumLoggerJob(0);
+		Config config = getConfiguration();
+		if ( config == null || config.getId() == null ) {
+			datumDataSource = null;
+			return;
+		}
+		if ( datumDataSource == null ) {
+			datumDataSource = new ValueEventDatumDataSource(config.getId(), valueEventDao, settingDao);
+		}
+		datumDataSource.setConfigId(config.getId());
+		datumDataSource.setDefaultFrequencySeconds(defaultDatumLoggerValueFrequencySeconds);
+		configureLoxoneDatumLoggerJob(datumLoggerFrequencySeconds * 1000L);
+	}
+
+	private boolean configureLoxoneDatumLoggerJob(final long interval) {
+		final Config config = getConfiguration();
+		if ( config == null || config.getId() == null ) {
+			return false;
+		}
+		final Scheduler sched = scheduler;
+		if ( sched == null ) {
+			log.warn("No scheduler avaialable, cannot schedule Loxone datum logger job");
+			return false;
+		}
+		final DatumDao<GeneralNodeDatum> dao = (datumDao != null ? datumDao.service() : null);
+		if ( dao == null ) {
+			log.warn(
+					"No DatumDao<GeneralNodeDatum> avaialable, cannot schedule Loxone datum logger job");
+			return false;
+		}
+		SimpleTrigger trigger = datumLoggerTrigger;
+		if ( trigger != null ) {
+			// check if interval actually changed
+			if ( trigger.getRepeatInterval() == interval ) {
+				log.debug("Loxone datum logger interval unchanged at {}s", interval);
+				return true;
+			}
+			// trigger has changed!
+			if ( interval == 0 ) {
+				try {
+					sched.unscheduleJob(trigger.getKey());
+				} catch ( SchedulerException e ) {
+					log.error("Error unscheduling Loxone datum logger job", e);
+				} finally {
+					datumLoggerTrigger = null;
+				}
+			} else {
+				trigger = TriggerBuilder.newTrigger().withIdentity(trigger.getKey())
+						.forJob(DATUM_LOGGER_JOB_NAME, SCHEDULER_GROUP)
+						.withSchedule(
+								SimpleScheduleBuilder.repeatMinutelyForever((int) (interval / (60000L))))
+						.build();
+				try {
+					sched.rescheduleJob(trigger.getKey(), trigger);
+				} catch ( SchedulerException e ) {
+					log.error("Error rescheduling Loxone datum logger job", e);
+				} finally {
+					datumLoggerTrigger = null;
+				}
+			}
+			return true;
+		} else if ( interval == 0 ) {
+			return true;
+		}
+
+		synchronized ( sched ) {
+			try {
+				final JobKey jobKey = new JobKey(DATUM_LOGGER_JOB_NAME, SCHEDULER_GROUP);
+				JobDetail jobDetail = sched.getJobDetail(jobKey);
+				if ( jobDetail == null ) {
+					jobDetail = JobBuilder.newJob(DatumDataSourceLoggerJob.class).withIdentity(jobKey)
+							.storeDurably().build();
+					sched.addJob(jobDetail, true);
+				}
+				final TriggerKey triggerKey = new TriggerKey(
+						DATUM_LOGGER_JOB_NAME + config.idToExternalForm(), SCHEDULER_GROUP);
+				final Map<String, Object> jd = new HashMap<>();
+				jd.put("datumDataSource", datumDataSource);
+				jd.put("datumDao", dao);
+				trigger = TriggerBuilder.newTrigger().withIdentity(triggerKey).forJob(jobKey)
+						.startAt(new Date(System.currentTimeMillis() + interval))
+						.usingJobData(new JobDataMap(jd))
+						.withSchedule(
+								SimpleScheduleBuilder.repeatMinutelyForever((int) (interval / (60000L)))
+										.withMisfireHandlingInstructionNextWithExistingCount())
+						.build();
+				sched.scheduleJob(trigger);
+				log.info("Scheduled Loxone datum logger job to run every {} seconds", (interval / 1000));
+				datumLoggerTrigger = trigger;
+				return true;
+			} catch ( Exception e ) {
+				log.error("Error scheduling Loxone datum logger job", e);
+				return false;
+			}
+		}
+	}
+
 	public void setConfigurationDaos(
 			List<ConfigurationEntityDao<ConfigurationEntity>> configurationDaos) {
 		this.configurationDaos = configurationDaos;
@@ -237,6 +382,38 @@ public class WebsocketLoxoneService extends LoxoneEndpoint implements LoxoneServ
 
 	public void setSettingResourceProvider(SetupResourceProvider settingResourceProvider) {
 		this.settingResourceProvider = settingResourceProvider;
+	}
+
+	public void setDatumLoggerFrequencySeconds(int datumLoggerFrequencySeconds) {
+		if ( datumLoggerFrequencySeconds == this.datumLoggerFrequencySeconds ) {
+			return;
+		}
+		this.datumLoggerFrequencySeconds = datumLoggerFrequencySeconds;
+		configureLoxoneDatumLoggerJob(0);
+		configureLoxoneDatumLoggerJob(datumLoggerFrequencySeconds * 1000);
+	}
+
+	public void setScheduler(Scheduler scheduler) {
+		this.scheduler = scheduler;
+	}
+
+	public void setDatumDao(OptionalService<DatumDao<GeneralNodeDatum>> datumDao) {
+		this.datumDao = datumDao;
+	}
+
+	public void setSettingDao(SettingDao settingDao) {
+		this.settingDao = settingDao;
+	}
+
+	public void setValueEventDao(ValueEventDao valueEventDao) {
+		this.valueEventDao = valueEventDao;
+	}
+
+	public void setDefaultDatumLoggerValueFrequencySeconds(int defaultDatumLoggerValueFrequencySeconds) {
+		this.defaultDatumLoggerValueFrequencySeconds = defaultDatumLoggerValueFrequencySeconds;
+		if ( datumDataSource != null ) {
+			datumDataSource.setDefaultFrequencySeconds(defaultDatumLoggerValueFrequencySeconds);
+		}
 	}
 
 }
