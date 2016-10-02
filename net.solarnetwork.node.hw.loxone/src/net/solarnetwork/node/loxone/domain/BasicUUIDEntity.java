@@ -68,4 +68,42 @@ public class BasicUUIDEntity implements UUIDEntity {
 		this.uuid = uuid;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((configId == null) ? 0 : configId.hashCode());
+		result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if ( this == obj ) {
+			return true;
+		}
+		if ( obj == null ) {
+			return false;
+		}
+		if ( getClass() != obj.getClass() ) {
+			return false;
+		}
+		BasicUUIDEntity other = (BasicUUIDEntity) obj;
+		if ( configId == null ) {
+			if ( other.configId != null ) {
+				return false;
+			}
+		} else if ( !configId.equals(other.configId) ) {
+			return false;
+		}
+		if ( uuid == null ) {
+			if ( other.uuid != null ) {
+				return false;
+			}
+		} else if ( !uuid.equals(other.uuid) ) {
+			return false;
+		}
+		return true;
+	}
+
 }

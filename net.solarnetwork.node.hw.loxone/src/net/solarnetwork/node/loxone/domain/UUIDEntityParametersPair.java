@@ -1,5 +1,5 @@
 /* ==================================================================
- * ValueEventDao.java - 19/09/2016 7:26:17 AM
+ * UUIDEntityParametersPair.java - 2/10/2016 11:18:36 AM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -20,29 +20,31 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.loxone.dao;
-
-import java.util.List;
-import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
-import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
-import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
-import net.solarnetwork.node.loxone.domain.ValueEvent;
+package net.solarnetwork.node.loxone.domain;
 
 /**
- * DAO API for value events.
+ * A pairing of an entity with associated parameters.
  * 
  * @author matt
  * @version 1.0
  */
-public interface ValueEventDao extends EventEntityDao<ValueEvent> {
+public class UUIDEntityParametersPair<T extends UUIDEntity, P extends UUIDEntityParameters> {
 
-	/**
-	 * Get a list of persisted entities associated with {@link DatumUUIDEntity}.
-	 * 
-	 * @return list of all persisted entities that have associated
-	 *         {@link DatumUUIDEntity} values, or empty list if none available
-	 */
-	List<UUIDEntityParametersPair<ValueEvent, DatumUUIDEntityParameters>> findAllForDatumUUIDEntities(
-			Long configId);
+	final T entity;
+	final P parameters;
+
+	public UUIDEntityParametersPair(T entity, P parameters) {
+		super();
+		this.entity = entity;
+		this.parameters = parameters;
+	}
+
+	public T getEntity() {
+		return entity;
+	}
+
+	public P getParameters() {
+		return parameters;
+	}
 
 }

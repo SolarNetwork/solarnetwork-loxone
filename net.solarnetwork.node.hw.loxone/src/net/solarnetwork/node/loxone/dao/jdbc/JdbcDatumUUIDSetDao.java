@@ -86,6 +86,9 @@ public class JdbcDatumUUIDSetDao extends BaseUUIDSetDao<DatumUUIDEntity, DatumUU
 
 	private static final class DatumUUIDEntityRowMapper implements RowMapper<DatumUUIDEntity> {
 
+		private final DatumUUIDEntityParametersRowMapper parametersMapper = new DatumUUIDEntityParametersRowMapper(
+				3);
+
 		@Override
 		public DatumUUIDEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
 			BasicDatumUUIDEntity row = new BasicDatumUUIDEntity();
@@ -93,16 +96,43 @@ public class JdbcDatumUUIDSetDao extends BaseUUIDSetDao<DatumUUIDEntity, DatumUU
 			row.setUuid(readUUID(1, rs));
 			row.setConfigId(rs.getLong(3));
 
-			// Add params instance, as long as some property is not a default value
-			BasicDatumUUIDEntityParameters params = new BasicDatumUUIDEntityParameters();
-			params.setSaveFrequencySeconds(rs.getInt(4));
-			params.setDatumValueType(DatumValueType.forCodeValue(rs.getShort(5)));
-			if ( params.getSaveFrequencySeconds() != 0
-					|| params.getDatumValueType() != DatumValueType.Unknown ) {
-				row.setParameters(params);
-			}
+			DatumUUIDEntityParameters params = parametersMapper.mapRow(rs, rowNum);
+			row.setParameters(params);
 
 			return row;
+		}
+
+	}
+
+	/**
+	 * A {@link RowMapper} that maps columns to a
+	 * {@link DatumUUIDEntityParameters} object.
+	 * 
+	 * <b>Note</b> this mapper will return {@code null} if the parameters
+	 * represent default values only!
+	 */
+	public static final class DatumUUIDEntityParametersRowMapper
+			implements RowMapper<DatumUUIDEntityParameters> {
+
+		private final int columnOffset;
+
+		public DatumUUIDEntityParametersRowMapper(int columnOffset) {
+			super();
+			this.columnOffset = columnOffset;
+		}
+
+		@Override
+		public DatumUUIDEntityParameters mapRow(ResultSet rs, int rowNum) throws SQLException {
+			int col = columnOffset + 1;
+			BasicDatumUUIDEntityParameters params = new BasicDatumUUIDEntityParameters();
+			params.setSaveFrequencySeconds(rs.getInt(col++));
+			params.setDatumValueType(DatumValueType.forCodeValue(rs.getShort(col++)));
+
+			// Return params instance, as long as some property is not a default value
+			if ( params.isDefaultProperties() ) {
+				return null;
+			}
+			return params;
 		}
 
 	}
