@@ -33,7 +33,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.UUIDKeyDeserializer;
-import net.solarnetwork.node.loxone.domain.UUIDSerializer;
+import net.solarnetwork.node.loxone.domain.UUIDSerializer.UUIDKeySerializer;
 
 /**
  * Extension of {@link UUIDPatchSet} to support
@@ -74,7 +74,7 @@ public class DatumUUIDPatchSet extends UUIDPatchSet {
 		}
 	}
 
-	@JsonSerialize(keyUsing = UUIDSerializer.class)
+	@JsonSerialize(keyUsing = UUIDKeySerializer.class)
 	public Map<UUID, DatumUUIDEntityParameters> getParameters() {
 		return parameters;
 	}
