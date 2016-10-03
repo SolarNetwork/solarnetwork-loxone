@@ -32,6 +32,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import net.solarnetwork.node.loxone.domain.UUIDSerializer;
+import net.solarnetwork.node.loxone.domain.UUIDSerializer.UUIDKeySerializer;
 import net.solarnetwork.util.ObjectMapperFactoryBean;
 
 /**
@@ -70,7 +71,19 @@ public class UUIDSerializerTests {
 		Assert.assertEquals("{\"0e839a0b-00d8-1ab1-ffffa1b98ee6c71d\":\"foo\"}", result);
 	}
 
-	@JsonSerialize(keyUsing = UUIDSerializer.class)
+	@Test
+	public void serializeMapMulti() throws IOException {
+		UUIDMap m = new UUIDMap();
+		m.put(UUID.fromString("0e839a0b-00d8-1ab1-ffff-a1b98ee6c71d"), "foo");
+		m.put(UUID.fromString("0e839a0b-00d8-1ab1-ffff-a1b98ee6c71e"), "bar");
+		String result = objectMapper.writeValueAsString(m);
+		Assert.assertNotNull(result);
+		Assert.assertEquals(
+				"{\"0e839a0b-00d8-1ab1-ffffa1b98ee6c71d\":\"foo\",\"0e839a0b-00d8-1ab1-ffffa1b98ee6c71e\":\"bar\"}",
+				result);
+	}
+
+	@JsonSerialize(keyUsing = UUIDKeySerializer.class)
 	private static final class UUIDMap extends LinkedHashMap<UUID, String> {
 
 		private static final long serialVersionUID = -6009130471483119107L;
