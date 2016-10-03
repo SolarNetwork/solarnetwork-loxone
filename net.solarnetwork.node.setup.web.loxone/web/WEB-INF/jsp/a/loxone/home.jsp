@@ -30,3 +30,4 @@
 <div id="control-view" class="loxone-list"></div>
 
 <script type="application/javascript" src="<c:url value='/js/loxone-view-control.js'/>"></script>
+<script type="application/javascript" src="<c:url value='/js/loxone-websocket.js'/>"></script>

@@ -31,6 +31,7 @@ Loxone.controlView = (function() {
       Loxone.api.setEnable(this.uuid, !button.enabled, function(err, response) {
         if(err) return console.log(err);
         if(response.success) {
+          console.log('Enabled');
           button.enabled = !button.enabled;
           button.className = `enable-button${button.enabled ? ' enabled' : ''}`;
         } else {

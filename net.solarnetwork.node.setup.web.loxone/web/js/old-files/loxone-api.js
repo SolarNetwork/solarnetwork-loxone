@@ -164,4 +164,3 @@ function API(configID) {
 		var body = JSON.stringify({ remove: [uuid] });
 		this.request('PATCH', `${this.url + this.configID}/uuidsets/datum`, {'Content-Type': 'application/json'}, body, true, next);
 	}
-}

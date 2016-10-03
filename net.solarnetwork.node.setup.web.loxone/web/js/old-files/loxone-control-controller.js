@@ -35,6 +35,7 @@ function Controller(controls, categories, rooms, enables) {
   }
 
   this.enable = function(uuid) {
+     console.log('Enable');
     this.enables.push(uuid);
     var button = document.getElementById(`enable-${uuid}`);
     button.className = 'enable-button enabled';
@@ -42,6 +43,7 @@ function Controller(controls, categories, rooms, enables) {
   }
 
   this.disable = function(uuid) {
+    console.log('Disable');
     if(this.isEnabled(uuid)) {
       this.enables.splice(this.enables.indexOf(uuid), 1);
     }

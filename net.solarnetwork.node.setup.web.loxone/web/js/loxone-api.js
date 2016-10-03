@@ -8,7 +8,13 @@ Loxone.api = (function() {
 		xmlhttp.onreadystatechange = function() {
 			if(this.readyState == 4) {
 				if(this.status == 200) {
-					next(null, JSON.parse(this.responseText));
+          try {
+  					next(null, JSON.parse(this.responseText));
+          } catch (err) {
+            console.log(`Error parsing JSON response: ${req.method} ${req.url}`);
+            console.log(this.responseText);
+            console.error(err);
+          }
 				} else {
 					next(this.responseText);
 				}
@@ -60,6 +66,16 @@ Loxone.api = (function() {
     var body = JSON.stringify(enabled ? { add: [uuid] } : { remove: [uuid] });
     this.api.request({ method: 'PATCH', path: 'uuidsets/datum', headers: {'Content-Type': 'application/json'}, body: body, csrf: true }, next);
   }
+
+// Set frequency
+
+	this.setFrequency = function(uuid, frequency, next) {
+		var json = { parameters: {} };
+		json.parameters[uuid] = { saveFrequencySeconds: frequency };
+		var body = JSON.stringify(json);
+		this.request('PATCH', `${this.url + this.configID}/uuidsets/datum`, {'Content-Type': 'application/json'}, body, true, next);
+	}
+
 
   return this;
 
