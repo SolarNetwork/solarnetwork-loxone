@@ -3,23 +3,17 @@ Loxone.websocket = (function() {
 	function processValueEvents(list) {
 		list.forEach(function(ve) {
 
-      Loxone.controlView.viewModel[`value-${ve.uuid}`](ve.value.toFixed(2));
+      var viewModelID = `value-${ve.uuid}`
+      var value = ve.value.toFixed(2);
 
-      // for(var c in controller.controls) {
-      //   if(controller.controls[c].states != null) {
-      //     for(var s in controller.controls[c].states) {
-      //       if(controller.controls[c].states[s] == ve.uuid) {
-      //         controller.controls[c].value = parseFloat(ve.value.toFixed(2));
-      //         var valueElement = document.getElementById(`value-${controller.controls[c].uuid}`);
-      //         if(valueElement) {
-      //           valueElement.innerHTML = parseFloat(ve.value.toFixed(2));
-      //         }
-      //       }
-      //     }
-      //   }
-      // }
+      // Create/Update knockout view model value
+      if(Loxone.controlView.viewModel[viewModelID] == null) {
+        this.controlView.viewModel[viewModelID] = ko.observable(value);
+      } else {
+        Loxone.controlView.viewModel[viewModelID](value);
+      }
+
 		});
-		container.prepend(group);
 	}
 
 	(function() {
@@ -69,7 +63,7 @@ Loxone.websocket = (function() {
 			},60000);
 
 		}, function (error) {
-	        console.log('STOMP protocol error %s', error);
+	    console.log('STOMP protocol error %s', error);
 		});
 	})();
 })();

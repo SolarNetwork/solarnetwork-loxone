@@ -69,13 +69,12 @@ Loxone.api = (function() {
 
 // Set frequency
 
-	this.setFrequency = function(uuid, frequency, next) {
+	this.setDatumParams = function(uuid, frequency, type, next) {
 		var json = { parameters: {} };
-		json.parameters[uuid] = { saveFrequencySeconds: frequency };
+		json.parameters[uuid] = { saveFrequencySeconds: frequency, datumValueType };
 		var body = JSON.stringify(json);
 		this.request('PATCH', `${this.url + this.configID}/uuidsets/datum`, {'Content-Type': 'application/json'}, body, true, next);
 	}
-
 
   return this;
 
