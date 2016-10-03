@@ -25,8 +25,9 @@ package net.solarnetwork.node.loxone.protocol.ws.handler;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 import javax.websocket.Session;
 import org.osgi.service.event.Event;
@@ -59,8 +60,10 @@ public class StructureFileLastModifiedDateCommandHandler extends BaseCommandHand
 			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 			try {
 				Date date = sdf.parse(value);
-				Event e = new Event(LoxoneEvents.STRUCTURE_FILE_MODIFICATION_DATE_EVENT,
-						Collections.singletonMap(LoxoneEvents.EVENT_PROPERTY_DATE, date.getTime()));
+				Map<String, Object> props = new HashMap<>(2);
+				props.put(LoxoneEvents.EVENT_PROPERTY_CONFIG_ID, getConfigId(session));
+				props.put(LoxoneEvents.EVENT_PROPERTY_DATE, date.getTime());
+				Event e = new Event(LoxoneEvents.STRUCTURE_FILE_MODIFICATION_DATE_EVENT, props);
 				postEvent(e);
 			} catch ( ParseException e ) {
 				log.error("Error parsing structure file last modified date value [{}]: {}", value,

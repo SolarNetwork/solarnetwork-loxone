@@ -53,6 +53,12 @@ public abstract class LoxoneEvents {
 	public static final String STRUCTURE_FILE_SAVED_EVENT = "net/solarnetwork/node/loxone/CONFIG_SAVE_DATE";
 
 	/**
+	 * The Event property used to convey the {@link Config#getId()} associated
+	 * with the event.
+	 */
+	public static final String EVENT_PROPERTY_CONFIG_ID = "configId";
+
+	/**
 	 * The Event property used to convey a date, expressed as a {@code Long}
 	 * value of milliseconds since the epoch.
 	 */

@@ -23,9 +23,12 @@
 package net.solarnetwork.node.loxone.protocol.ws.handler.test;
 
 import static org.easymock.EasyMock.capture;
+import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import java.io.IOException;
+import java.util.Collections;
+import javax.websocket.Session;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -36,6 +39,7 @@ import org.osgi.service.event.EventAdmin;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.solarnetwork.node.loxone.protocol.ws.CommandType;
+import net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint;
 import net.solarnetwork.node.loxone.protocol.ws.LoxoneEvents;
 import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
 import net.solarnetwork.node.loxone.protocol.ws.MessageType;
@@ -50,14 +54,18 @@ import net.solarnetwork.util.StaticOptionalService;
  */
 public class StructureFileLastModifiedDateCommandHandlerTests {
 
+	private static final Long TEST_CONFIG_ID = 123L;
+
 	private StructureFileLastModifiedDateCommandHandler handler;
 
 	private final ObjectMapper objectMapper = new ObjectMapper();
 	private EventAdmin eventAdmin;
+	private Session session;
 
 	@Before
 	public void setup() {
 		eventAdmin = EasyMock.createMock(EventAdmin.class);
+		session = EasyMock.createMock(Session.class);
 
 		handler = new StructureFileLastModifiedDateCommandHandler();
 		handler.setEventAdmin(new StaticOptionalService<EventAdmin>(eventAdmin));
@@ -70,6 +78,10 @@ public class StructureFileLastModifiedDateCommandHandlerTests {
 
 	@Test
 	public void parseDate() throws IOException {
+		// get Config ID from session
+		expect(session.getUserProperties()).andReturn(
+				Collections.singletonMap(LoxoneEndpoint.CONFIG_ID_USER_PROPERTY, TEST_CONFIG_ID));
+
 		Capture<Event> eventCapture = new Capture<>();
 		eventAdmin.postEvent(capture(eventCapture));
 
@@ -80,18 +92,20 @@ public class StructureFileLastModifiedDateCommandHandlerTests {
 
 		MessageHeader header = new MessageHeader(MessageType.TextMessage, null, testDate.length());
 
-		replay(eventAdmin);
+		replay(eventAdmin, session);
 
-		boolean result = handler.handleCommand(CommandType.StructureFileLastModifiedDate, header, null,
-				tree);
+		boolean result = handler.handleCommand(CommandType.StructureFileLastModifiedDate, header,
+				session, tree);
 
-		verify(eventAdmin);
+		verify(eventAdmin, session);
 
 		Assert.assertTrue("Handler success", result);
 		Event event = eventCapture.getValue();
 		Assert.assertNotNull("Event emitted", event);
 		Assert.assertEquals("Event topic", LoxoneEvents.STRUCTURE_FILE_MODIFICATION_DATE_EVENT,
 				event.getTopic());
+		Assert.assertEquals("Event config ID property", TEST_CONFIG_ID,
+				event.getProperty(LoxoneEvents.EVENT_PROPERTY_CONFIG_ID));
 		Assert.assertEquals("Event modification date property", Long.valueOf(1474279810000L),
 				event.getProperty(LoxoneEvents.EVENT_PROPERTY_DATE));
 

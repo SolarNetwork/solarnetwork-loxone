@@ -189,6 +189,8 @@ public class GetStructureFileCommandHandlerTests {
 		Assert.assertEquals("Event topic", LoxoneEvents.STRUCTURE_FILE_SAVED_EVENT, event.getTopic());
 		Assert.assertEquals("Event modification date property", Long.valueOf(1474279810000L),
 				event.getProperty(LoxoneEvents.EVENT_PROPERTY_DATE));
+		Assert.assertEquals("Event config ID property", TEST_CONFIG_ID,
+				event.getProperty(LoxoneEvents.EVENT_PROPERTY_CONFIG_ID));
 
 		// now every captured config should actually have the same values (and be the same object, really)
 		for ( Config config : configCapture.getValues() ) {

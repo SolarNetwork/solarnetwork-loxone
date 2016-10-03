@@ -573,6 +573,14 @@ public class LoxoneEndpoint extends Endpoint
 
 	@Override
 	public void handleEvent(Event event) {
+		final Session sess = session;
+		final Long configId = (sess != null
+				? (Long) session.getUserProperties().get(CONFIG_ID_USER_PROPERTY) : null);
+		final Long eventConfigId = (Long) event.getProperty(LoxoneEvents.EVENT_PROPERTY_CONFIG_ID);
+		if ( eventConfigId == null || !eventConfigId.equals(configId) ) {
+			// not for this Loxone configuration
+			return;
+		}
 		final String topic = event.getTopic();
 		final long lastStructureFileModificationDate = (configuration == null
 				|| configuration.getLastModified() == null ? -1
@@ -599,8 +607,7 @@ public class LoxoneEndpoint extends Endpoint
 			}
 		} else if ( LoxoneEvents.STRUCTURE_FILE_SAVED_EVENT.equals(topic) ) {
 			log.info("Loxone configuration saved; enabling status updates.");
-			setConfiguration(configDao
-					.getConfig((Long) session.getUserProperties().get(CONFIG_ID_USER_PROPERTY)));
+			setConfiguration(configDao.getConfig(configId));
 			try {
 				sendCommandIfPossible(CommandType.EnableInputStatusUpdate);
 			} catch ( IOException e ) {
