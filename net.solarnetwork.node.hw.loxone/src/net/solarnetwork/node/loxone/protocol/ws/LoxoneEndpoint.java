@@ -506,7 +506,7 @@ public class LoxoneEndpoint extends Endpoint
 		if ( internalCommandHandler.supportsCommand(command) ) {
 			return internalCommandHandler;
 		} else {
-			CommandHandler[] list = getCommandHandlers();
+			CommandHandler[] list = commandHandlers;
 			if ( list != null ) {
 				for ( CommandHandler handler : list ) {
 					if ( handler.supportsCommand(command) ) {
@@ -533,7 +533,7 @@ public class LoxoneEndpoint extends Endpoint
 	 *         if any communication error occurs
 	 */
 	private boolean handleBinaryFileIfPossible(MessageHeader header, Reader reader) throws IOException {
-		BinaryFileHandler[] list = getBinaryFileHandlers();
+		BinaryFileHandler[] list = binaryFileHandlers;
 		if ( list != null ) {
 			Reader r = (reader.markSupported() ? reader
 					: new BufferedReader(reader, BINARY_BUFFER_SIZE));
@@ -561,7 +561,7 @@ public class LoxoneEndpoint extends Endpoint
 	 *         if any communication error occurs
 	 */
 	private boolean handleBinaryFileIfPossible(MessageHeader header, ByteBuffer buffer) {
-		BinaryFileHandler[] list = getBinaryFileHandlers();
+		BinaryFileHandler[] list = binaryFileHandlers;
 		if ( list != null ) {
 			buffer.mark();
 			for ( BinaryFileHandler handler : list ) {
