@@ -170,9 +170,12 @@ public class GetIconBinaryFileHandler extends BaseCommandHandler implements Bina
 		if ( (buffer.limit() - buffer.position()) < PNG_HEADER.length ) {
 			return false;
 		}
-		byte[] magic = new byte[PNG_HEADER.length];
-		buffer.get(magic);
-		return Arrays.equals(PNG_HEADER, magic);
+		for ( int i = 0; i < PNG_HEADER.length; i++ ) {
+			if ( buffer.get() != PNG_HEADER[i] ) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
