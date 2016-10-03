@@ -62,6 +62,7 @@ Import-Package:
  org.springframework.messaging;version="[4.2,5.0)",
  org.springframework.messaging.core;version="[4.2,5.0)",
  org.springframework.messaging.simp;version="[4.2,5.0)",
+ org.springframework.scheduling;version="[4.2,5.0)",
  org.springframework.scheduling.quartz;version="[4.2,5.0)",
  org.springframework.transaction;version="[4.2,5.0)",
  org.springframework.transaction.annotation;version="[4.2,5.0)",

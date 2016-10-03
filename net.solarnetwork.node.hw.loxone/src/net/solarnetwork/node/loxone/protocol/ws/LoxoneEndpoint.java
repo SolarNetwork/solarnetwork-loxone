@@ -36,12 +36,11 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import javax.websocket.ClientEndpointConfig;
@@ -62,6 +61,7 @@ import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
+import org.springframework.scheduling.TaskScheduler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.solarnetwork.node.loxone.dao.ConfigDao;
@@ -113,7 +113,7 @@ public class LoxoneEndpoint extends Endpoint
 	private List<BinaryFileHandler> binaryFileHandlers = null;
 	private OptionalService<EventAdmin> eventAdmin = null;
 	private final int keepAliveSeconds = 240;
-	private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(0);
+	private TaskScheduler taskScheduler;
 	private MessageSource messageSource;
 	private ConfigDao configDao;
 
@@ -259,13 +259,16 @@ public class LoxoneEndpoint extends Endpoint
 			connectFuture = null;
 		}
 		disconnect();
-		connectFuture = scheduledExecutorService.schedule(new Runnable() {
+		if ( taskScheduler == null ) {
+			return;
+		}
+		connectFuture = taskScheduler.schedule(new Runnable() {
 
 			@Override
 			public void run() {
 				connect();
 			}
-		}, 2, TimeUnit.SECONDS);
+		}, new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(2)));
 	}
 
 	@Override
@@ -398,9 +401,10 @@ public class LoxoneEndpoint extends Endpoint
 	}
 
 	private synchronized void scheduleKeepAliveTask() {
-		if ( keepAliveFuture == null || keepAliveFuture.isDone() ) {
-			keepAliveFuture = scheduledExecutorService.scheduleAtFixedRate(new KeepAliveTask(),
-					keepAliveSeconds, keepAliveSeconds, TimeUnit.SECONDS);
+		if ( keepAliveFuture == null || keepAliveFuture.isDone() && taskScheduler != null ) {
+			long period = TimeUnit.SECONDS.toMillis(keepAliveSeconds);
+			keepAliveFuture = taskScheduler.scheduleAtFixedRate(new KeepAliveTask(),
+					new Date(System.currentTimeMillis() + period), period);
 		}
 	}
 
@@ -727,12 +731,12 @@ public class LoxoneEndpoint extends Endpoint
 		internalCommandHandler.setEventAdmin(eventAdmin);
 	}
 
-	public ScheduledExecutorService getScheduledExecutorService() {
-		return scheduledExecutorService;
+	public TaskScheduler getTaskScheduler() {
+		return taskScheduler;
 	}
 
-	public void setScheduledExecutorService(ScheduledExecutorService scheduledExecutorService) {
-		this.scheduledExecutorService = scheduledExecutorService;
+	public void setTaskScheduler(TaskScheduler taskScheduler) {
+		this.taskScheduler = taskScheduler;
 	}
 
 	public ConfigDao getConfigDao() {
