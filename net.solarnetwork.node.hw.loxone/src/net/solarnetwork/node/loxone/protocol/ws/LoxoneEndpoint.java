@@ -109,8 +109,8 @@ public class LoxoneEndpoint extends Endpoint
 	private String password = null;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
-	private List<CommandHandler> commandHandlers = null;
-	private List<BinaryFileHandler> binaryFileHandlers = null;
+	private CommandHandler[] commandHandlers = null;
+	private BinaryFileHandler[] binaryFileHandlers = null;
 	private OptionalService<EventAdmin> eventAdmin = null;
 	private final int keepAliveSeconds = 240;
 	private TaskScheduler taskScheduler;
@@ -506,7 +506,7 @@ public class LoxoneEndpoint extends Endpoint
 		if ( internalCommandHandler.supportsCommand(command) ) {
 			return internalCommandHandler;
 		} else {
-			List<CommandHandler> list = getCommandHandlers();
+			CommandHandler[] list = getCommandHandlers();
 			if ( list != null ) {
 				for ( CommandHandler handler : list ) {
 					if ( handler.supportsCommand(command) ) {
@@ -533,7 +533,7 @@ public class LoxoneEndpoint extends Endpoint
 	 *         if any communication error occurs
 	 */
 	private boolean handleBinaryFileIfPossible(MessageHeader header, Reader reader) throws IOException {
-		List<BinaryFileHandler> list = getBinaryFileHandlers();
+		BinaryFileHandler[] list = getBinaryFileHandlers();
 		if ( list != null ) {
 			Reader r = (reader.markSupported() ? reader
 					: new BufferedReader(reader, BINARY_BUFFER_SIZE));
@@ -561,7 +561,7 @@ public class LoxoneEndpoint extends Endpoint
 	 *         if any communication error occurs
 	 */
 	private boolean handleBinaryFileIfPossible(MessageHeader header, ByteBuffer buffer) {
-		List<BinaryFileHandler> list = getBinaryFileHandlers();
+		BinaryFileHandler[] list = getBinaryFileHandlers();
 		if ( list != null ) {
 			buffer.mark();
 			for ( BinaryFileHandler handler : list ) {
@@ -706,19 +706,19 @@ public class LoxoneEndpoint extends Endpoint
 		this.objectMapper = objectMapper;
 	}
 
-	public List<CommandHandler> getCommandHandlers() {
+	public CommandHandler[] getCommandHandlers() {
 		return commandHandlers;
 	}
 
-	public void setCommandHandlers(List<CommandHandler> commandHandlers) {
+	public void setCommandHandlers(CommandHandler[] commandHandlers) {
 		this.commandHandlers = commandHandlers;
 	}
 
-	public List<BinaryFileHandler> getBinaryFileHandlers() {
+	public BinaryFileHandler[] getBinaryFileHandlers() {
 		return binaryFileHandlers;
 	}
 
-	public void setBinaryFileHandlers(List<BinaryFileHandler> binaryFileHandlers) {
+	public void setBinaryFileHandlers(BinaryFileHandler[] binaryFileHandlers) {
 		this.binaryFileHandlers = binaryFileHandlers;
 	}
 
