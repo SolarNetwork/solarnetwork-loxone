@@ -289,9 +289,7 @@ public class LoxoneEndpoint extends Endpoint
 			}
 			if ( !handleBinaryFileIfPossible(h, buf) ) {
 				// hmm, seems sometimes we get more than one response from Loxone
-				if ( !headerQueue.offer(h) ) {
-					log.warn("Dropping message header: {}", h);
-				}
+				log.debug("Dropping message: {}", h);
 			}
 		} else {
 			// this should be a message header message, and another message will follow 
