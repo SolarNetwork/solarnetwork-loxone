@@ -42,6 +42,7 @@ import net.solarnetwork.node.RemoteServiceException;
 import net.solarnetwork.node.loxone.protocol.ws.BinaryFileHandler;
 import net.solarnetwork.node.loxone.protocol.ws.CommandType;
 import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
+import net.solarnetwork.node.loxone.protocol.ws.MessageType;
 
 /**
  * Request and handle image resources.
@@ -167,6 +168,9 @@ public class GetIconBinaryFileHandler extends BaseCommandHandler implements Bina
 
 	@Override
 	public boolean supportsDataMessage(MessageHeader header, ByteBuffer buffer) {
+		if ( header.getType() != MessageType.BinaryFile ) {
+			return false;
+		}
 		if ( (buffer.limit() - buffer.position()) < PNG_HEADER.length ) {
 			return false;
 		}
