@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import javax.websocket.Session;
+import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.TextEvent;
 import net.solarnetwork.node.loxone.protocol.ws.BinaryFileHandler;
 import net.solarnetwork.node.loxone.protocol.ws.LoxoneEvents;
@@ -79,7 +80,8 @@ public class TextEventBinaryFileHandler extends BaseEventBinaryFileHandler<TextE
 		}
 		// post updated values to message channel
 		if ( !updated.isEmpty() ) {
-			String dest = String.format(LoxoneEvents.TEXT_EVENT_MESSAGE_TOPIC, configId);
+			String dest = String.format(LoxoneEvents.TEXT_EVENT_MESSAGE_TOPIC,
+					Config.idToExternalForm(configId));
 			postMessage(dest, updated);
 		}
 		return true;

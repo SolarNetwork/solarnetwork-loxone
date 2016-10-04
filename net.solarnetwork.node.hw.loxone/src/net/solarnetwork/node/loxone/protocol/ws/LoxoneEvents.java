@@ -69,7 +69,7 @@ public abstract class LoxoneEvents {
 	 * specific {@link Config}.
 	 * 
 	 * The template accepts a single string parameter, which is expected to be
-	 * the string version of {@link Config#getId()};
+	 * the external string version of {@link Config#getId()};
 	 */
 	public static final String VALUE_EVENT_MESSAGE_TOPIC = "/topic/%s/events/values";
 
@@ -78,7 +78,7 @@ public abstract class LoxoneEvents {
 	 * specific {@link Config}.
 	 * 
 	 * The template accepts a single string parameter, which is expected to be
-	 * the string version of {@link Config#getId()};
+	 * the external string version of {@link Config#getId()};
 	 */
 	public static final String TEXT_EVENT_MESSAGE_TOPIC = "/topic/%s/events/texts";
 

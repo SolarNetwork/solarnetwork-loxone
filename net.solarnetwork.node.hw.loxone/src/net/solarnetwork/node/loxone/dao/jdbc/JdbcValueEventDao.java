@@ -67,11 +67,14 @@ public class JdbcValueEventDao extends BaseEventEntityDao<ValueEvent> implements
 
 	@Override
 	protected void setUpdateStatementValues(ValueEvent event, PreparedStatement ps) throws SQLException {
-		// cols: value = ?
+		// cols: created = ?, value = ?
 		//       uuid_hi, uuid_lo, config_id
-		ps.setDouble(1, event.getValue());
-		prepareUUID(2, event.getUuid(), ps);
-		ps.setObject(4, event.getConfigId());
+		ps.setTimestamp(1, new java.sql.Timestamp(
+				event.getCreated() != null ? event.getCreated().getTime() : System.currentTimeMillis()),
+				(Calendar) UTC_CALENDAR.clone());
+		ps.setDouble(2, event.getValue());
+		prepareUUID(3, event.getUuid(), ps);
+		ps.setObject(5, event.getConfigId());
 	}
 
 	private static final class ValueEventRowMapper implements RowMapper<ValueEvent> {
