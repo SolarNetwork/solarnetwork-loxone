@@ -1,5 +1,5 @@
 /* ==================================================================
- * DatumUUIDEntity.java - 27/09/2016 5:51:52 PM
+ * ValueEventDatumParameters.java - 4/10/2016 12:21:40 PM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -23,13 +23,26 @@
 package net.solarnetwork.node.loxone.domain;
 
 /**
- * API for a "datum" UUID entity, for managing a set of {@link Control} UUIDs
- * that should be allowed to be saved as
- * {@link net.solarnetwork.node.domain.Datum} objects.
+ * Extension of {@link DatumPropertyUUIDEntityParameters} that includes the
+ * value from an associated {@link ValueEvent}.
  * 
  * @author matt
  * @version 1.0
  */
-public interface DatumUUIDEntity extends UUIDSetEntity<DatumUUIDEntityParameters> {
+public interface ValueEventDatumParameters extends DatumPropertyUUIDEntityParameters {
+
+	/**
+	 * Get a name for this datum property.
+	 * 
+	 * @return The property name.
+	 */
+	String getName();
+
+	/**
+	 * Get the property value.
+	 * 
+	 * @return The property value.
+	 */
+	Double getValue();
 
 }

@@ -1,5 +1,5 @@
 /* ==================================================================
- * DatumUUIDEntity.java - 27/09/2016 5:51:52 PM
+ * ControlDatumParameters.java - 4/10/2016 10:56:41 AM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -22,14 +22,33 @@
 
 package net.solarnetwork.node.loxone.domain;
 
+import java.util.Map;
+import java.util.UUID;
+
 /**
- * API for a "datum" UUID entity, for managing a set of {@link Control} UUIDs
- * that should be allowed to be saved as
- * {@link net.solarnetwork.node.domain.Datum} objects.
+ * A combination of datum and datum property UUID parameters along with a value
+ * from an associated value event.
+ * 
+ * This API is designed to support finding control state values associated with
+ * a datum property UUID set.
  * 
  * @author matt
  * @version 1.0
  */
-public interface DatumUUIDEntity extends UUIDSetEntity<DatumUUIDEntityParameters> {
+public interface ControlDatumParameters extends UUIDEntityParameters {
+
+	/**
+	 * Get the datum parameters to use with this control.
+	 * 
+	 * @return The datum parameters.
+	 */
+	DatumUUIDEntityParameters getDatumParameters();
+
+	/**
+	 * Get a map of control state UUIDs to associated value event parameters.
+	 * 
+	 * @return The map of control state UUIDs to value event parameters.
+	 */
+	Map<UUID, ValueEventDatumParameters> getDatumPropertyParameters();
 
 }

@@ -40,7 +40,7 @@ public interface WebsocketLoxoneServiceSettings {
 
 	void setPassword(String password);
 
-	ValueEventDatumDataSource getDatumDataSource();
+	ControlDatumDataSource getDatumDataSource();
 
 	void setDatumLoggerFrequencySeconds(int datumLoggerFrequencySeconds);
 

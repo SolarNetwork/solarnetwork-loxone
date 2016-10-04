@@ -22,7 +22,11 @@
 
 package net.solarnetwork.node.loxone.dao;
 
+import java.util.List;
 import net.solarnetwork.node.loxone.domain.Control;
+import net.solarnetwork.node.loxone.domain.ControlDatumParameters;
+import net.solarnetwork.node.loxone.domain.DatumPropertyUUIDEntity;
+import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
 
 /**
  * DAO API of {@link Control} entities.
@@ -31,5 +35,16 @@ import net.solarnetwork.node.loxone.domain.Control;
  * @version 1.0
  */
 public interface ControlDao extends ConfigurationEntityDao<Control> {
+
+	/**
+	 * Get a list of persisted entities associated with
+	 * {@link DatumPropertyUUIDEntity}.
+	 * 
+	 * @return list of all persisted entities that have associated
+	 *         {@link DatumPropertyUUIDEntity} values, or empty list if none
+	 *         available
+	 */
+	List<UUIDEntityParametersPair<Control, ControlDatumParameters>> findAllForDatumPropertyUUIDEntities(
+			Long configId);
 
 }

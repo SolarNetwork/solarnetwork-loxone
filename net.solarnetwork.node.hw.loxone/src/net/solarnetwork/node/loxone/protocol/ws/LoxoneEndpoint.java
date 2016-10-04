@@ -36,12 +36,11 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import javax.websocket.ClientEndpointConfig;
@@ -62,6 +61,7 @@ import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
+import org.springframework.scheduling.TaskScheduler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.solarnetwork.node.loxone.dao.ConfigDao;
@@ -109,11 +109,11 @@ public class LoxoneEndpoint extends Endpoint
 	private String password = null;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
-	private List<CommandHandler> commandHandlers = null;
-	private List<BinaryFileHandler> binaryFileHandlers = null;
+	private CommandHandler[] commandHandlers = null;
+	private BinaryFileHandler[] binaryFileHandlers = null;
 	private OptionalService<EventAdmin> eventAdmin = null;
 	private final int keepAliveSeconds = 240;
-	private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(0);
+	private TaskScheduler taskScheduler;
 	private MessageSource messageSource;
 	private ConfigDao configDao;
 
@@ -259,13 +259,16 @@ public class LoxoneEndpoint extends Endpoint
 			connectFuture = null;
 		}
 		disconnect();
-		connectFuture = scheduledExecutorService.schedule(new Runnable() {
+		if ( taskScheduler == null ) {
+			return;
+		}
+		connectFuture = taskScheduler.schedule(new Runnable() {
 
 			@Override
 			public void run() {
 				connect();
 			}
-		}, 2, TimeUnit.SECONDS);
+		}, new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(2)));
 	}
 
 	@Override
@@ -398,9 +401,10 @@ public class LoxoneEndpoint extends Endpoint
 	}
 
 	private synchronized void scheduleKeepAliveTask() {
-		if ( keepAliveFuture == null || keepAliveFuture.isDone() ) {
-			keepAliveFuture = scheduledExecutorService.scheduleAtFixedRate(new KeepAliveTask(),
-					keepAliveSeconds, keepAliveSeconds, TimeUnit.SECONDS);
+		if ( keepAliveFuture == null || keepAliveFuture.isDone() && taskScheduler != null ) {
+			long period = TimeUnit.SECONDS.toMillis(keepAliveSeconds);
+			keepAliveFuture = taskScheduler.scheduleAtFixedRate(new KeepAliveTask(),
+					new Date(System.currentTimeMillis() + period), period);
 		}
 	}
 
@@ -502,7 +506,7 @@ public class LoxoneEndpoint extends Endpoint
 		if ( internalCommandHandler.supportsCommand(command) ) {
 			return internalCommandHandler;
 		} else {
-			List<CommandHandler> list = getCommandHandlers();
+			CommandHandler[] list = commandHandlers;
 			if ( list != null ) {
 				for ( CommandHandler handler : list ) {
 					if ( handler.supportsCommand(command) ) {
@@ -529,7 +533,7 @@ public class LoxoneEndpoint extends Endpoint
 	 *         if any communication error occurs
 	 */
 	private boolean handleBinaryFileIfPossible(MessageHeader header, Reader reader) throws IOException {
-		List<BinaryFileHandler> list = getBinaryFileHandlers();
+		BinaryFileHandler[] list = binaryFileHandlers;
 		if ( list != null ) {
 			Reader r = (reader.markSupported() ? reader
 					: new BufferedReader(reader, BINARY_BUFFER_SIZE));
@@ -557,7 +561,7 @@ public class LoxoneEndpoint extends Endpoint
 	 *         if any communication error occurs
 	 */
 	private boolean handleBinaryFileIfPossible(MessageHeader header, ByteBuffer buffer) {
-		List<BinaryFileHandler> list = getBinaryFileHandlers();
+		BinaryFileHandler[] list = binaryFileHandlers;
 		if ( list != null ) {
 			buffer.mark();
 			for ( BinaryFileHandler handler : list ) {
@@ -573,6 +577,14 @@ public class LoxoneEndpoint extends Endpoint
 
 	@Override
 	public void handleEvent(Event event) {
+		final Session sess = session;
+		final Long configId = (sess != null
+				? (Long) session.getUserProperties().get(CONFIG_ID_USER_PROPERTY) : null);
+		final Long eventConfigId = (Long) event.getProperty(LoxoneEvents.EVENT_PROPERTY_CONFIG_ID);
+		if ( eventConfigId == null || !eventConfigId.equals(configId) ) {
+			// not for this Loxone configuration
+			return;
+		}
 		final String topic = event.getTopic();
 		final long lastStructureFileModificationDate = (configuration == null
 				|| configuration.getLastModified() == null ? -1
@@ -599,8 +611,7 @@ public class LoxoneEndpoint extends Endpoint
 			}
 		} else if ( LoxoneEvents.STRUCTURE_FILE_SAVED_EVENT.equals(topic) ) {
 			log.info("Loxone configuration saved; enabling status updates.");
-			setConfiguration(configDao
-					.getConfig((Long) session.getUserProperties().get(CONFIG_ID_USER_PROPERTY)));
+			setConfiguration(configDao.getConfig(configId));
 			try {
 				sendCommandIfPossible(CommandType.EnableInputStatusUpdate);
 			} catch ( IOException e ) {
@@ -695,19 +706,19 @@ public class LoxoneEndpoint extends Endpoint
 		this.objectMapper = objectMapper;
 	}
 
-	public List<CommandHandler> getCommandHandlers() {
+	public CommandHandler[] getCommandHandlers() {
 		return commandHandlers;
 	}
 
-	public void setCommandHandlers(List<CommandHandler> commandHandlers) {
+	public void setCommandHandlers(CommandHandler[] commandHandlers) {
 		this.commandHandlers = commandHandlers;
 	}
 
-	public List<BinaryFileHandler> getBinaryFileHandlers() {
+	public BinaryFileHandler[] getBinaryFileHandlers() {
 		return binaryFileHandlers;
 	}
 
-	public void setBinaryFileHandlers(List<BinaryFileHandler> binaryFileHandlers) {
+	public void setBinaryFileHandlers(BinaryFileHandler[] binaryFileHandlers) {
 		this.binaryFileHandlers = binaryFileHandlers;
 	}
 
@@ -720,12 +731,12 @@ public class LoxoneEndpoint extends Endpoint
 		internalCommandHandler.setEventAdmin(eventAdmin);
 	}
 
-	public ScheduledExecutorService getScheduledExecutorService() {
-		return scheduledExecutorService;
+	public TaskScheduler getTaskScheduler() {
+		return taskScheduler;
 	}
 
-	public void setScheduledExecutorService(ScheduledExecutorService scheduledExecutorService) {
-		this.scheduledExecutorService = scheduledExecutorService;
+	public void setTaskScheduler(TaskScheduler taskScheduler) {
+		this.taskScheduler = taskScheduler;
 	}
 
 	public ConfigDao getConfigDao() {

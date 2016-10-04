@@ -1,5 +1,5 @@
 /* ==================================================================
- * BasicDatumUUIDEntityParameters.java - 1/10/2016 11:25:04 AM
+ * BasicDatumPropertyUUIDEntityParameters.java - 4/10/2016 10:22:02 AM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -25,22 +25,22 @@ package net.solarnetwork.node.loxone.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * Basic implementation of {@link DatumUUIDEntityParameters}.
+ * Basic implementation of {@link DatumPropertyUUIDEntityParameters}.
  * 
  * @author matt
  * @version 1.0
  */
-public class BasicDatumUUIDEntityParameters implements DatumUUIDEntityParameters {
+public class BasicDatumPropertyUUIDEntityParameters implements DatumPropertyUUIDEntityParameters {
 
-	private Integer saveFrequencySeconds;
+	private DatumValueType datumValueType;
 
-	public BasicDatumUUIDEntityParameters() {
+	public BasicDatumPropertyUUIDEntityParameters() {
 		super();
 	}
 
-	public BasicDatumUUIDEntityParameters(Integer saveFrequencySeconds) {
+	public BasicDatumPropertyUUIDEntityParameters(DatumValueType datumValueType) {
 		super();
-		this.saveFrequencySeconds = saveFrequencySeconds;
+		this.datumValueType = datumValueType;
 	}
 
 	/**
@@ -52,23 +52,23 @@ public class BasicDatumUUIDEntityParameters implements DatumUUIDEntityParameters
 	 */
 	@JsonIgnore
 	public boolean isDefaultProperties() {
-		return (saveFrequencySeconds == null || saveFrequencySeconds.intValue() == 0);
+		return (datumValueType == null || datumValueType == DatumValueType.Unknown);
 	}
 
 	@Override
-	public Integer getSaveFrequencySeconds() {
-		return saveFrequencySeconds;
+	public DatumValueType getDatumValueType() {
+		return datumValueType;
 	}
 
-	public void setSaveFrequencySeconds(int saveFrequencySeconds) {
-		this.saveFrequencySeconds = saveFrequencySeconds;
+	public void setDatumValueType(DatumValueType datumValueType) {
+		this.datumValueType = datumValueType;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((saveFrequencySeconds == null) ? 0 : saveFrequencySeconds.hashCode());
+		result = prime * result + ((datumValueType == null) ? 0 : datumValueType.hashCode());
 		return result;
 	}
 
@@ -83,12 +83,8 @@ public class BasicDatumUUIDEntityParameters implements DatumUUIDEntityParameters
 		if ( getClass() != obj.getClass() ) {
 			return false;
 		}
-		BasicDatumUUIDEntityParameters other = (BasicDatumUUIDEntityParameters) obj;
-		if ( saveFrequencySeconds == null ) {
-			if ( other.saveFrequencySeconds != null ) {
-				return false;
-			}
-		} else if ( !saveFrequencySeconds.equals(other.saveFrequencySeconds) ) {
+		BasicDatumPropertyUUIDEntityParameters other = (BasicDatumPropertyUUIDEntityParameters) obj;
+		if ( datumValueType != other.datumValueType ) {
 			return false;
 		}
 		return true;

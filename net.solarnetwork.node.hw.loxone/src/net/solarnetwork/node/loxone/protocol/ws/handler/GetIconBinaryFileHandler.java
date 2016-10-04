@@ -25,7 +25,6 @@ package net.solarnetwork.node.loxone.protocol.ws.handler;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -56,7 +55,7 @@ public class GetIconBinaryFileHandler extends BaseCommandHandler implements Bina
 			(byte) 0x47 };
 
 	// create a fixed size queue for handling GetIcon requests
-	private final BlockingQueue<String> iconQueue = new ArrayBlockingQueue<>(10, true);
+	private final ConcurrentMap<Long, BlockingQueue<String>> iconQueue = new ConcurrentHashMap<>();
 	private final ConcurrentMap<String, GetImageFuture> iconRequests = new ConcurrentHashMap<>(10);
 
 	@Override
@@ -68,16 +67,25 @@ public class GetIconBinaryFileHandler extends BaseCommandHandler implements Bina
 	public Future<?> sendCommand(CommandType command, Session session, Object... args)
 			throws IOException {
 		// we need one and only one argument: the name of the image to load
+		Long configId = getConfigId(session);
 		if ( supportsCommand(command) && args != null && args.length > 0 && args[0] != null ) {
 			log.trace("Requesting image [{}]", args[0]);
-			return requestImage(session, args[0].toString());
+			return requestImage(session, configId, args[0].toString());
 		}
 		return null;
 	}
 
-	private synchronized Future<Resource> requestImage(Session session, String name) {
+	private Future<Resource> requestImage(Session session, Long configId, String name) {
+		BlockingQueue<String> queue = iconQueue.get(configId);
+		if ( queue == null ) {
+			queue = new ArrayBlockingQueue<>(5);
+			BlockingQueue<String> existingQueue = iconQueue.putIfAbsent(configId, queue);
+			if ( existingQueue != null ) {
+				queue = existingQueue;
+			}
+		}
 		try {
-			if ( !iconQueue.offer(name, 1, TimeUnit.MINUTES) ) {
+			if ( !queue.offer(name, 1, TimeUnit.MINUTES) ) {
 				throw new RemoteServiceException("Timeout waiting to request image [" + name + "]");
 			}
 		} catch ( InterruptedException e ) {
@@ -92,7 +100,7 @@ public class GetIconBinaryFileHandler extends BaseCommandHandler implements Bina
 			session.getBasicRemote().sendText(name);
 			return req;
 		} catch ( IOException e ) {
-			iconQueue.poll();
+			queue.poll();
 			throw new RemoteServiceException("Error requesting image [" + name + "]", e);
 		}
 	}
@@ -162,21 +170,25 @@ public class GetIconBinaryFileHandler extends BaseCommandHandler implements Bina
 		if ( (buffer.limit() - buffer.position()) < PNG_HEADER.length ) {
 			return false;
 		}
-		byte[] magic = new byte[PNG_HEADER.length];
-		buffer.get(magic);
-		return Arrays.equals(PNG_HEADER, magic);
+		for ( int i = 0; i < PNG_HEADER.length; i++ ) {
+			if ( buffer.get() != PNG_HEADER[i] ) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
 	public boolean handleDataMessage(MessageHeader header, Session session, ByteBuffer buffer) {
+		Long configId = getConfigId(session);
 		byte[] data = new byte[buffer.remaining()];
 		buffer.get(data);
-		handleImageData(data);
+		handleImageData(configId, data);
 		return true;
 	}
 
-	private void handleImageData(byte[] data) {
-		String name = nextImageName();
+	private void handleImageData(Long configId, byte[] data) {
+		String name = nextImageName(configId);
 		log.debug("Got image {}", name);
 		GetImageFuture f = iconRequests.remove(name);
 		if ( f != null ) {
@@ -203,8 +215,9 @@ public class GetIconBinaryFileHandler extends BaseCommandHandler implements Bina
 		}
 	}
 
-	private synchronized String nextImageName() {
-		return iconQueue.poll();
+	private String nextImageName(Long configId) {
+		BlockingQueue<String> queue = iconQueue.get(configId);
+		return (queue != null ? queue.poll() : null);
 	}
 
 	@Override
@@ -220,9 +233,10 @@ public class GetIconBinaryFileHandler extends BaseCommandHandler implements Bina
 	@Override
 	public boolean handleTextMessage(MessageHeader header, Session session, Reader reader)
 			throws IOException {
+		Long configId = getConfigId(session);
 		String s = FileCopyUtils.copyToString(reader);
 		log.debug("Got SVG image {}", s);
-		handleImageData(s.getBytes());
+		handleImageData(configId, s.getBytes());
 		return true;
 	}
 

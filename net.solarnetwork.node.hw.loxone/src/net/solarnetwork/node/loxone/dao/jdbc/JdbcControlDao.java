@@ -42,8 +42,15 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.loxone.dao.ControlDao;
+import net.solarnetwork.node.loxone.dao.jdbc.JdbcDatumUUIDSetDao.DatumUUIDEntityParametersRowMapper;
+import net.solarnetwork.node.loxone.domain.BasicControlDatumParameters;
+import net.solarnetwork.node.loxone.domain.BasicValueEventDatumParameters;
 import net.solarnetwork.node.loxone.domain.Control;
+import net.solarnetwork.node.loxone.domain.ControlDatumParameters;
 import net.solarnetwork.node.loxone.domain.ControlType;
+import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
+import net.solarnetwork.node.loxone.domain.DatumValueType;
+import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
 
 /**
  * JDBC implementation of {@link ControlDao}.
@@ -55,6 +62,8 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 
 	/** The default tables version. */
 	public static final int TABLES_VERSION = 1;
+
+	public static final String SQL_FIND_FOR_DATUM_PROPSET = "find-for-propset";
 
 	public static final String CONTROL_STATES_NAME = "control_states";
 	public static final String SQL_CONTROL_STATES_DELETE_FOR_CONTROL = "delete-for-control";
@@ -141,6 +150,26 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 		List<Control> results = getJdbcTemplate().query(sql,
 				new ControlWithStateRowMapper(getRowMapper()), configId);
 		return results;
+	}
+
+	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Override
+	public List<UUIDEntityParametersPair<Control, ControlDatumParameters>> findAllForDatumPropertyUUIDEntities(
+			final Long configId) {
+		if ( configId == null ) {
+			return null;
+		}
+		return getJdbcTemplate().query(new PreparedStatementCreator() {
+
+			@Override
+			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+				String sql = getSqlResource(SQL_FIND_FOR_DATUM_PROPSET);
+				PreparedStatement ps = con.prepareStatement(sql);
+				ps.setLong(1, configId.longValue());
+				return ps;
+			}
+		}, new ControlDatumPropertyResultSetExtractor(getRowMapper(),
+				new DatumUUIDEntityParametersRowMapper(10)));
 	}
 
 	@Override
@@ -232,4 +261,56 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 
 	}
 
+	private static final class ControlDatumPropertyResultSetExtractor implements
+			ResultSetExtractor<List<UUIDEntityParametersPair<Control, ControlDatumParameters>>> {
+
+		private final RowMapper<Control> rowMapper;
+		private final RowMapper<DatumUUIDEntityParameters> datumParamsRowMapper;
+
+		private BasicControlDatumParameters lastParams;
+		private UUIDEntityParametersPair<Control, ControlDatumParameters> lastPair;
+
+		private ControlDatumPropertyResultSetExtractor(RowMapper<Control> rowMapper,
+				RowMapper<DatumUUIDEntityParameters> datumParamsRowMapper) {
+			super();
+			this.rowMapper = rowMapper;
+			this.datumParamsRowMapper = datumParamsRowMapper;
+		}
+
+		@Override
+		public List<UUIDEntityParametersPair<Control, ControlDatumParameters>> extractData(
+				ResultSet rs) throws SQLException, DataAccessException {
+			List<UUIDEntityParametersPair<Control, ControlDatumParameters>> results = new ArrayList<>(
+					64);
+			int i = 0;
+			while ( rs.next() ) {
+				Control row = rowMapper.mapRow(rs, i++);
+				if ( lastPair == null || !lastPair.getEntity().getUuid().equals(row.getUuid()) ) {
+					// starting a new control
+					lastParams = new BasicControlDatumParameters();
+					lastParams.setDatumParameters(datumParamsRowMapper.mapRow(rs, i));
+					lastPair = new UUIDEntityParametersPair<>(row, lastParams);
+					results.add(lastPair);
+				}
+
+				// after control and datum params, columns start at 12 and are 
+				// st.event_hi, st.event_lo, st.name AS event_name
+				// ps.dtype,
+				// ve.fvalue
+
+				UUID stateUuid = readUUID(12, rs);
+				BasicValueEventDatumParameters valueParams = (BasicValueEventDatumParameters) lastParams
+						.getDatumPropertyParameters().get(stateUuid);
+				if ( valueParams == null ) {
+					valueParams = new BasicValueEventDatumParameters();
+					lastParams.getDatumPropertyParameters().put(stateUuid, valueParams);
+				}
+				valueParams.setName(rs.getString(14));
+				valueParams.setDatumValueType(DatumValueType.forCodeValue(rs.getInt(15)));
+				valueParams.setValue(rs.getDouble(16));
+			}
+			return results;
+		}
+
+	}
 }

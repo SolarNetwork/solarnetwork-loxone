@@ -30,6 +30,9 @@
 		filter="(db=node)"/>
 	
 	<reference id="settingDao" interface="net.solarnetwork.node.dao.SettingDao"/>
+	
+	<reference id="taskScheduler" interface="org.springframework.scheduling.TaskScheduler"
+		filter="(function=node)"/>
 
 	<bean id="generalNodeDatumDao" class="net.solarnetwork.util.DynamicServiceTracker">
 		<property name="bundleContext" ref="bundleContext"/>
@@ -93,6 +96,10 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
+	<bean id="propUuidSetDao" class="net.solarnetwork.node.loxone.dao.jdbc.JdbcDatumPropertyUUIDSetDao" init-method="init">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
 	<util:list id="configuration-daos">
 		<beans:ref bean="categoryDao"/>
 		<beans:ref bean="controlDao"/>
@@ -105,6 +112,7 @@
 
 	<util:list id="uuid-set-daos">
 		<beans:ref bean="datumUuidSetDao"/>
+		<beans:ref bean="propUuidSetDao"/>
 	</util:list>
 
 	<bean id="get-structure-cmd-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.GetStructureFileCommandHandler">
@@ -124,12 +132,6 @@
 		<property name="eventAdmin" ref="eventAdmin"/>
 		<property name="genericEventDao" ref="valueEventDao"/>
 		<property name="messageSendingOps" ref="messageSendingOperations"/>
-		<property name="datumGenerator">
-			<bean class="net.solarnetwork.node.loxone.impl.ValueEventDatumGenerator">
-				<argument ref="datumUuidSetDao"/>
-				<argument ref="generalNodeDatumDao"/>
-			</bean>
-		</property>
 	</bean>
 	
 	<bean id="text-event-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.TextEventBinaryFileHandler">
@@ -146,17 +148,17 @@
 	</bean>
 	
 	<util:list id="binary-file-handlers">
-		<beans:ref bean="get-structure-cmd-handler"/>
 		<beans:ref bean="value-event-handler"/>
 		<beans:ref bean="text-event-handler"/>
 		<beans:ref bean="daytimer-event-handler"/>
 		<beans:ref bean="get-image-handler"/>
+		<beans:ref bean="get-structure-cmd-handler"/>
 	</util:list>
 
 	<util:list id="command-handlers">
+		<beans:ref bean="get-image-handler"/>
 		<beans:ref bean="get-structure-cmd-handler"/>
 		<beans:ref bean="structure-file-last-mod-cmd-handler"/>
-		<beans:ref bean="get-image-handler"/>
 	</util:list>
 
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
@@ -202,6 +204,7 @@
 			</beans:entry>
 		</osgix:service-properties>
 		<bean class="net.solarnetwork.node.loxone.impl.WebsocketLoxoneService" init-method="init" destroy-method="disconnect">
+			<property name="taskScheduler" ref="taskScheduler"/>
 			<property name="configDao" ref="configDao"/>
 			<property name="eventAdmin" ref="eventAdmin"/>
 			<property name="messageSource" ref="messageSource"/>
@@ -213,7 +216,7 @@
 			<property name="uuidSetDaos" ref="uuid-set-daos"/>
 			<property name="settingResourceProvider" ref="settingResourceProvider"/>
 			<property name="scheduler" ref="scheduler"/>
-			<property name="valueEventDao" ref="valueEventDao"/>
+			<property name="controlDao" ref="controlDao"/>
 			<property name="datumDao" ref="generalNodeDatumDao"/>
 			<property name="settingDao" ref="settingDao"/>
 		</bean>

@@ -40,17 +40,20 @@ import org.junit.Test;
 import net.solarnetwork.node.Setting;
 import net.solarnetwork.node.dao.SettingDao;
 import net.solarnetwork.node.domain.GeneralNodeDatum;
-import net.solarnetwork.node.loxone.dao.ValueEventDao;
+import net.solarnetwork.node.loxone.dao.ControlDao;
+import net.solarnetwork.node.loxone.domain.BasicControlDatumParameters;
 import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntityParameters;
-import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
+import net.solarnetwork.node.loxone.domain.BasicValueEventDatumParameters;
+import net.solarnetwork.node.loxone.domain.Control;
+import net.solarnetwork.node.loxone.domain.ControlDatumParameters;
 import net.solarnetwork.node.loxone.domain.DatumValueType;
 import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
-import net.solarnetwork.node.loxone.impl.ValueEventDatumDataSource;
+import net.solarnetwork.node.loxone.impl.ControlDatumDataSource;
 import net.solarnetwork.node.support.KeyValuePair;
 
 /**
- * Test cases for the {@link ValueEventDatumDataSource} class.
+ * Test cases for the {@link ControlDatumDataSource} class.
  * 
  * @author matt
  * @version 1.0
@@ -59,15 +62,15 @@ public class ValueEventDatumDataSourceTests {
 
 	private static final Long TEST_CONFIG_ID = 321L;
 
-	private ValueEventDao valueEventDao;
+	private ControlDao controlDao;
 	private SettingDao settingDao;
-	private ValueEventDatumDataSource dataSource;
+	private ControlDatumDataSource dataSource;
 
 	@Before
 	public void setup() {
-		valueEventDao = EasyMock.createMock(ValueEventDao.class);
+		controlDao = EasyMock.createMock(ControlDao.class);
 		settingDao = EasyMock.createMock(SettingDao.class);
-		dataSource = new ValueEventDatumDataSource(TEST_CONFIG_ID, valueEventDao, settingDao);
+		dataSource = new ControlDatumDataSource(TEST_CONFIG_ID, controlDao, settingDao);
 	}
 
 	@After
@@ -76,15 +79,15 @@ public class ValueEventDatumDataSourceTests {
 	}
 
 	private void replayAll() {
-		EasyMock.replay(valueEventDao, settingDao);
+		EasyMock.replay(controlDao, settingDao);
 	}
 
 	private void verifyAll() {
-		EasyMock.verify(valueEventDao, settingDao);
+		EasyMock.verify(controlDao, settingDao);
 	}
 
 	private String settingKey() {
-		return String.format(ValueEventDatumDataSource.SETTING_KEY_TEMPLATE,
+		return String.format(ControlDatumDataSource.SETTING_KEY_TEMPLATE,
 				Long.toString(TEST_CONFIG_ID, 16));
 	}
 
@@ -92,15 +95,23 @@ public class ValueEventDatumDataSourceTests {
 	public void produceInitialValue() {
 		final String settingKey = settingKey();
 		final long now = System.currentTimeMillis();
+		final Control control = new Control(UUID.randomUUID(), TEST_CONFIG_ID);
 		final ValueEvent valueEvent = new ValueEvent(UUID.randomUUID(), TEST_CONFIG_ID, 456.7);
-		final String sourceId = valueEvent.getSourceId();
-		final BasicDatumUUIDEntityParameters datumParams = new BasicDatumUUIDEntityParameters(300,
-				DatumValueType.Instantaneous);
-		final List<UUIDEntityParametersPair<ValueEvent, DatumUUIDEntityParameters>> uuidSet = Arrays
-				.asList(new UUIDEntityParametersPair<ValueEvent, DatumUUIDEntityParameters>(valueEvent,
-						datumParams));
+		final BasicControlDatumParameters controlParams = new BasicControlDatumParameters();
+		final String sourceId = control.getSourceId();
+		final BasicDatumUUIDEntityParameters datumParams = new BasicDatumUUIDEntityParameters(300);
+		controlParams.setDatumParameters(datumParams);
+		final BasicValueEventDatumParameters valueParams = new BasicValueEventDatumParameters();
+		valueParams.setDatumValueType(DatumValueType.Instantaneous);
+		valueParams.setName("foo");
+		valueParams.setValue(valueEvent.getValue());
+		controlParams
+				.setDatumPropertyParameters(Collections.singletonMap(valueEvent.getUuid(), valueParams));
+		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays
+				.asList(new UUIDEntityParametersPair<Control, ControlDatumParameters>(
+						control, controlParams));
 		expect(settingDao.getSettings(settingKey)).andReturn(Collections.emptyList());
-		expect(valueEventDao.findAllForDatumUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
+		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
 		Capture<Setting> settingCapture = new Capture<>();
 		settingDao.storeSetting(capture(settingCapture));
@@ -121,22 +132,30 @@ public class ValueEventDatumDataSourceTests {
 
 		GeneralNodeDatum datum = results.iterator().next();
 		assertEquals("Datum value", Double.valueOf(valueEvent.getValue()),
-				datum.getInstantaneousSampleDouble("value"));
+				datum.getInstantaneousSampleDouble("foo"));
 	}
 
 	@Test
 	public void produceInitialAccumulatingValue() {
 		final String settingKey = settingKey();
 		final long now = System.currentTimeMillis();
+		final Control control = new Control(UUID.randomUUID(), TEST_CONFIG_ID);
 		final ValueEvent valueEvent = new ValueEvent(UUID.randomUUID(), TEST_CONFIG_ID, 456.7);
-		final String sourceId = valueEvent.getSourceId();
-		final BasicDatumUUIDEntityParameters datumParams = new BasicDatumUUIDEntityParameters(300,
-				DatumValueType.Accumulating);
-		final List<UUIDEntityParametersPair<ValueEvent, DatumUUIDEntityParameters>> uuidSet = Arrays
-				.asList(new UUIDEntityParametersPair<ValueEvent, DatumUUIDEntityParameters>(valueEvent,
-						datumParams));
+		final BasicControlDatumParameters controlParams = new BasicControlDatumParameters();
+		final String sourceId = control.getSourceId();
+		final BasicDatumUUIDEntityParameters datumParams = new BasicDatumUUIDEntityParameters(300);
+		controlParams.setDatumParameters(datumParams);
+		final BasicValueEventDatumParameters valueParams = new BasicValueEventDatumParameters();
+		valueParams.setDatumValueType(DatumValueType.Accumulating);
+		valueParams.setName("foo");
+		valueParams.setValue(valueEvent.getValue());
+		controlParams
+				.setDatumPropertyParameters(Collections.singletonMap(valueEvent.getUuid(), valueParams));
+		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays
+				.asList(new UUIDEntityParametersPair<Control, ControlDatumParameters>(
+						control, controlParams));
 		expect(settingDao.getSettings(settingKey)).andReturn(Collections.emptyList());
-		expect(valueEventDao.findAllForDatumUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
+		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
 		Capture<Setting> settingCapture = new Capture<>();
 		settingDao.storeSetting(capture(settingCapture));
@@ -157,24 +176,32 @@ public class ValueEventDatumDataSourceTests {
 
 		GeneralNodeDatum datum = results.iterator().next();
 		assertEquals("Datum value", Double.valueOf(valueEvent.getValue()),
-				datum.getAccumulatingSampleDouble("value"));
+				datum.getAccumulatingSampleDouble("foo"));
 	}
 
 	@Test
 	public void skipValueTooSoon() {
 		final String settingKey = settingKey();
 		final long now = System.currentTimeMillis();
+		final Control control = new Control(UUID.randomUUID(), TEST_CONFIG_ID);
 		final ValueEvent valueEvent = new ValueEvent(UUID.randomUUID(), TEST_CONFIG_ID, 456.7);
-		final String sourceId = valueEvent.getSourceId();
-		final BasicDatumUUIDEntityParameters datumParams = new BasicDatumUUIDEntityParameters(300,
-				DatumValueType.Instantaneous);
-		final List<UUIDEntityParametersPair<ValueEvent, DatumUUIDEntityParameters>> uuidSet = Arrays
-				.asList(new UUIDEntityParametersPair<ValueEvent, DatumUUIDEntityParameters>(valueEvent,
-						datumParams));
+		final BasicControlDatumParameters controlParams = new BasicControlDatumParameters();
+		final String sourceId = control.getSourceId();
+		final BasicDatumUUIDEntityParameters datumParams = new BasicDatumUUIDEntityParameters(300);
+		controlParams.setDatumParameters(datumParams);
+		final BasicValueEventDatumParameters valueParams = new BasicValueEventDatumParameters();
+		valueParams.setDatumValueType(DatumValueType.Accumulating);
+		valueParams.setName("foo");
+		valueParams.setValue(valueEvent.getValue());
+		controlParams
+				.setDatumPropertyParameters(Collections.singletonMap(valueEvent.getUuid(), valueParams));
+		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays
+				.asList(new UUIDEntityParametersPair<Control, ControlDatumParameters>(
+						control, controlParams));
 		final List<KeyValuePair> saveSettings = Arrays
 				.asList(new KeyValuePair(sourceId, Long.toString(now - 100000, 16)));
 		expect(settingDao.getSettings(settingKey)).andReturn(saveSettings);
-		expect(valueEventDao.findAllForDatumUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
+		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
 		replayAll();
 
@@ -188,17 +215,25 @@ public class ValueEventDatumDataSourceTests {
 	public void produceAdditionalValue() {
 		final String settingKey = settingKey();
 		final long now = System.currentTimeMillis();
+		final Control control = new Control(UUID.randomUUID(), TEST_CONFIG_ID);
 		final ValueEvent valueEvent = new ValueEvent(UUID.randomUUID(), TEST_CONFIG_ID, 456.7);
-		final String sourceId = valueEvent.getSourceId();
-		final BasicDatumUUIDEntityParameters datumParams = new BasicDatumUUIDEntityParameters(300,
-				DatumValueType.Instantaneous);
-		final List<UUIDEntityParametersPair<ValueEvent, DatumUUIDEntityParameters>> uuidSet = Arrays
-				.asList(new UUIDEntityParametersPair<ValueEvent, DatumUUIDEntityParameters>(valueEvent,
-						datumParams));
+		final BasicControlDatumParameters controlParams = new BasicControlDatumParameters();
+		final String sourceId = control.getSourceId();
+		final BasicDatumUUIDEntityParameters datumParams = new BasicDatumUUIDEntityParameters(300);
+		controlParams.setDatumParameters(datumParams);
+		final BasicValueEventDatumParameters valueParams = new BasicValueEventDatumParameters();
+		valueParams.setDatumValueType(DatumValueType.Instantaneous);
+		valueParams.setName("foo");
+		valueParams.setValue(valueEvent.getValue());
+		controlParams
+				.setDatumPropertyParameters(Collections.singletonMap(valueEvent.getUuid(), valueParams));
+		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays
+				.asList(new UUIDEntityParametersPair<Control, ControlDatumParameters>(
+						control, controlParams));
 		final List<KeyValuePair> saveSettings = Arrays
 				.asList(new KeyValuePair(sourceId, Long.toString(now - 300001, 16)));
 		expect(settingDao.getSettings(settingKey)).andReturn(saveSettings);
-		expect(valueEventDao.findAllForDatumUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
+		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
 		Capture<Setting> settingCapture = new Capture<>();
 		settingDao.storeSetting(capture(settingCapture));
@@ -219,7 +254,7 @@ public class ValueEventDatumDataSourceTests {
 
 		GeneralNodeDatum datum = results.iterator().next();
 		assertEquals("Datum value", Double.valueOf(valueEvent.getValue()),
-				datum.getInstantaneousSampleDouble("value"));
+				datum.getInstantaneousSampleDouble("foo"));
 	}
 
 }

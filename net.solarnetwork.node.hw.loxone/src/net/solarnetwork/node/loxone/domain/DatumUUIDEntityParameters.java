@@ -42,13 +42,4 @@ public interface DatumUUIDEntityParameters extends UUIDEntityParameters {
 	 */
 	Integer getSaveFrequencySeconds();
 
-	/**
-	 * Get the type of value this UUID's associated values should be represented
-	 * as when translated into a {@code Datum} instance.
-	 * 
-	 * @return The datum value type, or {@code null} to be treated in a default
-	 *         manner.
-	 */
-	DatumValueType getDatumValueType();
-
 }

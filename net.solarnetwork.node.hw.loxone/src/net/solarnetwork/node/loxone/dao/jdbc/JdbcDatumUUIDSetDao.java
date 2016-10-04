@@ -32,7 +32,6 @@ import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntity;
 import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
 import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
-import net.solarnetwork.node.loxone.domain.DatumValueType;
 
 /**
  * JDBC implementation of {@link DatumUUIDSetDao}.
@@ -57,8 +56,6 @@ public class JdbcDatumUUIDSetDao extends BaseUUIDSetDao<DatumUUIDEntity, DatumUU
 		super.setStoreStatementValues(ps, configId, uuid, parameters);
 		ps.setInt(4, parameters != null && parameters.getSaveFrequencySeconds() != null
 				? parameters.getSaveFrequencySeconds() : 0);
-		ps.setShort(5, parameters != null && parameters.getDatumValueType() != null
-				? (short) parameters.getDatumValueType().getCode() : (short) 0);
 	}
 
 	@Override
@@ -66,9 +63,7 @@ public class JdbcDatumUUIDSetDao extends BaseUUIDSetDao<DatumUUIDEntity, DatumUU
 			DatumUUIDEntityParameters parameters) throws SQLException {
 		ps.setInt(1, parameters != null && parameters.getSaveFrequencySeconds() != null
 				? parameters.getSaveFrequencySeconds() : 0);
-		ps.setShort(2, parameters != null && parameters.getDatumValueType() != null
-				? (short) parameters.getDatumValueType().getCode() : (short) 0);
-		return 3;
+		return 2;
 	}
 
 	@Override
@@ -77,9 +72,6 @@ public class JdbcDatumUUIDSetDao extends BaseUUIDSetDao<DatumUUIDEntity, DatumUU
 		if ( parameters != null ) {
 			if ( parameters.getSaveFrequencySeconds() != null ) {
 				set.updateInt(4, parameters.getSaveFrequencySeconds());
-			}
-			if ( parameters.getDatumValueType() != null ) {
-				set.updateShort(5, (short) parameters.getDatumValueType().getCode());
 			}
 		}
 	}
@@ -126,7 +118,6 @@ public class JdbcDatumUUIDSetDao extends BaseUUIDSetDao<DatumUUIDEntity, DatumUU
 			int col = columnOffset + 1;
 			BasicDatumUUIDEntityParameters params = new BasicDatumUUIDEntityParameters();
 			params.setSaveFrequencySeconds(rs.getInt(col++));
-			params.setDatumValueType(DatumValueType.forCodeValue(rs.getShort(col++)));
 
 			// Return params instance, as long as some property is not a default value
 			if ( params.isDefaultProperties() ) {

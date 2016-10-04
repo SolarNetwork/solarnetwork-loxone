@@ -1,5 +1,5 @@
 /* ==================================================================
- * DatumUUIDEntity.java - 27/09/2016 5:51:52 PM
+ * DatumUUIDSetDao.java - 27/09/2016 3:45:35 PM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -20,16 +20,20 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.loxone.domain;
+package net.solarnetwork.node.loxone.dao;
+
+import net.solarnetwork.node.loxone.domain.DatumPropertyUUIDEntity;
+import net.solarnetwork.node.loxone.domain.DatumPropertyUUIDEntityParameters;
 
 /**
- * API for a "datum" UUID entity, for managing a set of {@link Control} UUIDs
- * that should be allowed to be saved as
- * {@link net.solarnetwork.node.domain.Datum} objects.
+ * DAO to track a list of control state UUID values that should be allowed to be
+ * persisted as properties on {@link net.solarnetwork.node.domain.Datum}
+ * objects.
  * 
  * @author matt
  * @version 1.0
  */
-public interface DatumUUIDEntity extends UUIDSetEntity<DatumUUIDEntityParameters> {
+public interface DatumPropertyUUIDSetDao
+		extends UUIDSetDao<DatumPropertyUUIDEntity, DatumPropertyUUIDEntityParameters> {
 
 }

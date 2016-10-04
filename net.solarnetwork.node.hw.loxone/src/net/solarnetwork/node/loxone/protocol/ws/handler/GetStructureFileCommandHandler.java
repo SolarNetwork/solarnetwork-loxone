@@ -27,9 +27,10 @@ import java.io.Reader;
 import java.nio.ByteBuffer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TimeZone;
 import javax.websocket.Session;
@@ -150,8 +151,10 @@ public class GetStructureFileCommandHandler extends BaseCommandHandler implement
 		configDao.storeConfig(config);
 
 		// and finally, post our last modified event date
-		Event e = new Event(LoxoneEvents.STRUCTURE_FILE_SAVED_EVENT, Collections
-				.singletonMap(LoxoneEvents.EVENT_PROPERTY_DATE, config.getLastModified().getTime()));
+		Map<String, Object> props = new HashMap<>(2);
+		props.put(LoxoneEvents.EVENT_PROPERTY_CONFIG_ID, configId);
+		props.put(LoxoneEvents.EVENT_PROPERTY_DATE, config.getLastModified().getTime());
+		Event e = new Event(LoxoneEvents.STRUCTURE_FILE_SAVED_EVENT, props);
 		postEvent(e);
 
 		return true;

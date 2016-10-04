@@ -28,15 +28,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import net.solarnetwork.node.loxone.dao.ValueEventDao;
-import net.solarnetwork.node.loxone.dao.jdbc.JdbcDatumUUIDSetDao.DatumUUIDEntityParametersRowMapper;
-import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
-import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
 
 /**
@@ -53,26 +47,11 @@ public class JdbcValueEventDao extends BaseEventEntityDao<ValueEvent> implements
 	/** SQL resource used in {@link #findAllForDatumUUIDEntities(Long)}. */
 	public static final String SQL_FIND_FOR_DATUMSET = "derby-vevent-find-for-datumset";
 
-	private final RowMapper<DatumUUIDEntityParameters> datumParametersRowMapper;
-
 	/**
 	 * Constructor.
 	 */
 	public JdbcValueEventDao() {
 		super(ValueEvent.class, "vevent", TABLES_VERSION, new ValueEventRowMapper());
-		datumParametersRowMapper = new DatumUUIDEntityParametersRowMapper(5);
-	}
-
-	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-	@Override
-	public List<UUIDEntityParametersPair<ValueEvent, DatumUUIDEntityParameters>> findAllForDatumUUIDEntities(
-			Long configId) {
-		String sql = getSqlResource(SQL_FIND_FOR_DATUMSET);
-		List<UUIDEntityParametersPair<ValueEvent, DatumUUIDEntityParameters>> results = getJdbcTemplate()
-				.query(sql,
-						new ValueEventParametersPairRowMapper(getRowMapper(), datumParametersRowMapper),
-						configId);
-		return results;
 	}
 
 	@Override
@@ -110,29 +89,6 @@ public class JdbcValueEventDao extends BaseEventEntityDao<ValueEvent> implements
 			double value = rs.getDouble(5);
 			return new ValueEvent(uuid, configId, created, value);
 		}
-	}
-
-	private static final class ValueEventParametersPairRowMapper
-			implements RowMapper<UUIDEntityParametersPair<ValueEvent, DatumUUIDEntityParameters>> {
-
-		private final RowMapper<ValueEvent> rowMapper;
-		private final RowMapper<DatumUUIDEntityParameters> paramsRowMapper;
-
-		private ValueEventParametersPairRowMapper(RowMapper<ValueEvent> rowMapper,
-				RowMapper<DatumUUIDEntityParameters> paramsRowMapper) {
-			super();
-			this.rowMapper = rowMapper;
-			this.paramsRowMapper = paramsRowMapper;
-		}
-
-		@Override
-		public UUIDEntityParametersPair<ValueEvent, DatumUUIDEntityParameters> mapRow(ResultSet rs,
-				int rowNum) throws SQLException {
-			ValueEvent ve = rowMapper.mapRow(rs, rowNum);
-			DatumUUIDEntityParameters params = paramsRowMapper.mapRow(rs, rowNum);
-			return new UUIDEntityParametersPair<ValueEvent, DatumUUIDEntityParameters>(ve, params);
-		}
-
 	}
 
 }
