@@ -30,14 +30,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import net.solarnetwork.node.dao.jdbc.DatabaseSetup;
-import net.solarnetwork.node.loxone.dao.DatumUUIDSetDao;
-import net.solarnetwork.node.loxone.dao.jdbc.JdbcDatumUUIDSetDao;
 import net.solarnetwork.node.loxone.dao.jdbc.JdbcValueEventDao;
-import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntity;
-import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntityParameters;
-import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
-import net.solarnetwork.node.loxone.domain.DatumValueType;
-import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
 import net.solarnetwork.node.test.AbstractNodeTransactionalTest;
 
@@ -56,7 +49,6 @@ public class JdbcValueEventDaoTests extends AbstractNodeTransactionalTest {
 	private DataSource dataSource;
 
 	private JdbcValueEventDao dao;
-	private DatumUUIDSetDao uuidSetDao;
 	private ValueEvent lastValueEvent;
 
 	@Before
@@ -68,11 +60,6 @@ public class JdbcValueEventDaoTests extends AbstractNodeTransactionalTest {
 		dao = new JdbcValueEventDao();
 		dao.setDataSource(dataSource);
 		dao.init();
-
-		JdbcDatumUUIDSetDao uuidSetDao = new JdbcDatumUUIDSetDao();
-		uuidSetDao.setDataSource(dataSource);
-		uuidSetDao.init();
-		this.uuidSetDao = uuidSetDao;
 	}
 
 	@Test
@@ -117,33 +104,6 @@ public class JdbcValueEventDaoTests extends AbstractNodeTransactionalTest {
 		Assert.assertNotNull(results);
 		Assert.assertEquals("Match count", 1, results.size());
 		Assert.assertEquals("Found object", lastValueEvent.getUuid(), results.get(0).getUuid());
-	}
-
-	@Test
-	public void findForDatumsNoMatch() {
-		insert();
-		List<UUIDEntityParametersPair<ValueEvent, DatumUUIDEntityParameters>> results = dao
-				.findAllForDatumUUIDEntities(TEST_CONFIG_ID);
-		Assert.assertNotNull(results);
-		Assert.assertEquals("Match count", 0, results.size());
-	}
-
-	@Test
-	public void findForDatumsSingleMatch() {
-		// insert two, but only the last should match
-		insert();
-		insert();
-		BasicDatumUUIDEntity uuidEntity = new BasicDatumUUIDEntity(lastValueEvent.getConfigId(),
-				lastValueEvent.getUuid(),
-				new BasicDatumUUIDEntityParameters(300, DatumValueType.Instantaneous));
-		uuidSetDao.store(uuidEntity);
-		List<UUIDEntityParametersPair<ValueEvent, DatumUUIDEntityParameters>> results = dao
-				.findAllForDatumUUIDEntities(TEST_CONFIG_ID);
-		Assert.assertNotNull(results);
-		Assert.assertEquals("Match count", 1, results.size());
-		Assert.assertEquals("Same value event", lastValueEvent, results.get(0).getEntity());
-		Assert.assertEquals("Same parameters", uuidEntity.getParameters(),
-				results.get(0).getParameters());
 	}
 
 }

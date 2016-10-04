@@ -22,10 +22,6 @@
 
 package net.solarnetwork.node.loxone.dao;
 
-import java.util.List;
-import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
-import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
-import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
 
 /**
@@ -35,14 +31,5 @@ import net.solarnetwork.node.loxone.domain.ValueEvent;
  * @version 1.0
  */
 public interface ValueEventDao extends EventEntityDao<ValueEvent> {
-
-	/**
-	 * Get a list of persisted entities associated with {@link DatumUUIDEntity}.
-	 * 
-	 * @return list of all persisted entities that have associated
-	 *         {@link DatumUUIDEntity} values, or empty list if none available
-	 */
-	List<UUIDEntityParametersPair<ValueEvent, DatumUUIDEntityParameters>> findAllForDatumUUIDEntities(
-			Long configId);
 
 }

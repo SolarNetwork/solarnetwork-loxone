@@ -53,9 +53,9 @@ import net.solarnetwork.node.domain.GeneralNodeDatum;
 import net.solarnetwork.node.job.DatumDataSourceLoggerJob;
 import net.solarnetwork.node.loxone.LoxoneService;
 import net.solarnetwork.node.loxone.dao.ConfigurationEntityDao;
+import net.solarnetwork.node.loxone.dao.ControlDao;
 import net.solarnetwork.node.loxone.dao.EventEntityDao;
 import net.solarnetwork.node.loxone.dao.UUIDSetDao;
-import net.solarnetwork.node.loxone.dao.ValueEventDao;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
 import net.solarnetwork.node.loxone.domain.EventEntity;
@@ -106,18 +106,18 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	private List<UUIDSetDao<UUIDSetEntity<UUIDEntityParameters>, UUIDEntityParameters>> uuidSetDaos;
 	private SetupResourceProvider settingResourceProvider;
 	private SettingDao settingDao;
-	private ValueEventDao valueEventDao;
+	private ControlDao controlDao;
 	private OptionalService<DatumDao<GeneralNodeDatum>> datumDao;
 	private Scheduler scheduler;
 	private int datumLoggerFrequencySeconds = DATUM_LOGGER_JOB_INTERVAL;
 
-	private ValueEventDatumDataSource datumDataSource;
+	private ControlDatumDataSource datumDataSource;
 	private SimpleTrigger datumLoggerTrigger;
 
 	@Override
 	public void init() {
 		super.init();
-		datumDataSource = new ValueEventDatumDataSource(null, valueEventDao, settingDao);
+		datumDataSource = new ControlDatumDataSource(null, controlDao, settingDao);
 	}
 
 	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
@@ -261,7 +261,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		results.add(new BasicTextFieldSettingSpecifier("datumLoggerFrequencySeconds",
 				String.valueOf(DATUM_LOGGER_JOB_INTERVAL)));
 		results.add(new BasicTextFieldSettingSpecifier("datumDataSource.defaultFrequencySeconds",
-				String.valueOf(ValueEventDatumDataSource.DEFAULT_FREQUENCY_SECONDS)));
+				String.valueOf(ControlDatumDataSource.DEFAULT_FREQUENCY_SECONDS)));
 
 		String configurationId = getConfigurationIdExternalForm();
 		if ( configurationId != null ) {
@@ -387,7 +387,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	}
 
 	@Override
-	public ValueEventDatumDataSource getDatumDataSource() {
+	public ControlDatumDataSource getDatumDataSource() {
 		return datumDataSource;
 	}
 
@@ -417,8 +417,8 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		this.settingDao = settingDao;
 	}
 
-	public void setValueEventDao(ValueEventDao valueEventDao) {
-		this.valueEventDao = valueEventDao;
+	public void setControlDao(ControlDao controlDao) {
+		this.controlDao = controlDao;
 	}
 
 }

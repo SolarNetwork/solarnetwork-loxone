@@ -33,6 +33,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.loxone.LoxoneService;
+import net.solarnetwork.node.loxone.domain.DatumPropertyUUIDEntity;
+import net.solarnetwork.node.loxone.domain.DatumPropertyUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
 import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.UUIDEntityParameters;
@@ -74,6 +76,34 @@ public class LoxoneUUIDSetController extends BaseLoxoneWebServiceController {
 	public Response<Object> updateDatumUUIDSet(@PathVariable("configId") String configId,
 			@RequestBody DatumUUIDPatchSet patchSet) {
 		return updateUUIDSetForConfigId(configId, DatumUUIDEntity.class, patchSet.getAdd(),
+				patchSet.getRemove(), patchSet.getParameters());
+	}
+
+	/**
+	 * Get all available datum property UUID set values.
+	 * 
+	 * @param configId
+	 *        The config ID to get the datum property UUIDs for.
+	 * @return All available UUIDs.
+	 */
+	@RequestMapping(value = "/props", method = RequestMethod.GET)
+	public Response<Map<UUID, DatumPropertyUUIDEntityParameters>> getDatumPropertyUUIDSet(
+			@PathVariable("configId") String configId) {
+		return getUUIDSetForConfigId(configId, DatumPropertyUUIDEntity.class, null);
+	}
+
+	/**
+	 * Add or remove datum property UUID set values.
+	 * 
+	 * @param configId
+	 *        The config ID to add or remove property UUIDs to or from.
+	 * @param patchSet
+	 * @return
+	 */
+	@RequestMapping(value = "/props", method = RequestMethod.PATCH)
+	public Response<Object> updateDatumPropertyUUIDSet(@PathVariable("configId") String configId,
+			@RequestBody DatumPropertyUUIDPatchSet patchSet) {
+		return updateUUIDSetForConfigId(configId, DatumPropertyUUIDEntity.class, patchSet.getAdd(),
 				patchSet.getRemove(), patchSet.getParameters());
 	}
 

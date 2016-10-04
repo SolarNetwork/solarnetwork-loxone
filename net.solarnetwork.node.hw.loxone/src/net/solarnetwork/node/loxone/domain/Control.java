@@ -46,6 +46,16 @@ public class Control extends BaseConfigurationEntity {
 	private ControlType type;
 	private UUID room;
 
+	public Control() {
+		super();
+	}
+
+	public Control(UUID uuid, Long configId) {
+		super();
+		setUuid(uuid);
+		setConfigId(configId);
+	}
+
 	@JsonProperty("cat")
 	private UUID category;
 

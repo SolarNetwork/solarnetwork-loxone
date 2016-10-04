@@ -14,6 +14,7 @@ Import-Package:
  com.fasterxml.jackson.core;version="[2.4,3.0)",
  com.fasterxml.jackson.core.json;version="[2.4,3.0)",
  com.fasterxml.jackson.databind;version="[2.4,3.0)",
+ com.fasterxml.jackson.databind.annotation;version="[2.4,3.0)",
  com.fasterxml.jackson.databind.deser;version="[2.4,3.0)",
  com.fasterxml.jackson.databind.deser.std;version="[2.4,3.0)",
  com.fasterxml.jackson.databind.ser;version="[2.4,3.0)",

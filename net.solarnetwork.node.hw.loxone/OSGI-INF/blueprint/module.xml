@@ -96,6 +96,10 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
+	<bean id="propUuidSetDao" class="net.solarnetwork.node.loxone.dao.jdbc.JdbcDatumPropertyUUIDSetDao" init-method="init">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
 	<util:list id="configuration-daos">
 		<beans:ref bean="categoryDao"/>
 		<beans:ref bean="controlDao"/>
@@ -108,6 +112,7 @@
 
 	<util:list id="uuid-set-daos">
 		<beans:ref bean="datumUuidSetDao"/>
+		<beans:ref bean="propUuidSetDao"/>
 	</util:list>
 
 	<bean id="get-structure-cmd-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.GetStructureFileCommandHandler">
@@ -127,12 +132,6 @@
 		<property name="eventAdmin" ref="eventAdmin"/>
 		<property name="genericEventDao" ref="valueEventDao"/>
 		<property name="messageSendingOps" ref="messageSendingOperations"/>
-		<property name="datumGenerator">
-			<bean class="net.solarnetwork.node.loxone.impl.ValueEventDatumGenerator">
-				<argument ref="datumUuidSetDao"/>
-				<argument ref="generalNodeDatumDao"/>
-			</bean>
-		</property>
 	</bean>
 	
 	<bean id="text-event-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.TextEventBinaryFileHandler">
@@ -217,7 +216,7 @@
 			<property name="uuidSetDaos" ref="uuid-set-daos"/>
 			<property name="settingResourceProvider" ref="settingResourceProvider"/>
 			<property name="scheduler" ref="scheduler"/>
-			<property name="valueEventDao" ref="valueEventDao"/>
+			<property name="controlDao" ref="controlDao"/>
 			<property name="datumDao" ref="generalNodeDatumDao"/>
 			<property name="settingDao" ref="settingDao"/>
 		</bean>

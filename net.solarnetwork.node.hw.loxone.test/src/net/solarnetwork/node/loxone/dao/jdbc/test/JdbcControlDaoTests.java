@@ -32,9 +32,24 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import net.solarnetwork.node.dao.jdbc.DatabaseSetup;
+import net.solarnetwork.node.loxone.dao.DatumPropertyUUIDSetDao;
+import net.solarnetwork.node.loxone.dao.DatumUUIDSetDao;
+import net.solarnetwork.node.loxone.dao.ValueEventDao;
 import net.solarnetwork.node.loxone.dao.jdbc.JdbcControlDao;
+import net.solarnetwork.node.loxone.dao.jdbc.JdbcDatumPropertyUUIDSetDao;
+import net.solarnetwork.node.loxone.dao.jdbc.JdbcDatumUUIDSetDao;
+import net.solarnetwork.node.loxone.dao.jdbc.JdbcValueEventDao;
+import net.solarnetwork.node.loxone.domain.BasicDatumPropertyUUIDEntity;
+import net.solarnetwork.node.loxone.domain.BasicDatumPropertyUUIDEntityParameters;
+import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntity;
+import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.Control;
+import net.solarnetwork.node.loxone.domain.ControlDatumParameters;
 import net.solarnetwork.node.loxone.domain.ControlType;
+import net.solarnetwork.node.loxone.domain.DatumValueType;
+import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
+import net.solarnetwork.node.loxone.domain.ValueEvent;
+import net.solarnetwork.node.loxone.domain.ValueEventDatumParameters;
 import net.solarnetwork.node.test.AbstractNodeTransactionalTest;
 
 /**
@@ -51,6 +66,9 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 
 	@Resource(name = "dataSource")
 	private DataSource dataSource;
+	private DatumUUIDSetDao datumSetDao;
+	private DatumPropertyUUIDSetDao datumPropSetDao;
+	private ValueEventDao valueEventDao;
 
 	private JdbcControlDao dao;
 	private Control lastControl;
@@ -61,21 +79,41 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 		setup.setDataSource(dataSource);
 		setup.init();
 
+		JdbcDatumUUIDSetDao uuidSetDao = new JdbcDatumUUIDSetDao();
+		uuidSetDao.setDataSource(dataSource);
+		uuidSetDao.init();
+		this.datumSetDao = uuidSetDao;
+
+		JdbcDatumPropertyUUIDSetDao propSetDao = new JdbcDatumPropertyUUIDSetDao();
+		propSetDao.setDataSource(dataSource);
+		propSetDao.init();
+		this.datumPropSetDao = propSetDao;
+
+		JdbcValueEventDao eventDao = new JdbcValueEventDao();
+		eventDao.setDataSource(dataSource);
+		eventDao.init();
+		this.valueEventDao = eventDao;
+
 		dao = new JdbcControlDao();
 		dao.setDataSource(dataSource);
 		dao.init();
 	}
 
-	@Test
-	public void insert() {
+	private Control createControl(UUID uuid) {
 		Control control = new Control();
-		control.setUuid(UUID.randomUUID());
+		control.setUuid(uuid);
 		control.setConfigId(TEST_CONFIG_ID);
 		control.setName(TEST_NAME);
 		control.setDefaultRating(TEST_DEFAULT_RATING);
 		control.setType(ControlType.Meter);
 		control.setRoom(UUID.randomUUID());
 		control.setCategory(UUID.randomUUID());
+		return control;
+	}
+
+	@Test
+	public void insert() {
+		Control control = createControl(UUID.randomUUID());
 		dao.store(control);
 		lastControl = control;
 	}
@@ -89,14 +127,7 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 
 	@Test
 	public void insertWithStates() {
-		Control control = new Control();
-		control.setUuid(UUID.randomUUID());
-		control.setConfigId(TEST_CONFIG_ID);
-		control.setName(TEST_NAME);
-		control.setDefaultRating(TEST_DEFAULT_RATING);
-		control.setType(ControlType.Meter);
-		control.setRoom(UUID.randomUUID());
-		control.setCategory(UUID.randomUUID());
+		Control control = createControl(UUID.randomUUID());
 		control.setStates(getTestStatesMap());
 		dao.store(control);
 		lastControl = control;
@@ -244,5 +275,138 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 		Assert.assertEquals("Match count", 1, results.size());
 		Assert.assertEquals("Found object", lastControl.getUuid(), results.get(0).getUuid());
 		Assert.assertEquals("State map", lastControl.getStates(), results.get(0).getStates());
+	}
+
+	@Test
+	public void findForDatumsNoMatch() {
+		insert();
+		List<UUIDEntityParametersPair<Control, ControlDatumParameters>> results = dao
+				.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID);
+		Assert.assertNotNull(results);
+		Assert.assertEquals("Match count", 0, results.size());
+	}
+
+	private ValueEvent insertValueEvent(UUID uuid, double value) {
+		ValueEvent event = new ValueEvent(uuid, TEST_CONFIG_ID, value);
+		valueEventDao.storeEvent(event);
+		return event;
+	}
+
+	@Test
+	public void findForDatumsOneControlMultiMatch() {
+		// insert control with "foo" state
+		insertWithStates();
+
+		UUID fooUUID = lastControl.getStates().get("foo");
+		UUID barUUID = lastControl.getStates().get("bar");
+
+		// insert datum UUID to enable control
+		datumSetDao.store(new BasicDatumUUIDEntity(TEST_CONFIG_ID, lastControl.getUuid(),
+				new BasicDatumUUIDEntityParameters(500)));
+
+		// insert prop UUID to enable property foo and bar
+		datumPropSetDao.store(new BasicDatumPropertyUUIDEntity(TEST_CONFIG_ID, fooUUID,
+				new BasicDatumPropertyUUIDEntityParameters(DatumValueType.Accumulating)));
+		datumPropSetDao.store(new BasicDatumPropertyUUIDEntity(TEST_CONFIG_ID, barUUID,
+				new BasicDatumPropertyUUIDEntityParameters(DatumValueType.Instantaneous)));
+
+		// insert a value for the "foo" and "bar" states
+		ValueEvent fooEvent = insertValueEvent(fooUUID, 123);
+		ValueEvent barEvent = insertValueEvent(barUUID, 234);
+
+		List<UUIDEntityParametersPair<Control, ControlDatumParameters>> results = dao
+				.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID);
+		Assert.assertNotNull(results);
+		Assert.assertEquals("Match count", 1, results.size());
+		Assert.assertEquals("Same control", lastControl, results.get(0).getEntity());
+		Assert.assertEquals("Save frequency", Integer.valueOf(500),
+				results.get(0).getParameters().getDatumParameters().getSaveFrequencySeconds());
+
+		ValueEventDatumParameters propParams = results.get(0).getParameters()
+				.getDatumPropertyParameters().get(fooUUID);
+		Assert.assertNotNull(propParams);
+		Assert.assertEquals("Foo type", DatumValueType.Accumulating, propParams.getDatumValueType());
+		Assert.assertEquals("Foo name", "foo", propParams.getName());
+		Assert.assertEquals("Foo value", Double.valueOf(fooEvent.getValue()), propParams.getValue());
+
+		propParams = results.get(0).getParameters().getDatumPropertyParameters().get(barUUID);
+		Assert.assertNotNull(propParams);
+		Assert.assertEquals("Bar type", DatumValueType.Instantaneous, propParams.getDatumValueType());
+		Assert.assertEquals("Bar name", "bar", propParams.getName());
+		Assert.assertEquals("Bar value", Double.valueOf(barEvent.getValue()), propParams.getValue());
+	}
+
+	@Test
+	public void findForDatumsMultiControlMultiMatch() {
+		// insert control with "foo" and "bar" states
+		Control control1 = createControl(UUID.fromString("00000000-0000-0000-0000-00000001"));
+		control1.setStates(getTestStatesMap());
+		dao.store(control1);
+		UUID fooUUID = control1.getStates().get("foo");
+		UUID barUUID = control1.getStates().get("bar");
+
+		// insert datum UUID to enable control
+		datumSetDao.store(new BasicDatumUUIDEntity(TEST_CONFIG_ID, control1.getUuid(),
+				new BasicDatumUUIDEntityParameters(500)));
+
+		// insert prop UUID to enable property foo and bar
+		datumPropSetDao.store(new BasicDatumPropertyUUIDEntity(TEST_CONFIG_ID, fooUUID,
+				new BasicDatumPropertyUUIDEntityParameters(DatumValueType.Accumulating)));
+		datumPropSetDao.store(new BasicDatumPropertyUUIDEntity(TEST_CONFIG_ID, barUUID,
+				new BasicDatumPropertyUUIDEntityParameters(DatumValueType.Instantaneous)));
+
+		// insert a value for the "foo" and "bar" states
+		ValueEvent fooEvent = insertValueEvent(fooUUID, 123);
+		ValueEvent barEvent = insertValueEvent(barUUID, 234);
+
+		// insert control with "bam" and "pow" states
+		Control control2 = createControl(UUID.fromString("00000000-0000-0000-0000-00000002"));
+		Map<String, UUID> map = new LinkedHashMap<>(2);
+		map.put("bam", UUID.randomUUID());
+		map.put("pow", UUID.randomUUID());
+		control2.setStates(map);
+		dao.store(control2);
+		UUID bamUUID = control2.getStates().get("bam");
+
+		// insert datum UUID to enable control
+		datumSetDao.store(new BasicDatumUUIDEntity(TEST_CONFIG_ID, control2.getUuid(),
+				new BasicDatumUUIDEntityParameters(300)));
+
+		// insert prop UUID to enable property "bam"
+		datumPropSetDao.store(new BasicDatumPropertyUUIDEntity(TEST_CONFIG_ID, bamUUID,
+				new BasicDatumPropertyUUIDEntityParameters(DatumValueType.Accumulating)));
+
+		// insert a value for the "bam" states
+		ValueEvent bamEvent = insertValueEvent(bamUUID, 345);
+
+		List<UUIDEntityParametersPair<Control, ControlDatumParameters>> results = dao
+				.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID);
+		Assert.assertNotNull(results);
+		Assert.assertEquals("Match count", 2, results.size());
+		Assert.assertEquals("Same control 1", control1, results.get(0).getEntity());
+		Assert.assertEquals("Save frequency 1", Integer.valueOf(500),
+				results.get(0).getParameters().getDatumParameters().getSaveFrequencySeconds());
+		Assert.assertEquals("Same control 2", control2, results.get(1).getEntity());
+		Assert.assertEquals("Save frequency 2", Integer.valueOf(300),
+				results.get(1).getParameters().getDatumParameters().getSaveFrequencySeconds());
+
+		ValueEventDatumParameters propParams = results.get(0).getParameters()
+				.getDatumPropertyParameters().get(fooUUID);
+		Assert.assertNotNull(propParams);
+		Assert.assertEquals("Foo type", DatumValueType.Accumulating, propParams.getDatumValueType());
+		Assert.assertEquals("Foo name", "foo", propParams.getName());
+		Assert.assertEquals("Foo value", Double.valueOf(fooEvent.getValue()), propParams.getValue());
+
+		propParams = results.get(0).getParameters().getDatumPropertyParameters().get(barUUID);
+		Assert.assertNotNull(propParams);
+		Assert.assertEquals("Bar type", DatumValueType.Instantaneous, propParams.getDatumValueType());
+		Assert.assertEquals("Bar name", "bar", propParams.getName());
+		Assert.assertEquals("Bar value", Double.valueOf(barEvent.getValue()), propParams.getValue());
+
+		propParams = results.get(1).getParameters().getDatumPropertyParameters().get(bamUUID);
+		Assert.assertNotNull(propParams);
+		Assert.assertEquals("Bam type", DatumValueType.Accumulating, propParams.getDatumValueType());
+		Assert.assertEquals("Bam name", "bam", propParams.getName());
+		Assert.assertEquals("Bam value", Double.valueOf(bamEvent.getValue()), propParams.getValue());
 	}
 }

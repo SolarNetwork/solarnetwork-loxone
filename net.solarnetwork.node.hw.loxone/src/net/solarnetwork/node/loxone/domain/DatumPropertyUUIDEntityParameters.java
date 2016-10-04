@@ -1,5 +1,5 @@
 /* ==================================================================
- * DatumUUIDEntity.java - 27/09/2016 5:51:52 PM
+ * DatumPropertyUUIDEntityParameters.java - 4/10/2016 10:16:09 AM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -23,13 +23,20 @@
 package net.solarnetwork.node.loxone.domain;
 
 /**
- * API for a "datum" UUID entity, for managing a set of {@link Control} UUIDs
- * that should be allowed to be saved as
- * {@link net.solarnetwork.node.domain.Datum} objects.
+ * Parameters for {@link DatumPropertyUUIDEntity} objects.
  * 
  * @author matt
  * @version 1.0
  */
-public interface DatumUUIDEntity extends UUIDSetEntity<DatumUUIDEntityParameters> {
+public interface DatumPropertyUUIDEntityParameters extends UUIDEntityParameters {
+
+	/**
+	 * Get the type of value this UUID's associated values should be represented
+	 * as when translated into a {@code Datum} instance.
+	 * 
+	 * @return The datum value type, or {@code null} to be treated in a default
+	 *         manner.
+	 */
+	DatumValueType getDatumValueType();
 
 }

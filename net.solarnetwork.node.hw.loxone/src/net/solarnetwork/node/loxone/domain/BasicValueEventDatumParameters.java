@@ -1,5 +1,5 @@
 /* ==================================================================
- * DatumUUIDEntity.java - 27/09/2016 5:51:52 PM
+ * BasicValueEventDatumParameters.java - 4/10/2016 1:01:09 PM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -23,13 +23,33 @@
 package net.solarnetwork.node.loxone.domain;
 
 /**
- * API for a "datum" UUID entity, for managing a set of {@link Control} UUIDs
- * that should be allowed to be saved as
- * {@link net.solarnetwork.node.domain.Datum} objects.
+ * Basic implementation of {@link ValueEventDatumParameters}.
  * 
  * @author matt
  * @version 1.0
  */
-public interface DatumUUIDEntity extends UUIDSetEntity<DatumUUIDEntityParameters> {
+public class BasicValueEventDatumParameters extends
+		BasicDatumPropertyUUIDEntityParameters implements ValueEventDatumParameters {
+
+	private String name;
+	private Double value;
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public Double getValue() {
+		return value;
+	}
+
+	public void setValue(Double value) {
+		this.value = value;
+	}
 
 }
