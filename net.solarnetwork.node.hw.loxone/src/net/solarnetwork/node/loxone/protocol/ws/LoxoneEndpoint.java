@@ -289,9 +289,7 @@ public class LoxoneEndpoint extends Endpoint
 			}
 			if ( !handleBinaryFileIfPossible(h, buf) ) {
 				// hmm, seems sometimes we get more than one response from Loxone
-				if ( !headerQueue.offer(h) ) {
-					log.warn("Dropping message header: {}", h);
-				}
+				log.debug("Dropping message: {}", h);
 			}
 		} else {
 			// this should be a message header message, and another message will follow 
@@ -444,7 +442,7 @@ public class LoxoneEndpoint extends Endpoint
 				return;
 			}
 
-			log.debug("Handling message {}: {}", header, payload);
+			log.debug("Handling text message {}: {}", header, payload);
 
 			if ( header.getType() == MessageType.TextMessage ) {
 				// start inspecting the message to know what to do
@@ -561,6 +559,9 @@ public class LoxoneEndpoint extends Endpoint
 	 *         if any communication error occurs
 	 */
 	private boolean handleBinaryFileIfPossible(MessageHeader header, ByteBuffer buffer) {
+		if ( header.getType() == MessageType.Keepalive ) {
+			return true;
+		}
 		BinaryFileHandler[] list = binaryFileHandlers;
 		if ( list != null ) {
 			buffer.mark();
