@@ -22,6 +22,7 @@
 
 package net.solarnetwork.node.loxone.dao.jdbc.test;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Resource;
@@ -74,6 +75,7 @@ public class JdbcValueEventDaoTests extends AbstractNodeTransactionalTest {
 		insert();
 		ValueEvent event = dao.loadEvent(TEST_CONFIG_ID, lastValueEvent.getUuid());
 		Assert.assertNotNull("ValueEvent inserted", event);
+		Assert.assertNotNull("Created", event.getCreated());
 		Assert.assertEquals("UUID", lastValueEvent.getUuid(), event.getUuid());
 		Assert.assertEquals("Value", lastValueEvent.getValue(), event.getValue(), 0.1);
 	}
@@ -82,11 +84,14 @@ public class JdbcValueEventDaoTests extends AbstractNodeTransactionalTest {
 	public void update() {
 		insert();
 		ValueEvent orig = dao.loadEvent(TEST_CONFIG_ID, lastValueEvent.getUuid());
-		ValueEvent modified = new ValueEvent(orig.getUuid(), TEST_CONFIG_ID, 234.5);
+		ValueEvent modified = new ValueEvent(orig.getUuid(), TEST_CONFIG_ID,
+				new Date(System.currentTimeMillis() + 1000), 234.5);
+		Assert.assertNotEquals("Updated dates differ", orig.getCreated(), modified.getCreated());
 		dao.storeEvent(modified);
 		ValueEvent updated = dao.loadEvent(TEST_CONFIG_ID, orig.getUuid());
 		Assert.assertEquals("Same UUID", orig.getUuid(), updated.getUuid());
 		Assert.assertEquals("Updated value", modified.getValue(), updated.getValue(), 0.1);
+		Assert.assertEquals("Updated created date", modified.getCreated(), updated.getCreated());
 	}
 
 	@Test
