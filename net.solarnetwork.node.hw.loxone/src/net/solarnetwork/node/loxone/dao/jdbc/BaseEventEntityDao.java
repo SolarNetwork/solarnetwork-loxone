@@ -63,7 +63,12 @@ public abstract class BaseEventEntityDao<T extends BaseEventEntity> extends Base
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	@Override
 	public void storeEvent(T entity) {
-		storeEntity(entity);
+		// we expect mostly updates, not inserts, so try for that first
+		assert entity.getUuid() != null;
+		int count = updateDomainObject(entity, getSqlResource(SQL_UPDATE));
+		if ( count == 0 ) {
+			insertDomainObject(entity, getSqlResource(SQL_INSERT));
+		}
 	}
 
 	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
