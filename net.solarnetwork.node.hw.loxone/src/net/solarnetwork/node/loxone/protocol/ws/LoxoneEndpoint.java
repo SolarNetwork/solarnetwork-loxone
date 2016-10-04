@@ -444,7 +444,7 @@ public class LoxoneEndpoint extends Endpoint
 				return;
 			}
 
-			log.debug("Handling message {}: {}", header, payload);
+			log.debug("Handling text message {}: {}", header, payload);
 
 			if ( header.getType() == MessageType.TextMessage ) {
 				// start inspecting the message to know what to do
