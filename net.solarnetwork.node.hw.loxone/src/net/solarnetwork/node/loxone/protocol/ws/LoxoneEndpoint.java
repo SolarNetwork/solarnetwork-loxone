@@ -561,6 +561,9 @@ public class LoxoneEndpoint extends Endpoint
 	 *         if any communication error occurs
 	 */
 	private boolean handleBinaryFileIfPossible(MessageHeader header, ByteBuffer buffer) {
+		if ( header.getType() == MessageType.Keepalive ) {
+			return true;
+		}
 		BinaryFileHandler[] list = binaryFileHandlers;
 		if ( list != null ) {
 			buffer.mark();
