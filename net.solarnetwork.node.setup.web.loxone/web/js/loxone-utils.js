@@ -12,9 +12,10 @@ Loxone.element = function(options) {
 
 Loxone.filterTable = function(table, filter, columns) {
   var result = [];
+  filter = filter.toLowerCase();
   table.forEach(function(row) {
     for (var c = 0; c < columns.length; c++) {
-      if(row[columns[c]] != null && row[columns[c]].indexOf(filter) != -1) {
+      if(row[columns[c]] != null && row[columns[c]].toLowerCase().indexOf(filter) != -1) {
         return result.push(row);
       }
     }
@@ -40,4 +41,22 @@ Loxone.sortTable = function(table, column, ascending) {
   }
 
   return sorted;
+}
+
+Loxone.formatDurationDate = function(date) {
+  var now = new Date();
+  date = new Date(date);
+
+  var duration = now.getTime() - date.getTime();
+
+  if(duration < 60000) {
+    return `${Math.round(duration / 1000)} seconds ago`;
+  } else if(duration < 3600000) {
+    return `${Math.round(duration / 60000)} minutes ago`;
+  } else if(duration < 86400000) {
+    return `${Math.round(duration / 3600000)} hours ago`;
+  } else {
+    return `${Math.round(duration / 86400000)} days ago`;
+  }
+
 }

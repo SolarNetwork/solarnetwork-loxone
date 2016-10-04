@@ -8,13 +8,7 @@ Loxone.api = (function() {
 		xmlhttp.onreadystatechange = function() {
 			if(this.readyState == 4) {
 				if(this.status == 200) {
-          try {
-  					next(null, JSON.parse(this.responseText));
-          } catch (err) {
-            console.log(`Error parsing JSON response: ${req.method} ${req.url}`);
-            console.log(this.responseText);
-            console.error(err);
-          }
+  				next(null, JSON.parse(this.responseText));
 				} else {
 					next(this.responseText);
 				}
@@ -32,6 +26,10 @@ Loxone.api = (function() {
 
 		xmlhttp.send(req.body);
 
+  }
+
+  this.ping = function(next) {
+    this.api.request({ url: SolarNode.context.path(`/a/loxone/ping`) }, next);
   }
 
   this.getResourceList = function(type, next) {

@@ -3,14 +3,23 @@ Loxone.websocket = (function() {
 	function processValueEvents(list) {
 		list.forEach(function(ve) {
 
-      var viewModelID = `value-${ve.uuid}`
+      var valueID = `value-${ve.uuid}`
       var value = ve.value.toFixed(2);
 
-      // Create/Update knockout view model value
-      if(Loxone.controlView.viewModel[viewModelID] == null) {
-        this.controlView.viewModel[viewModelID] = ko.observable(value);
+      if(this.controlView.viewModel[valueID] == null) {
+        this.controlView.viewModel[valueID] = ko.observable(value);
       } else {
-        Loxone.controlView.viewModel[viewModelID](value);
+        this.controlView.viewModel[valueID](value);
+      }
+
+			var timeID = `time-${ve.uuid}`;
+
+			var formattedTime = this.formatDurationDate(ve.created);
+
+      if(this.controlView.viewModel[timeID] == null) {
+        this.controlView.viewModel[timeID] = ko.observable(formattedTime);
+      } else {
+        this.controlView.viewModel[timeID](formattedTime);
       }
 
 		});
@@ -50,16 +59,23 @@ Loxone.websocket = (function() {
 			});
 
 			// subscribe to /topic/X/events/values to get notified of updated values
-			var valueEventsUpdates = client.subscribe(`/topic/${Loxone.configID}/events/values`, function(message) {
+			var valueEventUpdates = client.subscribe(`/topic/${Loxone.configID}/events/values`, function(message) {
+				console.log(message);
 				defaultHandleDataMessage(message, processValueEvents);
+			});
+
+			// subscribe to /topic/X/events/text to get notified of text event updates
+			var textEventUpdates = client.subscribe(`/topic/${Loxone.configID}/events/texts`, function(message) {
+				console.log(`Text event: ${message}`);
 			});
 
 			// add a periodic call to /a/loxone/ping so the HTTP session stays alive;
 			// TODO: this may be undersirable, as a logged in user will forever stay logged in
 			setInterval(function() {
-				$.getJSON(SolarNode.context.path('/a/loxone/ping'), function(json) {
-					console.log('Ping result: %s', json.success);
-				});
+				Loxone.api.ping(function(err, response) {
+					if(err) return console.log(`Error pinging: ${err}`);
+					if(!response.success) console.log('Ping failed');
+				})
 			},60000);
 
 		}, function (error) {
