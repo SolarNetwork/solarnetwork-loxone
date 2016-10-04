@@ -44,7 +44,9 @@ public enum MessageType {
 
 	OutOfServiceIndicator(5),
 
-	Keepalive(6);
+	Keepalive(6),
+
+	EventTableWeatherStates(7);
 
 	private byte data;
 
@@ -83,6 +85,9 @@ public enum MessageType {
 
 			case (byte) 0x06:
 				return Keepalive;
+
+			case (byte) 0x07:
+				return EventTableWeatherStates;
 
 			case (byte) 0xFF:
 				return Unknown;
