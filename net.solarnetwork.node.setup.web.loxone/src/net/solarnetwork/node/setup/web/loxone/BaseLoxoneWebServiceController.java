@@ -27,6 +27,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -95,14 +96,32 @@ public class BaseLoxoneWebServiceController {
 	 * @param response
 	 *        the response
 	 * @return an error response object
-	 * @since 1.3
 	 */
 	@ExceptionHandler(IllegalArgumentException.class)
 	@ResponseBody
 	public Response<?> handleIllegalArgument(IllegalArgumentException e, HttpServletResponse response) {
 		log.error("IllegalArgumentException in {} controller: {}", getClass().getSimpleName(),
 				e.getMessage());
+		response.setStatus(422);
 		return new Response<Object>(Boolean.FALSE, null, "Illegal argument: " + e.getMessage(), null);
+	}
+
+	/**
+	 * Handle an {@link HttpMessageNotReadableException}.
+	 * 
+	 * @param e
+	 *        the exception
+	 * @param response
+	 *        the response
+	 * @return an error response object
+	 */
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public Response<?> handleMalformedMessage(HttpMessageNotReadableException e,
+			HttpServletResponse response) {
+		log.error("HttpMessageNotReadableException in {} controller: {}", getClass().getSimpleName(),
+				e.getMessage());
+		response.setStatus(422);
+		return new Response<Object>(Boolean.FALSE, null, "Illegal request: " + e.getMessage(), null);
 	}
 
 	/**
@@ -118,6 +137,7 @@ public class BaseLoxoneWebServiceController {
 	@ResponseBody
 	public Response<?> handleRuntimeException(RuntimeException e, HttpServletResponse response) {
 		log.error("RuntimeException in {} controller", getClass().getSimpleName(), e);
+		response.setStatus(500);
 		return new Response<Object>(Boolean.FALSE, null, "Internal error", null);
 	}
 
