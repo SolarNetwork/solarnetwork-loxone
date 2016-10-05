@@ -1,27 +1,30 @@
-$(document).ready(function() {
-	'use strict';
-	var configId = $("meta[name='loxone-config-id']").attr("content");
-	
+Loxone.websocket = (function() {
+
 	function processValueEvents(list) {
-		var container = $('#loxone-event-console'),
-			group = $('<section><h2>' + new Date()+'</h2></section>');
-		console.log('Got value events: %s', JSON.stringify(list, null, 2));
 		list.forEach(function(ve) {
-			$('<div class="alert alert-info"/>').html('<b>'+ve.uuid +'</b> = ' +ve.value).appendTo(group);
+
+      var valueID = `value-${ve.uuid}`
+      var value = ve.value.toFixed(2);
+
+      if(this.controlView.viewModel[valueID] == null) {
+        this.controlView.viewModel[valueID] = ko.observable(value);
+      } else {
+        this.controlView.viewModel[valueID](value);
+      }
+
+			var timeID = `time-${ve.uuid}`;
+
+			var formattedTime = this.formatDurationDate(ve.created);
+
+      if(this.controlView.viewModel[timeID] == null) {
+        this.controlView.viewModel[timeID] = ko.observable(formattedTime);
+      } else {
+        this.controlView.viewModel[timeID](formattedTime);
+      }
+
 		});
-		container.prepend(group);
 	}
-	
-	function processTextEvents(list) {
-		var container = $('#loxone-event-console'),
-		group = $('<section><h2>' + new Date()+'</h2></section>');
-		console.log('Got text events: %s', JSON.stringify(list, null, 2));
-		list.forEach(function(te) {
-			$('<div class="alert"/>').html('<b>'+te.uuid +'</b> = ' +te.text).appendTo(group);
-		});
-		container.prepend(group);
-	}
-	
+
 	(function() {
 		var csrf = SolarNode.csrfData;
 		var url = 'ws://' +document.location.host +SolarNode.context.path('/ws');
@@ -31,7 +34,7 @@ $(document).ready(function() {
 		var headers = {};
 		headers[csrf.headerName] = csrf.token;
 		client.connect(headers, function(frame) {
-			
+
 			function defaultHandleDataMessage(message, successHandler, errorHandler) {
 				if ( message.body ) {
 					var json = JSON.parse(message.body);
@@ -46,35 +49,30 @@ $(document).ready(function() {
 					console.log("got empty message");
 				}
 			}
-			
-			// subscribe to /app/X/events/values to get a complete list of all available values
-			var allValueEventsSubscription = client.subscribe('/app/' +configId+'/events/values', function(message) {
-				defaultHandleDataMessage(message, processValueEvents);
-				// once we've downloaded all events, we can unsubscribe from this channel as we'll 
-				// pick up updates via the /topic/X/events/values subscription below
-				allValueEventsSubscription.unsubscribe();
-			});
-			
-			// subscribe to /topic/X/events/values to get notified of updated values
-			var valueEventsUpdates = client.subscribe('/topic/' +configId+'/events/values', function(message) {
-				defaultHandleDataMessage(message, processValueEvents);
-			});
-			
-			// subscribe to /topic/X/events/text to get notified of text event updates
-			var valueEventsUpdates = client.subscribe('/topic/' +configId+'/events/texts', function(message) {
-				defaultHandleDataMessage(message, processTextEvents);
-			});
-			
+
+			// Call /a/X/events/values to get a complete list of all available values
+		    Loxone.api.request({ method: 'GET', path: 'events/values', headers: {'Content-Type': 'application/json' }}, function(err, json) {
+				if(err || !json.success) return console.log(`Error getting initial events/values: ${err}`);
+		    	processValueEvents(json.data);
+
+				// subscribe to /topic/X/events/values to get notified of updated values
+				var valueEventUpdates = client.subscribe(`/topic/${Loxone.configID}/events/values`, function(message) {
+					defaultHandleDataMessage(message, processValueEvents);
+				});
+		    });
+
+
 			// add a periodic call to /a/loxone/ping so the HTTP session stays alive;
 			// TODO: this may be undersirable, as a logged in user will forever stay logged in
 			setInterval(function() {
-				$.getJSON(SolarNode.context.path('/a/loxone/ping'), function(json) {
-					console.log('Ping result: %s', json.success);
-				});
+				Loxone.api.ping(function(err, response) {
+					if(err) return console.log(`Error pinging: ${err}`);
+					if(!response.success) console.log('Ping failed');
+				})
 			},60000);
-			
+
 		}, function (error) {
-	        console.log("STOMP protocol error %s", error);
+	    console.log('STOMP protocol error %s', error);
 		});
 	})();
-});
+})();

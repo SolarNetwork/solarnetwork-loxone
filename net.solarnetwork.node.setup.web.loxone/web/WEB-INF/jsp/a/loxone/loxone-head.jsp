@@ -10,5 +10,12 @@
 		<meta name="loxone-config-ids" content="${configIds}"/>
 	</c:if>
 	<c:import url="/WEB-INF/jsp/default-head-resources.jsp"/>
-	<script type="application/javascript" src="<c:url value='/js/loxone-websocket.js'/>"></script>
+
+	<link rel="stylesheet" href="/css/loxone.css">
+
+	<script type="application/javascript" src="<c:url value='/js-lib/knockout-3.4.0.js'/>"></script>
+
+	<script type="application/javascript" src="<c:url value='/js/loxone.js'/>"></script>
+	<script type="application/javascript" src="<c:url value='/js/loxone-api.js'/>"></script>
+	<script type="application/javascript" src="<c:url value='/js/loxone-utils.js'/>"></script>
 </head>

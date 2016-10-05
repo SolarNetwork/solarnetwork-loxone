@@ -1,0 +1,197 @@
+body {
+  background-color: #e0e0e0;
+}
+
+.loxone-heading {
+  width: calc(100% - 40px);
+  padding:20px 20px;
+  background-color: #fff;
+}
+
+.loxone-heading .title {
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+
+.loxone-list {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.loxone-row {
+  width: calc(100% - 40px);
+  height: 20px;
+  padding: 15px 20px;
+  margin: 5px 0px;
+  background-color: #fff;
+}
+
+.loxone-list .dropdown {
+  width: calc(100% - 20px);
+  display: none;
+  background-color: #ffffff;
+  margin: 5px 10px;
+}
+
+.loxone-list .dropdown .state-row {
+  width: calc(100% - 40px);
+  height: 20px;
+  padding: 5px 20px;
+}
+
+.loxone-heading #filter-input {
+  width: 300px;
+  height: 14px;
+  margin: 20px 0px;
+}
+
+.loxone-heading .table-heading {
+  font-size: 16px;
+  cursor: pointer;
+  height: 10px;
+}
+
+.sort-icon {
+  width: 16px;
+  height: 16px;
+  float: left;
+}
+
+.ascending {
+  background-image: url("/img/sort-arrow.svg");
+}
+
+.descending {
+  background-image: url("/img/sort-arrow.svg");
+  transform: rotate(180deg);
+}
+
+.heading-column .name {
+  float: left;
+}
+
+.loxone-name-column {
+  width: 30%;
+  float: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.loxone-category-column {
+  width: 15%;
+  float: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.loxone-type-column {
+  width: 15%;
+  float: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.loxone-room-column {
+  width: 15%;
+  float: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.loxone-frequency-column {
+  width: 10%;
+  float: right;
+}
+
+.loxone-enable-column {
+  width: 50px;
+  float: right;
+  padding: 0px 5px;
+}
+
+.frequency-display {
+  padding: 0px 5px;
+}
+
+.frequency-input {
+  width: 60px;
+  height: 30px;
+  border: 1px solid #c4c4c4;
+  padding: 0px 5px;
+  position: relative;
+  top: -5px;
+  display: none;
+}
+
+.dropdown .state-column {
+  width: 50%;
+  height: 100%;
+  float: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dropdown .value-column {
+  width: 10%;
+  height: 100%;
+  float: right;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dropdown .time-column {
+  width: 10%;
+  height: 100%;
+  float: right;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dropdown .datum-type-select {
+  width: 12%;
+  height: 20px;
+  float: right;
+  padding: 0px;
+  margin-right: 20px;
+}
+
+.dropdown .enable-column {
+  width: 50px;
+  height: 100%;
+  float: right;
+  padding: 0px 5px;
+}
+
+.enable-toggle {
+  width: 40px;
+  height: 20px;
+  background-image: url("/img/toggle-off.svg");
+}
+
+.enabled {
+  background-image: url("/img/toggle-on.svg");
+}
+
+.loxone-row:hover {
+  background-color: #f0f0f0;
+}
+
+.state-row:hover {
+  background-color: #f0f0f0;
+}
+
+.enabled-row {
+  background-color: #367dd0;
+  color: #fff;
+}
+
+.enabled-row:hover {
+  background-color: #6491c6;
+}
