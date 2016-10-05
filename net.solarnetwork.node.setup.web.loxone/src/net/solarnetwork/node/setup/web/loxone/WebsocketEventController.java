@@ -22,14 +22,15 @@
 
 package net.solarnetwork.node.setup.web.loxone;
 
-import java.security.Principal;
 import java.util.Collection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import net.solarnetwork.node.loxone.LoxoneService;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
 import net.solarnetwork.web.domain.Response;
@@ -41,9 +42,8 @@ import net.solarnetwork.web.domain.Response;
  * @version 1.0
  */
 @Controller
+@RequestMapping("/a/loxone/{configId}/events")
 public class WebsocketEventController extends BaseLoxoneWebServiceController {
-
-	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	public WebsocketEventController() {
 		super();
@@ -54,10 +54,11 @@ public class WebsocketEventController extends BaseLoxoneWebServiceController {
 		return "Hello, " + msg;
 	}
 
+	@RequestMapping(value = "/values", method = RequestMethod.GET)
 	@SubscribeMapping("/{configId}/events/values")
-	public Response<Collection<ValueEvent>> subscribeToValueEvents(@DestinationVariable String configId,
-			Principal principal) {
-		log.info("Subscribing {} to {} value evnets", principal, configId);
+	@ResponseBody
+	public Response<Collection<ValueEvent>> subscribeToValueEvents(
+			@DestinationVariable @PathVariable("configId") String configId) {
 		LoxoneService service = serviceForConfigId(configId);
 		if ( service == null ) {
 			return new Response<>(false, "404", "Configuration ID not available.", null);

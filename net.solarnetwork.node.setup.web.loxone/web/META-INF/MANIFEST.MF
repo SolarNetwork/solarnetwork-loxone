@@ -12,4 +12,5 @@ Export-Package:
 Import-Package: 
  com.fasterxml.jackson.annotation;version="[2.4,3.0)",
  net.solarnetwork.node.loxone;version="0.1.0",
- net.solarnetwork.node.loxone.domain;version="0.1.0"
+ net.solarnetwork.node.loxone.domain;version="0.1.0",
+ org.springframework.http.converter;version="[4.2,5.0)"
