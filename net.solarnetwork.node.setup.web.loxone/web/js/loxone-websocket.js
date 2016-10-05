@@ -52,13 +52,13 @@ Loxone.websocket = (function() {
 
 			// Call /a/X/events/values to get a complete list of all available values
 		    Loxone.api.request({ method: 'GET', path: 'events/values', headers: {'Content-Type': 'application/json' }}, function(err, json) {
-				if(err || !json.success) return console.log(`Error getting initial events/values: ${err}`);
-		    	processValueEvents(json.data);
+					if(err || !json.success) console.log(`Error getting initial events/values: ${err}`);
+			    else processValueEvents(json.data);
 
-				// subscribe to /topic/X/events/values to get notified of updated values
-				var valueEventUpdates = client.subscribe(`/topic/${Loxone.configID}/events/values`, function(message) {
-					defaultHandleDataMessage(message, processValueEvents);
-				});
+					// subscribe to /topic/X/events/values to get notified of updated values
+					var valueEventUpdates = client.subscribe(`/topic/${Loxone.configID}/events/values`, function(message) {
+						defaultHandleDataMessage(message, processValueEvents);
+					});
 		    });
 
 

@@ -179,6 +179,27 @@ body {
   background-image: url("/img/toggle-on.svg");
 }
 
+.enable-filter-dropdown {
+  position: absolute;
+  background-color: #fff;
+  display: none;
+  border: 1px solid #b1b1b1;
+  outline: none;
+}
+
+.enable-filter {
+  padding: 5px 10px;
+}
+
+.enable-filter:hover {
+  background-color: #367dd0;
+  color: #fff;
+}
+
+.visible {
+  display: block;
+}
+
 .loxone-row:hover {
   background-color: #f0f0f0;
 }

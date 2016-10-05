@@ -1,8 +1,10 @@
 Loxone.controlView = (function() {
 
-  this.viewModel = {};
+  this.viewModel = { enableFilter: ko.observable('All') };
 
-  this.sorting = { column: 'name', ascending: true };
+  ko.applyBindingsToNode(document.getElementById('loxone-enable-text'), { text: this.viewModel.enableFilter });
+
+  this.sorting = { column: 'name', ascending: true, enable: 'All' };
 
   this.view = document.getElementById('control-view');
 
@@ -148,7 +150,11 @@ Loxone.controlView = (function() {
               controls = this.sortTable(controls, this.controlView.sorting.column, this.controlView.sorting.ascending);
 
               for (var c = 0; c < controls.length; c++) {
-                append(controls[c]);
+                var enabled = controls[c].uuid in datums;
+                var enableFilter = this.controlView.sorting.enable;
+                if(enableFilter == 'All' || (enableFilter == 'Enabled' && enabled) || (enableFilter == 'Disabled' && !enabled)) {
+                  append(controls[c]);
+                }
               }
             });
           });
@@ -238,6 +244,24 @@ Loxone.controlView = (function() {
       if(err) console.error(err);
       if(!response.success) console.error(response);
     });
+  }
+
+  this.openEnableFilter = function() {
+    var element = document.getElementById('loxone-enable-filter');
+    element.className = 'enable-filter-dropdown visible';
+    element.focus();
+    element.onblur = Loxone.controlView.closeEnableFilter;
+  }
+
+  this.closeEnableFilter = function() {
+    document.getElementById('loxone-enable-filter').className = 'enable-filter-dropdown';
+  }
+
+  this.enableFilter = function(filter) {
+    this.controlView.sorting.enable = filter;
+    this.controlView.closeEnableFilter();
+    this.controlView.draw();
+    Loxone.controlView.viewModel.enableFilter(filter);
   }
 
   return this;

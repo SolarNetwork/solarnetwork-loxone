@@ -20,8 +20,13 @@
       <span class="name">Room</span>
       <div id="sort-icon-room" class="sort-icon"></div>
     </div>
-    <div class="loxone-enable-column heading-column">
-      <span class="name">Enable</span>
+    <div class="loxone-enable-column heading-column" >
+      <span id="loxone-enable-text" class="name" onclick="Loxone.controlView.openEnableFilter()">All</span>
+			<div id="loxone-enable-filter" class="enable-filter-dropdown" tabindex="-1">
+				<div class="enable-filter" onclick="Loxone.controlView.enableFilter('All')">All</div>
+				<div class="enable-filter" onclick="Loxone.controlView.enableFilter('Enabled')">Enabled</div>
+				<div class="enable-filter" onclick="Loxone.controlView.enableFilter('Disabled')">Disabled</div>
+			</div>
     </div>
     <div class="loxone-frequency-column heading-column">
       <span class="name">Frequency</span>

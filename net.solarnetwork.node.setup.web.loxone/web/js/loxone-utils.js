@@ -6,7 +6,6 @@ Loxone.element = function(options) {
   if(!!options.className) element.className = options.className;
   if(!!options.html) element.innerHTML = options.html;
   if(!!options.value) element.setAttribute('value', options.value);
-  if(!!options.text) element.text = options.text;
   if(!!options.parent) options.parent.appendChild(element);
 
   return element;
