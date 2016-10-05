@@ -18,16 +18,12 @@ body {
   margin-top: 20px;
 }
 
-.loxone-list .loxone-row {
+.loxone-row {
   width: calc(100% - 40px);
   height: 20px;
   padding: 15px 20px;
   margin: 5px 0px;
   background-color: #fff;
-}
-
-.loxone-list .loxone-row:hover {
-  background-color: #f0f0f0;
 }
 
 .loxone-list .dropdown {
@@ -41,10 +37,6 @@ body {
   width: calc(100% - 40px);
   height: 20px;
   padding: 5px 20px;
-}
-
-.loxone-list .dropdown .state-row:hover {
-  background-color: #f0f0f0;
 }
 
 .loxone-heading #filter-input {
@@ -80,75 +72,126 @@ body {
 
 .loxone-name-column {
   width: 30%;
-  height: 100%;
   float: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .loxone-category-column {
-  width: 20%;
-  height: 100%;
+  width: 15%;
   float: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.loxone-type-column {
+  width: 15%;
+  float: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .loxone-room-column {
-  width: 20%;
-  height: 100%;
+  width: 15%;
   float: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .loxone-frequency-column {
   width: 10%;
-  height: 100%;
   float: right;
+}
+
+.loxone-enable-column {
+  width: 50px;
+  float: right;
+  padding: 0px 5px;
+}
+
+.frequency-display {
+  padding: 0px 5px;
 }
 
 .frequency-input {
   width: 60px;
   height: 30px;
   border: 1px solid #c4c4c4;
-  /*background-color: #e9e9e9;*/
   padding: 0px 5px;
   position: relative;
   top: -5px;
+  display: none;
 }
 
 .dropdown .state-column {
-  width: 70%;
+  width: 50%;
   height: 100%;
   float: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .dropdown .value-column {
   width: 10%;
   height: 100%;
-  float: left;
+  float: right;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .dropdown .time-column {
   width: 10%;
   height: 100%;
-  float: left;
+  float: right;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dropdown .datum-type-select {
+  width: 12%;
+  height: 20px;
+  float: right;
+  padding: 0px;
+  margin-right: 20px;
 }
 
 .dropdown .enable-column {
-  width: calc(10% - 10px);
+  width: 50px;
   height: 100%;
-  float: left;
+  float: right;
   padding: 0px 5px;
 }
 
-.enable-button {
-  width: 100%;
-  height: 26px;
-  background-color: #fff;
-  border: 1px solid #c8c8c8;
-  color: #c8c8c8;
-  border-radius: 3px;
-  position: relative;
-  top: -3px;
+.enable-toggle {
+  width: 40px;
+  height: 20px;
+  background-image: url("/img/toggle-off.svg");
 }
 
 .enabled {
-  background-color: #639316;
+  background-image: url("/img/toggle-on.svg");
+}
+
+.loxone-row:hover {
+  background-color: #f0f0f0;
+}
+
+.state-row:hover {
+  background-color: #f0f0f0;
+}
+
+.enabled-row {
+  background-color: #367dd0;
   color: #fff;
+}
+
+.enabled-row:hover {
+  background-color: #6491c6;
 }

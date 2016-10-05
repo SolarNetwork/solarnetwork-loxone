@@ -8,6 +8,10 @@
       <span class="name">Name</span>
       <div id="sort-icon-name" class="sort-icon ascending"></div>
     </div>
+    <div class="loxone-type-column heading-column" onclick="Loxone.controlView.sortColumn('type')">
+      <span class="name">Type</span>
+      <div id="sort-icon-type" class="sort-icon"></div>
+    </div>
     <div class="loxone-category-column heading-column" onclick="Loxone.controlView.sortColumn('cat')">
       <span class="name">Category</span>
       <div id="sort-icon-cat" class="sort-icon"></div>
@@ -15,6 +19,9 @@
     <div class="loxone-room-column heading-column" onclick="Loxone.controlView.sortColumn('room')">
       <span class="name">Room</span>
       <div id="sort-icon-room" class="sort-icon"></div>
+    </div>
+    <div class="loxone-enable-column heading-column">
+      <span class="name">Enable</span>
     </div>
     <div class="loxone-frequency-column heading-column">
       <span class="name">Frequency</span>

@@ -60,13 +60,12 @@ Loxone.websocket = (function() {
 
 			// subscribe to /topic/X/events/values to get notified of updated values
 			var valueEventUpdates = client.subscribe(`/topic/${Loxone.configID}/events/values`, function(message) {
-				console.log(message);
 				defaultHandleDataMessage(message, processValueEvents);
 			});
 
 			// subscribe to /topic/X/events/text to get notified of text event updates
 			var textEventUpdates = client.subscribe(`/topic/${Loxone.configID}/events/texts`, function(message) {
-				console.log(`Text event: ${message}`);
+				
 			});
 
 			// add a periodic call to /a/loxone/ping so the HTTP session stays alive;

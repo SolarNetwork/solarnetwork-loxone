@@ -33,7 +33,7 @@ Loxone.api = (function() {
   }
 
   this.getResourceList = function(type, next) {
-    if(this.resources[type] != null) return next(null, this.resources[type]);
+    if(type != 'uuidsets/datum' && type != 'uuidsets/props' && this.resources[type] != null) return next(null, this.resources[type]);
 
     this.api.request({ path: type }, function(err, response) {
       if(err || !response.success) return next(`Error getting ${type}, ${err}, ${JSON.stringify(response)}`);
@@ -56,7 +56,7 @@ Loxone.api = (function() {
 
   this.isEnabled = function(uuid, next) {
     this.getResourceList('uuidsets/datum', function(err, enables) {
-      next(!!enables[uuid]);
+      next(uuid in enables);
     })
   }
 
@@ -65,14 +65,24 @@ Loxone.api = (function() {
     this.api.request({ method: 'PATCH', path: 'uuidsets/datum', headers: {'Content-Type': 'application/json'}, body: body, csrf: true }, next);
   }
 
-// Set frequency
+  this.getFrequency = function(uuid, next) {
+    this.getResourceList('uuidsets/datum', function(err, enables) {
+      if(uuid in enables && saveFrequencySeconds in enables[uuid]) return next(enables[uuid].saveFrequencySeconds);
+      next(null);
+    })
+  }
 
-	this.setDatumParams = function(uuid, frequency, type, next) {
-		var json = { parameters: {} };
-		json.parameters[uuid] = { saveFrequencySeconds: frequency, datumValueType };
-		var body = JSON.stringify(json);
-		this.request('PATCH', `${this.url + this.configID}/uuidsets/datum`, {'Content-Type': 'application/json'}, body, true, next);
-	}
+  this.setFrequency = function(uuid, frequency, next) {
+    var body = { parameters: {} };
+    body.parameters[uuid] = { saveFrequencySeconds: frequency };
+    this.api.request({ method: 'PATCH', path: 'uuidsets/datum', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body), csrf: true }, next);
+  }
+
+  this.setDatumType = function(uuid, type, next) {
+    var body = { add: [uuid], parameters: {} };
+    body.parameters[uuid] = { datumValueType: type };
+    this.api.request({ method: 'PATCH', path: 'uuidsets/props', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body), csrf: true }, next);
+  }
 
   return this;
 
