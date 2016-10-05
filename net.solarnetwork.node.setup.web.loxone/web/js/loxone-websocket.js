@@ -50,23 +50,17 @@ Loxone.websocket = (function() {
 				}
 			}
 
-			// subscribe to /app/X/events/values to get a complete list of all available values
-			var allValueEventsSubscription = client.subscribe(`/app/${Loxone.configID}/events/values`, function(message) {
-				defaultHandleDataMessage(message, processValueEvents);
-				// once we've downloaded all events, we can unsubscribe from this channel as we'll
-				// pick up updates via the /topic/X/events/values subscription below
-				allValueEventsSubscription.unsubscribe();
-			});
+			// Call /a/X/events/values to get a complete list of all available values
+		    Loxone.api.request({ method: 'GET', path: 'events/values', headers: {'Content-Type': 'application/json' }}, function(err, json) {
+				if(err || !json.success) return console.log(`Error getting initial events/values: ${err}`);
+		    	processValueEvents(json.data);
 
-			// subscribe to /topic/X/events/values to get notified of updated values
-			var valueEventUpdates = client.subscribe(`/topic/${Loxone.configID}/events/values`, function(message) {
-				defaultHandleDataMessage(message, processValueEvents);
-			});
+				// subscribe to /topic/X/events/values to get notified of updated values
+				var valueEventUpdates = client.subscribe(`/topic/${Loxone.configID}/events/values`, function(message) {
+					defaultHandleDataMessage(message, processValueEvents);
+				});
+		    });
 
-			// subscribe to /topic/X/events/text to get notified of text event updates
-			var textEventUpdates = client.subscribe(`/topic/${Loxone.configID}/events/texts`, function(message) {
-				
-			});
 
 			// add a periodic call to /a/loxone/ping so the HTTP session stays alive;
 			// TODO: this may be undersirable, as a logged in user will forever stay logged in
