@@ -44,7 +44,7 @@ public class DaytimerEventBinaryFileHandler extends BaseEventBinaryFileHandler<D
 
 	@Override
 	public boolean supportsDataMessage(MessageHeader header, ByteBuffer buffer) {
-		return (header.getType() == MessageType.EventTableDaytimerStates);
+		return (header != null && header.getType() == MessageType.EventTableDaytimerStates);
 	}
 
 	@Override

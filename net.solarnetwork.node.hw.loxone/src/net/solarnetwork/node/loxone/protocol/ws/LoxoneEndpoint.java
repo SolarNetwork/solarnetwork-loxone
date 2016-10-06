@@ -439,12 +439,11 @@ public class LoxoneEndpoint extends Endpoint
 				// we expect to have that header, but we should also be able to continue 
 				// without it so just log a message
 				log.debug("MessageHeader not available for text message!");
-				return;
 			}
 
 			log.debug("Handling text message {}: {}", header, payload);
 
-			if ( header.getType() == MessageType.TextMessage ) {
+			if ( header != null && header.getType() == MessageType.TextMessage ) {
 				// start inspecting the message to know what to do
 				try {
 					JsonNode json = getObjectMapper().readTree(payload);
@@ -459,7 +458,7 @@ public class LoxoneEndpoint extends Endpoint
 				} catch ( IOException e ) {
 					logConciseException("Error parsing text command {}", e, header);
 				}
-			} else if ( header.getType() == MessageType.BinaryFile
+			} else if ( header == null || header.getType() == MessageType.BinaryFile
 					|| header.getType() == MessageType.Unknown ) {
 				try (Reader reader = new StringReader(payload)) {
 					handleBinaryFileIfPossible(header, reader);

@@ -46,7 +46,7 @@ public class TextEventBinaryFileHandler extends BaseEventBinaryFileHandler<TextE
 
 	@Override
 	public boolean supportsDataMessage(MessageHeader header, ByteBuffer buffer) {
-		return (header.getType() == MessageType.EventTableTextStates);
+		return (header != null && header.getType() == MessageType.EventTableTextStates);
 	}
 
 	@Override

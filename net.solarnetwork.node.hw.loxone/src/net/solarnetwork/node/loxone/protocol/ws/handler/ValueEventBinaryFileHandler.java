@@ -47,7 +47,7 @@ public class ValueEventBinaryFileHandler extends BaseEventBinaryFileHandler<Valu
 
 	@Override
 	public boolean supportsDataMessage(MessageHeader header, ByteBuffer buffer) {
-		return (MessageType.EventTableValueStates == header.getType());
+		return (header != null && MessageType.EventTableValueStates == header.getType());
 	}
 
 	// wrap super with @Transactional
