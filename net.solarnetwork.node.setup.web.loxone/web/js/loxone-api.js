@@ -33,7 +33,7 @@ Loxone.api = (function() {
   }
 
   this.getResourceList = function(type, next) {
-    if(type != 'uuidsets/datum' && type != 'uuidsets/props' && this.resources[type] != null) return next(null, this.resources[type]);
+    if(this.resources[type] != null) return next(null, this.resources[type]);
 
     this.api.request({ path: type }, function(err, response) {
       if(err || !response.success) return next(`Error getting ${type}, ${err}, ${JSON.stringify(response)}`);
@@ -62,7 +62,16 @@ Loxone.api = (function() {
 
   this.setEnable = function(uuid, enabled, next) {
     var body = JSON.stringify(enabled ? { add: [uuid] } : { remove: [uuid] });
-    this.api.request({ method: 'PATCH', path: 'uuidsets/datum', headers: {'Content-Type': 'application/json'}, body: body, csrf: true }, next);
+    this.api.request({ method: 'PATCH', path: 'uuidsets/datum', headers: {'Content-Type': 'application/json'}, body: body, csrf: true }, function(err, response) {
+      if(!err && response.success) {
+        if(enabled) {
+          if(!(uuid in Loxone.resources['uuidsets/datum'])) Loxone.resources['uuidsets/datum'][uuid] = null;
+        } else {
+          if(uuid in Loxone.resources['uuidsets/datum']) delete Loxone.resources['uuidsets/datum'][uuid];
+        }
+      }
+      next(err, response);
+    });
   }
 
   this.getFrequency = function(uuid, next) {
@@ -75,13 +84,29 @@ Loxone.api = (function() {
   this.setFrequency = function(uuid, frequency, next) {
     var body = { parameters: {} };
     body.parameters[uuid] = { saveFrequencySeconds: frequency };
-    this.api.request({ method: 'PATCH', path: 'uuidsets/datum', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body), csrf: true }, next);
+    this.api.request({ method: 'PATCH', path: 'uuidsets/datum', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body), csrf: true }, function(err, response) {
+      if(!err && response.success) {
+        if(uuid in this.resources['uuidsets/datum']) {
+          if(typeof this.resources['uuidsets/datum'][uuid] != 'object') this.resources['uuidsets/datum'][uuid] = {};
+          this.resources['uuidsets/datum'][uuid].saveFrequencySeconds = frequency;
+        }
+      }
+    });
   }
 
   this.setDatumType = function(uuid, type, next) {
     var body = { add: [uuid], parameters: {} };
     body.parameters[uuid] = { datumValueType: type };
-    this.api.request({ method: 'PATCH', path: 'uuidsets/props', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body), csrf: true }, next);
+    this.api.request({ method: 'PATCH', path: 'uuidsets/props', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body), csrf: true }, function(err, response) {
+      if(!err && response.success) {
+        if(uuid in this.resources['uuidsets/props']) {
+          if(typeof this.resources['uuidsets/props'][uuid] != 'object') this.resources['uuidsets/props'][uuid] = {};
+          this.resources['uuidsets/props'][uuid].datumValueType = type;
+        } else {
+          this.resources['uuidsets/props'][uuid] = { datumValueType: type };
+        }
+      }
+    });
   }
 
   return this;

@@ -132,6 +132,9 @@ Loxone.controlView = (function() {
             this.datums = datums;
             this.props = props;
 
+            console.log(datums);
+            console.log(props);
+
             this.api.getResourceList('controls', function(err, controls) {
               if(err) return console.log(err);
 
@@ -198,27 +201,25 @@ Loxone.controlView = (function() {
     var toggle = this;
     Loxone.api.setEnable(toggle.uuid, !toggle.enabled, function(err, response) {
       if(err) return console.log(err);
-      if(response.success) {
-        toggle.enabled = !toggle.enabled;
-        toggle.className = `enable-toggle${toggle.enabled ? ' enabled' : ''}`;
-        var controlToggle = document.getElementById(`loxone-toggle-${toggle.uuid}`);
-        if(controlToggle) {
-          controlToggle.className = `enable-toggle${toggle.enabled ? ' enabled' : ''}`;
-          controlToggle.enabled = toggle.enabled;
-        }
-        var stateToggle = document.getElementById(`state-toggle-${toggle.uuid}`);
-        if(stateToggle){
-          stateToggle.className = `enable-toggle${toggle.enabled ? ' enabled' : ''}`;
-          stateToggle.enabled = toggle.enabled;
-        }
-        // toggle.row.className = `${toggle.rowType == 'control' ? 'loxone-row' : 'state-row'}${toggle.enabled ? ' enabled-row' : ''}`;
-        var loxoneRow = document.getElementById(`loxone-row-${toggle.uuid}`);
-        if(loxoneRow) loxoneRow.className = `loxone-row${toggle.enabled ? ' enabled-row' : ''}`;
-        var stateRow = document.getElementById(`state-row-${toggle.uuid}`);
-        if(stateRow) stateRow.className = `state-row${toggle.enabled ? ' enabled-row' : ''}`;
-      } else {
-        console.error(`Error enabling - ${response.message}`);
+      if(!response.success) return console.error(`Error enabling - ${response.message}`);
+
+      toggle.enabled = !toggle.enabled;
+      toggle.className = `enable-toggle${toggle.enabled ? ' enabled' : ''}`;
+      var controlToggle = document.getElementById(`loxone-toggle-${toggle.uuid}`);
+      if(controlToggle) {
+        controlToggle.className = `enable-toggle${toggle.enabled ? ' enabled' : ''}`;
+        controlToggle.enabled = toggle.enabled;
       }
+      var stateToggle = document.getElementById(`state-toggle-${toggle.uuid}`);
+      if(stateToggle){
+        stateToggle.className = `enable-toggle${toggle.enabled ? ' enabled' : ''}`;
+        stateToggle.enabled = toggle.enabled;
+      }
+      // toggle.row.className = `${toggle.rowType == 'control' ? 'loxone-row' : 'state-row'}${toggle.enabled ? ' enabled-row' : ''}`;
+      var loxoneRow = document.getElementById(`loxone-row-${toggle.uuid}`);
+      if(loxoneRow) loxoneRow.className = `loxone-row${toggle.enabled ? ' enabled-row' : ''}`;
+      var stateRow = document.getElementById(`state-row-${toggle.uuid}`);
+      if(stateRow) stateRow.className = `state-row${toggle.enabled ? ' enabled-row' : ''}`;
     });
   }
 
