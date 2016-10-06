@@ -19,6 +19,7 @@ Import-Package:
  com.fasterxml.jackson.databind.deser.std;version="[2.4,3.0)",
  com.fasterxml.jackson.databind.ser;version="[2.4,3.0)",
  com.fasterxml.jackson.databind.ser.std;version="[2.4,3.0)",
+ javax.sql,
  javax.websocket;version="1.1.0",
  net.solarnetwork.domain;version="1.10.0",
  net.solarnetwork.node;version="1.18.0",
