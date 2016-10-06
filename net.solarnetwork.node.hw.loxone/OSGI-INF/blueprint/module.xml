@@ -34,6 +34,9 @@
 	<reference id="taskScheduler" interface="org.springframework.scheduling.TaskScheduler"
 		filter="(function=node)"/>
 
+	<reference id="taskExecutor" interface="org.springframework.core.task.TaskExecutor"
+		filter="(function=node)"/>
+
 	<bean id="generalNodeDatumDao" class="net.solarnetwork.util.DynamicServiceTracker">
 		<property name="bundleContext" ref="bundleContext"/>
 		<property name="serviceClassName" value="net.solarnetwork.node.dao.DatumDao"/>
@@ -179,6 +182,28 @@
 	</bean>
 
 	<!-- Published Services -->
+	
+	<service interface="net.solarnetwork.node.backup.BackupResourceProvider">
+		<bean class="net.solarnetwork.node.dao.jdbc.JdbcTableBackupResourceProvider">
+			<argument>
+				<bean class="org.springframework.jdbc.core.JdbcTemplate">
+					<property name="dataSource" ref="dataSource"/>
+				</bean>
+			</argument>
+			<argument>
+				<bean class="org.springframework.transaction.support.TransactionTemplate">
+					<argument ref="txManager"/>
+				</bean>
+			</argument>
+			<argument ref="taskExecutor"/>
+			<property name="tableNames">
+				<list>
+					<value>SOLARNODE.LOXONE_DATUMSET</value>
+					<value>SOLARNODE.LOXONE_PROPSET</value>
+				</list>
+			</property>
+		</bean>
+	</service>
 	
 	<service interface="net.solarnetwork.node.settings.SettingSpecifierProviderFactory">
 		<bean class="net.solarnetwork.node.settings.support.BasicSettingSpecifierProviderFactory">
