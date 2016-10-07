@@ -54,6 +54,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.glassfish.tyrus.client.ClientManager;
+import org.glassfish.tyrus.client.ClientProperties;
 import org.glassfish.tyrus.container.jdk.client.JdkClientContainer;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
@@ -126,6 +127,8 @@ public class LoxoneEndpoint extends Endpoint
 	// create an internal handler for authentication, etc.
 	private final InternalCommandHandler internalCommandHandler = new InternalCommandHandler();
 
+	private final ReconnectHandler reconnectHandler = new ReconnectHandler();
+
 	private Session session;
 	private ScheduledFuture<?> keepAliveFuture = null;
 	private ScheduledFuture<?> connectFuture = null;
@@ -133,6 +136,7 @@ public class LoxoneEndpoint extends Endpoint
 
 	private synchronized void connect() {
 		ClientManager container = ClientManager.createClient(JdkClientContainer.class.getName());
+		container.getProperties().put(ClientProperties.RECONNECT_HANDLER, reconnectHandler);
 		ClientEndpointConfig config = ClientEndpointConfig.Builder.create()
 				.preferredSubprotocols(Arrays.asList("remotecontrol")).build();
 		session = null;
@@ -332,6 +336,8 @@ public class LoxoneEndpoint extends Endpoint
 		// add a streaming text handler to support very large responses (such as structure file)
 		session.addMessageHandler(new StreamingTextMessageHandler());
 
+		reconnectHandler.connected();
+
 		// authenticate
 		try {
 			log.info("Connected to Loxone server, will request authenticaiton key now.");
@@ -467,6 +473,40 @@ public class LoxoneEndpoint extends Endpoint
 				}
 			}
 		}
+	}
+
+	private class ReconnectHandler extends org.glassfish.tyrus.client.ClientManager.ReconnectHandler {
+
+		private int counter = 0;
+
+		private void connected() {
+			counter = 0;
+		}
+
+		@Override
+		public boolean onDisconnect(CloseReason closeReason) {
+			if ( closeReason.getCloseCode() == CloseReason.CloseCodes.NORMAL_CLOSURE ) {
+				counter = 0;
+				return false;
+			}
+			log.warn("Loxone {} disconnected ({}), will attempt to reconnect...", closeReason);
+			counter++;
+			return true;
+		}
+
+		@Override
+		public boolean onConnectFailure(Exception exception) {
+			counter++;
+			log.warn("Loxone {} connect failure {} ({}), will try reconnecting in {}s",
+					getConfiguration(), counter, exception.getMessage(), getDelay());
+			return true;
+		}
+
+		@Override
+		public long getDelay() {
+			return (super.getDelay() * (counter < 1 ? 1 : counter));
+		}
+
 	}
 
 	/**
