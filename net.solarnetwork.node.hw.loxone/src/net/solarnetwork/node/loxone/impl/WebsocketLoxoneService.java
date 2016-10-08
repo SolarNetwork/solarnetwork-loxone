@@ -124,6 +124,12 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		datumDataSource = new ControlDatumDataSource(null, controlDao, settingDao);
 	}
 
+	@Override
+	public synchronized void disconnect() {
+		super.disconnect();
+		configureLoxoneDatumLoggerJob(0);
+	}
+
 	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 	@Override
 	public <T extends ConfigurationEntity> Collection<T> getAllConfiguration(Class<T> type,
