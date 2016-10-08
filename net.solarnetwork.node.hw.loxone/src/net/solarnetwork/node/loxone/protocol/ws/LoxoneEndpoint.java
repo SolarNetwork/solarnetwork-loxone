@@ -669,8 +669,9 @@ public class LoxoneEndpoint extends Endpoint
 			if ( params != null ) {
 				newParams = new Object[params.length + 1];
 				System.arraycopy(params, 0, newParams, 0, params.length);
+				newParams[params.length] = t.getMessage();
 			} else {
-				newParams = new Object[] { t };
+				newParams = new Object[] { t.getMessage() };
 			}
 			log.error(msg + ": {}", newParams);
 		}
