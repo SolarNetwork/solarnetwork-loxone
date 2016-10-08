@@ -70,7 +70,8 @@ public class MessageHeader {
 		}
 		byte b = buf.get();
 		if ( b != MAGIC_BYTE ) {
-			throw new IllegalArgumentException("Unexpected magic byte: " + Integer.toHexString(b));
+			throw new IllegalArgumentException(
+					"Unexpected magic byte: " + Integer.toHexString(b & 0xFF));
 		}
 		if ( buf.order() != ByteOrder.LITTLE_ENDIAN ) {
 			buf.order(ByteOrder.LITTLE_ENDIAN);
