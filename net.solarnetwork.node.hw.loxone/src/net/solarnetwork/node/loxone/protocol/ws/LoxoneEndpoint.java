@@ -482,7 +482,8 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 				counter = 0;
 				return false;
 			}
-			log.warn("Loxone {} disconnected ({}), will attempt to reconnect...", closeReason);
+			log.warn("Loxone {} disconnected ({}), will attempt to reconnect...", configuration,
+					closeReason);
 			counter++;
 			return true;
 		}
