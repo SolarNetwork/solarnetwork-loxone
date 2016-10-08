@@ -110,6 +110,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	private final int keepAliveSeconds = 240;
 	private TaskScheduler taskScheduler;
 	private ConfigDao configDao;
+	private int statusMessageCount = 500;
 
 	/** A class-level logger. */
 	protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -126,6 +127,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	private ScheduledFuture<?> keepAliveFuture = null;
 	private ScheduledFuture<?> connectFuture = null;
 	private Config configuration = null;
+	private long messageCount = 0;
 
 	private synchronized void connect() {
 		ClientManager container = ClientManager.createClient(JdkClientContainer.class.getName());
@@ -293,9 +295,18 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 			// from the Loxone that logically refers to this header
 			MessageHeader header = new MessageHeader(buf);
 			log.debug("Got message header {}", header);
+			incrementMessageCount();
 			if ( !headerQueue.offer(header) ) {
 				log.warn("Dropping message header: {}", header);
 			}
+		}
+	}
+
+	private void incrementMessageCount() {
+		messageCount += 1;
+		if ( messageCount % statusMessageCount == 0 ) {
+			log.info("Loxone {} processed {} messages",
+					(configuration == null ? "?" : configuration.idToExternalForm()), messageCount);
 		}
 	}
 
@@ -751,6 +762,25 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	public void setConfigDao(ConfigDao configDao) {
 		this.configDao = configDao;
+	}
+
+	/**
+	 * Get the status message count.
+	 * 
+	 * @return The status message count.
+	 */
+	public int getStatusMessageCount() {
+		return statusMessageCount;
+	}
+
+	/**
+	 * Set a frequency of processed messages at which to log a status message.
+	 * 
+	 * @param statusMessageCount
+	 *        The message frequency.
+	 */
+	public void setStatusMessageCount(int statusMessageCount) {
+		this.statusMessageCount = statusMessageCount;
 	}
 
 }
