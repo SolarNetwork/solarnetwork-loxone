@@ -33,7 +33,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
@@ -61,16 +60,12 @@ import org.osgi.service.event.EventAdmin;
 import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.MessageSource;
 import org.springframework.scheduling.TaskScheduler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.solarnetwork.node.loxone.dao.ConfigDao;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.protocol.ws.handler.BaseCommandHandler;
-import net.solarnetwork.node.settings.SettingSpecifier;
-import net.solarnetwork.node.settings.SettingSpecifierProvider;
-import net.solarnetwork.node.settings.support.BasicTextFieldSettingSpecifier;
 import net.solarnetwork.util.OptionalService;
 
 /**
@@ -94,8 +89,7 @@ import net.solarnetwork.util.OptionalService;
  * @author matt
  * @version 1.0
  */
-public class LoxoneEndpoint extends Endpoint
-		implements MessageHandler.Whole<ByteBuffer>, EventHandler, SettingSpecifierProvider {
+public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<ByteBuffer>, EventHandler {
 
 	private static final String WEBSOCKET_CONNECT_PATH = "/ws/rfc6455";
 
@@ -115,7 +109,6 @@ public class LoxoneEndpoint extends Endpoint
 	private OptionalService<EventAdmin> eventAdmin = null;
 	private final int keepAliveSeconds = 240;
 	private TaskScheduler taskScheduler;
-	private MessageSource messageSource;
 	private ConfigDao configDao;
 
 	/** A class-level logger. */
@@ -675,35 +668,6 @@ public class LoxoneEndpoint extends Endpoint
 			}
 			log.error(msg + ": {}", newParams);
 		}
-	}
-
-	@Override
-	public String getSettingUID() {
-		return "net.solarnetwork.node.loxone.ws";
-	}
-
-	@Override
-	public String getDisplayName() {
-		return "Loxone Miniserver";
-	}
-
-	@Override
-	public MessageSource getMessageSource() {
-		return messageSource;
-	}
-
-	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
-
-	@Override
-	public List<SettingSpecifier> getSettingSpecifiers() {
-		LoxoneEndpoint defaults = new LoxoneEndpoint();
-		List<SettingSpecifier> results = new ArrayList<SettingSpecifier>(4);
-		results.add(new BasicTextFieldSettingSpecifier("host", defaults.getHost()));
-		results.add(new BasicTextFieldSettingSpecifier("username", defaults.getUsername()));
-		results.add(new BasicTextFieldSettingSpecifier("password", defaults.getPassword(), true));
-		return results;
 	}
 
 	public String getHost() {

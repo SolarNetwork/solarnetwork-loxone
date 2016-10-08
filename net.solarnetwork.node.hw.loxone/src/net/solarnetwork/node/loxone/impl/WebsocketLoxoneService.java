@@ -23,6 +23,7 @@
 package net.solarnetwork.node.loxone.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -42,6 +43,7 @@ import org.quartz.SimpleScheduleBuilder;
 import org.quartz.SimpleTrigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
+import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,6 +66,7 @@ import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
 import net.solarnetwork.node.loxone.protocol.ws.CommandType;
 import net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint;
 import net.solarnetwork.node.settings.SettingSpecifier;
+import net.solarnetwork.node.settings.SettingSpecifierProvider;
 import net.solarnetwork.node.settings.support.BasicSetupResourceSettingSpecifier;
 import net.solarnetwork.node.settings.support.BasicTextFieldSettingSpecifier;
 import net.solarnetwork.node.settings.support.BasicTitleSettingSpecifier;
@@ -77,7 +80,7 @@ import net.solarnetwork.util.OptionalService;
  * @version 1.0
  */
 public class WebsocketLoxoneService extends LoxoneEndpoint
-		implements LoxoneService, WebsocketLoxoneServiceSettings {
+		implements LoxoneService, SettingSpecifierProvider, WebsocketLoxoneServiceSettings {
 
 	/**
 	 * The name used to schedule the {@link PostOfflineChargeSessionsJob} as.
@@ -110,6 +113,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	private OptionalService<DatumDao<GeneralNodeDatum>> datumDao;
 	private Scheduler scheduler;
 	private int datumLoggerFrequencySeconds = DATUM_LOGGER_JOB_INTERVAL;
+	private MessageSource messageSource;
 
 	private ControlDatumDataSource datumDataSource;
 	private SimpleTrigger datumLoggerTrigger;
@@ -254,10 +258,33 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	}
 
 	@Override
+	public String getSettingUID() {
+		return "net.solarnetwork.node.loxone.ws";
+	}
+
+	@Override
+	public String getDisplayName() {
+		return "Loxone Miniserver";
+	}
+
+	@Override
+	public MessageSource getMessageSource() {
+		return messageSource;
+	}
+
+	public void setMessageSource(MessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	@Override
 	public List<SettingSpecifier> getSettingSpecifiers() {
-		List<SettingSpecifier> results = super.getSettingSpecifiers();
-		results.add(0, new BasicTextFieldSettingSpecifier("uid", DEFAULT_UID));
-		results.add(0, new BasicTextFieldSettingSpecifier("groupUID", null));
+		LoxoneEndpoint defaults = new LoxoneEndpoint();
+		List<SettingSpecifier> results = new ArrayList<SettingSpecifier>(4);
+		results.add(new BasicTextFieldSettingSpecifier("uid", DEFAULT_UID));
+		results.add(new BasicTextFieldSettingSpecifier("groupUID", null));
+		results.add(new BasicTextFieldSettingSpecifier("host", defaults.getHost()));
+		results.add(new BasicTextFieldSettingSpecifier("username", defaults.getUsername()));
+		results.add(new BasicTextFieldSettingSpecifier("password", defaults.getPassword(), true));
 		results.add(new BasicTextFieldSettingSpecifier("datumLoggerFrequencySeconds",
 				String.valueOf(DATUM_LOGGER_JOB_INTERVAL)));
 		results.add(new BasicTextFieldSettingSpecifier("datumDataSource.defaultFrequencySeconds",
