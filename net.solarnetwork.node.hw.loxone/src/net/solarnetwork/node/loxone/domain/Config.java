@@ -79,6 +79,11 @@ public class Config {
 		return lastModified;
 	}
 
+	@Override
+	public String toString() {
+		return "Config{id=" + idToExternalForm() + ", lastModified=" + lastModified + "}";
+	}
+
 	/**
 	 * Get a copy of this config with an updated modification date.
 	 * 
