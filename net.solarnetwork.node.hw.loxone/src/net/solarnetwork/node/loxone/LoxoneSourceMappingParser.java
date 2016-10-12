@@ -1,5 +1,5 @@
 /* ==================================================================
- * SourceMapping.java - 12/10/2016 4:04:41 PM
+ * LoxoneSourceMappingParser.java - 12/10/2016 9:00:12 PM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -20,38 +20,45 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.loxone.domain;
+package net.solarnetwork.node.loxone;
 
-import java.util.UUID;
+import java.io.IOException;
+import java.io.InputStream;
+import net.solarnetwork.node.loxone.domain.SourceMapping;
 
 /**
- * Configuration entity mapping a Loxone UUID to a SolarNetwork source ID value.
+ * API for parsing source mapping data.
  * 
  * @author matt
  * @version 1.0
  * @since 0.2
  */
-public class SourceMapping extends BaseConfigurationEntity {
+public interface LoxoneSourceMappingParser {
 
 	/**
-	 * Default constructor.
+	 * Callback API.
 	 */
-	public SourceMapping() {
-		super();
+	interface SourceMappingCallback {
+
+		/**
+		 * Handle a parsed source mapping.
+		 * 
+		 * @param mapping
+		 *        The parsed source mapping.
+		 */
+		void parsedSourceMapping(SourceMapping mapping);
 	}
 
 	/**
-	 * Construct with values.
+	 * Parse an input stream with a callback handler.
 	 * 
-	 * @param uuid
-	 *        A UUID.
-	 * @param sourceId
-	 *        A source ID.
+	 * @param in
+	 *        The input stream to parse.
+	 * @param callback
+	 *        A callback handler.
+	 * @throws IOException
+	 *         If any IO error occurs.
 	 */
-	public SourceMapping(UUID uuid, String sourceId) {
-		super();
-		setUuid(uuid);
-		setSourceId(sourceId);
-	}
+	void parseInputStream(InputStream in, SourceMappingCallback callback) throws IOException;
 
 }
