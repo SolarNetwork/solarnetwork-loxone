@@ -294,6 +294,7 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 		Map<String, String> m = new HashMap<String, String>();
 		m.put("name", "lower(name)");
 		m.put("defaultrating", "sort");
+		m.put("sourceid", "source_id");
 		return m;
 	}
 

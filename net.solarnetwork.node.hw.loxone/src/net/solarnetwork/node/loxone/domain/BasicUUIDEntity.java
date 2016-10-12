@@ -30,12 +30,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * Base entity that uses a UUID as its primary key.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class BasicUUIDEntity implements UUIDEntity {
 
 	private Long configId;
 	private UUID uuid;
+	private String sourceId;
 
 	@Override
 	@JsonIgnore
@@ -49,14 +50,28 @@ public class BasicUUIDEntity implements UUIDEntity {
 	}
 
 	/**
-	 * Get a derived {@code sourceId} value from this event.
+	 * Get a {@code sourceId} value from this entity.
+	 * 
+	 * If no {@code sourceId} value is configured, this will return a derived
+	 * value.
 	 * 
 	 * @return The source ID, or {@code null} if unavailable.
 	 * @see UUIDEntity#sourceIdForUUIDEntity(UUIDEntity)
 	 */
 	@JsonGetter
 	public String getSourceId() {
-		return UUIDEntity.sourceIdForUUIDEntity(this);
+		return (this.sourceId != null ? this.sourceId : UUIDEntity.sourceIdForUUIDEntity(this));
+	}
+
+	/**
+	 * Set a specific source ID.
+	 * 
+	 * @param sourceId
+	 *        The source ID to use.
+	 * @since 1.1
+	 */
+	public void setSourceId(String sourceId) {
+		this.sourceId = sourceId;
 	}
 
 	@Override
