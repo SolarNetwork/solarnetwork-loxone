@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,13 +37,14 @@ import net.solarnetwork.node.loxone.domain.Category;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
 import net.solarnetwork.node.loxone.domain.Control;
 import net.solarnetwork.node.loxone.domain.Room;
+import net.solarnetwork.node.loxone.domain.SourceMapping;
 import net.solarnetwork.web.domain.Response;
 
 /**
  * Controller for Loxone configuration data.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 @RestController
 @RequestMapping("/a/loxone/{configId}")
@@ -68,6 +70,42 @@ public class LoxoneConfigurationController extends BaseLoxoneWebServiceControlle
 	public Response<Collection<Room>> allRooms(@PathVariable("configId") String configId,
 			WebRequest webRequest) {
 		return getAllForConfigId(webRequest, configId, Room.class, null);
+	}
+
+	/**
+	 * Get all available source mappings.
+	 * 
+	 * @param configId
+	 *        The config ID.
+	 * @param webRequest
+	 *        The request.
+	 * @return The mappings.
+	 * @since 1.1
+	 */
+	@RequestMapping(value = "/sources", method = RequestMethod.GET)
+	public Response<Collection<SourceMapping>> allSources(@PathVariable("configId") String configId,
+			WebRequest webRequest) {
+		return getAllForConfigId(webRequest, configId, SourceMapping.class, null);
+	}
+
+	/**
+	 * Update source mappings.
+	 * 
+	 * @param configId
+	 *        The config ID.
+	 * @param patchSet
+	 *        The mappings to add, update, or remove.
+	 * @return A success indicator.
+	 */
+	@RequestMapping(value = "/sources", method = RequestMethod.PATCH)
+	public Response<Object> updateSources(@PathVariable("configId") String configId,
+			@RequestBody SourceMappingPatchSet patchSet) {
+		LoxoneService service = serviceForConfigId(configId);
+		if ( service == null ) {
+			return new Response<Object>(Boolean.FALSE, "404", "Service not available", null);
+		}
+		service.updateSourceMappings(patchSet.getStore(), patchSet.getRemove());
+		return Response.response(null);
 	}
 
 	private <T extends ConfigurationEntity> Response<Collection<T>> getAllForConfigId(
