@@ -35,6 +35,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import net.solarnetwork.node.loxone.LoxoneXMLSourceMappingParser;
 import net.solarnetwork.node.loxone.dao.DatumUUIDSetDao;
 import net.solarnetwork.node.loxone.dao.SourceMappingDao;
 import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntity;
@@ -43,7 +44,6 @@ import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
 import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.SourceMapping;
-import net.solarnetwork.node.loxone.impl.LoxoneXMLSourceMappingParser;
 import net.solarnetwork.node.loxone.impl.WebsocketLoxoneService;
 
 /**
@@ -113,7 +113,8 @@ public class WebsocketLoxoneServiceTests {
 
 		replayAll();
 
-		InputStream in = getClass().getResourceAsStream("program-file-01.xml");
+		InputStream in = getClass()
+				.getResourceAsStream("/net/solarnetwork/node/loxone/test/program-file-01.xml");
 		service.importSourceMappings(in, new LoxoneXMLSourceMappingParser());
 
 		verifyAll();
@@ -121,7 +122,7 @@ public class WebsocketLoxoneServiceTests {
 		List<SourceMapping> stored = mappingCapture.getValues();
 		SourceMapping map = stored.get(0);
 		Assert.assertEquals("Config ID", TEST_CONFIG_ID, map.getConfigId());
-		Assert.assertEquals("Source ID", "Digital inputs", map.getSourceId());
+		Assert.assertEquals("Source ID", "Digitalinputs", map.getSourceId());
 		Assert.assertEquals("UUID", UUID.fromString("0c89ebac-0074-04ce-ffff-a1b98ee6c71d"),
 				map.getUuid());
 	}

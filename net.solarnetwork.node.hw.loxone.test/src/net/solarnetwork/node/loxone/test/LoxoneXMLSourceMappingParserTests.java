@@ -20,15 +20,15 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.loxone.impl.test;
+package net.solarnetwork.node.loxone.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
+import net.solarnetwork.node.loxone.LoxoneXMLSourceMappingParser;
 import net.solarnetwork.node.loxone.LoxoneSourceMappingParser.SourceMappingCallback;
 import net.solarnetwork.node.loxone.domain.SourceMapping;
-import net.solarnetwork.node.loxone.impl.LoxoneXMLSourceMappingParser;
 
 /**
  * Test cases for the {@link LoxoneXMLSourceMappingParser} class.

@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Future;
+import java.util.regex.Pattern;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -103,6 +104,9 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	 * from Loxone value event data, in seconds.
 	 */
 	public static final int DATUM_LOGGER_JOB_INTERVAL = 60;
+
+	/** The maximum length allowed for parsed source ID values. */
+	public static final int MAX_SOURCE_ID_LENGTH = (32 - 12); // 12 for "/XXXXXXXXXX/" config ID prefix
 
 	private static final String DEFAULT_UID = "Loxone";
 
@@ -237,11 +241,31 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 			return;
 		}
 
+		Pattern removePat = Pattern.compile("\\s");
+
 		parser.parseInputStream(in, new LoxoneSourceMappingParser.SourceMappingCallback() {
 
 			@Override
 			public void parsedSourceMapping(SourceMapping mapping) {
 				mapping.setConfigId(configId);
+
+				// sanitize source ID
+				String sourceId = mapping.getSourceId();
+				if ( sourceId == null ) {
+					return;
+				}
+
+				// remove whitespace
+				sourceId = removePat.matcher(sourceId).replaceAll("");
+
+				// verify length
+				if ( sourceId.length() > MAX_SOURCE_ID_LENGTH ) {
+					sourceId = sourceId.substring(0, MAX_SOURCE_ID_LENGTH);
+				}
+
+				// save back onto mapping
+				mapping.setSourceId(sourceId);
+
 				sourceMappingDao.store(mapping);
 			}
 		});

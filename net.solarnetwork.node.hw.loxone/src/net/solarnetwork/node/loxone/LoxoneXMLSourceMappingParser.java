@@ -20,7 +20,7 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.loxone.impl;
+package net.solarnetwork.node.loxone;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +34,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.solarnetwork.node.loxone.LoxoneSourceMappingParser;
 import net.solarnetwork.node.loxone.domain.SourceMapping;
 import net.solarnetwork.node.loxone.domain.UUIDDeserializer;
 

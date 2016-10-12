@@ -22,6 +22,7 @@
 
 package net.solarnetwork.node.setup.web.loxone;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -29,10 +30,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MultipartFile;
 import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.loxone.LoxoneService;
+import net.solarnetwork.node.loxone.LoxoneSourceMappingParser;
+import net.solarnetwork.node.loxone.LoxoneXMLSourceMappingParser;
 import net.solarnetwork.node.loxone.domain.Category;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
 import net.solarnetwork.node.loxone.domain.Control;
@@ -106,6 +111,38 @@ public class LoxoneConfigurationController extends BaseLoxoneWebServiceControlle
 		}
 		service.updateSourceMappings(patchSet.getStore(), patchSet.getRemove());
 		return Response.response(null);
+	}
+
+	/**
+	 * Import a source mapping file via a {@code multipart/form-data} file
+	 * upload.
+	 * 
+	 * @param configId
+	 *        The config ID.
+	 * @param file
+	 *        The file to upload.
+	 * @return A success indicator.
+	 */
+	@RequestMapping(value = "/sources", method = RequestMethod.POST, consumes = "multipart/form-data")
+	public Response<Object> importSources(@PathVariable("configId") String configId,
+			@RequestPart MultipartFile file) {
+		LoxoneService service = serviceForConfigId(configId);
+		if ( service == null ) {
+			return new Response<Object>(Boolean.FALSE, "404", "Service not available", null);
+		}
+		String contentType = file.getContentType();
+		LoxoneSourceMappingParser parser;
+		if ( contentType != null && contentType.endsWith("/xml") ) {
+			parser = new LoxoneXMLSourceMappingParser();
+		} else {
+			return new Response<Object>(Boolean.FALSE, "422", "Unsupported content type", contentType);
+		}
+		try {
+			service.importSourceMappings(file.getInputStream(), parser);
+			return Response.response(null);
+		} catch ( IOException e ) {
+			return new Response<Object>(Boolean.FALSE, "500", "IO error: " + e.getMessage(), null);
+		}
 	}
 
 	private <T extends ConfigurationEntity> Response<Collection<T>> getAllForConfigId(
