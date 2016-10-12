@@ -91,6 +91,10 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 
+	<bean id="sourceMappingDao" class="net.solarnetwork.node.loxone.dao.jdbc.JdbcSourceMappingDao" init-method="init">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+
 	<bean id="valueEventDao" class="net.solarnetwork.node.loxone.dao.jdbc.JdbcValueEventDao" init-method="init">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
@@ -107,6 +111,7 @@
 		<beans:ref bean="categoryDao"/>
 		<beans:ref bean="controlDao"/>
 		<beans:ref bean="roomDao"/>
+		<beans:ref bean="sourceMappingDao"/>
 	</util:list>
 
 	<util:list id="event-daos">
@@ -244,6 +249,7 @@
 			<property name="controlDao" ref="controlDao"/>
 			<property name="datumDao" ref="generalNodeDatumDao"/>
 			<property name="settingDao" ref="settingDao"/>
+			<property name="sourceMappingDao" ref="sourceMappingDao"/>
 		</bean>
 	</osgix:managed-service-factory>
 	

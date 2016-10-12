@@ -25,6 +25,7 @@ package net.solarnetwork.node.loxone.domain;
 import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * Base entity that uses a UUID as its primary key.
@@ -49,18 +50,9 @@ public class BasicUUIDEntity implements UUIDEntity {
 		this.configId = configId;
 	}
 
-	/**
-	 * Get a {@code sourceId} value from this entity.
-	 * 
-	 * If no {@code sourceId} value is configured, this will return a derived
-	 * value.
-	 * 
-	 * @return The source ID, or {@code null} if unavailable.
-	 * @see UUIDEntity#sourceIdForUUIDEntity(UUIDEntity)
-	 */
-	@JsonGetter
+	@JsonIgnore
 	public String getSourceId() {
-		return (this.sourceId != null ? this.sourceId : UUIDEntity.sourceIdForUUIDEntity(this));
+		return this.sourceId;
 	}
 
 	/**
@@ -70,8 +62,37 @@ public class BasicUUIDEntity implements UUIDEntity {
 	 *        The source ID to use.
 	 * @since 1.1
 	 */
+	@JsonSetter
 	public void setSourceId(String sourceId) {
 		this.sourceId = sourceId;
+	}
+
+	/**
+	 * Get a {@code sourceId} value from this entity.
+	 * 
+	 * If no {@code sourceId} value is configured, this will return a derived
+	 * value via {@link UUIDEntity#sourceIdForUUIDEntity(UUIDEntity)}.
+	 * Otherwise, a combination of {@link #getConfigId()} and the
+	 * {@code sourceId} value will be returned.
+	 * 
+	 * @return The source ID, or {@code null} if unavailable.
+	 * @see UUIDEntity#sourceIdForUUIDEntity(UUIDEntity)
+	 */
+	@JsonGetter("sourceId")
+	public String getSourceIdValue() {
+		if ( this.sourceId != null ) {
+			if ( configId != null ) {
+				StringBuilder buf = new StringBuilder("/").append(Config.idToExternalForm(configId));
+				if ( buf.length() > 11 ) {
+					// truncate to only 5 most significant bytes of ID to conserve source ID space
+					buf.setLength(11);
+				}
+				buf.append('/').append(this.sourceId);
+				return buf.toString();
+			}
+			return this.sourceId;
+		}
+		return UUIDEntity.sourceIdForUUIDEntity(this);
 	}
 
 	@Override

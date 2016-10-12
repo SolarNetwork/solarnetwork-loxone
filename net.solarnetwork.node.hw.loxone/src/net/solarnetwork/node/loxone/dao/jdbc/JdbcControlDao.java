@@ -42,6 +42,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.loxone.dao.ControlDao;
+import net.solarnetwork.node.loxone.dao.SourceMappingDao;
 import net.solarnetwork.node.loxone.dao.jdbc.JdbcDatumUUIDSetDao.DatumUUIDEntityParametersRowMapper;
 import net.solarnetwork.node.loxone.domain.BasicControlDatumParameters;
 import net.solarnetwork.node.loxone.domain.BasicValueEventDatumParameters;
@@ -55,8 +56,15 @@ import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
 /**
  * JDBC implementation of {@link ControlDao}.
  * 
+ * <b>Note</b> that the {@link Control#getSourceId()} value will not be
+ * saved/updated when persisting entities. When querying via
+ * {@link #findAllForConfig(Long, List)} or
+ * {@link #findAllForDatumPropertyUUIDEntities(Long)}, however, the
+ * {@code sourceId} will be populated by a matching row from the
+ * {@link SourceMappingDao} data.
+ * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implements ControlDao {
 
@@ -169,7 +177,7 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 				return ps;
 			}
 		}, new ControlDatumPropertyResultSetExtractor(getRowMapper(),
-				new DatumUUIDEntityParametersRowMapper(10)));
+				new DatumUUIDEntityParametersRowMapper(11)));
 	}
 
 	@Override
@@ -215,11 +223,12 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 			// Row order is: uuid_hi, uuid_lo, config_id, name, sort, ctype, room_hi, room_lo, cat_hi, cat_lo
 			row.setUuid(readUUID(1, rs));
 			row.setConfigId(rs.getLong(3));
-			row.setName(rs.getString(4));
-			row.setDefaultRating(rs.getInt(5));
-			row.setType(ControlType.forIndexValue(rs.getShort(6)));
-			row.setRoom(readUUID(7, rs));
-			row.setCategory(readUUID(9, rs));
+			row.setSourceId(rs.getString(4));
+			row.setName(rs.getString(5));
+			row.setDefaultRating(rs.getInt(6));
+			row.setType(ControlType.forIndexValue(rs.getShort(7)));
+			row.setRoom(readUUID(8, rs));
+			row.setCategory(readUUID(10, rs));
 			return row;
 		}
 	}
@@ -250,8 +259,8 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 					states = new LinkedHashMap<>(4);
 					lastControl.setStates(states);
 				}
-				String state = rs.getString(11);
-				UUID uuid = readUUID(12, rs);
+				String state = rs.getString(12);
+				UUID uuid = readUUID(13, rs);
 				if ( state != null && uuid != null ) {
 					states.put(state, uuid);
 				}
@@ -278,8 +287,8 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 		}
 
 		@Override
-		public List<UUIDEntityParametersPair<Control, ControlDatumParameters>> extractData(
-				ResultSet rs) throws SQLException, DataAccessException {
+		public List<UUIDEntityParametersPair<Control, ControlDatumParameters>> extractData(ResultSet rs)
+				throws SQLException, DataAccessException {
 			List<UUIDEntityParametersPair<Control, ControlDatumParameters>> results = new ArrayList<>(
 					64);
 			int i = 0;
@@ -293,21 +302,21 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 					results.add(lastPair);
 				}
 
-				// after control and datum params, columns start at 12 and are 
+				// after control and datum params, columns start at 13 and are 
 				// st.event_hi, st.event_lo, st.name AS event_name
 				// ps.dtype,
 				// ve.fvalue
 
-				UUID stateUuid = readUUID(12, rs);
+				UUID stateUuid = readUUID(13, rs);
 				BasicValueEventDatumParameters valueParams = (BasicValueEventDatumParameters) lastParams
 						.getDatumPropertyParameters().get(stateUuid);
 				if ( valueParams == null ) {
 					valueParams = new BasicValueEventDatumParameters();
 					lastParams.getDatumPropertyParameters().put(stateUuid, valueParams);
 				}
-				valueParams.setName(rs.getString(14));
-				valueParams.setDatumValueType(DatumValueType.forCodeValue(rs.getInt(15)));
-				valueParams.setValue(rs.getDouble(16));
+				valueParams.setName(rs.getString(15));
+				valueParams.setDatumValueType(DatumValueType.forCodeValue(rs.getInt(16)));
+				valueParams.setValue(rs.getDouble(17));
 			}
 			return results;
 		}

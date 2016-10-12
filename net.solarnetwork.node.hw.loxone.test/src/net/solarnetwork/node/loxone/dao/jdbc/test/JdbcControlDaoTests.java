@@ -34,10 +34,12 @@ import org.junit.Test;
 import net.solarnetwork.node.dao.jdbc.DatabaseSetup;
 import net.solarnetwork.node.loxone.dao.DatumPropertyUUIDSetDao;
 import net.solarnetwork.node.loxone.dao.DatumUUIDSetDao;
+import net.solarnetwork.node.loxone.dao.SourceMappingDao;
 import net.solarnetwork.node.loxone.dao.ValueEventDao;
 import net.solarnetwork.node.loxone.dao.jdbc.JdbcControlDao;
 import net.solarnetwork.node.loxone.dao.jdbc.JdbcDatumPropertyUUIDSetDao;
 import net.solarnetwork.node.loxone.dao.jdbc.JdbcDatumUUIDSetDao;
+import net.solarnetwork.node.loxone.dao.jdbc.JdbcSourceMappingDao;
 import net.solarnetwork.node.loxone.dao.jdbc.JdbcValueEventDao;
 import net.solarnetwork.node.loxone.domain.BasicDatumPropertyUUIDEntity;
 import net.solarnetwork.node.loxone.domain.BasicDatumPropertyUUIDEntityParameters;
@@ -47,6 +49,7 @@ import net.solarnetwork.node.loxone.domain.Control;
 import net.solarnetwork.node.loxone.domain.ControlDatumParameters;
 import net.solarnetwork.node.loxone.domain.ControlType;
 import net.solarnetwork.node.loxone.domain.DatumValueType;
+import net.solarnetwork.node.loxone.domain.SourceMapping;
 import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
 import net.solarnetwork.node.loxone.domain.ValueEventDatumParameters;
@@ -63,12 +66,14 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 	private static final Long TEST_CONFIG_ID = 123L;
 	private static final String TEST_NAME = "Test Name";
 	private static final Integer TEST_DEFAULT_RATING = 1;
+	private static final String TEST_SOURCE_ID = "Test Source";
 
 	@Resource(name = "dataSource")
 	private DataSource dataSource;
 	private DatumUUIDSetDao datumSetDao;
 	private DatumPropertyUUIDSetDao datumPropSetDao;
 	private ValueEventDao valueEventDao;
+	private SourceMappingDao smapDao;
 
 	private JdbcControlDao dao;
 	private Control lastControl;
@@ -93,6 +98,11 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 		eventDao.setDataSource(dataSource);
 		eventDao.init();
 		this.valueEventDao = eventDao;
+
+		JdbcSourceMappingDao smapDao = new JdbcSourceMappingDao();
+		smapDao.setDataSource(dataSource);
+		smapDao.init();
+		this.smapDao = smapDao;
 
 		dao = new JdbcControlDao();
 		dao.setDataSource(dataSource);
@@ -265,6 +275,24 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 		Assert.assertNotNull(results);
 		Assert.assertEquals("Match count", 1, results.size());
 		Assert.assertEquals("Found object", lastControl.getUuid(), results.get(0).getUuid());
+		Assert.assertNull("No source ID", lastControl.getSourceId());
+	}
+
+	@Test
+	public void findForConfigSingleMatchAndSourceId() {
+		insert();
+
+		SourceMapping smap = new SourceMapping();
+		smap.setConfigId(TEST_CONFIG_ID);
+		smap.setUuid(lastControl.getUuid());
+		smap.setSourceId(TEST_SOURCE_ID);
+		smapDao.store(smap);
+
+		List<Control> results = dao.findAllForConfig(TEST_CONFIG_ID, null);
+		Assert.assertNotNull(results);
+		Assert.assertEquals("Match count", 1, results.size());
+		Assert.assertEquals("Found object", lastControl.getUuid(), results.get(0).getUuid());
+		Assert.assertEquals("Source ID", TEST_SOURCE_ID, results.get(0).getSourceId());
 	}
 
 	@Test
@@ -319,6 +347,58 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 		Assert.assertNotNull(results);
 		Assert.assertEquals("Match count", 1, results.size());
 		Assert.assertEquals("Same control", lastControl, results.get(0).getEntity());
+		Assert.assertNull("No source ID", results.get(0).getEntity().getSourceId());
+		Assert.assertEquals("Save frequency", Integer.valueOf(500),
+				results.get(0).getParameters().getDatumParameters().getSaveFrequencySeconds());
+
+		ValueEventDatumParameters propParams = results.get(0).getParameters()
+				.getDatumPropertyParameters().get(fooUUID);
+		Assert.assertNotNull(propParams);
+		Assert.assertEquals("Foo type", DatumValueType.Accumulating, propParams.getDatumValueType());
+		Assert.assertEquals("Foo name", "foo", propParams.getName());
+		Assert.assertEquals("Foo value", Double.valueOf(fooEvent.getValue()), propParams.getValue());
+
+		propParams = results.get(0).getParameters().getDatumPropertyParameters().get(barUUID);
+		Assert.assertNotNull(propParams);
+		Assert.assertEquals("Bar type", DatumValueType.Instantaneous, propParams.getDatumValueType());
+		Assert.assertEquals("Bar name", "bar", propParams.getName());
+		Assert.assertEquals("Bar value", Double.valueOf(barEvent.getValue()), propParams.getValue());
+	}
+
+	@Test
+	public void findForDatumsOneControlMultiMatchAndSourceId() {
+		// insert control with "foo" state
+		insertWithStates();
+
+		SourceMapping smap = new SourceMapping();
+		smap.setConfigId(TEST_CONFIG_ID);
+		smap.setUuid(lastControl.getUuid());
+		smap.setSourceId(TEST_SOURCE_ID);
+		smapDao.store(smap);
+
+		UUID fooUUID = lastControl.getStates().get("foo");
+		UUID barUUID = lastControl.getStates().get("bar");
+
+		// insert datum UUID to enable control
+		datumSetDao.store(new BasicDatumUUIDEntity(TEST_CONFIG_ID, lastControl.getUuid(),
+				new BasicDatumUUIDEntityParameters(500)));
+
+		// insert prop UUID to enable property foo and bar
+		datumPropSetDao.store(new BasicDatumPropertyUUIDEntity(TEST_CONFIG_ID, fooUUID,
+				new BasicDatumPropertyUUIDEntityParameters(DatumValueType.Accumulating)));
+		datumPropSetDao.store(new BasicDatumPropertyUUIDEntity(TEST_CONFIG_ID, barUUID,
+				new BasicDatumPropertyUUIDEntityParameters(DatumValueType.Instantaneous)));
+
+		// insert a value for the "foo" and "bar" states
+		ValueEvent fooEvent = insertValueEvent(fooUUID, 123);
+		ValueEvent barEvent = insertValueEvent(barUUID, 234);
+
+		List<UUIDEntityParametersPair<Control, ControlDatumParameters>> results = dao
+				.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID);
+		Assert.assertNotNull(results);
+		Assert.assertEquals("Match count", 1, results.size());
+		Assert.assertEquals("Same control", lastControl, results.get(0).getEntity());
+		Assert.assertEquals("Source ID", TEST_SOURCE_ID, results.get(0).getEntity().getSourceId());
 		Assert.assertEquals("Save frequency", Integer.valueOf(500),
 				results.get(0).getParameters().getDatumParameters().getSaveFrequencySeconds());
 

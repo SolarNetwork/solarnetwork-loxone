@@ -25,7 +25,10 @@ package net.solarnetwork.node.loxone.dao.jdbc;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import net.solarnetwork.node.loxone.dao.SourceMappingDao;
 import net.solarnetwork.node.loxone.domain.SourceMapping;
 
@@ -46,6 +49,12 @@ public class JdbcSourceMappingDao extends BaseConfigurationEntityDao<SourceMappi
 	 */
 	public JdbcSourceMappingDao() {
 		super(SourceMapping.class, "smap", TABLES_VERSION, new SourceMappingRowMapper());
+	}
+
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	@Override
+	public int delete(Long configId, UUID uuid) {
+		return deleteEntity(configId, uuid);
 	}
 
 	@Override

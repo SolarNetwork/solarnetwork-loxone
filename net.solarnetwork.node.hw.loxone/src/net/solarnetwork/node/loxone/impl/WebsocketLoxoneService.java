@@ -57,10 +57,12 @@ import net.solarnetwork.node.loxone.LoxoneService;
 import net.solarnetwork.node.loxone.dao.ConfigurationEntityDao;
 import net.solarnetwork.node.loxone.dao.ControlDao;
 import net.solarnetwork.node.loxone.dao.EventEntityDao;
+import net.solarnetwork.node.loxone.dao.SourceMappingDao;
 import net.solarnetwork.node.loxone.dao.UUIDSetDao;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
 import net.solarnetwork.node.loxone.domain.EventEntity;
+import net.solarnetwork.node.loxone.domain.SourceMapping;
 import net.solarnetwork.node.loxone.domain.UUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
 import net.solarnetwork.node.loxone.protocol.ws.CommandType;
@@ -110,6 +112,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	private SetupResourceProvider settingResourceProvider;
 	private SettingDao settingDao;
 	private ControlDao controlDao;
+	private SourceMappingDao sourceMappingDao;
 	private OptionalService<DatumDao<GeneralNodeDatum>> datumDao;
 	private Scheduler scheduler;
 	private int datumLoggerFrequencySeconds = DATUM_LOGGER_JOB_INTERVAL;
@@ -195,6 +198,27 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		UUIDSetDao<T, P> dao = uuidSetDaoForType(type);
 		if ( dao != null && config.getId() != null ) {
 			dao.updateSetForConfig(config.getId(), add, remove, parameters);
+		}
+	}
+
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	@Override
+	public void updateSourceMappings(Collection<SourceMapping> store, Collection<UUID> remove) {
+		final Config config = getConfiguration();
+		final Long configId = (config != null ? config.getId() : null);
+		if ( configId == null ) {
+			return;
+		}
+		if ( store != null ) {
+			for ( SourceMapping smap : store ) {
+				smap.setConfigId(configId);
+				sourceMappingDao.store(smap);
+			}
+		}
+		if ( remove != null ) {
+			for ( UUID uuid : remove ) {
+				sourceMappingDao.delete(configId, uuid);
+			}
 		}
 	}
 
@@ -452,6 +476,10 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 
 	public void setControlDao(ControlDao controlDao) {
 		this.controlDao = controlDao;
+	}
+
+	public void setSourceMappingDao(SourceMappingDao sourceMappingDao) {
+		this.sourceMappingDao = sourceMappingDao;
 	}
 
 }

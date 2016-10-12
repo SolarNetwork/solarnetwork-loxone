@@ -22,6 +22,7 @@
 
 package net.solarnetwork.node.loxone.dao;
 
+import java.util.UUID;
 import net.solarnetwork.node.loxone.domain.SourceMapping;
 
 /**
@@ -32,5 +33,15 @@ import net.solarnetwork.node.loxone.domain.SourceMapping;
  * @since 0.2
  */
 public interface SourceMappingDao extends ConfigurationEntityDao<SourceMapping> {
+
+	/**
+	 * Delete an entity.
+	 * 
+	 * @param configId
+	 *        The config ID to match.
+	 * @param uuid
+	 *        The UUID of the entity to remove.
+	 */
+	int delete(Long configId, UUID uuid);
 
 }

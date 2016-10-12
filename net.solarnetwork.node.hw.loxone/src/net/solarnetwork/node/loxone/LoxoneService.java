@@ -33,6 +33,7 @@ import net.solarnetwork.node.Identifiable;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
 import net.solarnetwork.node.loxone.domain.EventEntity;
+import net.solarnetwork.node.loxone.domain.SourceMapping;
 import net.solarnetwork.node.loxone.domain.UUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
 
@@ -40,7 +41,7 @@ import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
  * API for a Loxone device.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public interface LoxoneService extends Identifiable {
 
@@ -118,4 +119,15 @@ public interface LoxoneService extends Identifiable {
 	 */
 	<T extends UUIDSetEntity<P>, P extends UUIDEntityParameters> void updateUUIDSet(Class<T> type,
 			Collection<UUID> add, Collection<UUID> remove, Map<UUID, P> parameters);
+
+	/**
+	 * Add or remove source mappings.
+	 * 
+	 * @param store
+	 *        A collection of source mappings to update or add.
+	 * @param remove
+	 *        A collection of source mapping UUIDs to remove.
+	 * @since 1.1
+	 */
+	void updateSourceMappings(Collection<SourceMapping> store, Collection<UUID> remove);
 }
