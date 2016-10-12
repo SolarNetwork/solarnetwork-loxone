@@ -23,6 +23,7 @@
 package net.solarnetwork.node.loxone.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -54,6 +55,7 @@ import net.solarnetwork.node.dao.SettingDao;
 import net.solarnetwork.node.domain.GeneralNodeDatum;
 import net.solarnetwork.node.job.DatumDataSourceLoggerJob;
 import net.solarnetwork.node.loxone.LoxoneService;
+import net.solarnetwork.node.loxone.LoxoneSourceMappingParser;
 import net.solarnetwork.node.loxone.dao.ConfigurationEntityDao;
 import net.solarnetwork.node.loxone.dao.ControlDao;
 import net.solarnetwork.node.loxone.dao.EventEntityDao;
@@ -220,6 +222,29 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 				sourceMappingDao.delete(configId, uuid);
 			}
 		}
+	}
+
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	@Override
+	public void importSourceMappings(InputStream in, LoxoneSourceMappingParser parser)
+			throws IOException {
+		assert in != null;
+		assert parser != null;
+
+		final Config config = getConfiguration();
+		final Long configId = (config != null ? config.getId() : null);
+		if ( configId == null ) {
+			return;
+		}
+
+		parser.parseInputStream(in, new LoxoneSourceMappingParser.SourceMappingCallback() {
+
+			@Override
+			public void parsedSourceMapping(SourceMapping mapping) {
+				mapping.setConfigId(configId);
+				sourceMappingDao.store(mapping);
+			}
+		});
 	}
 
 	@SuppressWarnings("unchecked")

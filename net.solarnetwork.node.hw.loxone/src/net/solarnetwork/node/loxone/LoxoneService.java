@@ -22,6 +22,8 @@
 
 package net.solarnetwork.node.loxone;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -130,4 +132,17 @@ public interface LoxoneService extends Identifiable {
 	 * @since 1.1
 	 */
 	void updateSourceMappings(Collection<SourceMapping> store, Collection<UUID> remove);
+
+	/**
+	 * Import source mappings using a parser.
+	 * 
+	 * @param in
+	 *        The input stream of the data.
+	 * @param parser
+	 *        The parser to use.
+	 * @throws IOException
+	 *         If parsing has an IO error.
+	 * @since 1.1
+	 */
+	void importSourceMappings(InputStream in, LoxoneSourceMappingParser parser) throws IOException;
 }
