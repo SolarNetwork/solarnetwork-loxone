@@ -1,5 +1,5 @@
 /* ==================================================================
- * ValueEventDatumDataSourceTests.java - 2/10/2016 3:15:26 PM
+ * ControlDatumDataSourceTests.java - 2/10/2016 3:15:26 PM
  * 
  * Copyright 2007-2016 SolarNetwork.net Dev Team
  * 
@@ -44,6 +44,7 @@ import net.solarnetwork.node.loxone.dao.ControlDao;
 import net.solarnetwork.node.loxone.domain.BasicControlDatumParameters;
 import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.BasicValueEventDatumParameters;
+import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.Control;
 import net.solarnetwork.node.loxone.domain.ControlDatumParameters;
 import net.solarnetwork.node.loxone.domain.DatumValueType;
@@ -58,7 +59,7 @@ import net.solarnetwork.node.support.KeyValuePair;
  * @author matt
  * @version 1.0
  */
-public class ValueEventDatumDataSourceTests {
+public class ControlDatumDataSourceTests {
 
 	private static final Long TEST_CONFIG_ID = 321L;
 
@@ -88,7 +89,7 @@ public class ValueEventDatumDataSourceTests {
 
 	private String settingKey() {
 		return String.format(ControlDatumDataSource.SETTING_KEY_TEMPLATE,
-				Long.toString(TEST_CONFIG_ID, 16));
+				Config.idToExternalForm(TEST_CONFIG_ID));
 	}
 
 	@Test
@@ -98,7 +99,7 @@ public class ValueEventDatumDataSourceTests {
 		final Control control = new Control(UUID.randomUUID(), TEST_CONFIG_ID);
 		final ValueEvent valueEvent = new ValueEvent(UUID.randomUUID(), TEST_CONFIG_ID, 456.7);
 		final BasicControlDatumParameters controlParams = new BasicControlDatumParameters();
-		final String sourceId = control.getSourceId();
+		final String sourceId = control.getSourceIdValue();
 		final BasicDatumUUIDEntityParameters datumParams = new BasicDatumUUIDEntityParameters(300);
 		controlParams.setDatumParameters(datumParams);
 		final BasicValueEventDatumParameters valueParams = new BasicValueEventDatumParameters();
@@ -107,9 +108,8 @@ public class ValueEventDatumDataSourceTests {
 		valueParams.setValue(valueEvent.getValue());
 		controlParams
 				.setDatumPropertyParameters(Collections.singletonMap(valueEvent.getUuid(), valueParams));
-		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays
-				.asList(new UUIDEntityParametersPair<Control, ControlDatumParameters>(
-						control, controlParams));
+		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays.asList(
+				new UUIDEntityParametersPair<Control, ControlDatumParameters>(control, controlParams));
 		expect(settingDao.getSettings(settingKey)).andReturn(Collections.emptyList());
 		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
@@ -142,7 +142,7 @@ public class ValueEventDatumDataSourceTests {
 		final Control control = new Control(UUID.randomUUID(), TEST_CONFIG_ID);
 		final ValueEvent valueEvent = new ValueEvent(UUID.randomUUID(), TEST_CONFIG_ID, 456.7);
 		final BasicControlDatumParameters controlParams = new BasicControlDatumParameters();
-		final String sourceId = control.getSourceId();
+		final String sourceId = control.getSourceIdValue();
 		final BasicDatumUUIDEntityParameters datumParams = new BasicDatumUUIDEntityParameters(300);
 		controlParams.setDatumParameters(datumParams);
 		final BasicValueEventDatumParameters valueParams = new BasicValueEventDatumParameters();
@@ -151,9 +151,8 @@ public class ValueEventDatumDataSourceTests {
 		valueParams.setValue(valueEvent.getValue());
 		controlParams
 				.setDatumPropertyParameters(Collections.singletonMap(valueEvent.getUuid(), valueParams));
-		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays
-				.asList(new UUIDEntityParametersPair<Control, ControlDatumParameters>(
-						control, controlParams));
+		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays.asList(
+				new UUIDEntityParametersPair<Control, ControlDatumParameters>(control, controlParams));
 		expect(settingDao.getSettings(settingKey)).andReturn(Collections.emptyList());
 		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
@@ -186,7 +185,7 @@ public class ValueEventDatumDataSourceTests {
 		final Control control = new Control(UUID.randomUUID(), TEST_CONFIG_ID);
 		final ValueEvent valueEvent = new ValueEvent(UUID.randomUUID(), TEST_CONFIG_ID, 456.7);
 		final BasicControlDatumParameters controlParams = new BasicControlDatumParameters();
-		final String sourceId = control.getSourceId();
+		final String sourceId = control.getSourceIdValue();
 		final BasicDatumUUIDEntityParameters datumParams = new BasicDatumUUIDEntityParameters(300);
 		controlParams.setDatumParameters(datumParams);
 		final BasicValueEventDatumParameters valueParams = new BasicValueEventDatumParameters();
@@ -195,9 +194,8 @@ public class ValueEventDatumDataSourceTests {
 		valueParams.setValue(valueEvent.getValue());
 		controlParams
 				.setDatumPropertyParameters(Collections.singletonMap(valueEvent.getUuid(), valueParams));
-		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays
-				.asList(new UUIDEntityParametersPair<Control, ControlDatumParameters>(
-						control, controlParams));
+		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays.asList(
+				new UUIDEntityParametersPair<Control, ControlDatumParameters>(control, controlParams));
 		final List<KeyValuePair> saveSettings = Arrays
 				.asList(new KeyValuePair(sourceId, Long.toString(now - 100000, 16)));
 		expect(settingDao.getSettings(settingKey)).andReturn(saveSettings);
@@ -218,7 +216,7 @@ public class ValueEventDatumDataSourceTests {
 		final Control control = new Control(UUID.randomUUID(), TEST_CONFIG_ID);
 		final ValueEvent valueEvent = new ValueEvent(UUID.randomUUID(), TEST_CONFIG_ID, 456.7);
 		final BasicControlDatumParameters controlParams = new BasicControlDatumParameters();
-		final String sourceId = control.getSourceId();
+		final String sourceId = control.getSourceIdValue();
 		final BasicDatumUUIDEntityParameters datumParams = new BasicDatumUUIDEntityParameters(300);
 		controlParams.setDatumParameters(datumParams);
 		final BasicValueEventDatumParameters valueParams = new BasicValueEventDatumParameters();
@@ -227,9 +225,8 @@ public class ValueEventDatumDataSourceTests {
 		valueParams.setValue(valueEvent.getValue());
 		controlParams
 				.setDatumPropertyParameters(Collections.singletonMap(valueEvent.getUuid(), valueParams));
-		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays
-				.asList(new UUIDEntityParametersPair<Control, ControlDatumParameters>(
-						control, controlParams));
+		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays.asList(
+				new UUIDEntityParametersPair<Control, ControlDatumParameters>(control, controlParams));
 		final List<KeyValuePair> saveSettings = Arrays
 				.asList(new KeyValuePair(sourceId, Long.toString(now - 300001, 16)));
 		expect(settingDao.getSettings(settingKey)).andReturn(saveSettings);
