@@ -22,13 +22,21 @@
 
 package net.solarnetwork.node.loxone.domain;
 
+import java.util.regex.Pattern;
+
 /**
  * API for a Loxone configuration entity.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public interface ConfigurationEntity extends UUIDEntity {
+
+	/**
+	 * A pattern to use for removing unwanted characters from the {@code name}
+	 * when deriving a source ID value.
+	 */
+	Pattern SOURCE_ID_REMOVE_PAT = Pattern.compile("\\s");
 
 	/**
 	 * Get a sorting priority. Higher values should be sorted before lower

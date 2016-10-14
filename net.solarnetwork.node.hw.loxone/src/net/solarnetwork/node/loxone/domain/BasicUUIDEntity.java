@@ -70,27 +70,45 @@ public class BasicUUIDEntity implements UUIDEntity {
 	/**
 	 * Get a {@code sourceId} value from this entity.
 	 * 
-	 * If no {@code sourceId} value is configured, this will return a derived
-	 * value via {@link UUIDEntity#sourceIdForUUIDEntity(UUIDEntity)}.
-	 * Otherwise, a combination of {@link #getConfigId()} and the
-	 * {@code sourceId} value will be returned.
-	 * 
 	 * @return The source ID, or {@code null} if unavailable.
-	 * @see UUIDEntity#sourceIdForUUIDEntity(UUIDEntity)
+	 * @see #sourceIdValue(String)
 	 */
 	@JsonGetter("sourceId")
 	public String getSourceIdValue() {
-		if ( this.sourceId != null ) {
+		return sourceIdValue(this.sourceId);
+	}
+
+	/**
+	 * Get a source ID value from a given {@code sourceId}.
+	 * 
+	 * If {@code sourceId} is {@code null}, this will return a derived value via
+	 * {@link UUIDEntity#sourceIdForUUIDEntity(UUIDEntity)}. Otherwise, a
+	 * combination of the configured {@code configId} and the {@code sourceId}
+	 * value will be returned.
+	 * 
+	 * @param sourceId
+	 *        The source ID to construct a value from.
+	 * @return The source ID value, or {@code null} if unavailable.
+	 * @see UUIDEntity#sourceIdForUUIDEntity(UUIDEntity)
+	 */
+	protected String sourceIdValue(String sourceId) {
+		if ( sourceId != null ) {
 			if ( configId != null ) {
 				StringBuilder buf = new StringBuilder("/").append(Config.idToExternalForm(configId));
 				if ( buf.length() > 11 ) {
 					// truncate to only 5 most significant bytes of ID to conserve source ID space
 					buf.setLength(11);
 				}
-				buf.append('/').append(this.sourceId);
+				buf.append('/').append(sourceId);
+				if ( buf.length() > SOURCE_ID_MAX_LENGTH ) {
+					buf.setLength(32);
+				}
 				return buf.toString();
 			}
-			return this.sourceId;
+			if ( sourceId.length() > SOURCE_ID_MAX_LENGTH ) {
+				return sourceId.substring(0, SOURCE_ID_MAX_LENGTH);
+			}
+			return sourceId;
 		}
 		return UUIDEntity.sourceIdForUUIDEntity(this);
 	}

@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.solarnetwork.node.loxone.domain.Control;
 import net.solarnetwork.node.loxone.domain.ControlType;
 import net.solarnetwork.node.loxone.domain.UUIDDeserializer;
+import net.solarnetwork.node.loxone.domain.UUIDEntity;
 import net.solarnetwork.node.loxone.domain.UUIDSerializer;
 import net.solarnetwork.util.ObjectMapperFactoryBean;
 
@@ -50,6 +51,8 @@ import net.solarnetwork.util.ObjectMapperFactoryBean;
  */
 public class ControlTests {
 
+	private static final UUID TEST_UUID = new UUID(0xDEDEDEDEDEDEDEDEL, 0xEDEDEDEDEDEDEDEDL);
+
 	private ObjectMapper objectMapper;
 
 	@Before
@@ -59,6 +62,42 @@ public class ControlTests {
 		factory.setSerializers(Arrays.asList(new UUIDSerializer()));
 		factory.setFeaturesToDisable(Arrays.asList(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES));
 		objectMapper = factory.getObject();
+	}
+
+	@Test
+	public void derivedSourceId() {
+		Control entity = new Control();
+		entity.setConfigId(Long.MAX_VALUE);
+		entity.setUuid(TEST_UUID);
+		assertEquals("Source ID value", UUIDEntity.sourceIdForUUIDEntity(entity),
+				entity.getSourceIdValue());
+	}
+
+	@Test
+	public void explicitSourceId() {
+		Control entity = new Control();
+		entity.setConfigId(TEST_UUID.getMostSignificantBits());
+		entity.setUuid(TEST_UUID);
+		entity.setSourceId("Test Control");
+		assertEquals("Source ID value", "/dedededede/Test Control", entity.getSourceIdValue());
+	}
+
+	@Test
+	public void explicitNameSourceId() {
+		Control entity = new Control();
+		entity.setConfigId(TEST_UUID.getMostSignificantBits());
+		entity.setUuid(TEST_UUID);
+		entity.setName("Test Control");
+		assertEquals("Source ID value", "/dedededede/TestControl", entity.getSourceIdValue());
+	}
+
+	@Test
+	public void explicitNameSourceIdTruncated() {
+		Control entity = new Control();
+		entity.setConfigId(TEST_UUID.getMostSignificantBits());
+		entity.setUuid(TEST_UUID);
+		entity.setName("Test Control With A Long Name That Is Too Long");
+		assertEquals("Source ID value", "/dedededede/TestControlWithALong", entity.getSourceIdValue());
 	}
 
 	@Test

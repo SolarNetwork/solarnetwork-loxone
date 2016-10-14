@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Future;
-import java.util.regex.Pattern;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -241,8 +240,6 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 			return;
 		}
 
-		Pattern removePat = Pattern.compile("\\s");
-
 		parser.parseInputStream(in, new LoxoneSourceMappingParser.SourceMappingCallback() {
 
 			@Override
@@ -256,7 +253,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 				}
 
 				// remove whitespace
-				sourceId = removePat.matcher(sourceId).replaceAll("");
+				sourceId = ConfigurationEntity.SOURCE_ID_REMOVE_PAT.matcher(sourceId).replaceAll("");
 
 				// verify length
 				if ( sourceId.length() > MAX_SOURCE_ID_LENGTH ) {

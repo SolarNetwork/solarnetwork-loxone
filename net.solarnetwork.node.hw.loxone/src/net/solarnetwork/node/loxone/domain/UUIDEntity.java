@@ -32,9 +32,12 @@ import org.apache.commons.codec.binary.Base64;
  * Basic entity based on a UUID and {@link Config#getId()} value.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public interface UUIDEntity {
+
+	/** The maximum allowed source ID length. */
+	int SOURCE_ID_MAX_LENGTH = 32;
 
 	/**
 	 * The primary key for the entity.

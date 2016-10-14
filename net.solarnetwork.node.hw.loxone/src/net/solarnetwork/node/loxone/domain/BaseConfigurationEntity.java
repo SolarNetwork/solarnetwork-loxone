@@ -26,7 +26,7 @@ package net.solarnetwork.node.loxone.domain;
  * A base entity object for Loxone configuration.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public abstract class BaseConfigurationEntity extends BasicUUIDEntity implements ConfigurationEntity {
 
@@ -49,6 +49,21 @@ public abstract class BaseConfigurationEntity extends BasicUUIDEntity implements
 
 	public void setDefaultRating(Integer defaultRating) {
 		this.defaultRating = defaultRating;
+	}
+
+	/**
+	 * Get a source ID value from a source ID.
+	 * 
+	 * This method will use the provided {@code sourceId} if it is not
+	 * {@code null}. Otherwise it will use the configured {@code name} with all
+	 * whitespace removed.
+	 */
+	@Override
+	protected String sourceIdValue(String sourceId) {
+		if ( sourceId == null && this.name != null ) {
+			sourceId = SOURCE_ID_REMOVE_PAT.matcher(this.name).replaceAll("");
+		}
+		return super.sourceIdValue(sourceId);
 	}
 
 }
