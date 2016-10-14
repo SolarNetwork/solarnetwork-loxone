@@ -22,6 +22,7 @@
 
 package net.solarnetwork.node.loxone.domain;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 /**
@@ -122,6 +123,35 @@ public class Config {
 		if ( id == null ) {
 			return null;
 		}
+		long l = id.longValue();
+		boolean friendly = true;
+		byte[] bytes = new byte[8];
+		int nonZeroIndex = -1;
+		for ( int i = 0; i < 8; i++ ) {
+			byte b = (byte) ((l >> ((7 - i) * 8)) & 0xFF);
+			if ( nonZeroIndex < 0 && b != 0 ) {
+				nonZeroIndex = i;
+			}
+			// allow 0-9,A-Z,_,a-z
+			if ( friendly && nonZeroIndex >= 0
+					&& !((b >= 0x30 && b <= 0x39) // 0-9
+							|| (b >= 0x2D && b <= 0x2E) // .-
+							|| (b >= 0x41 && b <= 0x5A) // A-Z
+							|| b == 0x5F // _
+							|| (b >= 0x61 && b <= 0x7A) // a-z
+					) ) {
+				friendly = false;
+			}
+			bytes[i] = b;
+		}
+		if ( friendly ) {
+			try {
+				return new String(bytes, (nonZeroIndex < 0 ? 0 : nonZeroIndex),
+						(nonZeroIndex < 0 ? 8 : 8 - nonZeroIndex), "US-ASCII");
+			} catch ( UnsupportedEncodingException e ) {
+				// shouldn't get here
+			}
+		}
 		return Long.toUnsignedString(id.longValue(), 16);
 	}
 
@@ -136,9 +166,23 @@ public class Config {
 	 *         parsed.
 	 */
 	public static final Long idFromExternalForm(String s) {
+		if ( s == null || s.length() < 1 ) {
+			return null;
+		}
 		try {
 			return Long.parseUnsignedLong(s, 16);
 		} catch ( NumberFormatException e ) {
+			try {
+				byte[] bytes = s.getBytes("US-ASCII");
+				long result = 0;
+				for ( int i = 0; i < bytes.length; i++ ) {
+					result <<= 8;
+					result |= (bytes[i] & 0xFF);
+				}
+				return result;
+			} catch ( UnsupportedEncodingException e1 ) {
+				// ignore
+			}
 			return null;
 		}
 	}

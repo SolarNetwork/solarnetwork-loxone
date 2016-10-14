@@ -30,7 +30,7 @@ package net.solarnetwork.node.loxone.impl;
  * only interface methods are available afterwards.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public interface WebsocketLoxoneServiceSettings {
 
@@ -39,6 +39,8 @@ public interface WebsocketLoxoneServiceSettings {
 	void setUsername(String username);
 
 	void setPassword(String password);
+
+	void setConfigKey(String configKey);
 
 	ControlDatumDataSource getDatumDataSource();
 

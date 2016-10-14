@@ -50,7 +50,7 @@ import net.solarnetwork.node.support.KeyValuePair;
  * A {@link DatumDataSource} to upload Loxone values on a fixed schedule.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class ControlDatumDataSource
 		implements MultiDatumDataSource<GeneralNodeDatum>, DatumDataSource<GeneralNodeDatum> {
@@ -134,7 +134,7 @@ public class ControlDatumDataSource
 
 		for ( UUIDEntityParametersPair<Control, ControlDatumParameters> pair : datumParameters ) {
 			final Control valueEvent = pair.getEntity();
-			final String sourceId = valueEvent.getSourceId();
+			final String sourceId = valueEvent.getSourceIdValue();
 			final ControlDatumParameters params = pair.getParameters();
 			final DatumUUIDEntityParameters datumParams = (params != null ? params.getDatumParameters()
 					: null);

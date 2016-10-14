@@ -81,7 +81,7 @@ import net.solarnetwork.util.OptionalService;
  * Websocket based implementation of {@link LoxoneService}.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class WebsocketLoxoneService extends LoxoneEndpoint
 		implements LoxoneService, SettingSpecifierProvider, WebsocketLoxoneServiceSettings {
@@ -103,9 +103,6 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	 * from Loxone value event data, in seconds.
 	 */
 	public static final int DATUM_LOGGER_JOB_INTERVAL = 60;
-
-	/** The maximum length allowed for parsed source ID values. */
-	public static final int MAX_SOURCE_ID_LENGTH = (32 - 12); // 12 for "/XXXXXXXXXX/" config ID prefix
 
 	private static final String DEFAULT_UID = "Loxone";
 
@@ -239,6 +236,8 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		if ( configId == null ) {
 			return;
 		}
+		final String configKey = Config.idToExternalForm(configId);
+		final int sourceIdMaxLength = ConfigurationEntity.SOURCE_ID_MAX_LENGTH - configKey.length() - 2;
 
 		parser.parseInputStream(in, new LoxoneSourceMappingParser.SourceMappingCallback() {
 
@@ -256,8 +255,8 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 				sourceId = ConfigurationEntity.SOURCE_ID_REMOVE_PAT.matcher(sourceId).replaceAll("");
 
 				// verify length
-				if ( sourceId.length() > MAX_SOURCE_ID_LENGTH ) {
-					sourceId = sourceId.substring(0, MAX_SOURCE_ID_LENGTH);
+				if ( sourceId.length() > sourceIdMaxLength ) {
+					sourceId = sourceId.substring(0, sourceIdMaxLength);
 				}
 
 				// save back onto mapping
@@ -358,6 +357,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		List<SettingSpecifier> results = new ArrayList<SettingSpecifier>(4);
 		results.add(new BasicTextFieldSettingSpecifier("uid", DEFAULT_UID));
 		results.add(new BasicTextFieldSettingSpecifier("groupUID", null));
+		results.add(new BasicTextFieldSettingSpecifier("configKey", defaults.getConfigKey()));
 		results.add(new BasicTextFieldSettingSpecifier("host", defaults.getHost()));
 		results.add(new BasicTextFieldSettingSpecifier("username", defaults.getUsername()));
 		results.add(new BasicTextFieldSettingSpecifier("password", defaults.getPassword(), true));

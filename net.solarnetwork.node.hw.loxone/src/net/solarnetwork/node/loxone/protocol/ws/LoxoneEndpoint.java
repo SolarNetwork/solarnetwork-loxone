@@ -87,7 +87,7 @@ import net.solarnetwork.util.OptionalService;
  * date changes will request the structure file again from the Loxone server.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<ByteBuffer>, EventHandler {
 
@@ -102,6 +102,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	private String host = "10.0.0.1:3000";
 	private String username = null;
 	private String password = null;
+	private String configKey = null;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 	private CommandHandler[] commandHandlers = null;
@@ -324,12 +325,34 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		logConciseException("Unknown websocket error", throwable);
 	}
 
+	private Long configIdFromBytes(byte[] bytes) {
+		if ( bytes == null || bytes.length < 1 ) {
+			return null;
+		}
+		if ( bytes.length > 8 ) {
+			byte[] truncated = new byte[8];
+			System.arraycopy(bytes, 0, truncated, 0, 8);
+			bytes = truncated;
+		}
+		return Long.parseUnsignedLong(Hex.encodeHexString(bytes), 16);
+	}
+
 	@Override
 	public void onOpen(Session session, EndpointConfig config) {
 		this.session = session;
 
 		// setup our Config based on an ID derived from the host value
-		Long configId = ByteBuffer.wrap(DigestUtils.sha1(host)).getLong();
+		Long configId = null;
+		if ( configKey != null && configKey.length() > 0 ) {
+			try {
+				configId = configIdFromBytes(configKey.getBytes("UTF-8"));
+			} catch ( UnsupportedEncodingException e ) {
+				log.warn("Error getting ASCII string from configKey [{}]", configKey);
+			}
+		}
+		if ( configId == null ) {
+			configId = configIdFromBytes(DigestUtils.sha1(host));
+		}
 		session.getUserProperties().put(CONFIG_ID_USER_PROPERTY, configId);
 
 		setConfiguration(configDao.getConfig(configId));
@@ -496,7 +519,8 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 			log.warn("Loxone {} disconnected ({}), will attempt to reconnect...", configuration,
 					closeReason);
 			counter++;
-			return true;
+			connectionDetailsChanged();
+			return false;
 		}
 
 		@Override
@@ -504,7 +528,8 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 			counter++;
 			log.warn("Loxone {} connect failure {} ({}), will try reconnecting in {}s",
 					getConfiguration(), counter, exception.getMessage(), getDelay());
-			return true;
+			connectionDetailsChanged();
+			return false;
 		}
 
 		@Override
@@ -711,6 +736,33 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	public void setPassword(String password) {
 		if ( this.password == null || !this.password.equals(password) ) {
 			this.password = password;
+			connectionDetailsChanged();
+		}
+	}
+
+	/**
+	 * Get the config key.
+	 * 
+	 * @return The config key, or {@code null}.
+	 * @since 1.1
+	 */
+	public String getConfigKey() {
+		return configKey;
+	}
+
+	/**
+	 * Set an explicit config ID value to use, as a string.
+	 * 
+	 * At most 8 characters will be used from this value, which will be turned
+	 * into a {@code Long} {@code configId} value.
+	 * 
+	 * @param configKey
+	 *        The config ID to use, in string form.
+	 * @since 1.1
+	 */
+	public void setConfigKey(String configKey) {
+		if ( this.configKey == null || !this.configKey.equals(configKey) ) {
+			this.configKey = configKey;
 			connectionDetailsChanged();
 		}
 	}
