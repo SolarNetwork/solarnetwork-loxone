@@ -13,7 +13,6 @@
 	<form id="loxone-file-upload-form" action="${uploadSourcesUrl}"  method="post" onchange="" enctype="multipart/form-data" hidden>
 		<input id="loxone-file-input" type="file" name="file" onchange="Loxone.controlView.submitFile()">
 		<sec:csrfInput/>
-		<%-- <input id="loxone-file-input-csrf" type="text" name="_csrf"> --%>
 	</form>
 
   <input id="filter-input" type="text" placeholder="filter" onkeyup="Loxone.controlView.draw()">

@@ -277,36 +277,7 @@ Loxone.controlView = (function() {
   }
 
   this.submitFile = function() {
-    var files = document.getElementById('loxone-file-input').files;
-    if(files.length > 0) {
-
-      var formData = new FormData(document.getElementById('loxone-file-upload-form'));
-      // formData.append("CustomField", "This is some extra data");
-      $.ajax({
-        url: this.url + 'sources',
-        type: "POST",
-        data: formData,
-        contentType: null,
-        processData: false
-      });
-
-      // var ext = '.xml';
-      // // Make sure the file extension is .xml
-      // if(files[0].name.indexOf(ext, files[0].name.length - ext.length) == -1) {
-      //   SolarNode.error('Config uploads require the extension ".xml", please rename your file before uploading');
-      // } else {
-      //   document.getElementById('loxone-file-upload-form').submit();
-      // }
-
-      // $('#loxone-file-upload-form').ajaxSubmit({
-      //   beforeSubmit: function(arr, $form, options) {
-      //     console.log($form[0])
-      //     // $form[0].files[0].name += '.xml',
-      //     // console.log($form[0].files);
-      //     // return false;
-      //   }
-      // })
-    }
+    document.getElementById('loxone-file-upload-form').submit();
   }
 
   this.openFileInput = function() {
