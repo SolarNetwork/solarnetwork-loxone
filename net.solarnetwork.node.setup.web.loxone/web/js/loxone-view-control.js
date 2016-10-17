@@ -280,7 +280,7 @@ Loxone.controlView = (function() {
     var files = document.getElementById('loxone-file-input').files;
     if(files.length > 0) {
 
-      var formData = new FormData(document.getElementById('loxone-file-input'));
+      var formData = new FormData(document.getElementById('loxone-file-upload-form'));
       // formData.append("CustomField", "This is some extra data");
       $.ajax({
         url: this.url + 'sources',
