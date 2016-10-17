@@ -130,13 +130,7 @@ public class LoxoneConfigurationController extends BaseLoxoneWebServiceControlle
 		if ( service == null ) {
 			return new Response<Object>(Boolean.FALSE, "404", "Service not available", null);
 		}
-		String contentType = file.getContentType();
-		LoxoneSourceMappingParser parser;
-		if ( contentType != null && contentType.endsWith("/xml") ) {
-			parser = new LoxoneXMLSourceMappingParser();
-		} else {
-			return new Response<Object>(Boolean.FALSE, "422", "Unsupported content type", contentType);
-		}
+		LoxoneSourceMappingParser parser = new LoxoneXMLSourceMappingParser();
 		try {
 			service.importSourceMappings(file.getInputStream(), parser);
 			return Response.response(null);
