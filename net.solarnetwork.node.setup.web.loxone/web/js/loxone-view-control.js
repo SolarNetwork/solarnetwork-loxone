@@ -36,6 +36,7 @@ Loxone.controlView = (function() {
     row.dropdown = this.controlView.appendDropdown(control);
 
     this.element({ parent: row, className: 'loxone-name-column', html: control.name });
+    this.element({ parent: row, className: 'loxone-source-column', html: control.source });
     this.element({ parent: row, className: 'loxone-type-column', html: control.type });
     this.element({ parent: row, className: 'loxone-category-column', html: control.cat });
     this.element({ parent: row, className: 'loxone-room-column', html: control.room });
@@ -128,37 +129,46 @@ Loxone.controlView = (function() {
           if(err) return console.log(err);
           this.api.getResourceList('uuidsets/props', function(err, props) {
             if(err) return console.log(err);
-
-            this.datums = datums;
-            this.props = props;
-
-            console.log(datums);
-            console.log(props);
-
-            this.api.getResourceList('controls', function(err, controls) {
+            this.api.getResourceList('sources', function(err, sources) {
               if(err) return console.log(err);
 
-              for (var c = 0; c < controls.length; c++) {
-                for (var i = 0; i < categories.length; i++) {
-                  if(controls[c].cat == categories[i].uuid){ controls[c].cat = categories[i].name; break; }
-                }
-                for (var i = 0; i < rooms.length; i++) {
-                  if(controls[c].room == rooms[i].uuid){ controls[c].room = rooms[i].name; break; }
-                }
-              }
+              this.datums = datums;
+              this.props = props;
 
-              var filter = document.getElementById('filter-input').value.toLowerCase();
+              this.sources = {};
 
-              controls = this.filterTable(controls, filter, [ 'name', 'type', 'cat', 'room' ]);
-              controls = this.sortTable(controls, this.controlView.sorting.column, this.controlView.sorting.ascending);
+              sources.forEach(function(source) {
+                this.sources[source.uuid] = source.sourceId;
+              });
 
-              for (var c = 0; c < controls.length; c++) {
-                var enabled = controls[c].uuid in datums;
-                var enableFilter = this.controlView.sorting.enable;
-                if(enableFilter == 'All' || (enableFilter == 'Enabled' && enabled) || (enableFilter == 'Disabled' && !enabled)) {
-                  append(controls[c]);
+              this.api.getResourceList('controls', function(err, controls) {
+                if(err) return console.log(err);
+
+                for (var c = 0; c < controls.length; c++) {
+                  for (var i = 0; i < categories.length; i++) {
+                    if(controls[c].cat == categories[i].uuid){ controls[c].cat = categories[i].name; break; }
+                  }
+                  for (var i = 0; i < rooms.length; i++) {
+                    if(controls[c].room == rooms[i].uuid){ controls[c].room = rooms[i].name; break; }
+                  }
+                  for(var i = 0; i < sources.length; i++) {
+                    if(controls[c].uuid == sources[i].uuid) { controls[c].source = sources[i].name; }
+                  }
                 }
-              }
+
+                var filter = document.getElementById('filter-input').value.toLowerCase();
+
+                controls = this.filterTable(controls, filter, [ 'name', 'source', 'type', 'cat', 'room' ]);
+                controls = this.sortTable(controls, this.controlView.sorting.column, this.controlView.sorting.ascending);
+
+                for (var c = 0; c < controls.length; c++) {
+                  var enabled = controls[c].uuid in datums;
+                  var enableFilter = this.controlView.sorting.enable;
+                  if(enableFilter == 'All' || (enableFilter == 'Enabled' && enabled) || (enableFilter == 'Disabled' && !enabled)) {
+                    append(controls[c]);
+                  }
+                }
+              });
             });
           });
         });
@@ -191,6 +201,7 @@ Loxone.controlView = (function() {
     }
     this.controlView.draw();
     document.getElementById('sort-icon-name').className = 'sort-icon';
+    document.getElementById('sort-icon-source').className = 'sort-icon';
     document.getElementById('sort-icon-type').className = 'sort-icon';
     document.getElementById('sort-icon-cat').className = 'sort-icon';
     document.getElementById('sort-icon-room').className = 'sort-icon';
@@ -263,6 +274,44 @@ Loxone.controlView = (function() {
     this.controlView.closeEnableFilter();
     this.controlView.draw();
     Loxone.controlView.viewModel.enableFilter(filter);
+  }
+
+  this.submitFile = function() {
+    var files = document.getElementById('loxone-file-input').files;
+    if(files.length > 0) {
+
+      var formData = new FormData(document.getElementById('loxone-file-input'));
+      // formData.append("CustomField", "This is some extra data");
+      $.ajax({
+        url: this.url + 'sources',
+        type: "POST",
+        data: formData,
+        contentType: null,
+        processData: false
+      });
+
+      // var ext = '.xml';
+      // // Make sure the file extension is .xml
+      // if(files[0].name.indexOf(ext, files[0].name.length - ext.length) == -1) {
+      //   SolarNode.error('Config uploads require the extension ".xml", please rename your file before uploading');
+      // } else {
+      //   document.getElementById('loxone-file-upload-form').submit();
+      // }
+
+      // $('#loxone-file-upload-form').ajaxSubmit({
+      //   beforeSubmit: function(arr, $form, options) {
+      //     console.log($form[0])
+      //     // $form[0].files[0].name += '.xml',
+      //     // console.log($form[0].files);
+      //     // return false;
+      //   }
+      // })
+    }
+  }
+
+  this.openFileInput = function() {
+    var input = document.getElementById('loxone-file-input');
+    input.click();
   }
 
   return this;

@@ -109,6 +109,15 @@ Loxone.api = (function() {
     });
   }
 
+  this.getSources = function(next) {
+    this.getResourceList('sources', next);
+  }
+
+  this.setSource = function(uuid, sourceID, next) {
+    var body = { store: [{ uuid: uuid, sourceId: sourceID }] };
+    this.api.request({ method: 'PATCH', path: 'sources', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body, true, 2), csrf: true }, next);
+  }
+
   return this;
 
 })();

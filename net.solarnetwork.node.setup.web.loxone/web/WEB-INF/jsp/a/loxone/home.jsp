@@ -1,7 +1,21 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <div class="loxone-heading">
+	<div class="loxone-upload-file" onclick="Loxone.controlView.openFileInput()">Upload</div>
+
 	<div class="title">Device configuration</div>
+
+	<spring:url value="/a/loxone/{configId}/sources" var="uploadSourcesUrl">
+		<spring:param name="configId" value="${configId}" />
+	</spring:url>
+
+	<form id="loxone-file-upload-form" action="${uploadSourcesUrl}"  method="post" onchange="" enctype="multipart/form-data" hidden>
+		<input id="loxone-file-input" type="file" name="file" onchange="Loxone.controlView.submitFile()">
+		<sec:csrfInput/>
+		<%-- <input id="loxone-file-input-csrf" type="text" name="_csrf"> --%>
+	</form>
+
   <input id="filter-input" type="text" placeholder="filter" onkeyup="Loxone.controlView.draw()">
   <div class="table-heading">
     <div class="loxone-name-column heading-column" onclick="Loxone.controlView.sortColumn('name')">

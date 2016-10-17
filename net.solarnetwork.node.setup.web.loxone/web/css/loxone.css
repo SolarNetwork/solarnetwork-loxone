@@ -13,6 +13,18 @@ body {
   margin-bottom: 20px;
 }
 
+.loxone-heading .loxone-upload-file {
+  padding: 10px 20px;
+  color: #fff;
+  float: right;
+  background-color: #367dd0;
+}
+
+.loxone-heading .loxone-upload-file:hover {
+  cursor: pointer;
+  background-color: #5795dd;
+}
+
 .loxone-list {
   width: 100%;
   margin-top: 20px;
