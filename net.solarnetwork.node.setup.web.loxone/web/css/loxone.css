@@ -83,7 +83,16 @@ body {
 }
 
 .loxone-name-column {
-  width: 30%;
+  width: 20%;
+  float: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.loxone-source-column {
+  width: 20%;
+  min-height: 1px;
   float: left;
   overflow: hidden;
   white-space: nowrap;
@@ -91,7 +100,7 @@ body {
 }
 
 .loxone-category-column {
-  width: 15%;
+  width: 10%;
   float: left;
   overflow: hidden;
   white-space: nowrap;
@@ -107,7 +116,7 @@ body {
 }
 
 .loxone-room-column {
-  width: 15%;
+  width: 10%;
   float: left;
   overflow: hidden;
   white-space: nowrap;
@@ -128,6 +137,10 @@ body {
 .loxone-enable-column .name {
   width: 100%;
   height: 100%;
+}
+
+.heading-column {
+  font-size: 16px;
 }
 
 .frequency-display {

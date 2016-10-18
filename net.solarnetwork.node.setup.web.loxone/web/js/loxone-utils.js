@@ -5,6 +5,7 @@ Loxone.element = function(options) {
   if(!!options.id) element.id = options.id;
   if(!!options.className) element.className = options.className;
   if(!!options.html) element.innerHTML = options.html;
+  if(!!options.title) element.title = options.title;
   if(!!options.value) element.setAttribute('value', options.value);
   if(!!options.parent) options.parent.appendChild(element);
 

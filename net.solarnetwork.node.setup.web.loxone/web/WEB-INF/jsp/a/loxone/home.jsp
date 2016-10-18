@@ -21,6 +21,10 @@
       <span class="name">Name</span>
       <div id="sort-icon-name" class="sort-icon ascending"></div>
     </div>
+    <div class="loxone-source-column heading-column" onclick="Loxone.controlView.sortColumn('source')">
+      <span class="name">Source ID</span>
+      <div id="sort-icon-source" class="sort-icon ascending"></div>
+    </div>
     <div class="loxone-type-column heading-column" onclick="Loxone.controlView.sortColumn('type')">
       <span class="name">Type</span>
       <div id="sort-icon-type" class="sort-icon"></div>

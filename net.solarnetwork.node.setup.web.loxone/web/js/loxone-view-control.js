@@ -35,11 +35,11 @@ Loxone.controlView = (function() {
 
     row.dropdown = this.controlView.appendDropdown(control);
 
-    this.element({ parent: row, className: 'loxone-name-column', html: control.name });
-    this.element({ parent: row, className: 'loxone-source-column', html: control.source });
-    this.element({ parent: row, className: 'loxone-type-column', html: control.type });
-    this.element({ parent: row, className: 'loxone-category-column', html: control.cat });
-    this.element({ parent: row, className: 'loxone-room-column', html: control.room });
+    this.element({ parent: row, className: 'loxone-name-column', html: control.name, title: control.name });
+    this.element({ parent: row, className: 'loxone-source-column', html: control.source, title: control.source });
+    this.element({ parent: row, className: 'loxone-type-column', html: control.type, title: control.type });
+    this.element({ parent: row, className: 'loxone-category-column', html: control.cat, title: control.cat });
+    this.element({ parent: row, className: 'loxone-room-column', html: control.room, title: control.room });
 
     // Frequency
     var frequency = this.element({ parent: row, className: 'loxone-frequency-column' });
@@ -152,7 +152,7 @@ Loxone.controlView = (function() {
                     if(controls[c].room == rooms[i].uuid){ controls[c].room = rooms[i].name; break; }
                   }
                   for(var i = 0; i < sources.length; i++) {
-                    if(controls[c].uuid == sources[i].uuid) { controls[c].source = sources[i].name; }
+                    if(controls[c].uuid == sources[i].uuid) { controls[c].source = sources[i].sourceId; }
                   }
                 }
 
