@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Loxone Miniserver
 Bundle-SymbolicName: net.solarnetwork.node.hw.loxone
-Bundle-Version: 0.2.0
+Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Evident
 Export-Package: 
- net.solarnetwork.node.loxone;version="0.2.0",
- net.solarnetwork.node.loxone.dao;version="0.2.0",
- net.solarnetwork.node.loxone.domain;version="0.2.0"
+ net.solarnetwork.node.loxone;version="1.0.0",
+ net.solarnetwork.node.loxone.dao;version="1.0.0",
+ net.solarnetwork.node.loxone.domain;version="1.0.0"
 Import-Package: 
  com.fasterxml.jackson.annotation;version="[2.4,3.0)",
  com.fasterxml.jackson.core;version="[2.4,3.0)",
