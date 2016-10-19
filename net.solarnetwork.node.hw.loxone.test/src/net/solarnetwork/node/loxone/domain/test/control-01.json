@@ -1,0 +1,13 @@
+{
+      "cat": "0c89ebac-0031-030a-ffffa1b98ee6c71d",
+      "defaultRating": 0,
+      "isFavorite": false,
+      "isSecured": false,
+      "name": "Generator status",
+      "room": "0c89ebac-0041-0390-ffffa1b98ee6c71d",
+      "states": {
+        "active": "0c89ebff-037f-15d6-ffffa1b98ee6c71d"
+      },
+      "type": "Switch",
+      "uuidAction": "0c89ebff-037f-15d6-ffffa1b98ee6c71d"
+}

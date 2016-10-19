@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ctx="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/jee
+		http://www.springframework.org/schema/jee/spring-jee-4.2.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+		http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util/spring-util-4.2.xsd">
+
+	<bean id="loxoneMessageSource" 
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
+		p:cacheSeconds="-1" p:basename="WEB-INF/loxone-messages"/>
+
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/a/loxone/**"/>
+			<bean class="org.springframework.web.servlet.mvc.WebContentInterceptor" p:cacheSeconds="0" p:alwaysUseFullPath="true" >
+			    <property name="cacheMappings">
+			        <props>
+			            <prop key="/a/loxone/*/categories">600</prop><!-- 10 minutes -->
+			            <prop key="/a/loxone/*/controls">600</prop>
+			            <prop key="/a/loxone/*/image/**">2592000</prop><!-- 30 days -->
+			            <prop key="/a/loxone/*/rooms">600</prop>
+			        </props>
+			    </property>
+			</bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+</beans>

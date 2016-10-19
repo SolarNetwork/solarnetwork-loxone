@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:osgix="http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.osgi.org/xmlns/blueprint/v1.0.0
+		http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+		http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium
+		http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium/gemini-blueprint-compendium.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+		http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util/spring-util-4.2.xsd">
+	
+	<!-- Use Java @Transactional annotations to declare transactions. -->
+	<tx:annotation-driven transaction-manager="txManager"/>
+
+	<reference id="scheduler" interface="org.quartz.Scheduler" filter="(function=node)"/>
+
+	<reference id="objectMapperService" 
+		interface="net.solarnetwork.util.ObjectMapperService"
+		filter="(function=node)"/>
+	
+	<reference id="txManager" interface="org.springframework.transaction.PlatformTransactionManager"
+		filter="(db=node)"/>
+	
+	<reference id="settingDao" interface="net.solarnetwork.node.dao.SettingDao"/>
+	
+	<reference id="taskScheduler" interface="org.springframework.scheduling.TaskScheduler"
+		filter="(function=node)"/>
+
+	<reference id="taskExecutor" interface="org.springframework.core.task.TaskExecutor"
+		filter="(function=node)"/>
+
+	<bean id="generalNodeDatumDao" class="net.solarnetwork.util.DynamicServiceTracker">
+		<property name="bundleContext" ref="bundleContext"/>
+		<property name="serviceClassName" value="net.solarnetwork.node.dao.DatumDao"/>
+		<property name="serviceFilter" value="(datumClassName=net.solarnetwork.node.domain.GeneralNodeDatum)"/>
+	</bean>
+	
+	<bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" 
+		factory-ref="objectMapperService" factory-method="getObjectMapper"/>
+	
+	<bean id="eventAdmin" class="net.solarnetwork.util.DynamicServiceTracker">
+		<property name="bundleContext" ref="bundleContext"/>
+		<property name="serviceClassName" value="org.osgi.service.event.EventAdmin"/>
+	</bean>
+	
+	<bean id="messageSendingOperations" class="net.solarnetwork.util.DynamicServiceTracker">
+		<property name="bundleContext" ref="bundleContext"/>
+		<property name="serviceClassName" value="org.springframework.messaging.simp.SimpMessageSendingOperations"/>
+		<property name="serviceFilter" value="(channel=broker)"/>
+	</bean>
+
+	<reference id="dataSource" interface="javax.sql.DataSource" filter="(db=node)"/>
+	
+	<!-- Add Loxone UUID support to the platform ObjectMapper -->
+	<bean class="net.solarnetwork.util.ObjectMapperModuleContributor" init-method="setupModule">
+		<property name="moduleName" value="Loxone"/>
+		<property name="objectMapperService" ref="objectMapperService"/>
+		<property name="serializers">
+			<list>
+				<bean class="net.solarnetwork.node.loxone.domain.UUIDSerializer"/>
+			</list>
+		</property>
+		<property name="deserializers">
+			<list>
+				<bean class="net.solarnetwork.node.loxone.domain.UUIDDeserializer"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="categoryDao" class="net.solarnetwork.node.loxone.dao.jdbc.JdbcCategoryDao" init-method="init">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+
+	<bean id="configDao" class="net.solarnetwork.node.loxone.dao.jdbc.SettingsConfigDao">
+		<property name="settingDao" ref="settingDao"/>
+	</bean>
+
+	<bean id="controlDao" class="net.solarnetwork.node.loxone.dao.jdbc.JdbcControlDao" init-method="init">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+
+	<bean id="roomDao" class="net.solarnetwork.node.loxone.dao.jdbc.JdbcRoomDao" init-method="init">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+
+	<bean id="sourceMappingDao" class="net.solarnetwork.node.loxone.dao.jdbc.JdbcSourceMappingDao" init-method="init">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+
+	<bean id="valueEventDao" class="net.solarnetwork.node.loxone.dao.jdbc.JdbcValueEventDao" init-method="init">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<bean id="datumUuidSetDao" class="net.solarnetwork.node.loxone.dao.jdbc.JdbcDatumUUIDSetDao" init-method="init">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<bean id="propUuidSetDao" class="net.solarnetwork.node.loxone.dao.jdbc.JdbcDatumPropertyUUIDSetDao" init-method="init">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<util:list id="configuration-daos">
+		<beans:ref bean="categoryDao"/>
+		<beans:ref bean="controlDao"/>
+		<beans:ref bean="roomDao"/>
+		<beans:ref bean="sourceMappingDao"/>
+	</util:list>
+
+	<util:list id="event-daos">
+		<beans:ref bean="valueEventDao"/>
+	</util:list>
+
+	<util:list id="uuid-set-daos">
+		<beans:ref bean="datumUuidSetDao"/>
+		<beans:ref bean="propUuidSetDao"/>
+	</util:list>
+
+	<bean id="get-structure-cmd-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.GetStructureFileCommandHandler">
+		<property name="categoryDao" ref="categoryDao"/>
+		<property name="configDao" ref="configDao"/>
+		<property name="controlDao" ref="controlDao"/>
+		<property name="roomDao" ref="roomDao"/>
+		<property name="eventAdmin" ref="eventAdmin"/>
+		<property name="objectMapper" ref="objectMapper"/>
+	</bean>
+
+	<bean id="structure-file-last-mod-cmd-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.StructureFileLastModifiedDateCommandHandler">
+		<property name="eventAdmin" ref="eventAdmin"/>
+	</bean>
+
+	<bean id="value-event-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.ValueEventBinaryFileHandler">
+		<property name="eventAdmin" ref="eventAdmin"/>
+		<property name="genericEventDao" ref="valueEventDao"/>
+		<property name="messageSendingOps" ref="messageSendingOperations"/>
+	</bean>
+	
+	<bean id="text-event-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.TextEventBinaryFileHandler">
+		<property name="eventAdmin" ref="eventAdmin"/>
+		<property name="messageSendingOps" ref="messageSendingOperations"/>
+	</bean>
+	
+	<bean id="daytimer-event-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.DaytimerEventBinaryFileHandler">
+		<property name="eventAdmin" ref="eventAdmin"/>
+	</bean>
+	
+	<bean id="get-image-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.GetIconBinaryFileHandler">
+		<property name="eventAdmin" ref="eventAdmin"/>
+	</bean>
+	
+	<util:list id="binary-file-handlers">
+		<beans:ref bean="value-event-handler"/>
+		<beans:ref bean="text-event-handler"/>
+		<beans:ref bean="daytimer-event-handler"/>
+		<beans:ref bean="get-image-handler"/>
+		<beans:ref bean="get-structure-cmd-handler"/>
+	</util:list>
+
+	<util:list id="command-handlers">
+		<beans:ref bean="get-image-handler"/>
+		<beans:ref bean="get-structure-cmd-handler"/>
+		<beans:ref bean="structure-file-last-mod-cmd-handler"/>
+	</util:list>
+
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint</value>
+				<value>net.solarnetwork.node.loxone.impl.WebsocketLoxoneService</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="settingResourceProvider" class="net.solarnetwork.node.setup.PatternMatchingSetupResourceProvider">
+		<property name="basenames">
+			<list>
+				<value>META-INF/settings/loxone-setting-console</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- Published Services -->
+	
+	<service interface="net.solarnetwork.node.backup.BackupResourceProvider">
+		<bean class="net.solarnetwork.node.dao.jdbc.JdbcTableBackupResourceProvider">
+			<argument>
+				<bean class="org.springframework.jdbc.core.JdbcTemplate">
+					<property name="dataSource" ref="dataSource"/>
+				</bean>
+			</argument>
+			<argument>
+				<bean class="org.springframework.transaction.support.TransactionTemplate">
+					<argument ref="txManager"/>
+				</bean>
+			</argument>
+			<argument ref="taskExecutor"/>
+			<property name="tableNames">
+				<list>
+					<value>SOLARNODE.LOXONE_DATUMSET</value>
+					<value>SOLARNODE.LOXONE_PROPSET</value>
+				</list>
+			</property>
+		</bean>
+	</service>
+	
+	<service interface="net.solarnetwork.node.settings.SettingSpecifierProviderFactory">
+		<bean class="net.solarnetwork.node.settings.support.BasicSettingSpecifierProviderFactory">
+			<property name="displayName" value="Loxone Client"/>
+			<property name="factoryUID" value="net.solarnetwork.node.loxone.ws"/>
+			<property name="messageSource" ref="messageSource"/>
+		</bean>
+	</service>
+	
+	<osgix:managed-service-factory factory-pid="net.solarnetwork.node.loxone.ws" autowire-on-update="true">
+		<osgix:interfaces>
+			<beans:value>net.solarnetwork.node.loxone.LoxoneService</beans:value>
+			<beans:value>net.solarnetwork.node.settings.SettingSpecifierProvider</beans:value>
+			<beans:value>org.osgi.service.event.EventHandler</beans:value>
+		</osgix:interfaces>
+		<osgix:service-properties>
+			<beans:entry key="settingPid" value="net.solarnetwork.node.loxone.ws"/>
+			<beans:entry key="#{T(org.osgi.service.event.EventConstants).EVENT_TOPIC}">
+				<beans:array value-type="java.lang.String">
+					<beans:value>#{T(net.solarnetwork.node.loxone.protocol.ws.LoxoneEvents).STRUCTURE_FILE_MODIFICATION_DATE_EVENT}</beans:value>
+					<beans:value>#{T(net.solarnetwork.node.loxone.protocol.ws.LoxoneEvents).STRUCTURE_FILE_SAVED_EVENT}</beans:value>
+				</beans:array>
+			</beans:entry>
+		</osgix:service-properties>
+		<bean class="net.solarnetwork.node.loxone.impl.WebsocketLoxoneService" init-method="init" destroy-method="disconnect">
+			<property name="taskScheduler" ref="taskScheduler"/>
+			<property name="configDao" ref="configDao"/>
+			<property name="eventAdmin" ref="eventAdmin"/>
+			<property name="messageSource" ref="messageSource"/>
+			<property name="objectMapper" ref="objectMapper"/>
+			<property name="binaryFileHandlers" ref="binary-file-handlers"/>
+			<property name="commandHandlers" ref="command-handlers"/>
+			<property name="configurationDaos" ref="configuration-daos"/>
+			<property name="eventDaos" ref="event-daos"/>
+			<property name="uuidSetDaos" ref="uuid-set-daos"/>
+			<property name="settingResourceProvider" ref="settingResourceProvider"/>
+			<property name="scheduler" ref="scheduler"/>
+			<property name="controlDao" ref="controlDao"/>
+			<property name="datumDao" ref="generalNodeDatumDao"/>
+			<property name="settingDao" ref="settingDao"/>
+			<property name="sourceMappingDao" ref="sourceMappingDao"/>
+		</bean>
+	</osgix:managed-service-factory>
+	
+</blueprint>
