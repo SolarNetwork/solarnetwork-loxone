@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ControlList Version="122" LxAV="2" NextObj="234" NextConst="1" NextNote="1" NextMem="10">
+	<C Type="Document" V="110" U="0c89ebac-0014-0290-ffffa1b98ee6c71d" Title="Gateway" ConfigVersion="8000719" SPSfreq="100" OpenIsHigh="false" Date="2016-10-12 15:29:48" CDate="2016-10-04 12:20:31" DateS="245518188" Town="123 Main Street, Anytown 1234" Ctry="NZ" Latitude="-36.86" Longitude="174.76" SL="78" Tel="+44 1111 111111" EMail="support@loxone.co.uk" Web="www.loxone.com" Logo="" uuidNotifications="0c89ebac-0013-028f-ffffa1b98ee6c71d" Currency="€" UpdTime="120" NumO="768">
+		<C Type="Program" V="110" U="0c89ebac-009d-0536-ffffa1b98ee6c71d" Title="Gateway" Ref="0c89ebac-0072-04cc-ffffa1b98ee6c71d" WF="16384">
+			<C Type="Page" V="110" U="0e2a1f46-0380-2778-ffffa1b98ee6c71d" Title="Test_1wire" WF="16384">
+				<IoData Cr="0c89ebac-0031-030a-ffffa1b98ee6c71d" Pr="0c89ebac-0041-0390-ffffa1b98ee6c71d" Ugr="0c89ebac-0072-04c6-ffffa1b98ee6c71d" Ugx="0c89ebac-0072-04c6-ffffa1b98ee6c71d"/>
+				<C Type="InputRef" V="110" U="0e2a1f4e-02e3-3d22-ffffa1b98ee6c71d" Title="Test_RH temp" Px="1728" Py="3744" Px2="3840" Py2="3936" Cl="238,238,238" Nio="4" Ref="0e2a1f38-02e7-1c9c-ffffa1b98ee6c71d" WF="16384" Analog="true" LinkRefType="103">
+				</C>
+			</C>
+		</C>
+	</C>
+</ControlList>
