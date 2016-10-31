@@ -50,7 +50,7 @@ import net.solarnetwork.node.support.KeyValuePair;
  * A {@link DatumDataSource} to upload Loxone values on a fixed schedule.
  * 
  * @author matt
- * @version 1.1
+ * @version 1.2
  */
 public class ControlDatumDataSource
 		implements MultiDatumDataSource<GeneralNodeDatum>, DatumDataSource<GeneralNodeDatum> {
@@ -146,8 +146,7 @@ public class ControlDatumDataSource
 							&& datumParams.getSaveFrequencySeconds().intValue() < 0) ) {
 				int offset = defaultFrequencySeconds;
 				if ( datumParams != null && datumParams.getSaveFrequencySeconds() != null ) {
-					// maximum frequency supported is 1 hour, so wrap for anything past that
-					offset = (datumParams.getSaveFrequencySeconds().intValue() % 3600);
+					offset = datumParams.getSaveFrequencySeconds().intValue();
 				}
 				final Long lastSaveTime = (createdSettings.containsKey(sourceId)
 						? Long.valueOf(createdSettings.get(sourceId), 16) : null);

@@ -93,6 +93,7 @@ public class LoxoneXMLSourceMappingParser implements LoxoneSourceMappingParser {
 							try {
 								UUID uuid = UUIDDeserializer.deserializeUUID(uuidVal);
 								log.trace("Parsed source mapping {} -> {}", uuidVal, title);
+								title = title.replace('_', '/');
 								callback.parsedSourceMapping(new SourceMapping(uuid, title));
 							} catch ( IOException e ) {
 								log.debug("Ignoring UUID parsing error {} at {}", e.getMessage(),

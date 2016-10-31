@@ -1,8 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Loxone
+Bundle-Name: Loxone Setup Web App
 Bundle-SymbolicName: net.solarnetwork.node.setup.web.loxone
-Bundle-Version: 1.0.0
+Bundle-Description: Loxone integration with the SolarNode Setup Web App that
+ allows configuring what data SolarNode captures from Loxone Miniservers.
+Bundle-Version: 1.0.1
 Fragment-Host: net.solarnetwork.node.setup.web;bundle-version="1.20.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Evident

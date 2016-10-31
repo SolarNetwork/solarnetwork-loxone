@@ -26,8 +26,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
-import net.solarnetwork.node.loxone.LoxoneXMLSourceMappingParser;
 import net.solarnetwork.node.loxone.LoxoneSourceMappingParser.SourceMappingCallback;
+import net.solarnetwork.node.loxone.LoxoneXMLSourceMappingParser;
 import net.solarnetwork.node.loxone.domain.SourceMapping;
 
 /**
@@ -62,6 +62,24 @@ public class LoxoneXMLSourceMappingParserTests {
 					}
 				});
 		assertEquals("Parsed source mapping count", 447, count);
+	}
+
+	@Test
+	public void parseWithUnderscoreReplace() throws Exception {
+		final String[] expectedTitles = new String[] { "Test/1wire", "Test/RH temp" };
+		parser.parseInputStream(getClass().getResourceAsStream("program-file-02.xml"),
+				new SourceMappingCallback() {
+
+					@Override
+					public void parsedSourceMapping(SourceMapping mapping) {
+						assertNotNull("SourceMapping object", mapping);
+						assertNotNull("UUID", mapping.getUuid());
+						assertNotNull("Source ID", mapping.getSourceId());
+						assertEquals("Title", expectedTitles[count], mapping.getSourceId());
+						count++;
+					}
+				});
+		assertEquals("Parsed source mapping count", 2, count);
 	}
 
 }
