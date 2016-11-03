@@ -207,6 +207,11 @@
 					<value>SOLARNODE.LOXONE_PROPSET</value>
 				</list>
 			</property>
+			<property name="messageSource">
+				<bean class="org.springframework.context.support.ResourceBundleMessageSource">
+					<property name="basename" value="net.solarnetwork.node.dao.jdbc.JdbcTableBackupResourceProvider"/>
+				</bean>
+			</property>
 		</bean>
 	</service>
 	
