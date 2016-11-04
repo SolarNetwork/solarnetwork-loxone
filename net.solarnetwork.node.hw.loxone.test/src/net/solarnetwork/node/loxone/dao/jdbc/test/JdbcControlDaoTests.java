@@ -306,6 +306,20 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 	}
 
 	@Test
+	public void countForConfigNoMatch() {
+		insert();
+		int result = dao.countForConfig(-1L);
+		Assert.assertEquals("No matches", 0, result);
+	}
+
+	@Test
+	public void countForConfigSingleMatch() {
+		insert();
+		int result = dao.countForConfig(TEST_CONFIG_ID);
+		Assert.assertEquals("Count", 1, result);
+	}
+
+	@Test
 	public void findForDatumsNoMatch() {
 		insert();
 		List<UUIDEntityParametersPair<Control, ControlDatumParameters>> results = dao

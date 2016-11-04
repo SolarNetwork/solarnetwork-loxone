@@ -32,7 +32,7 @@ import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
  * DAO API of {@link Control} entities.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public interface ControlDao extends ConfigurationEntityDao<Control> {
 
@@ -46,5 +46,15 @@ public interface ControlDao extends ConfigurationEntityDao<Control> {
 	 */
 	List<UUIDEntityParametersPair<Control, ControlDatumParameters>> findAllForDatumPropertyUUIDEntities(
 			Long configId);
+
+	/**
+	 * Get a count of persisted controls.
+	 * 
+	 * @param configId
+	 *        The config ID to get the count for.
+	 * @return count of available controls
+	 * @since 1.1
+	 */
+	int countForConfig(Long configId);
 
 }

@@ -77,6 +77,7 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 	public static final String SQL_CONTROL_STATES_DELETE_FOR_CONTROL = "delete-for-control";
 	public static final String SQL_CONTROL_STATES_INSERT = "insert";
 	public static final String SQL_CONTROL_STATES_FIND_FOR_CONTROL = "find-for-control";
+	public static final String SQL_COUNT_FOR_CONFIG = "count-for-config";
 
 	/**
 	 * Constructor.
@@ -178,6 +179,13 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 			}
 		}, new ControlDatumPropertyResultSetExtractor(getRowMapper(),
 				new DatumUUIDEntityParametersRowMapper(11)));
+	}
+
+	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Override
+	public int countForConfig(Long configId) {
+		return getJdbcTemplate().queryForObject(getSqlResource(SQL_COUNT_FOR_CONFIG), Integer.class,
+				configId);
 	}
 
 	@Override

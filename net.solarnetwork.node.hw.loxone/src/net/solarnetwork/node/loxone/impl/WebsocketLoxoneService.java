@@ -81,7 +81,7 @@ import net.solarnetwork.util.OptionalService;
  * Websocket based implementation of {@link LoxoneService}.
  * 
  * @author matt
- * @version 1.1
+ * @version 1.2
  */
 public class WebsocketLoxoneService extends LoxoneEndpoint
 		implements LoxoneService, SettingSpecifierProvider, WebsocketLoxoneServiceSettings {
@@ -380,15 +380,31 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	}
 
 	@Override
-	protected void configurationIdDidChange() {
+	protected Config configurationIdDidChange() {
 		super.configurationIdDidChange();
 		configureLoxoneDatumLoggerJob(0);
 		Config config = getConfiguration();
 		if ( config == null || config.getId() == null ) {
-			return;
+			return null;
 		}
+
+		Config result = null;
+
+		// if we have a last modified date, but no actual controls, assume we have restored
+		// from backup and need to refresh from the miniserver
+		if ( config.getLastModified() != null ) {
+			int controlCount = controlDao.countForConfig(config.getId());
+			if ( controlCount < 1 ) {
+				log.info("Loxone {} control information not available: forcing a refresh.",
+						config.idToExternalForm());
+				result = config.withLastModified(null);
+			}
+		}
+
 		datumDataSource.setConfigId(config.getId());
 		configureLoxoneDatumLoggerJob(datumLoggerFrequencySeconds * 1000L);
+
+		return result;
 	}
 
 	private boolean configureLoxoneDatumLoggerJob(final long interval) {
