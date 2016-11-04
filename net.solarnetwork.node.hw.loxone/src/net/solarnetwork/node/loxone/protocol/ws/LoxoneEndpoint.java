@@ -87,7 +87,7 @@ import net.solarnetwork.util.OptionalService;
  * date changes will request the structure file again from the Loxone server.
  * 
  * @author matt
- * @version 1.1
+ * @version 1.2
  */
 public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<ByteBuffer>, EventHandler {
 
@@ -218,16 +218,23 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		}
 		configuration = config;
 		if ( newId ) {
-			configurationIdDidChange();
+			Config changed = configurationIdDidChange();
+			if ( changed != null ) {
+				configuration = changed;
+			}
 		}
 	}
 
 	/**
 	 * Called when the configuration at {@link #getConfiguration()} ID has
 	 * changed.
+	 * 
+	 * @return a new {@link Config} if it should be changed in some way,
+	 *         {@code null} otherwise
 	 */
-	protected void configurationIdDidChange() {
+	protected Config configurationIdDidChange() {
 		// subclasses can do something interesting here
+		return null;
 	}
 
 	/**

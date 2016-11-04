@@ -67,7 +67,7 @@ public class ControlDatumDataSource
 	private int defaultFrequencySeconds = DEFAULT_FREQUENCY_SECONDS;
 
 	/**
-	 * A setting key tempalte, takes a single string parameter (the config ID).
+	 * A setting key template, takes a single string parameter (the config ID).
 	 */
 	public static final String SETTING_KEY_TEMPLATE = "loxone/%s/valueCaptured";
 
