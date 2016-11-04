@@ -15,7 +15,7 @@
 		<dependency org="commons-codec" name="commons-codec" rev="1.10"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="javax.websocket" rev="1.0.0.v201312030745"/>
     	<dependency org="org.glassfish.tyrus.bundles" name="tyrus-standalone-client-jdk" rev="1.13" />
-    	<dependency org="net.solarnetwork.node" name="net.solarnetwork.node" rev="[1.43,2.0)"/>
+    	<dependency org="net.solarnetwork.node" name="net.solarnetwork.node" rev="[1.46,2.0)"/>
 	    <dependency org="net.solarnetwork.node" name="net.solarnetwork.node.dao.jdbc" rev="[1.16,2.0)"/>
 		<dependency org="org.osgi" name="org.osgi.compendium" rev="4.2.0"/>
     	<dependency org="org.slf4j" name="slf4j-api" rev="1.7.21"/>
