@@ -52,6 +52,16 @@ public abstract class BaseConfigurationEntity extends BasicUUIDEntity implements
 	}
 
 	/**
+	 * Check if a UUID, config ID, and name are configured.
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isValid() {
+		return (getUuid() != null && getConfigId() != null && getName() != null);
+	}
+
+	/**
 	 * Get a source ID value from a source ID.
 	 * 
 	 * This method will use the provided {@code sourceId} if it is not

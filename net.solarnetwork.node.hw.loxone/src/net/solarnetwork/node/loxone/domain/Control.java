@@ -64,6 +64,22 @@ public class Control extends BaseConfigurationEntity {
 
 	private String details;
 
+	@Override
+	public boolean isValid() {
+		if ( !super.isValid() ) {
+			return false;
+		}
+		Map<String, UUID> s = getStates();
+		if ( s != null ) {
+			for ( Map.Entry<String, UUID> me : s.entrySet() ) {
+				if ( me.getKey() == null || me.getValue() == null ) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	/**
 	 * Alias for {@link #setUuid(UUID)}.
 	 * 

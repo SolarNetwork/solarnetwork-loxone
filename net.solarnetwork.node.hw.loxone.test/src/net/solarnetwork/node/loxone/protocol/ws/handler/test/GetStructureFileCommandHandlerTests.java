@@ -299,6 +299,9 @@ public class GetStructureFileCommandHandlerTests {
 		assertEquals("Category name", "Composting toilets", cat.getName());
 		assertEquals("Category color", "#83B817", cat.getColor());
 		assertEquals("Category image", "00000000-0000-0020-2000000000000000.svg", cat.getImage());
+		for ( Category c : categoryCapture.getValues() ) {
+			Assert.assertTrue("Category " + c.getUuid() + " valid", c.isValid());
+		}
 
 		Control control = controlCapture.getValues().get(0);
 		assertEquals("Control config ID", TEST_CONFIG_ID, control.getConfigId());
@@ -309,6 +312,9 @@ public class GetStructureFileCommandHandlerTests {
 				control.getCategory());
 		assertEquals("Control room", UUID.fromString("0dcf62d1-0138-2bc6-ffff-6d9b8f6a24c4"),
 				control.getRoom());
+		for ( Control c : controlCapture.getValues() ) {
+			Assert.assertTrue("Control " + c.getUuid() + " valid", c.isValid());
+		}
 
 		Room room = roomCapture.getValues().get(0);
 		assertEquals("Room config ID", TEST_CONFIG_ID, room.getConfigId());
@@ -316,5 +322,8 @@ public class GetStructureFileCommandHandlerTests {
 				room.getUuid());
 		assertEquals("Room name", "Bedroom 1", room.getName());
 		assertEquals("Room image", "00000000-0000-0019-2100000000000000.svg", room.getImage());
+		for ( Room ro : roomCapture.getValues() ) {
+			Assert.assertTrue("Room " + ro.getUuid() + " valid", ro.isValid());
+		}
 	}
 }

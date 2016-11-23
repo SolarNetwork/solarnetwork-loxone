@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
  * API for a Loxone configuration entity.
  * 
  * @author matt
- * @version 1.1
+ * @version 1.2
  */
 public interface ConfigurationEntity extends UUIDEntity {
 
@@ -52,5 +52,13 @@ public interface ConfigurationEntity extends UUIDEntity {
 	 * @return The display name.
 	 */
 	String getName();
+
+	/**
+	 * Test if the configured property values are valid.
+	 * 
+	 * @return {@code true} if the values appear to be valid
+	 * @since 1.2
+	 */
+	boolean isValid();
 
 }
