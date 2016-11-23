@@ -29,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * An input/output device, sensor, etc.
@@ -39,7 +40,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * {@code uuid}.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class Control extends BaseConfigurationEntity {
 
@@ -112,6 +113,7 @@ public class Control extends BaseConfigurationEntity {
 		return states;
 	}
 
+	@JsonDeserialize(using = net.solarnetwork.node.loxone.domain.UUIDMapDeserializer.class)
 	public void setStates(Map<String, UUID> states) {
 		this.states = states;
 	}

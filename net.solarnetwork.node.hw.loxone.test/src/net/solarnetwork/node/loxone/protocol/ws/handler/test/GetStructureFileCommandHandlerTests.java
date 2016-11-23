@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.UUID;
 import javax.websocket.Session;
 import org.easymock.Capture;
+import org.easymock.CaptureType;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
@@ -226,4 +227,94 @@ public class GetStructureFileCommandHandlerTests {
 		assertEquals("Room image", "00000000-0000-002e-2100000000000000.svg", room.getImage());
 	}
 
+	@Test
+	public void parseStructureFile3() throws IOException {
+		Resource r = new ClassPathResource("structure-file-03.json", getClass());
+		File f = r.getFile();
+		Reader reader = new InputStreamReader(r.getInputStream(), "UTF-8");
+		MessageHeader header = new MessageHeader(MessageType.BinaryFile, null, f.length());
+
+		// get Config ID from session
+		expect(session.getUserProperties()).andReturn(
+				Collections.singletonMap(LoxoneEndpoint.CONFIG_ID_USER_PROPERTY, TEST_CONFIG_ID));
+
+		// then get the Config, but we have none yet
+		expect(configDao.getConfig(TEST_CONFIG_ID)).andReturn(null);
+
+		// now we find the categories; first delete existing...
+		Capture<Category> categoryCapture = new Capture<>(CaptureType.ALL);
+		expect(categoryDao.deleteAllForConfig(TEST_CONFIG_ID)).andReturn(0);
+		categoryDao.store(capture(categoryCapture));
+		expectLastCall().times(6);
+
+		// next up, controls
+		Capture<Control> controlCapture = new Capture<>(CaptureType.ALL);
+		expect(controlDao.deleteAllForConfig(TEST_CONFIG_ID)).andReturn(0);
+		controlDao.store(capture(controlCapture));
+		expectLastCall().times(46);
+
+		// next up, rooms
+		Capture<Room> roomCapture = new Capture<>(CaptureType.ALL);
+		expect(roomDao.deleteAllForConfig(TEST_CONFIG_ID)).andReturn(0);
+		roomDao.store(capture(roomCapture));
+		expectLastCall().times(11);
+
+		// store our config
+		Capture<Config> configCapture = new Capture<>();
+		configDao.storeConfig(capture(configCapture));
+
+		// post "last modified date" event
+		Capture<Event> eventCapture = new Capture<>();
+		eventAdmin.postEvent(capture(eventCapture));
+
+		replayAll();
+
+		boolean result = handler.handleTextMessage(header, session, reader);
+
+		verifyAll();
+
+		Assert.assertTrue("Handled", result);
+
+		// verify "last modified date" event posted
+		Event event = eventCapture.getValue();
+		Assert.assertNotNull("Event emitted", event);
+		Assert.assertEquals("Event topic", LoxoneEvents.STRUCTURE_FILE_SAVED_EVENT, event.getTopic());
+		Assert.assertEquals("Event modification date property", Long.valueOf(1479910860000L),
+				event.getProperty(LoxoneEvents.EVENT_PROPERTY_DATE));
+		Assert.assertEquals("Event config ID property", TEST_CONFIG_ID,
+				event.getProperty(LoxoneEvents.EVENT_PROPERTY_CONFIG_ID));
+
+		// now every captured config should actually have the same values (and be the same object, really)
+		for ( Config config : configCapture.getValues() ) {
+			assertEquals("Config ID", TEST_CONFIG_ID, config.getId());
+			assertNotNull("Last modified date", config.getLastModified());
+			assertEquals("Last modified date", 1479910860000L, config.getLastModified().getTime());
+		}
+
+		// and verify just a sampling of the parsed data
+		Category cat = categoryCapture.getValues().get(0);
+		assertEquals("Category config ID", TEST_CONFIG_ID, cat.getConfigId());
+		assertEquals("Category UUID", UUID.fromString("0e6ab34c-0065-d858-ffff-6d9b8f6a24c4"),
+				cat.getUuid());
+		assertEquals("Category name", "Composting toilets", cat.getName());
+		assertEquals("Category color", "#83B817", cat.getColor());
+		assertEquals("Category image", "00000000-0000-0020-2000000000000000.svg", cat.getImage());
+
+		Control control = controlCapture.getValues().get(0);
+		assertEquals("Control config ID", TEST_CONFIG_ID, control.getConfigId());
+		assertEquals("Control UUID", UUID.fromString("0e8d5203-0255-110b-ffff-a86477da88e9"),
+				control.getUuid());
+		assertEquals("Control name", "IRC - FLOOR", control.getName());
+		assertEquals("Control category", UUID.fromString("0c37aa3d-0027-02e0-ffff-6d9b8f6a24c4"),
+				control.getCategory());
+		assertEquals("Control room", UUID.fromString("0dcf62d1-0138-2bc6-ffff-6d9b8f6a24c4"),
+				control.getRoom());
+
+		Room room = roomCapture.getValues().get(0);
+		assertEquals("Room config ID", TEST_CONFIG_ID, room.getConfigId());
+		assertEquals("Room UUID", UUID.fromString("0dcf62d1-0138-2bc6-ffff-6d9b8f6a24c4"),
+				room.getUuid());
+		assertEquals("Room name", "Bedroom 1", room.getName());
+		assertEquals("Room image", "00000000-0000-0019-2100000000000000.svg", room.getImage());
+	}
 }
