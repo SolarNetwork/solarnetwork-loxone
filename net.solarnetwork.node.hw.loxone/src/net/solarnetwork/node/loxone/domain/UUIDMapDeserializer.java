@@ -57,7 +57,7 @@ public class UUIDMapDeserializer extends StdDeserializer<Map<String, UUID>> {
 		Map<String, UUID> result = new LinkedHashMap<>();
 		JsonToken tok = parser.getCurrentToken();
 		while ( tok != null && tok != JsonToken.END_OBJECT ) {
-			if ( tok == JsonToken.VALUE_STRING ) {
+			if ( tok == JsonToken.VALUE_STRING && parser.getCurrentName() != null ) {
 				result.put(parser.getCurrentName(), UUIDDeserializer.deserializeUUID(parser.getText()));
 			}
 			tok = parser.nextValue();
