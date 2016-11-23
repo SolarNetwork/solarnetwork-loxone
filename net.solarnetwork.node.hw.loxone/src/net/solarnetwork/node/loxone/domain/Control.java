@@ -25,11 +25,13 @@ package net.solarnetwork.node.loxone.domain;
 import java.util.Map;
 import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import net.solarnetwork.util.SerializeIgnore;
 
 /**
  * An input/output device, sensor, etc.
@@ -65,6 +67,8 @@ public class Control extends BaseConfigurationEntity {
 	private String details;
 
 	@Override
+	@JsonIgnore
+	@SerializeIgnore
 	public boolean isValid() {
 		if ( !super.isValid() ) {
 			return false;
