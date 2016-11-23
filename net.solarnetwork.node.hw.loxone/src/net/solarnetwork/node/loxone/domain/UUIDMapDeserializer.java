@@ -33,8 +33,11 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 /**
- * Special deserializer for a map of Stirng keys and UUID values, ignoring other
+ * Special deserializer for a map of string keys and UUID values, ignoring other
  * data types during parsing such as array values.
+ * 
+ * This can be useful when parsing control state objects, for example, where
+ * some states are encoded as an array of UUID values.
  * 
  * @author matt
  * @version 1.0
