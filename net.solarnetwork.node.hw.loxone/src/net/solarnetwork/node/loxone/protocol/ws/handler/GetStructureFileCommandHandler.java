@@ -130,21 +130,33 @@ public class GetStructureFileCommandHandler extends BaseCommandHandler implement
 				for ( JsonNode node : entry.getValue() ) {
 					Category category = objectMapper.treeToValue(node, Category.class);
 					category.setConfigId(config.getId());
-					categoryDao.store(category);
+					if ( category.isValid() ) {
+						categoryDao.store(category);
+					} else {
+						log.warn("Ignoring invalid category {}", category.getUuid());
+					}
 				}
 			} else if ( "controls".equals(entry.getKey()) ) {
 				controlDao.deleteAllForConfig(configId);
 				for ( JsonNode node : entry.getValue() ) {
 					Control control = objectMapper.treeToValue(node, Control.class);
 					control.setConfigId(config.getId());
-					controlDao.store(control);
+					if ( control.isValid() ) {
+						controlDao.store(control);
+					} else {
+						log.warn("Ignoring invalid control {}", control.getUuid());
+					}
 				}
 			} else if ( "rooms".equals(entry.getKey()) ) {
 				roomDao.deleteAllForConfig(configId);
 				for ( JsonNode node : entry.getValue() ) {
 					Room room = objectMapper.treeToValue(node, Room.class);
 					room.setConfigId(config.getId());
-					roomDao.store(room);
+					if ( room.isValid() ) {
+						roomDao.store(room);
+					} else {
+						log.warn("Ignoring invalid room {}", room.getUuid());
+					}
 				}
 			}
 		}

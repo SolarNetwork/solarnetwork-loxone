@@ -25,10 +25,13 @@ package net.solarnetwork.node.loxone.domain;
 import java.util.Map;
 import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import net.solarnetwork.util.SerializeIgnore;
 
 /**
  * An input/output device, sensor, etc.
@@ -39,7 +42,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * {@code uuid}.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class Control extends BaseConfigurationEntity {
 
@@ -62,6 +65,24 @@ public class Control extends BaseConfigurationEntity {
 	private Map<String, UUID> states;
 
 	private String details;
+
+	@Override
+	@JsonIgnore
+	@SerializeIgnore
+	public boolean isValid() {
+		if ( !super.isValid() ) {
+			return false;
+		}
+		Map<String, UUID> s = getStates();
+		if ( s != null ) {
+			for ( Map.Entry<String, UUID> me : s.entrySet() ) {
+				if ( me.getKey() == null || me.getValue() == null ) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * Alias for {@link #setUuid(UUID)}.
@@ -112,6 +133,7 @@ public class Control extends BaseConfigurationEntity {
 		return states;
 	}
 
+	@JsonDeserialize(using = net.solarnetwork.node.loxone.domain.UUIDMapDeserializer.class)
 	public void setStates(Map<String, UUID> states) {
 		this.states = states;
 	}
