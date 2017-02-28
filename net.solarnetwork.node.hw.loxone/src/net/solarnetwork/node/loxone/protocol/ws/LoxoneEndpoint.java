@@ -87,7 +87,7 @@ import net.solarnetwork.util.OptionalService;
  * date changes will request the structure file again from the Loxone server.
  * 
  * @author matt
- * @version 1.2
+ * @version 1.3
  */
 public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<ByteBuffer>, EventHandler {
 
@@ -112,6 +112,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	private TaskScheduler taskScheduler;
 	private ConfigDao configDao;
 	private int statusMessageCount = 500;
+	private boolean authenticationFailure = false;
 
 	/** A class-level logger. */
 	protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -269,13 +270,20 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		if ( taskScheduler == null ) {
 			return;
 		}
+		if ( authenticationFailure ) {
+			log.warn(
+					"Will not reconnect to {} after authenticaiton failure; update the username/password settings.",
+					host);
+			return;
+		}
 		connectFuture = taskScheduler.schedule(new Runnable() {
 
 			@Override
 			public void run() {
 				connect();
 			}
-		}, new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(2)));
+		}, new Date(
+				System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(reconnectHandler.getDelay())));
 	}
 
 	@Override
@@ -395,6 +403,21 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 			return (command == CommandType.GetAuthenticationKey || command == CommandType.Authenticate
 					|| command == CommandType.Auth || command == CommandType.EnableInputStatusUpdate
 					|| command == CommandType.KeepAlive);
+		}
+
+		@Override
+		public boolean handleCommand(CommandType command, MessageHeader header, Session session,
+				JsonNode tree) throws IOException {
+			// look specifically for authentication failure, to prevent re-trying to connect
+			if ( command == CommandType.Authenticate ) {
+				int status = tree.path("Code").asInt();
+				if ( status >= 400 && status < 500 ) {
+					log.warn("Loxone authentication failure to {}: wrong username/password?", host);
+					authenticationFailure = true;
+					return false;
+				}
+			}
+			return super.handleCommand(command, header, session, tree);
 		}
 
 		@Override
@@ -732,6 +755,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	public void setUsername(String username) {
 		if ( this.username == null || !this.username.equals(username) ) {
 			this.username = username;
+			this.authenticationFailure = false;
 			connectionDetailsChanged();
 		}
 	}
@@ -743,6 +767,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	public void setPassword(String password) {
 		if ( this.password == null || !this.password.equals(password) ) {
 			this.password = password;
+			this.authenticationFailure = false;
 			connectionDetailsChanged();
 		}
 	}
@@ -840,6 +865,21 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	 */
 	public void setStatusMessageCount(int statusMessageCount) {
 		this.statusMessageCount = statusMessageCount;
+	}
+
+	/**
+	 * Test if an authentication failure has occurred.
+	 * 
+	 * If an authentication error occurs whe connecting to the Loxone device,
+	 * this flag will be set to <em>true</em>. It will be reset when either
+	 * {@link #setUsername(String)} or {@link #setPassword(String)} are called
+	 * with updated values.
+	 * 
+	 * @return authentication failure flag
+	 * @since 1.3
+	 */
+	public final boolean isAuthenticationFailure() {
+		return authenticationFailure;
 	}
 
 }

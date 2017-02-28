@@ -356,7 +356,13 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	@Override
 	public List<SettingSpecifier> getSettingSpecifiers() {
 		LoxoneEndpoint defaults = new LoxoneEndpoint();
-		List<SettingSpecifier> results = new ArrayList<SettingSpecifier>(4);
+		List<SettingSpecifier> results = new ArrayList<SettingSpecifier>(16);
+
+		if ( isAuthenticationFailure() ) {
+			results.add(new BasicTitleSettingSpecifier("authFailure",
+					messageSource.getMessage("error.authFailure", null, null), true));
+		}
+
 		results.add(new BasicTextFieldSettingSpecifier("uid", DEFAULT_UID));
 		results.add(new BasicTextFieldSettingSpecifier("groupUID", null));
 		results.add(new BasicTextFieldSettingSpecifier("configKey", defaults.getConfigKey()));
