@@ -143,6 +143,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 			wsURI = getWebsocketURI();
 		} catch ( Exception e ) {
 			logConciseException("Error establishing websocket URI to {}", e, host);
+			reconnectHandler.onConnectFailure(e);
 			return;
 		}
 		try {
