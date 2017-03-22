@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Future;
+import javax.websocket.EndpointConfig;
+import javax.websocket.Session;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -354,7 +356,13 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	@Override
 	public List<SettingSpecifier> getSettingSpecifiers() {
 		LoxoneEndpoint defaults = new LoxoneEndpoint();
-		List<SettingSpecifier> results = new ArrayList<SettingSpecifier>(4);
+		List<SettingSpecifier> results = new ArrayList<SettingSpecifier>(16);
+
+		if ( isAuthenticationFailure() ) {
+			results.add(new BasicTitleSettingSpecifier("authFailure",
+					messageSource.getMessage("error.authFailure", null, null), true));
+		}
+
 		results.add(new BasicTextFieldSettingSpecifier("uid", DEFAULT_UID));
 		results.add(new BasicTextFieldSettingSpecifier("groupUID", null));
 		results.add(new BasicTextFieldSettingSpecifier("configKey", defaults.getConfigKey()));
@@ -402,9 +410,18 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		}
 
 		datumDataSource.setConfigId(config.getId());
-		configureLoxoneDatumLoggerJob(datumLoggerFrequencySeconds * 1000L);
 
 		return result;
+	}
+
+	@Override
+	public void onOpen(Session session, EndpointConfig config) {
+		super.onOpen(session, config);
+		scheduleDatumLoggerJobIfNeeded();
+	}
+
+	private void scheduleDatumLoggerJobIfNeeded() {
+		configureLoxoneDatumLoggerJob(datumLoggerFrequencySeconds * 1000L);
 	}
 
 	private boolean configureLoxoneDatumLoggerJob(final long interval) {
@@ -412,31 +429,35 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		if ( config == null || config.getId() == null ) {
 			return false;
 		}
+		final String configIdDisplay = config.idToExternalForm();
 		final Scheduler sched = scheduler;
+
 		if ( sched == null ) {
-			log.warn("No scheduler avaialable, cannot schedule Loxone datum logger job");
+			log.warn("No scheduler avaialable, cannot schedule Loxone {} datum logger job",
+					configIdDisplay);
 			return false;
 		}
 		final DatumDao<GeneralNodeDatum> dao = (datumDao != null ? datumDao.service() : null);
 		if ( dao == null ) {
 			log.warn(
-					"No DatumDao<GeneralNodeDatum> avaialable, cannot schedule Loxone datum logger job");
+					"No DatumDao<GeneralNodeDatum> avaialable, cannot schedule Loxone {} datum logger job",
+					configIdDisplay);
 			return false;
 		}
 		SimpleTrigger trigger = datumLoggerTrigger;
 		if ( trigger != null ) {
 			// check if interval actually changed
 			if ( trigger.getRepeatInterval() == interval ) {
-				log.debug("Loxone datum logger interval unchanged at {}s", interval);
+				log.debug("Loxone {} datum logger interval unchanged at {}s", configIdDisplay, interval);
 				return true;
 			}
 			// trigger has changed!
 			if ( interval == 0 ) {
 				try {
 					sched.unscheduleJob(trigger.getKey());
-					log.info("Unscheduled Loxone datum logger job");
+					log.info("Unscheduled Loxone {} datum logger job", configIdDisplay);
 				} catch ( SchedulerException e ) {
-					log.error("Error unscheduling Loxone datum logger job", e);
+					log.error("Error unscheduling Loxone {} datum logger job", configIdDisplay, e);
 				} finally {
 					datumLoggerTrigger = null;
 				}
@@ -449,7 +470,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 				try {
 					sched.rescheduleJob(trigger.getKey(), trigger);
 				} catch ( SchedulerException e ) {
-					log.error("Error rescheduling Loxone datum logger job", e);
+					log.error("Error rescheduling Loxone {} datum logger job", configIdDisplay, e);
 				} finally {
 					datumLoggerTrigger = null;
 				}
@@ -481,11 +502,12 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 										.withMisfireHandlingInstructionNextWithExistingCount())
 						.build();
 				sched.scheduleJob(trigger);
-				log.info("Scheduled Loxone datum logger job to run every {} seconds", (interval / 1000));
+				log.info("Scheduled Loxone {} datum logger job to run every {} seconds", configIdDisplay,
+						(interval / 1000));
 				datumLoggerTrigger = trigger;
 				return true;
 			} catch ( Exception e ) {
-				log.error("Error scheduling Loxone datum logger job", e);
+				log.error("Error scheduling Loxone {} datum logger job", configIdDisplay, e);
 				return false;
 			}
 		}
