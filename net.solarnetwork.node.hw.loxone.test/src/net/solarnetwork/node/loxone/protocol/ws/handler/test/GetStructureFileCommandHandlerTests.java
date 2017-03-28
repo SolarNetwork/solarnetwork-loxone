@@ -29,8 +29,9 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
@@ -46,8 +47,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
+import org.springframework.util.FileCopyUtils;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.solarnetwork.node.loxone.dao.CategoryDao;
@@ -138,10 +138,10 @@ public class GetStructureFileCommandHandlerTests {
 
 	@Test
 	public void parseStructureFile() throws IOException {
-		Resource r = new ClassPathResource("structure-file-01.json", getClass());
-		File f = r.getFile();
-		Reader reader = new InputStreamReader(r.getInputStream(), "UTF-8");
-		MessageHeader header = new MessageHeader(MessageType.BinaryFile, null, f.length());
+		InputStream in = getClass().getResourceAsStream("structure-file-01.json");
+		byte[] jsonBytes = FileCopyUtils.copyToByteArray(in);
+		Reader reader = new InputStreamReader(new ByteArrayInputStream(jsonBytes), "UTF-8");
+		MessageHeader header = new MessageHeader(MessageType.BinaryFile, null, jsonBytes.length);
 
 		// get Config ID from session
 		expect(session.getUserProperties()).andReturn(
@@ -229,10 +229,10 @@ public class GetStructureFileCommandHandlerTests {
 
 	@Test
 	public void parseStructureFile3() throws IOException {
-		Resource r = new ClassPathResource("structure-file-03.json", getClass());
-		File f = r.getFile();
-		Reader reader = new InputStreamReader(r.getInputStream(), "UTF-8");
-		MessageHeader header = new MessageHeader(MessageType.BinaryFile, null, f.length());
+		InputStream in = getClass().getResourceAsStream("structure-file-03.json");
+		byte[] jsonBytes = FileCopyUtils.copyToByteArray(in);
+		Reader reader = new InputStreamReader(new ByteArrayInputStream(jsonBytes), "UTF-8");
+		MessageHeader header = new MessageHeader(MessageType.BinaryFile, null, jsonBytes.length);
 
 		// get Config ID from session
 		expect(session.getUserProperties()).andReturn(
