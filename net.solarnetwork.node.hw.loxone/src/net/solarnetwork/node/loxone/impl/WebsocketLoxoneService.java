@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Future;
+import javax.websocket.CloseReason;
 import javax.websocket.EndpointConfig;
 import javax.websocket.Session;
 import org.quartz.JobBuilder;
@@ -83,7 +84,7 @@ import net.solarnetwork.util.OptionalService;
  * Websocket based implementation of {@link LoxoneService}.
  * 
  * @author matt
- * @version 1.2
+ * @version 1.3
  */
 public class WebsocketLoxoneService extends LoxoneEndpoint
 		implements LoxoneService, SettingSpecifierProvider, WebsocketLoxoneServiceSettings {
@@ -134,6 +135,12 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	@Override
 	public synchronized void disconnect() {
 		super.disconnect();
+		configureLoxoneDatumLoggerJob(0);
+	}
+
+	@Override
+	public void onClose(Session session, CloseReason closeReason) {
+		super.onClose(session, closeReason);
 		configureLoxoneDatumLoggerJob(0);
 	}
 
