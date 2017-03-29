@@ -87,7 +87,7 @@ import net.solarnetwork.util.OptionalService;
  * date changes will request the structure file again from the Loxone server.
  * 
  * @author matt
- * @version 1.3
+ * @version 1.4
  */
 public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<ByteBuffer>, EventHandler {
 
@@ -98,6 +98,13 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	 * to use.
 	 */
 	public static final String CONFIG_ID_USER_PROPERTY = "config-id";
+
+	/**
+	 * An internal CloseCode for a user-initiated disconnection, where a
+	 * connection retry should not be attempted.
+	 */
+	public static final CloseReason.CloseCode DISCONNECT_USER_INITIATED = CloseReason.CloseCodes
+			.getCloseCode(3000);
 
 	private String host = "10.0.0.1:3000";
 	private String username = null;
@@ -245,7 +252,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	public synchronized void disconnect() {
 		if ( session != null && session.isOpen() == true ) {
 			try {
-				session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "All done."));
+				session.close(new CloseReason(DISCONNECT_USER_INITIATED, "All done."));
 				log.debug("Connection closed");
 			} catch ( IOException e ) {
 				log.debug("IOException closing websocket Session", e);
@@ -543,7 +550,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 		@Override
 		public boolean onDisconnect(CloseReason closeReason) {
-			if ( closeReason.getCloseCode() == CloseReason.CloseCodes.NORMAL_CLOSURE ) {
+			if ( DISCONNECT_USER_INITIATED.equals(closeReason.getCloseCode()) ) {
 				counter = 0;
 				return false;
 			}
