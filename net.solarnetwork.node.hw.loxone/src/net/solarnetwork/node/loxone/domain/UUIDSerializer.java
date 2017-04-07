@@ -23,6 +23,7 @@
 package net.solarnetwork.node.loxone.domain;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.UUID;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -33,18 +34,22 @@ import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
  * JSON serializer for Loxone encoded {@link UUID} objects.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
-public class UUIDSerializer extends StdScalarSerializer<UUID> {
+public class UUIDSerializer extends StdScalarSerializer<UUID> implements Serializable {
+
+	private static final long serialVersionUID = 7754182067053966014L;
 
 	/**
 	 * A specialized JSON serializer for Loxone UUID values used as keys in a
 	 * {@code Map}.
 	 * 
 	 * @author matt
-	 * @version 1.0
+	 * @version 1.1
 	 */
 	public static final class UUIDKeySerializer extends UUIDSerializer {
+
+		private static final long serialVersionUID = 8490124390190520595L;
 
 		public UUIDKeySerializer() {
 			super(true);
