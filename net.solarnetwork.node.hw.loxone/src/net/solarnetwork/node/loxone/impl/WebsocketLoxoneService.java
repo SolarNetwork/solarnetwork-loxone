@@ -70,6 +70,7 @@ import net.solarnetwork.node.loxone.domain.EventEntity;
 import net.solarnetwork.node.loxone.domain.SourceMapping;
 import net.solarnetwork.node.loxone.domain.UUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
+import net.solarnetwork.node.loxone.domain.ValueEvent;
 import net.solarnetwork.node.loxone.protocol.ws.CommandType;
 import net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint;
 import net.solarnetwork.node.settings.SettingSpecifier;
@@ -176,6 +177,19 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		Future<Resource> result;
 		try {
 			result = (Future<Resource>) sendCommandIfPossible(CommandType.GetIcon, name);
+		} catch ( IOException e ) {
+			throw new RemoteServiceException(e);
+		}
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Future<List<ValueEvent>> setControlState(UUID uuid, String state) {
+		Future<List<ValueEvent>> result;
+		try {
+			result = (Future<List<ValueEvent>>) sendCommandIfPossible(CommandType.IoControl, uuid,
+					state);
 		} catch ( IOException e ) {
 			throw new RemoteServiceException(e);
 		}
