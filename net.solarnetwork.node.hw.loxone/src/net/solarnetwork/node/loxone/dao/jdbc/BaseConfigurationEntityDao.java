@@ -35,10 +35,16 @@ import net.solarnetwork.node.loxone.domain.BaseConfigurationEntity;
  * Base DAO for {@link BaseConfigurationEntity} classes.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public abstract class BaseConfigurationEntityDao<T extends BaseConfigurationEntity>
 		extends BaseUUIDEntityDao<T> implements ConfigurationEntityDao<T> {
+
+	/**
+	 * SQL resource to find by name. Accepts a {@code configId} and
+	 * {@code name}.
+	 */
+	public static final String SQL_FIND_FOR_NAME = "find-for-name";
 
 	/**
 	 * Init with an an entity name and table version, deriving various names
@@ -58,6 +64,32 @@ public abstract class BaseConfigurationEntityDao<T extends BaseConfigurationEnti
 	public BaseConfigurationEntityDao(Class<T> entityClass, String entityName, int version,
 			RowMapper<T> rowMapper) {
 		super(entityClass, entityName, version, rowMapper);
+	}
+
+	/**
+	 * Init with an an entity name and table version, deriving various names
+	 * based on conventions.
+	 * 
+	 * @param sqlResourcePrefixTemplate
+	 *        a template with a single {@code %s} parameter for the SQL resource
+	 *        prefix
+	 * @param tableNameTemplate
+	 *        a template with a single {@code %s} parameter for the SQL table
+	 *        name
+	 * @param entityClass
+	 *        The class of the entity managed by this DAO.
+	 * @param entityName
+	 *        The entity name to use. This name forms the basis of the default
+	 *        SQL resource prefix, table name, tables version query, and SQL
+	 *        init resource.
+	 * @param version
+	 *        The tables version.
+	 * @param rowMapper
+	 *        A row mapper to use when mapping entity query results.
+	 */
+	public BaseConfigurationEntityDao(String sqlResourcePrefixTemplate, String tableNameTemplate,
+			Class<T> entityClass, String entityName, int version, RowMapper<T> rowMapper) {
+		super(sqlResourcePrefixTemplate, tableNameTemplate, entityClass, entityName, version, rowMapper);
 	}
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
@@ -83,4 +115,15 @@ public abstract class BaseConfigurationEntityDao<T extends BaseConfigurationEnti
 	public List<T> findAllForConfig(Long configId, List<SortDescriptor> sortDescriptors) {
 		return findAllEntitiesForConfig(configId, sortDescriptors);
 	}
+
+	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Override
+	public List<T> findAllForConfigAndName(Long configId, String name,
+			List<SortDescriptor> sortDescriptors) {
+		String sql = getSqlResource(SQL_FIND_FOR_NAME);
+		sql = handleSortDescriptors(sql, sortDescriptors, sortDescriptorColumnMapping());
+		List<T> results = getJdbcTemplate().query(sql, getRowMapper(), configId, name);
+		return results;
+	}
+
 }

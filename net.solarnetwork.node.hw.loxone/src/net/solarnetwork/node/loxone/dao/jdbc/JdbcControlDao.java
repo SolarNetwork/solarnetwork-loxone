@@ -64,12 +64,12 @@ import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
  * {@link SourceMappingDao} data.
  * 
  * @author matt
- * @version 1.1
+ * @version 1.2
  */
 public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implements ControlDao {
 
 	/** The default tables version. */
-	public static final int TABLES_VERSION = 1;
+	public static final int TABLES_VERSION = 2;
 
 	public static final String SQL_FIND_FOR_DATUM_PROPSET = "find-for-propset";
 
@@ -83,6 +83,20 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 	 * Constructor.
 	 */
 	public JdbcControlDao() {
+		this(SQL_RESOURCE_PREFIX, TABLE_NAME_FORMAT);
+	}
+
+	/**
+	 * Construct with custom SQL settings.
+	 * 
+	 * @param sqlResourcePrefixTemplate
+	 *        a template with a single {@code %s} parameter for the SQL resource
+	 *        prefix
+	 * @param tableNameTemplate
+	 *        a template with a single {@code %s} parameter for the SQL table
+	 *        name
+	 */
+	public JdbcControlDao(String sqlResourcePrefixTemplate, String tableNameTemplate) {
 		super(Control.class, "control", TABLES_VERSION, new ControlRowMapper());
 	}
 

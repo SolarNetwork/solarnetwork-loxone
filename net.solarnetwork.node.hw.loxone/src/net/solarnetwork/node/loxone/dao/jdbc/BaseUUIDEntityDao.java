@@ -43,7 +43,7 @@ import net.solarnetwork.node.loxone.domain.UUIDEntity;
  * Base class for supporting DAO operations on {@link UUIDEntity} objects.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJdbcDao<T> {
 
@@ -112,9 +112,35 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 	 */
 	public BaseUUIDEntityDao(Class<T> entityClass, String entityName, int version,
 			RowMapper<T> rowMapper) {
+		this(SQL_RESOURCE_PREFIX, TABLE_NAME_FORMAT, entityClass, entityName, version, rowMapper);
+	}
+
+	/**
+	 * Init with an an entity name and table version, deriving various names
+	 * based on conventions.
+	 * 
+	 * @param sqlResourcePrefixTemplate
+	 *        a template with a single {@code %s} parameter for the SQL resource
+	 *        prefix
+	 * @param tableNameTemplate
+	 *        a template with a single {@code %s} parameter for the SQL table
+	 *        name
+	 * @param entityClass
+	 *        The class of the entity managed by this DAO.
+	 * @param entityName
+	 *        The entity name to use. This name forms the basis of the default
+	 *        SQL resource prefix, table name, tables version query, and SQL
+	 *        init resource.
+	 * @param version
+	 *        The tables version.
+	 * @param rowMapper
+	 *        A row mapper to use when mapping entity query results.
+	 */
+	public BaseUUIDEntityDao(String sqlResourcePrefixTemplate, String tableNameTemplate,
+			Class<T> entityClass, String entityName, int version, RowMapper<T> rowMapper) {
 		super();
-		setSqlResourcePrefix(String.format(SQL_RESOURCE_PREFIX, entityName));
-		setTableName(String.format(TABLE_NAME_FORMAT, entityName));
+		setSqlResourcePrefix(String.format(sqlResourcePrefixTemplate, entityName));
+		setTableName(String.format(tableNameTemplate, entityName));
 		setTablesVersion(version);
 		setSqlGetTablesVersion(String.format(SQL_GET_TABLES_VERSION_FORMAT, getTableName()));
 		setInitSqlResource(new ClassPathResource(String.format(INIT_SQL_FORMAT, getSqlResourcePrefix()),

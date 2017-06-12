@@ -31,7 +31,7 @@ import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
  * DAO API for configuration entities.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public interface ConfigurationEntityDao<T extends ConfigurationEntity> {
 
@@ -85,4 +85,22 @@ public interface ConfigurationEntityDao<T extends ConfigurationEntity> {
 	 * @return list of all persisted entities, or empty list if none available
 	 */
 	List<T> findAllForConfig(Long configId, List<SortDescriptor> sortDescriptors);
+
+	/**
+	 * Get a list of persisted entities matching a given name, optionally sorted
+	 * in some way.
+	 * 
+	 * The {@code sortDescriptors} parameter can be {@code null}, in which case
+	 * the sort order should default to the
+	 * {@link ConfigurationEntity#getDefaultRating()} followed by
+	 * {@link ConfigurationEntity#getName()}.
+	 * </p>
+	 * 
+	 * @param sortDescriptors
+	 *        list of sort descriptors to sort the results by
+	 * @return list of all persisted entities, or empty list if none available
+	 * @since 1.1
+	 */
+	List<T> findAllForConfigAndName(Long configId, String name, List<SortDescriptor> sortDescriptors);
+
 }

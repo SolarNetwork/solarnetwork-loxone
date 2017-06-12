@@ -7,7 +7,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Evident
 Export-Package: 
  net.solarnetwork.node.loxone;version="1.1.0",
- net.solarnetwork.node.loxone.dao;version="1.0.1",
+ net.solarnetwork.node.loxone.dao;version="1.1.0",
  net.solarnetwork.node.loxone.domain;version="1.0.2"
 Import-Package: 
  com.fasterxml.jackson.annotation;version="[2.4,3.0)",
