@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import javax.websocket.CloseReason;
 import javax.websocket.EndpointConfig;
 import javax.websocket.Session;
@@ -51,11 +53,15 @@ import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import net.solarnetwork.domain.NodeControlInfo;
+import net.solarnetwork.domain.NodeControlPropertyType;
 import net.solarnetwork.domain.SortDescriptor;
+import net.solarnetwork.node.NodeControlProvider;
 import net.solarnetwork.node.RemoteServiceException;
 import net.solarnetwork.node.dao.DatumDao;
 import net.solarnetwork.node.dao.SettingDao;
 import net.solarnetwork.node.domain.GeneralNodeDatum;
+import net.solarnetwork.node.domain.NodeControlInfoDatum;
 import net.solarnetwork.node.job.DatumDataSourceLoggerJob;
 import net.solarnetwork.node.loxone.LoxoneService;
 import net.solarnetwork.node.loxone.LoxoneSourceMappingParser;
@@ -66,13 +72,19 @@ import net.solarnetwork.node.loxone.dao.SourceMappingDao;
 import net.solarnetwork.node.loxone.dao.UUIDSetDao;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
+import net.solarnetwork.node.loxone.domain.Control;
+import net.solarnetwork.node.loxone.domain.ControlDatumParameters;
 import net.solarnetwork.node.loxone.domain.EventEntity;
 import net.solarnetwork.node.loxone.domain.SourceMapping;
 import net.solarnetwork.node.loxone.domain.UUIDEntityParameters;
+import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
 import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
 import net.solarnetwork.node.loxone.protocol.ws.CommandType;
 import net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint;
+import net.solarnetwork.node.reactor.Instruction;
+import net.solarnetwork.node.reactor.InstructionHandler;
+import net.solarnetwork.node.reactor.InstructionStatus.InstructionState;
 import net.solarnetwork.node.settings.SettingSpecifier;
 import net.solarnetwork.node.settings.SettingSpecifierProvider;
 import net.solarnetwork.node.settings.support.BasicSetupResourceSettingSpecifier;
@@ -85,10 +97,11 @@ import net.solarnetwork.util.OptionalService;
  * Websocket based implementation of {@link LoxoneService}.
  * 
  * @author matt
- * @version 1.3
+ * @version 1.4
  */
 public class WebsocketLoxoneService extends LoxoneEndpoint
-		implements LoxoneService, SettingSpecifierProvider, WebsocketLoxoneServiceSettings {
+		implements LoxoneService, SettingSpecifierProvider, WebsocketLoxoneServiceSettings,
+		NodeControlProvider, InstructionHandler {
 
 	/**
 	 * The name used to schedule the {@link PostOfflineChargeSessionsJob} as.
@@ -533,6 +546,115 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 			}
 		}
 	}
+
+	// NodeControlProvider
+
+	@Override
+	public List<String> getAvailableControlIds() {
+		Config config = getConfiguration();
+		if ( config == null || config.getId() == null ) {
+			return Collections.emptyList();
+		}
+
+		// return source IDs for all controls configured as datum
+
+		List<UUIDEntityParametersPair<Control, ControlDatumParameters>> controlParameters = controlDao
+				.findAllForDatumPropertyUUIDEntities(config.getId());
+
+		return controlParameters.stream().map(pair -> pair.getEntity().getSourceIdValue())
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public NodeControlInfo getCurrentControlInfo(String controlId) {
+		Config config = getConfiguration();
+		if ( config == null || config.getId() == null ) {
+			return null;
+		}
+
+		List<UUIDEntityParametersPair<Control, ControlDatumParameters>> controlParameters = controlDao
+				.findAllForDatumPropertyUUIDEntities(config.getId());
+		Control control = controlParameters.stream()
+				.filter(pair -> controlId.equals(pair.getEntity().getSourceIdValue()))
+				.map(pair -> pair.getEntity()).findFirst().orElse(null);
+		if ( control == null ) {
+			log.debug("Control {} not available", controlId);
+			return null;
+		}
+		log.debug("Reading {} status", controlId);
+		NodeControlInfoDatum result = null;
+		EventEntityDao<ValueEvent> valueEventDao = eventDaoForType(ValueEvent.class);
+		try {
+			ValueEvent value = valueEventDao.loadEvent(config.getId(), control.getUuid());
+			result = newNodeControlInfoDatum(controlId, value);
+		} catch ( Exception e ) {
+			log.error("Error reading {} status: {}", controlId, e.getMessage());
+		}
+		return result;
+	}
+
+	private NodeControlInfoDatum newNodeControlInfoDatum(String controlId, ValueEvent valueEvent) {
+		NodeControlInfoDatum info = new NodeControlInfoDatum();
+		info.setCreated(valueEvent.getCreated());
+		info.setSourceId(valueEvent.getSourceIdValue());
+		info.setType(NodeControlPropertyType.Float);
+		info.setReadonly(false);
+		info.setValue(String.valueOf(valueEvent.getValue()));
+		return info;
+	}
+
+	// InstructionHandler
+
+	@Override
+	public boolean handlesTopic(String topic) {
+		return InstructionHandler.TOPIC_SET_CONTROL_PARAMETER.equals(topic);
+	}
+
+	@Override
+	public InstructionState processInstruction(Instruction instruction) {
+		Config config = getConfiguration();
+		if ( config == null || config.getId() == null ) {
+			return null;
+		}
+
+		// look for a parameter name that matches a control ID
+		InstructionState result = null;
+
+		List<UUIDEntityParametersPair<Control, ControlDatumParameters>> controlParameters = controlDao
+				.findAllForDatumPropertyUUIDEntities(config.getId());
+
+		Map<String, Control> supportedControlIds = controlParameters.stream().collect(
+				Collectors.toMap(pair -> pair.getEntity().getSourceIdValue(), pair -> pair.getEntity()));
+
+		log.debug("Inspecting instruction {} against controls {}", instruction.getId(),
+				supportedControlIds);
+
+		for ( String paramName : instruction.getParameterNames() ) {
+			log.trace("Got instruction parameter {}", paramName);
+			if ( supportedControlIds.containsKey(paramName) ) {
+				// treat parameter value as a String
+				String str = instruction.getParameterValue(paramName);
+				Future<List<ValueEvent>> promise = setControlState(
+						supportedControlIds.get(paramName).getUuid(), str);
+
+				List<ValueEvent> loxoneResult = null;
+				try {
+					loxoneResult = promise.get(10, TimeUnit.SECONDS);
+				} catch ( Exception e ) {
+					log.warn("Error handling instruction {} on control {}: {}", instruction.getTopic(),
+							paramName, e.getMessage());
+				}
+				if ( loxoneResult != null ) {
+					result = InstructionState.Completed;
+				} else {
+					result = InstructionState.Declined;
+				}
+			}
+		}
+		return result;
+	}
+
+	// General getters/setters
 
 	public void setConfigurationDaos(
 			List<ConfigurationEntityDao<ConfigurationEntity>> configurationDaos) {
