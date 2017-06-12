@@ -25,20 +25,11 @@ package net.solarnetwork.node.loxone.protocol.ws.handler;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.ByteBuffer;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import javax.websocket.Session;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.FileCopyUtils;
-import net.solarnetwork.node.RemoteServiceException;
 import net.solarnetwork.node.loxone.protocol.ws.BinaryFileHandler;
 import net.solarnetwork.node.loxone.protocol.ws.CommandType;
 import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
@@ -48,16 +39,13 @@ import net.solarnetwork.node.loxone.protocol.ws.MessageType;
  * Request and handle image resources.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
-public class GetIconBinaryFileHandler extends BaseCommandHandler implements BinaryFileHandler {
+public class GetIconBinaryFileHandler extends QueuedCommandHandler<String, Resource>
+		implements BinaryFileHandler {
 
 	private static final byte[] PNG_HEADER = new byte[] { (byte) 0x89, (byte) 0x50, (byte) 0x4E,
 			(byte) 0x47 };
-
-	// create a fixed size queue for handling GetIcon requests
-	private final ConcurrentMap<Long, BlockingQueue<String>> iconQueue = new ConcurrentHashMap<>();
-	private final ConcurrentMap<String, GetImageFuture> iconRequests = new ConcurrentHashMap<>(10);
 
 	@Override
 	public boolean supportsCommand(CommandType command) {
@@ -77,93 +65,7 @@ public class GetIconBinaryFileHandler extends BaseCommandHandler implements Bina
 	}
 
 	private Future<Resource> requestImage(Session session, Long configId, String name) {
-		BlockingQueue<String> queue = iconQueue.get(configId);
-		if ( queue == null ) {
-			queue = new ArrayBlockingQueue<>(5);
-			BlockingQueue<String> existingQueue = iconQueue.putIfAbsent(configId, queue);
-			if ( existingQueue != null ) {
-				queue = existingQueue;
-			}
-		}
-		try {
-			if ( !queue.offer(name, 1, TimeUnit.MINUTES) ) {
-				throw new RemoteServiceException("Timeout waiting to request image [" + name + "]");
-			}
-		} catch ( InterruptedException e ) {
-			throw new RemoteServiceException("Interrupted waiting to request image [" + name + "]");
-		}
-		try {
-			GetImageFuture req = new GetImageFuture(name);
-			GetImageFuture oldReq = iconRequests.put(name, req);
-			if ( oldReq != null ) {
-				oldReq.cancel(true);
-			}
-			session.getBasicRemote().sendText(name);
-			return req;
-		} catch ( IOException e ) {
-			queue.poll();
-			throw new RemoteServiceException("Error requesting image [" + name + "]", e);
-		}
-	}
-
-	private final class GetImageFuture implements Future<Resource> {
-
-		private final CountDownLatch latch;
-		private final String name;
-		private boolean cancelled;
-		private Resource resource;
-
-		private GetImageFuture(String name) {
-			super();
-			this.latch = new CountDownLatch(1);
-			this.name = name;
-		}
-
-		/**
-		 * Set the image resource.
-		 * 
-		 * @param resource
-		 *        The resolved image resource.
-		 */
-		private void setResource(Resource resource) {
-			if ( !isDone() ) {
-				this.resource = resource;
-				latch.countDown();
-			}
-		}
-
-		@Override
-		public boolean cancel(boolean mayInterruptIfRunning) {
-			if ( !cancelled ) {
-				iconRequests.remove(name, this);
-				cancelled = true;
-			}
-			return cancelled;
-		}
-
-		@Override
-		public boolean isCancelled() {
-			return cancelled;
-		}
-
-		@Override
-		public boolean isDone() {
-			return (isCancelled() || latch.getCount() < 1);
-		}
-
-		@Override
-		public Resource get() throws InterruptedException, ExecutionException {
-			latch.await();
-			return resource;
-		}
-
-		@Override
-		public Resource get(long timeout, TimeUnit unit)
-				throws InterruptedException, ExecutionException, TimeoutException {
-			latch.await(timeout, unit);
-			return resource;
-		}
-
+		return sendTextForKey(session, configId, name, name);
 	}
 
 	@Override
@@ -192,12 +94,9 @@ public class GetIconBinaryFileHandler extends BaseCommandHandler implements Bina
 	}
 
 	private void handleImageData(Long configId, byte[] data) {
-		String name = nextImageName(configId);
-		log.debug("Got image {}", name);
-		GetImageFuture f = iconRequests.remove(name);
-		if ( f != null ) {
-			f.setResource(new ByteArrayIconResource(data, name));
-		}
+		String name = peekNextResultKey(configId);
+		Resource result = new ByteArrayIconResource(data, name);
+		handleNextResult(configId, result);
 	}
 
 	/**
@@ -217,11 +116,6 @@ public class GetIconBinaryFileHandler extends BaseCommandHandler implements Bina
 		public String getFilename() {
 			return filename;
 		}
-	}
-
-	private String nextImageName(Long configId) {
-		BlockingQueue<String> queue = iconQueue.get(configId);
-		return (queue != null ? queue.poll() : null);
 	}
 
 	@Override
