@@ -22,13 +22,14 @@
 
 package net.solarnetwork.node.loxone.protocol.ws;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Supported commands.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public enum CommandType {
 
@@ -52,6 +53,13 @@ public enum CommandType {
 
 	/** Icons are requested by sending the desired icon name as the command. */
 	GetIcon("00000000-0000-0020-2000000000000000", "^(?i)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{16}"),
+
+	/**
+	 * Read or update control values.
+	 * 
+	 * @since 1.1
+	 */
+	IoControl("jdev/sps/io", "^j?dev/sps/io/([^/]+)(?:/(.*))?"),
 
 	/**
 	 * Ping message to server does not disconnect the client after 5 minutes of
@@ -101,6 +109,25 @@ public enum CommandType {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Get a {@link Matcher} instance for a value.
+	 * 
+	 * <p>
+	 * This is designed for commands like {@link #IoControl} where
+	 * subexpressions are included in the pattern and can be used to extract
+	 * values from commands values.
+	 * </p>
+	 * 
+	 * @param value
+	 *        the value to
+	 * @return a new matcher, or {@literal null} if the command type does not
+	 *         use a regular expression
+	 * @since 1.1
+	 */
+	public Matcher getMatcher(String value) {
+		return (regex != null ? regex.matcher(value) : null);
 	}
 
 }
