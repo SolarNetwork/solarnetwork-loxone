@@ -42,6 +42,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import javax.websocket.ClientEndpointConfig;
 import javax.websocket.CloseReason;
 import javax.websocket.Endpoint;
@@ -496,6 +497,10 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	}
 
+	// sometimes we don't seem to get a header in a response message, but we can see this
+	// is a control response still
+	private static final Pattern LL_JSON_PAT = Pattern.compile("^\\s*\\{\\s*\"LL\"\\s*:");
+
 	/**
 	 * Streaming text message handler that acts as a broker for
 	 * {@link CommandHandler} instances to process messages.
@@ -514,7 +519,8 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 			log.debug("Handling text message {}: {}", header, payload);
 
-			if ( header != null && header.getType() == MessageType.TextMessage ) {
+			if ( (header != null && header.getType() == MessageType.TextMessage)
+					|| (header == null && LL_JSON_PAT.matcher(payload).find()) ) {
 				// start inspecting the message to know what to do
 				try {
 					JsonNode json = getObjectMapper().readTree(payload);
