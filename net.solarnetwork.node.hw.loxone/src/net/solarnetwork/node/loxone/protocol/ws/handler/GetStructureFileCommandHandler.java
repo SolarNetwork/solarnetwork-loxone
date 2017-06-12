@@ -37,6 +37,7 @@ import javax.websocket.Session;
 import org.osgi.service.event.Event;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.solarnetwork.node.loxone.dao.CategoryDao;
@@ -113,6 +114,10 @@ public class GetStructureFileCommandHandler extends BaseCommandHandler implement
 			config = new Config(configId);
 		}
 		JsonNode json = objectMapper.readTree(reader);
+		if ( log.isTraceEnabled() ) {
+			log.trace("Got structure file: {}",
+					objectMapper.writer(new DefaultPrettyPrinter()).writeValueAsString(json));
+		}
 		for ( Iterator<Entry<String, JsonNode>> itr = json.fields(); itr.hasNext(); ) {
 			Entry<String, JsonNode> entry = itr.next();
 			if ( "lastModified".equals(entry.getKey()) ) {
