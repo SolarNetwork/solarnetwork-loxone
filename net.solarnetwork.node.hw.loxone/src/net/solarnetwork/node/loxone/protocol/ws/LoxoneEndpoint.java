@@ -301,7 +301,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		}
 		MessageHeader h = headerQueue.poll();
 		if ( h != null ) {
-			log.debug("Got binary message {}", h);
+			log.trace("Got binary message {}", h);
 			if ( log.isTraceEnabled() ) {
 				try {
 					log.trace("Binary message {} payload (Base64):\n{}", h, new String(
@@ -318,7 +318,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 			// this should be a message header message, and another message will follow 
 			// from the Loxone that logically refers to this header
 			MessageHeader header = new MessageHeader(buf);
-			log.debug("Got message header {}", header);
+			log.trace("Got message header {}", header);
 			incrementMessageCount();
 			if ( !headerQueue.offer(header) ) {
 				log.warn("Dropping message header: {}", header);
