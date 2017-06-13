@@ -37,7 +37,7 @@ import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
  * JDBC implementation of {@link DatumUUIDSetDao}.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class JdbcDatumUUIDSetDao extends BaseUUIDSetDao<DatumUUIDEntity, DatumUUIDEntityParameters>
 		implements DatumUUIDSetDao {
@@ -46,7 +46,23 @@ public class JdbcDatumUUIDSetDao extends BaseUUIDSetDao<DatumUUIDEntity, DatumUU
 	public static final int TABLES_VERSION = 1;
 
 	public JdbcDatumUUIDSetDao() {
-		super(DatumUUIDEntity.class, DatumUUIDEntityParameters.class, "datumset", TABLES_VERSION,
+		this(SQL_RESOURCE_PREFIX, TABLE_NAME_FORMAT);
+	}
+
+	/**
+	 * Construct with custom SQL settings.
+	 * 
+	 * @param sqlResourcePrefixTemplate
+	 *        a template with a single {@code %s} parameter for the SQL resource
+	 *        prefix
+	 * @param tableNameTemplate
+	 *        a template with a single {@code %s} parameter for the SQL table
+	 *        name
+	 * @since 1.1
+	 */
+	public JdbcDatumUUIDSetDao(String sqlResourcePrefixTemplate, String tableNameTemplate) {
+		super(sqlResourcePrefixTemplate, tableNameTemplate, DatumUUIDEntity.class,
+				DatumUUIDEntityParameters.class, "datumset", TABLES_VERSION,
 				new DatumUUIDEntityRowMapper());
 	}
 

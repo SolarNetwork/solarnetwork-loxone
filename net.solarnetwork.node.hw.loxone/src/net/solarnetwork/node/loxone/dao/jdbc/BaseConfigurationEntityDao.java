@@ -86,6 +86,7 @@ public abstract class BaseConfigurationEntityDao<T extends BaseConfigurationEnti
 	 *        The tables version.
 	 * @param rowMapper
 	 *        A row mapper to use when mapping entity query results.
+	 * @since 1.1
 	 */
 	public BaseConfigurationEntityDao(String sqlResourcePrefixTemplate, String tableNameTemplate,
 			Class<T> entityClass, String entityName, int version, RowMapper<T> rowMapper) {
