@@ -23,6 +23,7 @@
 package net.solarnetwork.node.loxone.dao;
 
 import java.util.List;
+import java.util.UUID;
 import net.solarnetwork.node.loxone.domain.Control;
 import net.solarnetwork.node.loxone.domain.ControlDatumParameters;
 import net.solarnetwork.node.loxone.domain.DatumPropertyUUIDEntity;
@@ -32,7 +33,7 @@ import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
  * DAO API of {@link Control} entities.
  * 
  * @author matt
- * @version 1.1
+ * @version 1.2
  */
 public interface ControlDao extends ConfigurationEntityDao<Control> {
 
@@ -57,4 +58,14 @@ public interface ControlDao extends ConfigurationEntityDao<Control> {
 	 */
 	int countForConfig(Long configId);
 
+	/**
+	 * Get a control with a state matching a given UUID.
+	 * 
+	 * @param configId
+	 *        The config ID to the the control for.
+	 * @param stateUuid
+	 *        The UUID of the state to get the control for.
+	 * @since 1.2
+	 */
+	Control getForConfigAndStateName(Long configId, UUID stateUuid);
 }

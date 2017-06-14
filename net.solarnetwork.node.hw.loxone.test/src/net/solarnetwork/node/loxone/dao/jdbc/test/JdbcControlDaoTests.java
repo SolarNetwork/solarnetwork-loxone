@@ -59,7 +59,7 @@ import net.solarnetwork.node.test.AbstractNodeTransactionalTest;
  * Unit tests for the {@link JdbcControlDao} class.
  * 
  * @author matt
- * @version 1.1
+ * @version 1.2
  */
 public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 
@@ -303,6 +303,16 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 		Assert.assertEquals("Match count", 1, results.size());
 		Assert.assertEquals("Found object", lastControl.getUuid(), results.get(0).getUuid());
 		Assert.assertEquals("State map", lastControl.getStates(), results.get(0).getStates());
+	}
+
+	@Test
+	public void findForConfigAndStateSingleMatch() {
+		insertWithStates();
+		Control result = dao.getForConfigAndStateName(TEST_CONFIG_ID,
+				lastControl.getStates().get("bar"));
+		Assert.assertNotNull(result);
+		Assert.assertEquals("Found object", lastControl.getUuid(), result.getUuid());
+		Assert.assertEquals("State map", lastControl.getStates(), result.getStates());
 	}
 
 	@Test

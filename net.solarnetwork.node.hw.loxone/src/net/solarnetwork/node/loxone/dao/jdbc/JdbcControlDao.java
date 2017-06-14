@@ -64,7 +64,7 @@ import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
  * {@link SourceMappingDao} data.
  * 
  * @author matt
- * @version 1.2
+ * @version 1.3
  */
 public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implements ControlDao {
 
@@ -72,6 +72,8 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 	public static final int TABLES_VERSION = 2;
 
 	public static final String SQL_FIND_FOR_DATUM_PROPSET = "find-for-propset";
+
+	public static final String SQL_FIND_FOR_STATE_UUID = "find-for-state-uuid";
 
 	public static final String CONTROL_STATES_NAME = "control_states";
 	public static final String SQL_CONTROL_STATES_DELETE_FOR_CONTROL = "delete-for-control";
@@ -109,16 +111,16 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 			@Override
 			public Object doInConnection(Connection con) throws SQLException, DataAccessException {
 				// delete all existing
-				PreparedStatement ps = con
-						.prepareStatement(getSqlResource(String.format(SQL_RESOURCE_PREFIX + "-%s",
+				PreparedStatement ps = con.prepareStatement(
+						getSqlResource(String.format(getBaseSqlResourceTemplate() + "-%s",
 								CONTROL_STATES_NAME, SQL_CONTROL_STATES_DELETE_FOR_CONTROL)));
 				prepareUUID(1, control.getUuid(), ps);
 				ps.setObject(3, control.getConfigId());
 				ps.execute();
 				if ( control.getStates() != null && !control.getStates().isEmpty() ) {
 					// insert
-					PreparedStatement statePs = con
-							.prepareStatement(getSqlResource(String.format(SQL_RESOURCE_PREFIX + "-%s",
+					PreparedStatement statePs = con.prepareStatement(
+							getSqlResource(String.format(getBaseSqlResourceTemplate() + "-%s",
 									CONTROL_STATES_NAME, SQL_CONTROL_STATES_INSERT)));
 					for ( Map.Entry<String, UUID> entry : control.getStates().entrySet() ) {
 						prepareUUID(1, control.getUuid(), statePs);
@@ -144,8 +146,8 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 
 				@Override
 				public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-					PreparedStatement ps = con
-							.prepareStatement(getSqlResource(String.format(SQL_RESOURCE_PREFIX + "-%s",
+					PreparedStatement ps = con.prepareStatement(
+							getSqlResource(String.format(getBaseSqlResourceTemplate() + "-%s",
 									CONTROL_STATES_NAME, SQL_CONTROL_STATES_FIND_FOR_CONTROL)));
 					prepareUUID(1, result.getUuid(), ps);
 					ps.setObject(3, result.getConfigId());
@@ -163,6 +165,15 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 			result.setStates(stateMap);
 		}
 		return result;
+	}
+
+	@Override
+	public Control getForConfigAndStateName(Long configId, UUID stateUuid) {
+		String sql = getSqlResource(SQL_FIND_FOR_STATE_UUID);
+		List<Control> results = getJdbcTemplate().query(sql,
+				new ControlWithStateRowMapper(getRowMapper()), configId,
+				stateUuid.getMostSignificantBits(), stateUuid.getLeastSignificantBits());
+		return (results == null || results.isEmpty() ? null : results.get(0));
 	}
 
 	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
