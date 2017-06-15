@@ -127,7 +127,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	private String uid = DEFAULT_UID;
 	private String groupUID;
 	private List<ConfigurationEntityDao<ConfigurationEntity>> configurationDaos;
-	private List<EventEntityDao<EventEntity>> eventDaos;
+	private List<EventEntityDao<? extends EventEntity>> eventDaos;
 	private List<UUIDSetDao<UUIDSetEntity<UUIDEntityParameters>, UUIDEntityParameters>> uuidSetDaos;
 	private SetupResourceProvider settingResourceProvider;
 	private SettingDao settingDao;
@@ -342,7 +342,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	@SuppressWarnings("unchecked")
 	private <T extends EventEntity> EventEntityDao<T> eventDaoForType(Class<T> type) {
 		if ( configurationDaos != null ) {
-			for ( EventEntityDao<EventEntity> dao : eventDaos ) {
+			for ( EventEntityDao<? extends EventEntity> dao : eventDaos ) {
 				if ( type.isAssignableFrom(dao.entityClass()) ) {
 					return (EventEntityDao<T>) dao;
 				}
@@ -685,7 +685,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		this.configurationDaos = configurationDaos;
 	}
 
-	public void setEventDaos(List<EventEntityDao<EventEntity>> eventDaos) {
+	public void setEventDaos(List<EventEntityDao<? extends EventEntity>> eventDaos) {
 		this.eventDaos = eventDaos;
 	}
 
