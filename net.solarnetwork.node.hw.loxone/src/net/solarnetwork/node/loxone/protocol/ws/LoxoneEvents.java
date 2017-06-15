@@ -26,12 +26,13 @@ import org.springframework.messaging.Message;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.TextEvent;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
+import net.solarnetwork.node.loxone.domain.WeatherEvent;
 
 /**
  * Event constants and utilities.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public abstract class LoxoneEvents {
 
@@ -69,7 +70,7 @@ public abstract class LoxoneEvents {
 	 * specific {@link Config}.
 	 * 
 	 * The template accepts a single string parameter, which is expected to be
-	 * the external string version of {@link Config#getId()};
+	 * the external string version of {@link Config#getId()}.
 	 */
 	public static final String VALUE_EVENT_MESSAGE_TOPIC = "/topic/%s/events/values";
 
@@ -78,8 +79,19 @@ public abstract class LoxoneEvents {
 	 * specific {@link Config}.
 	 * 
 	 * The template accepts a single string parameter, which is expected to be
-	 * the external string version of {@link Config#getId()};
+	 * the external string version of {@link Config#getId()}.
 	 */
 	public static final String TEXT_EVENT_MESSAGE_TOPIC = "/topic/%s/events/texts";
+
+	/**
+	 * A {@link Message} destination for {@link WeatherEvent} objects tied to a
+	 * specific {@link Config}.
+	 * 
+	 * The template accepts a single string parameter, which is expected to be
+	 * the external string version of {@link Config#getId()}.
+	 * 
+	 * @since 1.1
+	 */
+	public static final String WEATHER_EVENT_MESSAGE_TOPIC = "/topic/%s/events/weather";
 
 }
