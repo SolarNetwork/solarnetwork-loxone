@@ -306,10 +306,9 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 	}
 
 	@Test
-	public void findForConfigAndStateSingleMatch() {
+	public void findForConfigAndState() {
 		insertWithStates();
-		Control result = dao.getForConfigAndStateName(TEST_CONFIG_ID,
-				lastControl.getStates().get("bar"));
+		Control result = dao.getForConfigAndState(TEST_CONFIG_ID, lastControl.getStates().get("bar"));
 		Assert.assertNotNull(result);
 		Assert.assertEquals("Found object", lastControl.getUuid(), result.getUuid());
 		Assert.assertEquals("State map", lastControl.getStates(), result.getStates());

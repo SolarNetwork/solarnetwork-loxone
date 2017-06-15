@@ -67,5 +67,5 @@ public interface ControlDao extends ConfigurationEntityDao<Control> {
 	 *        The UUID of the state to get the control for.
 	 * @since 1.2
 	 */
-	Control getForConfigAndStateName(Long configId, UUID stateUuid);
+	Control getForConfigAndState(Long configId, UUID stateUuid);
 }

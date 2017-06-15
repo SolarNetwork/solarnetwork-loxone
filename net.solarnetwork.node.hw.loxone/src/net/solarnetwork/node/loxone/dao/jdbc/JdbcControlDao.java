@@ -168,7 +168,7 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 	}
 
 	@Override
-	public Control getForConfigAndStateName(Long configId, UUID stateUuid) {
+	public Control getForConfigAndState(Long configId, UUID stateUuid) {
 		String sql = getSqlResource(SQL_FIND_FOR_STATE_UUID);
 		List<Control> results = getJdbcTemplate().query(sql,
 				new ControlWithStateRowMapper(getRowMapper()), configId,
