@@ -24,6 +24,7 @@ package net.solarnetwork.node.loxone.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -198,7 +199,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Future<List<ValueEvent>> setControlState(UUID uuid, String state) {
+	public Future<List<ValueEvent>> setControlState(UUID uuid, Double state) {
 		Future<List<ValueEvent>> result;
 		try {
 			result = (Future<List<ValueEvent>>) sendCommandIfPossible(CommandType.IoControl, uuid,
@@ -632,13 +633,14 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		for ( String paramName : instruction.getParameterNames() ) {
 			log.trace("Got instruction parameter {}", paramName);
 			if ( supportedControlIds.containsKey(paramName) ) {
-				// treat parameter value as a String
+				// treat parameter value as a Double
 				String str = instruction.getParameterValue(paramName);
-				Future<List<ValueEvent>> promise = setControlState(
-						supportedControlIds.get(paramName).getUuid(), str);
 
 				List<ValueEvent> loxoneResult = null;
 				try {
+					Future<List<ValueEvent>> promise = setControlState(
+							supportedControlIds.get(paramName).getUuid(),
+							new BigDecimal(str).doubleValue());
 					loxoneResult = promise.get(10, TimeUnit.SECONDS);
 				} catch ( Exception e ) {
 					log.warn("Error handling instruction {} on control {}: {}", instruction.getTopic(),

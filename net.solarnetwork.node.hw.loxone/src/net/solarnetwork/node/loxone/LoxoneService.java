@@ -152,11 +152,11 @@ public interface LoxoneService extends Identifiable {
 	 * 
 	 * @param name
 	 *        the name of the control to set the state of
-	 * @param state
+	 * @param value
 	 *        the control value to set
 	 * @return the resulting control state
 	 * @since 1.2
 	 */
-	Future<List<ValueEvent>> setControlState(UUID uuid, String state);
+	Future<List<ValueEvent>> setControlState(UUID uuid, Double value);
 
 }
