@@ -147,6 +147,11 @@
 		<property name="messageSendingOps" ref="messageSendingOperations"/>
 	</bean>
 	
+	<bean id="weather-event-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.WeatherEventBinaryFileHandler">
+		<property name="eventAdmin" ref="eventAdmin"/>
+		<property name="messageSendingOps" ref="messageSendingOperations"/>
+	</bean>
+	
 	<bean id="daytimer-event-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.DaytimerEventBinaryFileHandler">
 		<property name="eventAdmin" ref="eventAdmin"/>
 	</bean>
@@ -162,6 +167,7 @@
 	<util:list id="binary-file-handlers">
 		<beans:ref bean="value-event-handler"/>
 		<beans:ref bean="text-event-handler"/>
+		<beans:ref bean="weather-event-handler"/>
 		<beans:ref bean="daytimer-event-handler"/>
 		<beans:ref bean="get-image-handler"/>
 		<beans:ref bean="get-structure-cmd-handler"/>
