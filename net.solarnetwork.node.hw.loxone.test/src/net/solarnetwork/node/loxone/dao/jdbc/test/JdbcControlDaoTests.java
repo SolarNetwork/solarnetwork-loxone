@@ -315,6 +315,17 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 	}
 
 	@Test
+	public void findForConfigAndStateOutOfMany() {
+		insertWithStates();
+		Control expected = lastControl;
+		insertWithStates();
+		Control result = dao.getForConfigAndState(TEST_CONFIG_ID, expected.getStates().get("bar"));
+		Assert.assertNotNull(result);
+		Assert.assertEquals("Found object", expected.getUuid(), result.getUuid());
+		Assert.assertEquals("State map", expected.getStates(), result.getStates());
+	}
+
+	@Test
 	public void countForConfigNoMatch() {
 		insert();
 		int result = dao.countForConfig(-1L);

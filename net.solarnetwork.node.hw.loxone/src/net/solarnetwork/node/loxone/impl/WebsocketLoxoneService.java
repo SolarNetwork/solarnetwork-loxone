@@ -197,6 +197,28 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		return result;
 	}
 
+	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Override
+	public List<Control> findControlsForName(String name, List<SortDescriptor> sortDescriptors) {
+		Config config = getConfiguration();
+		return controlDao.findAllForConfigAndName(config.getId(), name, sortDescriptors);
+	}
+
+	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Override
+	public Control getControlForState(UUID uuid) {
+		Config config = getConfiguration();
+		return controlDao.getForConfigAndState(config.getId(), uuid);
+	}
+
+	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+	@Override
+	public ValueEvent getControlState(UUID uuid) {
+		Config config = getConfiguration();
+		EventEntityDao<ValueEvent> valueEventDao = eventDaoForType(ValueEvent.class);
+		return valueEventDao.loadEvent(config.getId(), uuid);
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Future<List<ValueEvent>> setControlState(UUID uuid, Double state) {
