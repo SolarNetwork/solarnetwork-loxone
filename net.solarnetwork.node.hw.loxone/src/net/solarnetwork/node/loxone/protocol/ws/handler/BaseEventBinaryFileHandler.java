@@ -26,14 +26,17 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Map;
 import java.util.UUID;
 import javax.websocket.Session;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.core.MessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.support.GenericMessage;
 import net.solarnetwork.domain.Result;
 import net.solarnetwork.node.loxone.dao.EventEntityDao;
 import net.solarnetwork.node.loxone.domain.BaseEventEntity;
@@ -47,7 +50,7 @@ import net.solarnetwork.util.OptionalService;
  * Base class for binary event data handlers.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public abstract class BaseEventBinaryFileHandler<T extends BaseEventEntity>
 		implements BinaryFileHandler {
@@ -159,21 +162,61 @@ public abstract class BaseEventBinaryFileHandler<T extends BaseEventEntity>
 	}
 
 	/**
-	 * Post a message. Will silently ignore the event if no
-	 * {@link MessageSendingOperations} is available.
+	 * Post a message without any headers, converting it first.
+	 * 
+	 * <p>
+	 * Will silently ignore the event if no {@link MessageSendingOperations} is
+	 * available.
+	 * </p>
 	 * 
 	 * @param dest
 	 *        The destination to post to.
 	 * @param body
 	 *        The message body to post. This will be wrapped in a {@link Result}
 	 *        object if it is not one already.
+	 * @see #postMessage(String, Object, Map, boolean)
 	 */
 	protected void postMessage(String dest, Object body) {
+		postMessage(dest, body, null, true);
+	}
+
+	/**
+	 * Post a message. Will silently ignore the event if no
+	 * {@link MessageSendingOperations} is available.
+	 * 
+	 * <p>
+	 * If {@code convert} is {@literal true} the message will be sent via the
+	 * {@link MessageSendingOperations#convertAndSend(Object, Object, Map)}
+	 * method. Otherwise the
+	 * {@link MessageSendingOperations#send(Object, Message)} method will be
+	 * used to send the body as-is.
+	 * </p>
+	 * 
+	 * @param dest
+	 *        The destination to post to.
+	 * @param body
+	 *        The message body to post. If {@code convert} is {@literal true}
+	 *        then this will be wrapped in a {@link Result} object if it is not
+	 *        one already.
+	 * @param headers
+	 *        an optional set of message headers to include
+	 * @param convert
+	 *        {@literal true} to convert the message before sending,
+	 *        {@literal false} to send without any conversion
+	 * @since 1.1
+	 */
+	protected void postMessage(String dest, Object body, Map<String, Object> headers, boolean convert) {
 		SimpMessageSendingOperations ops = (messageSendingOps != null ? messageSendingOps.service()
 				: null);
-		if ( ops != null ) {
+		if ( ops == null ) {
+			return;
+		}
+		if ( convert ) {
 			Result<?> r = (body instanceof Result ? (Result<?>) body : Result.result(body));
-			ops.convertAndSend(dest, r);
+			ops.convertAndSend(dest, r, headers);
+		} else {
+			Message<Object> msg = new GenericMessage<Object>(body, headers);
+			ops.send(dest, msg);
 		}
 	}
 
