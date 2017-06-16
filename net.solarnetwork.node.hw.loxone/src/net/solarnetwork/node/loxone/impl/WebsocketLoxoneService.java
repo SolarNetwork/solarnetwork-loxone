@@ -341,7 +341,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 
 	@SuppressWarnings("unchecked")
 	private <T extends EventEntity> EventEntityDao<T> eventDaoForType(Class<T> type) {
-		if ( configurationDaos != null ) {
+		if ( eventDaos != null ) {
 			for ( EventEntityDao<? extends EventEntity> dao : eventDaos ) {
 				if ( type.isAssignableFrom(dao.entityClass()) ) {
 					return (EventEntityDao<T>) dao;
