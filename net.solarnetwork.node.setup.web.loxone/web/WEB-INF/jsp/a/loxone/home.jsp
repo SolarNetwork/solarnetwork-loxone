@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="setup" uri="http://solarnetwork.net/taglib/setup" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <div class="loxone-heading">
@@ -6,9 +7,9 @@
 
 	<div class="title">Device configuration</div>
 
-	<spring:url value="/a/loxone/{configId}/sources" var="uploadSourcesUrl">
+	<setup:url value="/a/loxone/{configId}/sources" var="uploadSourcesUrl">
 		<spring:param name="configId" value="${configId}" />
-	</spring:url>
+	</setup:url>
 
 	<form id="loxone-file-upload-form" action="${uploadSourcesUrl}"  method="post" onchange="" enctype="multipart/form-data" hidden>
 		<input id="loxone-file-input" type="file" name="file" onchange="Loxone.controlView.submitFile()">
@@ -53,5 +54,5 @@
 
 <div id="control-view" class="loxone-list"></div>
 
-<script type="application/javascript" src="<c:url value='/js/loxone-view-control.js'/>"></script>
-<script type="application/javascript" src="<c:url value='/js/loxone-websocket.js'/>"></script>
+<script type="application/javascript" src="<setup:url value='/js/loxone-view-control.js'/>"></script>
+<script type="application/javascript" src="<setup:url value='/js/loxone-websocket.js'/>"></script>
