@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
  * JSON serializer for Loxone encoded {@link UUID} objects.
  * 
  * @author matt
- * @version 1.1
+ * @version 1.2
  */
 public class UUIDSerializer extends StdScalarSerializer<UUID> implements Serializable {
 
@@ -73,15 +73,27 @@ public class UUIDSerializer extends StdScalarSerializer<UUID> implements Seriali
 		if ( uuid == null ) {
 			generator.writeNull();
 		} else {
-			StringBuilder buf = new StringBuilder(uuid.toString());
-			buf.deleteCharAt(23);
+			String value = serializeUUID(uuid);
 			if ( keyMode ) {
-				generator.writeFieldName(buf.toString());
+				generator.writeFieldName(value);
 			} else {
-				generator.writeString(buf.toString());
+				generator.writeString(value);
 			}
 		}
+	}
 
+	/**
+	 * Utility method for serializing a Loxone UUID value.
+	 * 
+	 * @param uuid
+	 *        The UUID value.
+	 * @return The serialized UUID object.
+	 * @since 1.2
+	 */
+	public static final String serializeUUID(UUID uuid) {
+		StringBuilder buf = new StringBuilder(uuid.toString());
+		buf.deleteCharAt(23);
+		return buf.toString();
 	}
 
 }

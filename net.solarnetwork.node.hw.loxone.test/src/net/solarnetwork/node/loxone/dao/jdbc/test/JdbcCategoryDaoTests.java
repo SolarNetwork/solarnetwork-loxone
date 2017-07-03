@@ -22,6 +22,7 @@
 
 package net.solarnetwork.node.loxone.dao.jdbc.test;
 
+import java.util.List;
 import java.util.UUID;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -38,7 +39,7 @@ import net.solarnetwork.node.test.AbstractNodeTransactionalTest;
  * Unit tests for the {@link JdbcCategoryDao} class.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class JdbcCategoryDaoTests extends AbstractNodeTransactionalTest {
 
@@ -112,6 +113,16 @@ public class JdbcCategoryDaoTests extends AbstractNodeTransactionalTest {
 		Assert.assertEquals("Deleted count", 1, result);
 		Category cat = dao.load(TEST_CONFIG_ID, lastCategory.getUuid());
 		Assert.assertNull("Category no longer available", cat);
+	}
+
+	@Test
+	public void findForName() {
+		insert();
+		List<Category> results = dao.findAllForConfigAndName(TEST_CONFIG_ID, lastCategory.getName(),
+				null);
+		Assert.assertNotNull("Results", results);
+		Assert.assertEquals("Result count", 1, results.size());
+		Assert.assertEquals("Category", lastCategory, results.get(0));
 	}
 
 }

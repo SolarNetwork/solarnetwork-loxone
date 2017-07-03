@@ -257,4 +257,13 @@ public class JdbcRoomDaoTests extends AbstractNodeTransactionalTest {
 		Assert.assertEquals("Found object 3", all.get(0).getUuid(), results.get(2).getUuid());
 	}
 
+	@Test
+	public void findForName() {
+		insert();
+		List<Room> results = dao.findAllForConfigAndName(TEST_CONFIG_ID, lastRoom.getName(), null);
+		Assert.assertNotNull("Results", results);
+		Assert.assertEquals("Result count", 1, results.size());
+		Assert.assertEquals("Category", lastRoom, results.get(0));
+	}
+
 }

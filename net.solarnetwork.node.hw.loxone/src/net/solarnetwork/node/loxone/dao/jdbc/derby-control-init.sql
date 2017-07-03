@@ -12,6 +12,8 @@ CREATE TABLE solarnode.loxone_control (
 	CONSTRAINT loxone_control_pk PRIMARY KEY (config_id, uuid_hi, uuid_lo)
 );
 
+CREATE INDEX loxone_control_name_idx ON solarnode.loxone_control (name);
+
 CREATE TABLE solarnode.loxone_control_state (
 	uuid_hi		BIGINT NOT NULL,
 	uuid_lo		BIGINT NOT NULL,
@@ -27,5 +29,7 @@ CREATE TABLE solarnode.loxone_control_state (
 CREATE UNIQUE INDEX loxone_control_state_idx 
 ON solarnode.loxone_control_state (config_id, uuid_hi, uuid_lo, name);
 
+CREATE INDEX loxone_control_state_name_idx ON solarnode.loxone_control_state (name);
+
 INSERT INTO solarnode.sn_settings (skey, svalue) 
-VALUES ('solarnode.loxone_control.version', '1');
+VALUES ('solarnode.loxone_control.version', '2');

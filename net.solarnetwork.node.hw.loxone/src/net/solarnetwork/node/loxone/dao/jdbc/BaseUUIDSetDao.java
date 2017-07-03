@@ -49,7 +49,7 @@ import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
  * Base implementation of {@link UUIDSetDao}.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public abstract class BaseUUIDSetDao<T extends UUIDSetEntity<P>, P extends UUIDEntityParameters>
 		extends BaseUUIDEntityDao<T> implements UUIDSetDao<T, P> {
@@ -83,6 +83,37 @@ public abstract class BaseUUIDSetDao<T extends UUIDSetEntity<P>, P extends UUIDE
 	public BaseUUIDSetDao(Class<T> entityClass, Class<P> parametersClass, String entityName, int version,
 			RowMapper<T> rowMapper) {
 		super(entityClass, entityName, version, rowMapper);
+		this.parametersClass = parametersClass;
+	}
+
+	/**
+	 * Construct with an an entity name and table version, deriving various
+	 * names based on conventions.
+	 * 
+	 * @param sqlResourcePrefixTemplate
+	 *        a template with a single {@code %s} parameter for the SQL resource
+	 *        prefix
+	 * @param tableNameTemplate
+	 *        a template with a single {@code %s} parameter for the SQL table
+	 *        name
+	 * @param entityClass
+	 *        The class of the entity managed by this DAO.
+	 * @param parametersClass
+	 *        The class of the parameters managed by this DAO.
+	 * @param entityName
+	 *        The entity name to use. This name forms the basis of the default
+	 *        SQL resource prefix, table name, tables version query, and SQL
+	 *        init resource.
+	 * @param version
+	 *        The tables version.
+	 * @param rowMapper
+	 *        A row mapper to use when mapping entity query results.
+	 * @since 1.1
+	 */
+	public BaseUUIDSetDao(String sqlResourcePrefixTemplate, String tableNameTemplate,
+			Class<T> entityClass, Class<P> parametersClass, String entityName, int version,
+			RowMapper<T> rowMapper) {
+		super(sqlResourcePrefixTemplate, tableNameTemplate, entityClass, entityName, version, rowMapper);
 		this.parametersClass = parametersClass;
 	}
 

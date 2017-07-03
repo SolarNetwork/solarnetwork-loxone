@@ -9,5 +9,7 @@ CREATE TABLE solarnode.loxone_category (
 	CONSTRAINT loxone_category_pk PRIMARY KEY (config_id, uuid_hi, uuid_lo)
 );
 
+CREATE INDEX loxone_category_name_idx ON solarnode.loxone_category (name);
+
 INSERT INTO solarnode.sn_settings (skey, svalue) 
-VALUES ('solarnode.loxone_category.version', '1');
+VALUES ('solarnode.loxone_category.version', '2');

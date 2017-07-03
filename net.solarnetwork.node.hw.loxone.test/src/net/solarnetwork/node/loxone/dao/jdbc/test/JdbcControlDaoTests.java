@@ -59,7 +59,7 @@ import net.solarnetwork.node.test.AbstractNodeTransactionalTest;
  * Unit tests for the {@link JdbcControlDao} class.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.2
  */
 public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 
@@ -306,6 +306,26 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 	}
 
 	@Test
+	public void findForConfigAndState() {
+		insertWithStates();
+		Control result = dao.getForConfigAndState(TEST_CONFIG_ID, lastControl.getStates().get("bar"));
+		Assert.assertNotNull(result);
+		Assert.assertEquals("Found object", lastControl.getUuid(), result.getUuid());
+		Assert.assertEquals("State map", lastControl.getStates(), result.getStates());
+	}
+
+	@Test
+	public void findForConfigAndStateOutOfMany() {
+		insertWithStates();
+		Control expected = lastControl;
+		insertWithStates();
+		Control result = dao.getForConfigAndState(TEST_CONFIG_ID, expected.getStates().get("bar"));
+		Assert.assertNotNull(result);
+		Assert.assertEquals("Found object", expected.getUuid(), result.getUuid());
+		Assert.assertEquals("State map", expected.getStates(), result.getStates());
+	}
+
+	@Test
 	public void countForConfigNoMatch() {
 		insert();
 		int result = dao.countForConfig(-1L);
@@ -503,4 +523,14 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 		Assert.assertEquals("Bam name", "bam", propParams.getName());
 		Assert.assertEquals("Bam value", Double.valueOf(bamEvent.getValue()), propParams.getValue());
 	}
+
+	@Test
+	public void findForName() {
+		insert();
+		List<Control> results = dao.findAllForConfigAndName(TEST_CONFIG_ID, lastControl.getName(), null);
+		Assert.assertNotNull("Results", results);
+		Assert.assertEquals("Result count", 1, results.size());
+		Assert.assertEquals("Category", lastControl, results.get(0));
+	}
+
 }

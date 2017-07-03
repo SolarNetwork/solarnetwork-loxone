@@ -211,4 +211,10 @@ public class JdbcSourceMappingDaoTests extends AbstractNodeTransactionalTest {
 		Assert.assertEquals("Found object 3", all.get(0).getUuid(), results.get(2).getUuid());
 	}
 
+	@Test(expected = UnsupportedOperationException.class)
+	public void findForName() {
+		insert();
+		dao.findAllForConfigAndName(TEST_CONFIG_ID, "foo", null);
+	}
+
 }

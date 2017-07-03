@@ -34,16 +34,18 @@ import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.Identifiable;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
+import net.solarnetwork.node.loxone.domain.Control;
 import net.solarnetwork.node.loxone.domain.EventEntity;
 import net.solarnetwork.node.loxone.domain.SourceMapping;
 import net.solarnetwork.node.loxone.domain.UUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
+import net.solarnetwork.node.loxone.domain.ValueEvent;
 
 /**
  * API for a Loxone device.
  * 
  * @author matt
- * @version 1.1
+ * @version 1.2
  */
 public interface LoxoneService extends Identifiable {
 
@@ -145,4 +147,54 @@ public interface LoxoneService extends Identifiable {
 	 * @since 1.1
 	 */
 	void importSourceMappings(InputStream in, LoxoneSourceMappingParser parser) throws IOException;
+
+	/**
+	 * Get all known controls for a given name.
+	 * 
+	 * <p>
+	 * In general names are expected to be unique, but that is not enforced.
+	 * </p>
+	 * 
+	 * @param name
+	 *        the name to lookup
+	 * @param sortDescriptors
+	 *        The optional sort descriptors. If not provided, a default sort
+	 *        will be used.
+	 * @return the list of matching controls
+	 * @since 1.2
+	 */
+	List<Control> findControlsForName(String name, List<SortDescriptor> sortDescriptors);
+
+	/**
+	 * Get the control for a control state UUID.
+	 * 
+	 * @param uuid
+	 *        the control state UUID to lookup
+	 * @return the control, or {@literal null} if not available
+	 * @since 1.2
+	 */
+	Control getControlForState(UUID uuid);
+
+	/**
+	 * Get the current value of a control state.
+	 * 
+	 * @param uuid
+	 *        the control state UUID to get the value of
+	 * @return the value, of {@literal null} if not available
+	 * @since 1.2
+	 */
+	ValueEvent getControlState(UUID uuid);
+
+	/**
+	 * Asynchronously set the value of a control.
+	 * 
+	 * @param name
+	 *        the name of the control to set the state of
+	 * @param value
+	 *        the control value to set
+	 * @return the resulting control state
+	 * @since 1.2
+	 */
+	Future<List<ValueEvent>> setControlState(UUID uuid, Double value);
+
 }

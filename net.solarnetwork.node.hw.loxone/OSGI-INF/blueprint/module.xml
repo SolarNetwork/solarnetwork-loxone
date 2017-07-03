@@ -147,6 +147,11 @@
 		<property name="messageSendingOps" ref="messageSendingOperations"/>
 	</bean>
 	
+	<bean id="weather-event-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.WeatherEventBinaryFileHandler">
+		<property name="eventAdmin" ref="eventAdmin"/>
+		<property name="messageSendingOps" ref="messageSendingOperations"/>
+	</bean>
+	
 	<bean id="daytimer-event-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.DaytimerEventBinaryFileHandler">
 		<property name="eventAdmin" ref="eventAdmin"/>
 	</bean>
@@ -155,15 +160,21 @@
 		<property name="eventAdmin" ref="eventAdmin"/>
 	</bean>
 	
+	<bean id="control-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.IoControlCommandHandler">
+		<property name="eventAdmin" ref="eventAdmin"/>
+	</bean>
+	
 	<util:list id="binary-file-handlers">
 		<beans:ref bean="value-event-handler"/>
 		<beans:ref bean="text-event-handler"/>
+		<beans:ref bean="weather-event-handler"/>
 		<beans:ref bean="daytimer-event-handler"/>
 		<beans:ref bean="get-image-handler"/>
 		<beans:ref bean="get-structure-cmd-handler"/>
 	</util:list>
 
 	<util:list id="command-handlers">
+		<beans:ref bean="control-handler"/>
 		<beans:ref bean="get-image-handler"/>
 		<beans:ref bean="get-structure-cmd-handler"/>
 		<beans:ref bean="structure-file-last-mod-cmd-handler"/>
@@ -226,7 +237,18 @@
 	
 	<osgix:managed-service-factory factory-pid="net.solarnetwork.node.loxone.ws" autowire-on-update="true">
 		<osgix:interfaces>
+			<!-- Note: 
+				NodeControlProvider not exposed here, because Loxone manages it's own 
+				schedule for collecting control state. This is left here for developers
+				who want an easy way to set Loxone control values via the Controls GUI.
+				
+				Also note that InstructionHandler *is* exposed, so the node can still
+				respond to the SetControlParameter instruction for changing Loxone
+				control values.
+			<beans:value>net.solarnetwork.node.NodeControlProvider</beans:value>
+			-->
 			<beans:value>net.solarnetwork.node.loxone.LoxoneService</beans:value>
+			<beans:value>net.solarnetwork.node.reactor.InstructionHandler</beans:value>
 			<beans:value>net.solarnetwork.node.settings.SettingSpecifierProvider</beans:value>
 			<beans:value>org.osgi.service.event.EventHandler</beans:value>
 		</osgix:interfaces>
@@ -237,6 +259,11 @@
 					<beans:value>#{T(net.solarnetwork.node.loxone.protocol.ws.LoxoneEvents).STRUCTURE_FILE_MODIFICATION_DATE_EVENT}</beans:value>
 					<beans:value>#{T(net.solarnetwork.node.loxone.protocol.ws.LoxoneEvents).STRUCTURE_FILE_SAVED_EVENT}</beans:value>
 				</beans:array>
+			</beans:entry>
+			<beans:entry key="instruction">
+				<beans:list>
+					<beans:value>SetControlParameter</beans:value>
+				</beans:list>
 			</beans:entry>
 		</osgix:service-properties>
 		<bean class="net.solarnetwork.node.loxone.impl.WebsocketLoxoneService" init-method="init" destroy-method="disconnect">

@@ -85,7 +85,7 @@ public class Control extends BaseConfigurationEntity {
 	}
 
 	/**
-	 * Alias for {@link #setUuid(UUID)}.
+	 * Alias for {@link #getUuid(UUID)}.
 	 * 
 	 * @return The UUID.
 	 */
@@ -95,7 +95,7 @@ public class Control extends BaseConfigurationEntity {
 	}
 
 	/**
-	 * Alias for {@link #getUuid()}.
+	 * Alias for {@link #setUuid(UUID)}.
 	 * 
 	 * @param uuid
 	 *        The UUID to set.

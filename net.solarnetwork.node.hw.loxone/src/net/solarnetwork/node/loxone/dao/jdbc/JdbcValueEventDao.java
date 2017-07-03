@@ -37,7 +37,7 @@ import net.solarnetwork.node.loxone.domain.ValueEvent;
  * JDBC implementation of {@link ValueEventDao}.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class JdbcValueEventDao extends BaseEventEntityDao<ValueEvent> implements ValueEventDao {
 
@@ -51,7 +51,23 @@ public class JdbcValueEventDao extends BaseEventEntityDao<ValueEvent> implements
 	 * Constructor.
 	 */
 	public JdbcValueEventDao() {
-		super(ValueEvent.class, "vevent", TABLES_VERSION, new ValueEventRowMapper());
+		this(SQL_RESOURCE_PREFIX, TABLE_NAME_FORMAT);
+	}
+
+	/**
+	 * Construct with custom SQL settings.
+	 * 
+	 * @param sqlResourcePrefixTemplate
+	 *        a template with a single {@code %s} parameter for the SQL resource
+	 *        prefix
+	 * @param tableNameTemplate
+	 *        a template with a single {@code %s} parameter for the SQL table
+	 *        name
+	 * @since 1.1
+	 */
+	public JdbcValueEventDao(String sqlResourcePrefixTemplate, String tableNameTemplate) {
+		super(sqlResourcePrefixTemplate, tableNameTemplate, ValueEvent.class, "vevent", TABLES_VERSION,
+				new ValueEventRowMapper());
 	}
 
 	@Override

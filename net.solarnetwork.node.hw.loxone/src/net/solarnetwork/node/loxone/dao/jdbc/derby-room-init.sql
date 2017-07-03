@@ -8,5 +8,7 @@ CREATE TABLE solarnode.loxone_room (
 	CONSTRAINT loxone_room_pk PRIMARY KEY (config_id, uuid_hi, uuid_lo)
 );
 
+CREATE INDEX loxone_room_name_idx ON solarnode.loxone_room (name);
+
 INSERT INTO solarnode.sn_settings (skey, svalue) 
-VALUES ('solarnode.loxone_room.version', '1');
+VALUES ('solarnode.loxone_room.version', '2');

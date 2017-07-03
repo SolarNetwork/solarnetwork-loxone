@@ -33,17 +33,31 @@ import net.solarnetwork.node.loxone.domain.Room;
  * JDBC implementation of {@link RoomDao}.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class JdbcRoomDao extends BaseConfigurationEntityDao<Room> implements RoomDao {
 
 	/** The default tables version. */
-	public static final int TABLES_VERSION = 1;
+	public static final int TABLES_VERSION = 2;
 
 	/**
 	 * Constructor.
 	 */
 	public JdbcRoomDao() {
+		this(SQL_RESOURCE_PREFIX, TABLE_NAME_FORMAT);
+	}
+
+	/**
+	 * Construct with custom SQL settings.
+	 * 
+	 * @param sqlResourcePrefixTemplate
+	 *        a template with a single {@code %s} parameter for the SQL resource
+	 *        prefix
+	 * @param tableNameTemplate
+	 *        a template with a single {@code %s} parameter for the SQL table
+	 *        name
+	 */
+	public JdbcRoomDao(String sqlResourcePrefixTemplate, String tableNameTemplate) {
 		super(Room.class, "room", TABLES_VERSION, new RoomRowMapper());
 	}
 

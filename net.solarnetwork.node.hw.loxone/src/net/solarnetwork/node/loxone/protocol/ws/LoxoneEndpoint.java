@@ -42,6 +42,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import javax.websocket.ClientEndpointConfig;
 import javax.websocket.CloseReason;
 import javax.websocket.Endpoint;
@@ -301,7 +302,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		}
 		MessageHeader h = headerQueue.poll();
 		if ( h != null ) {
-			log.debug("Got binary message {}", h);
+			log.trace("Got binary message {}", h);
 			if ( log.isTraceEnabled() ) {
 				try {
 					log.trace("Binary message {} payload (Base64):\n{}", h, new String(
@@ -318,7 +319,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 			// this should be a message header message, and another message will follow 
 			// from the Loxone that logically refers to this header
 			MessageHeader header = new MessageHeader(buf);
-			log.debug("Got message header {}", header);
+			log.trace("Got message header {}", header);
 			incrementMessageCount();
 			if ( !headerQueue.offer(header) ) {
 				log.warn("Dropping message header: {}", header);
@@ -496,6 +497,10 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	}
 
+	// sometimes we don't seem to get a header in a response message, but we can see this
+	// is a control response still
+	private static final Pattern LL_JSON_PAT = Pattern.compile("^\\s*\\{\\s*\"LL\"\\s*:");
+
 	/**
 	 * Streaming text message handler that acts as a broker for
 	 * {@link CommandHandler} instances to process messages.
@@ -514,7 +519,8 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 			log.debug("Handling text message {}: {}", header, payload);
 
-			if ( header != null && header.getType() == MessageType.TextMessage ) {
+			if ( (header != null && header.getType() == MessageType.TextMessage)
+					|| (header == null && LL_JSON_PAT.matcher(payload).find()) ) {
 				// start inspecting the message to know what to do
 				try {
 					JsonNode json = getObjectMapper().readTree(payload);

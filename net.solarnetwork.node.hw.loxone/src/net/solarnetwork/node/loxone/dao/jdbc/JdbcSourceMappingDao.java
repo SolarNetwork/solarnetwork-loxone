@@ -25,10 +25,12 @@ package net.solarnetwork.node.loxone.dao.jdbc;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.loxone.dao.SourceMappingDao;
 import net.solarnetwork.node.loxone.domain.SourceMapping;
 
@@ -36,7 +38,7 @@ import net.solarnetwork.node.loxone.domain.SourceMapping;
  * JDBC based implementation of {@link SourceMappingDao}
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class JdbcSourceMappingDao extends BaseConfigurationEntityDao<SourceMapping>
 		implements SourceMappingDao {
@@ -74,6 +76,12 @@ public class JdbcSourceMappingDao extends BaseConfigurationEntityDao<SourceMappi
 		ps.setString(1, sourceMapping.getSourceId());
 		prepareUUID(2, sourceMapping.getUuid(), ps);
 		ps.setObject(4, sourceMapping.getConfigId());
+	}
+
+	@Override
+	public List<SourceMapping> findAllForConfigAndName(Long configId, String name,
+			List<SortDescriptor> sortDescriptors) {
+		throw new UnsupportedOperationException();
 	}
 
 	private static final class SourceMappingRowMapper implements RowMapper<SourceMapping> {

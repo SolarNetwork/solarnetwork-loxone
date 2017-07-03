@@ -35,7 +35,7 @@ import net.solarnetwork.node.loxone.domain.BaseEventEntity;
  * Base DAO for {@link BaseEventEntity} classes.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public abstract class BaseEventEntityDao<T extends BaseEventEntity> extends BaseUUIDEntityDao<T>
 		implements EventEntityDao<T> {
@@ -58,6 +58,33 @@ public abstract class BaseEventEntityDao<T extends BaseEventEntity> extends Base
 	public BaseEventEntityDao(Class<T> entityClass, String entityName, int version,
 			RowMapper<T> rowMapper) {
 		super(entityClass, entityName, version, rowMapper);
+	}
+
+	/**
+	 * Init with an an entity name and table version, deriving various names
+	 * based on conventions.
+	 * 
+	 * @param sqlResourcePrefixTemplate
+	 *        a template with a single {@code %s} parameter for the SQL resource
+	 *        prefix
+	 * @param tableNameTemplate
+	 *        a template with a single {@code %s} parameter for the SQL table
+	 *        name
+	 * @param entityClass
+	 *        The class of the entity managed by this DAO.
+	 * @param entityName
+	 *        The entity name to use. This name forms the basis of the default
+	 *        SQL resource prefix, table name, tables version query, and SQL
+	 *        init resource.
+	 * @param version
+	 *        The tables version.
+	 * @param rowMapper
+	 *        A row mapper to use when mapping entity query results.
+	 * @since 1.1
+	 */
+	public BaseEventEntityDao(String sqlResourcePrefixTemplate, String tableNameTemplate,
+			Class<T> entityClass, String entityName, int version, RowMapper<T> rowMapper) {
+		super(sqlResourcePrefixTemplate, tableNameTemplate, entityClass, entityName, version, rowMapper);
 	}
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)

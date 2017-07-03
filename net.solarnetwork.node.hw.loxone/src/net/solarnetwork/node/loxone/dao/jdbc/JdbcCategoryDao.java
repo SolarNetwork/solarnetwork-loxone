@@ -34,17 +34,31 @@ import net.solarnetwork.node.loxone.domain.CategoryType;
  * JDBC implementation of {@link CategoryDao}.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class JdbcCategoryDao extends BaseConfigurationEntityDao<Category> implements CategoryDao {
 
 	/** The default tables version. */
-	public static final int TABLES_VERSION = 1;
+	public static final int TABLES_VERSION = 2;
 
 	/**
 	 * Constructor.
 	 */
 	public JdbcCategoryDao() {
+		this(SQL_RESOURCE_PREFIX, TABLE_NAME_FORMAT);
+	}
+
+	/**
+	 * Construct with custom SQL settings.
+	 * 
+	 * @param sqlResourcePrefixTemplate
+	 *        a template with a single {@code %s} parameter for the SQL resource
+	 *        prefix
+	 * @param tableNameTemplate
+	 *        a template with a single {@code %s} parameter for the SQL table
+	 *        name
+	 */
+	public JdbcCategoryDao(String sqlResourcePrefixTemplate, String tableNameTemplate) {
 		super(Category.class, "category", TABLES_VERSION, new CategoryRowMapper());
 	}
 
