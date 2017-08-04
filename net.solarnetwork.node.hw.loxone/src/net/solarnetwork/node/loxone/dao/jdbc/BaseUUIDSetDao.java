@@ -244,7 +244,8 @@ public abstract class BaseUUIDSetDao<T extends UUIDSetEntity<P>, P extends UUIDE
 	@Override
 	public void updateSetForConfig(final Long configId, final Collection<UUID> add,
 			final Collection<UUID> remove, final Map<UUID, P> parameters) {
-		final String getSql = getSqlResource(SQL_GET_BY_PK);
+		final String getSql = getSqlResource(SQL_GET_BY_PK)
+				+ (getSqlForUpdateSuffix() != null ? getSqlForUpdateSuffix() : "");
 		final String addSql = getSqlResource(SQL_INSERT);
 		final Set<UUID> toAdd = (add != null ? new LinkedHashSet<>(add) : Collections.emptySet());
 		final Map<UUID, P> paramsToAdd = (parameters != null ? new LinkedHashMap<>(parameters)
@@ -256,7 +257,7 @@ public abstract class BaseUUIDSetDao<T extends UUIDSetEntity<P>, P extends UUIDE
 				// find existing rows we don't need to add, removing them from toAdd after 
 				// applying any parameters update as necessary
 				if ( !toAdd.isEmpty() ) {
-					PreparedStatement ps = con.prepareStatement(getSql, ResultSet.TYPE_SCROLL_SENSITIVE,
+					PreparedStatement ps = con.prepareStatement(getSql, ResultSet.TYPE_FORWARD_ONLY,
 							ResultSet.CONCUR_UPDATABLE);
 					try {
 						for ( Iterator<UUID> itr = toAdd.iterator(); itr.hasNext(); ) {
