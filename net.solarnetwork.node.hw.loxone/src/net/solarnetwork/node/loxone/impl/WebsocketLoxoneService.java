@@ -98,7 +98,7 @@ import net.solarnetwork.util.OptionalService;
  * Websocket based implementation of {@link LoxoneService}.
  * 
  * @author matt
- * @version 1.4
+ * @version 1.5
  */
 public class WebsocketLoxoneService extends LoxoneEndpoint
 		implements LoxoneService, SettingSpecifierProvider, WebsocketLoxoneServiceSettings,
@@ -201,6 +201,9 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	@Override
 	public List<Control> findControlsForName(String name, List<SortDescriptor> sortDescriptors) {
 		Config config = getConfiguration();
+		if ( config == null || config.getId() == null ) {
+			return Collections.emptyList();
+		}
 		return controlDao.findAllForConfigAndName(config.getId(), name, sortDescriptors);
 	}
 
@@ -208,6 +211,9 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	@Override
 	public Control getControlForState(UUID uuid) {
 		Config config = getConfiguration();
+		if ( config == null || config.getId() == null ) {
+			return null;
+		}
 		return controlDao.getForConfigAndState(config.getId(), uuid);
 	}
 
@@ -215,6 +221,9 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	@Override
 	public ValueEvent getControlState(UUID uuid) {
 		Config config = getConfiguration();
+		if ( config == null || config.getId() == null ) {
+			return null;
+		}
 		EventEntityDao<ValueEvent> valueEventDao = eventDaoForType(ValueEvent.class);
 		return valueEventDao.loadEvent(config.getId(), uuid);
 	}
@@ -235,17 +244,19 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	@Override
 	public <T extends UUIDSetEntity<P>, P extends UUIDEntityParameters> Map<UUID, P> getUUIDSet(
 			Class<T> type, List<SortDescriptor> sortDescriptors) {
-		Config config = getConfiguration();
-		UUIDSetDao<T, P> dao = uuidSetDaoForType(type);
-		Collection<T> entities = null;
-		if ( dao != null && config.getId() != null ) {
-			entities = dao.findAllForConfig(config.getId(), sortDescriptors);
-		}
 		Map<UUID, P> result = null;
-		if ( entities != null ) {
-			result = new LinkedHashMap<>(entities.size());
-			for ( T entity : entities ) {
-				result.put(entity.getUuid(), entity.getParameters());
+		Config config = getConfiguration();
+		if ( config != null && config.getId() != null ) {
+			UUIDSetDao<T, P> dao = uuidSetDaoForType(type);
+			Collection<T> entities = null;
+			if ( dao != null ) {
+				entities = dao.findAllForConfig(config.getId(), sortDescriptors);
+			}
+			if ( entities != null ) {
+				result = new LinkedHashMap<>(entities.size());
+				for ( T entity : entities ) {
+					result.put(entity.getUuid(), entity.getParameters());
+				}
 			}
 		}
 		return result;
@@ -256,9 +267,11 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	public <T extends UUIDSetEntity<P>, P extends UUIDEntityParameters> void updateUUIDSet(Class<T> type,
 			Collection<UUID> add, Collection<UUID> remove, Map<UUID, P> parameters) {
 		Config config = getConfiguration();
-		UUIDSetDao<T, P> dao = uuidSetDaoForType(type);
-		if ( dao != null && config.getId() != null ) {
-			dao.updateSetForConfig(config.getId(), add, remove, parameters);
+		if ( config != null && config.getId() != null ) {
+			UUIDSetDao<T, P> dao = uuidSetDaoForType(type);
+			if ( dao != null && config.getId() != null ) {
+				dao.updateSetForConfig(config.getId(), add, remove, parameters);
+			}
 		}
 	}
 
