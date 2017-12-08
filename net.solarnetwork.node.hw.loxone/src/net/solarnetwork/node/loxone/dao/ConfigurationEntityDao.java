@@ -80,6 +80,8 @@ public interface ConfigurationEntityDao<T extends ConfigurationEntity> {
 	 * {@link ConfigurationEntity#getName()}.
 	 * </p>
 	 * 
+	 * @param configId
+	 *        The config ID to match.
 	 * @param sortDescriptors
 	 *        list of sort descriptors to sort the results by
 	 * @return list of all persisted entities, or empty list if none available
@@ -96,6 +98,10 @@ public interface ConfigurationEntityDao<T extends ConfigurationEntity> {
 	 * {@link ConfigurationEntity#getName()}.
 	 * </p>
 	 * 
+	 * @param configId
+	 *        The config ID to match.
+	 * @param name
+	 *        The name to match.
 	 * @param sortDescriptors
 	 *        list of sort descriptors to sort the results by
 	 * @return list of all persisted entities, or empty list if none available
