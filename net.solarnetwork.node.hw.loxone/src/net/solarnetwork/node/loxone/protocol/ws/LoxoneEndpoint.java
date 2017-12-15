@@ -88,7 +88,7 @@ import net.solarnetwork.util.OptionalService;
  * date changes will request the structure file again from the Loxone server.
  * 
  * @author matt
- * @version 1.4
+ * @version 1.5
  */
 public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<ByteBuffer>, EventHandler {
 
@@ -318,11 +318,15 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		} else {
 			// this should be a message header message, and another message will follow 
 			// from the Loxone that logically refers to this header
-			MessageHeader header = new MessageHeader(buf);
-			log.trace("Got message header {}", header);
-			incrementMessageCount();
-			if ( !headerQueue.offer(header) ) {
-				log.warn("Dropping message header: {}", header);
+			try {
+				MessageHeader header = new MessageHeader(buf);
+				log.trace("Got message header {}", header);
+				incrementMessageCount();
+				if ( !headerQueue.offer(header) ) {
+					log.warn("Dropping message header: {}", header);
+				}
+			} catch ( IllegalArgumentException e ) {
+				log.warn("Dropping unsupported message header: {}", e.getMessage());
 			}
 		}
 	}
@@ -693,7 +697,8 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	public void handleEvent(Event event) {
 		final Session sess = session;
 		final Long configId = (sess != null
-				? (Long) session.getUserProperties().get(CONFIG_ID_USER_PROPERTY) : null);
+				? (Long) session.getUserProperties().get(CONFIG_ID_USER_PROPERTY)
+				: null);
 		final Long eventConfigId = (Long) event.getProperty(LoxoneEvents.EVENT_PROPERTY_CONFIG_ID);
 		if ( eventConfigId == null || !eventConfigId.equals(configId) ) {
 			// not for this Loxone configuration
