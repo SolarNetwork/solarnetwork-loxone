@@ -1,0 +1,4071 @@
+{
+  "lastModified" : "2017-12-04 19:35:54",
+  "msInfo" : {
+    "serialNr" : "FFFFDDDDDFFFFF",
+    "msName" : "Cabin Miniserver",
+    "projectName" : "Test Cabin Miniserver",
+    "localUrl" : "192.168.0.77:7777",
+    "remoteUrl" : "dns.loxonecloud.com/FFFFFFFFFF",
+    "tempUnit" : 0,
+    "currency" : "€",
+    "squareMeasure" : "sqm",
+    "location" : "123 Main Street, Glenorchy",
+    "languageCode" : "ENU",
+    "heatPeriodStart" : "04-01",
+    "heatPeriodEnd" : "11-30",
+    "coolPeriodStart" : "12-01",
+    "coolPeriodEnd" : "03-31",
+    "catTitle" : "Category",
+    "roomTitle" : "Room",
+    "miniserverType" : 0,
+    "deviceMonitor" : "0f78599a-02f5-1b15-ffff504f941034df",
+    "sortByRating" : false,
+    "currentUser" : {
+      "name" : "test",
+      "uuid" : "0ffffffff-02ef-78a7-ffff6d9b8f6a24c4",
+      "isAdmin" : false,
+      "changePassword" : true,
+      "userRights" : 1062
+    }
+  },
+  "globalStates" : {
+    "operatingMode" : "0c37aa3d-0010-0288-ffff6d9b8f6a24c4",
+    "sunrise" : "0c37aa3d-0014-029a-ffff6d9b8f6a24c4",
+    "sunset" : "0c37aa3d-0015-029d-ffff6d9b8f6a24c4",
+    "pastTasks" : "0c834682-01a6-1585-ffffdad6c6bd2ecd",
+    "plannedTasks" : "0c834682-01a6-1584-ffffdad6c6bd2ecd",
+    "notifications" : "0d74384e-01f6-0714-ffffab9075fbf4d9",
+    "modifications" : "0c37aa3d-0000-025a-ffff6d9b8f6a24c4",
+    "favColorSequences" : "0f785999-00ee-0224-ffff504f941034df",
+    "favColors" : "0f785999-00ee-0225-ffff504f941034df",
+    "miniserverTime" : "10c8cd31-01d9-0230-ffff504f941034df"
+  },
+  "operatingModes" : {
+    "0" : "Public Holiday",
+    "1" : "Vacation",
+    "2" : "Day off/School holidays",
+    "3" : "Monday",
+    "4" : "Tuesday",
+    "5" : "Wednesday",
+    "6" : "Thursday",
+    "7" : "Friday",
+    "8" : "Saturday",
+    "9" : "Sunday",
+    "-1" : "Alarm",
+    "-2" : "Presence simulation",
+    "-3" : "Fabric Protection",
+    "-4" : "Increased heating demand",
+    "-5" : "Entertaining",
+    "-6" : "All absent"
+  },
+  "rooms" : {
+    "0c37aa3d-0037-0372-ffff6d9b8f6a24c4" : {
+      "uuid" : "0c37aa3d-0037-0372-ffff6d9b8f6a24c4",
+      "name" : "Bathroom",
+      "image" : "00000000-0000-0007-2100000000000000.svg",
+      "defaultRating" : 1,
+      "isFavorite" : true,
+      "type" : 2
+    },
+    "0c384ffc-023e-6bbb-ffff6d9b8f6a24c4" : {
+      "uuid" : "0c384ffc-023e-6bbb-ffff6d9b8f6a24c4",
+      "name" : "Bedroom 2",
+      "image" : "00000000-0000-0008-2100000000000000.svg",
+      "defaultRating" : 1,
+      "isFavorite" : true,
+      "type" : 2
+    },
+    "0c4783a0-0203-c8a1-ffff6d9b8f6a24c4" : {
+      "uuid" : "0c4783a0-0203-c8a1-ffff6d9b8f6a24c4",
+      "name" : "Ground Source Heat Pump",
+      "image" : "00000000-0000-0031-2100000000000000.svg",
+      "defaultRating" : 1,
+      "isFavorite" : true,
+      "type" : 2
+    },
+    "0c37aa3d-0035-0366-ffff6d9b8f6a24c4" : {
+      "uuid" : "0c37aa3d-0035-0366-ffff6d9b8f6a24c4",
+      "name" : "Living room",
+      "image" : "00000000-0000-0004-2100000000000000.svg",
+      "defaultRating" : 10,
+      "isFavorite" : true,
+      "type" : 2
+    },
+    "0c37aa3d-0037-0376-ffff6d9b8f6a24c4" : {
+      "uuid" : "0c37aa3d-0037-0376-ffff6d9b8f6a24c4",
+      "name" : "Master Bedroom",
+      "image" : "00000000-0000-0008-2100000000000000.svg",
+      "defaultRating" : 1,
+      "isFavorite" : true,
+      "type" : 2
+    },
+    "0c37aa3d-0034-035a-ffff6d9b8f6a24c4" : {
+      "uuid" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "name" : "Not assigned",
+      "image" : "00000000-0000-0001-2100000000000000.svg",
+      "defaultRating" : 1,
+      "isFavorite" : true,
+      "type" : 2
+    },
+    "0c37aa3d-0047-03f0-ffff6d9b8f6a24c4" : {
+      "uuid" : "0c37aa3d-0047-03f0-ffff6d9b8f6a24c4",
+      "name" : "Outside",
+      "image" : "00000000-0000-002d-2100000000000000.svg",
+      "defaultRating" : 1,
+      "isFavorite" : true,
+      "type" : 2
+    },
+    "0c5651f4-0127-5602-ffff6d9b8f6a24c4" : {
+      "uuid" : "0c5651f4-0127-5602-ffff6d9b8f6a24c4",
+      "name" : "Solar Collector",
+      "image" : "00000000-0000-0019-2100000000000000.svg",
+      "defaultRating" : 1,
+      "isFavorite" : true,
+      "type" : 2
+    },
+    "0c478431-03a8-12b3-ffff6d9b8f6a24c4" : {
+      "uuid" : "0c478431-03a8-12b3-ffff6d9b8f6a24c4",
+      "name" : "Space Heating",
+      "image" : "00000000-0000-0033-2100000000000000.svg",
+      "defaultRating" : 1,
+      "isFavorite" : true,
+      "type" : 2
+    },
+    "0c37aa3d-003b-039a-ffff6d9b8f6a24c4" : {
+      "uuid" : "0c37aa3d-003b-039a-ffff6d9b8f6a24c4",
+      "name" : "Study",
+      "image" : "00000000-0000-0011-2100000000000000.svg",
+      "defaultRating" : 1,
+      "isFavorite" : true,
+      "type" : 2
+    },
+    "0c478369-028d-bf5e-ffff6d9b8f6a24c4" : {
+      "uuid" : "0c478369-028d-bf5e-ffff6d9b8f6a24c4",
+      "name" : "Thermal Store",
+      "image" : "00000000-0000-001e-2100000000000000.svg",
+      "defaultRating" : 1,
+      "isFavorite" : true,
+      "type" : 2
+    }
+  },
+  "cats" : {
+    "0c37aa3d-0027-02e0-ffff6d9b8f6a24c4" : {
+      "uuid" : "0c37aa3d-0027-02e0-ffff6d9b8f6a24c4",
+      "name" : "Heating",
+      "image" : "00000000-0000-0004-2000000000000000.svg",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "type" : "indoortemperature",
+      "color" : "#83B817"
+    },
+    "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4" : {
+      "uuid" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "name" : "Heating plant",
+      "image" : "00000000-0000-0008-2000000000000000.svg",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "type" : "undefined",
+      "color" : "#83B817"
+    },
+    "0ca7bf34-0043-ccc2-ffff6d9b8f6a24c4" : {
+      "uuid" : "0ca7bf34-0043-ccc2-ffff6d9b8f6a24c4",
+      "name" : "Hot Water Target",
+      "image" : "00000000-0000-0009-2000000000000000.svg",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "type" : "undefined",
+      "color" : "#83B817"
+    },
+    "0c37aa3d-0026-02d8-ffff6d9b8f6a24c4" : {
+      "uuid" : "0c37aa3d-0026-02d8-ffff6d9b8f6a24c4",
+      "name" : "Lighting",
+      "image" : "00000000-0000-0002-2000000000000000.svg",
+      "defaultRating" : 10,
+      "isFavorite" : true,
+      "type" : "lights",
+      "color" : "#83B817"
+    },
+    "0c3febfe-0066-1240-ffff6d9b8f6a24c4" : {
+      "uuid" : "0c3febfe-0066-1240-ffff6d9b8f6a24c4",
+      "name" : "Meters",
+      "image" : "00000000-0000-0027-2000000000000000.svg",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "type" : "undefined",
+      "color" : "#83B817"
+    },
+    "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4" : {
+      "uuid" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "name" : "Not assigned",
+      "image" : "00000000-0000-0001-2000000000000000.svg",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "type" : "undefined",
+      "color" : "#83B817"
+    },
+    "0c37aa3d-0028-02ec-ffff6d9b8f6a24c4" : {
+      "uuid" : "0c37aa3d-0028-02ec-ffff6d9b8f6a24c4",
+      "name" : "Sensor",
+      "image" : "00000000-0000-0007-2000000000000000.svg",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "type" : "undefined",
+      "color" : "#83B817"
+    },
+    "0c37aa3d-002a-02fc-ffff6d9b8f6a24c4" : {
+      "uuid" : "0c37aa3d-002a-02fc-ffff6d9b8f6a24c4",
+      "name" : "Ventilation",
+      "image" : "00000000-0000-000b-2000000000000000.svg",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "type" : "undefined",
+      "color" : "#83B817"
+    },
+    "0c478039-03c8-319c-ffff6d9b8f6a24c4" : {
+      "uuid" : "0c478039-03c8-319c-ffff6d9b8f6a24c4",
+      "name" : "Water Fixtures",
+      "image" : "00000000-0000-0025-2000000000000000.svg",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "type" : "undefined",
+      "color" : "#83B817"
+    }
+  },
+  "controls" : {
+    "0c81816c-001c-4a70-ffff6d9b8f6a24c4" : {
+      "name" : "Lighting controller",
+      "type" : "LightController",
+      "uuidAction" : "0c81816c-001c-4a70-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0037-0372-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0026-02d8-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "movementScene" : 1
+      },
+      "states" : {
+        "activeScene" : "0c81816c-001c-4a6d-ffff89c5a441f2b5",
+        "sceneList" : "0f78599a-00eb-1447-ffff504f941034df"
+      },
+      "subControls" : {
+        "0c81816c-001c-4a70-ffff6d9b8f6a24c4/AI1" : {
+          "name" : "BATH - NANO IO Relay Q1",
+          "type" : "Switch",
+          "uuidAction" : "0c81816c-001c-4a70-ffff6d9b8f6a24c4/AI1",
+          "defaultRating" : 0,
+          "isFavorite" : false,
+          "isSecured" : false,
+          "states" : {
+            "active" : "0c81816c-001c-4a61-ffff89c5a441f2b5"
+          }
+        }
+      }
+    },
+    "0c819d78-0009-f7f1-ffff6d9b8f6a24c4" : {
+      "name" : "Bathroom CO2",
+      "type" : "Meter",
+      "uuidAction" : "0c819d78-0009-f7f1-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0037-0372-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-002a-02fc-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1f"
+      },
+      "states" : {
+        "actual" : "0c819d78-0009-f7e6-ffffc9757d72da7a",
+        "total" : "0c819d78-0009-f7e5-ffffc9757d72da7a"
+      },
+      "statistic" : {
+        "frequency" : 6,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Energy",
+          "format" : "%.1f",
+          "uuid" : "0c819d78-0009-f7e5-ffffc9757d72da7a",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "Power",
+          "format" : "%.3fkW",
+          "uuid" : "0c819d78-0009-f7e6-ffffc9757d72da7a",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c819d86-01a4-3d07-ffff6d9b8f6a24c4" : {
+      "name" : "Bathroom Humidity",
+      "type" : "Meter",
+      "uuidAction" : "0c819d86-01a4-3d07-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0037-0372-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-002a-02fc-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1f"
+      },
+      "states" : {
+        "actual" : "0c819d86-01a4-3cfc-ffff522e86250231",
+        "total" : "0c819d86-01a4-3cfb-ffff522e86250231"
+      },
+      "statistic" : {
+        "frequency" : 6,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Energy",
+          "format" : "%.1f",
+          "uuid" : "0c819d86-01a4-3cfb-ffff522e86250231",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "Power",
+          "format" : "%.3fkW",
+          "uuid" : "0c819d86-01a4-3cfc-ffff522e86250231",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37aa3d-007f-04d2-ffff6d9b8f6a24c4" : {
+      "name" : "F7_Shower HW",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37aa3d-007f-04d2-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0037-0372-ffff6d9b8f6a24c4",
+      "cat" : "0c478039-03c8-319c-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1fL/min"
+      },
+      "states" : {
+        "value" : "0c37aa3d-007f-04d2-ffff6d9b8f6a24c4",
+        "error" : "0c37aa3d-007f-04d1-ffffd410921f2f08"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "F7_Shower HW",
+          "format" : "%.1fL/min",
+          "uuid" : "0c37aa3d-007f-04d0-ffffd410921f2f08",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37aa4a-00bc-06dd-ffff6d9b8f6a24c4" : {
+      "name" : "Shower Hot Water Cut Off",
+      "type" : "InfoOnlyDigital",
+      "uuidAction" : "0c37aa4a-00bc-06dd-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0037-0372-ffff6d9b8f6a24c4",
+      "cat" : "0c478039-03c8-319c-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "text" : {
+          "off" : "Off",
+          "on" : "On"
+        },
+        "color" : {
+          "off" : "#BE1624",
+          "on" : "#73BA1B"
+        }
+      },
+      "states" : {
+        "active" : "0c37aa4a-00bc-06dd-ffff6d9b8f6a24c4"
+      }
+    },
+    "0c79c70b-033b-9bff-ffff6d9b8f6a24c4" : {
+      "name" : "Shower Timer",
+      "type" : "Slider",
+      "uuidAction" : "0c79c70b-033b-9bff-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0037-0372-ffff6d9b8f6a24c4",
+      "cat" : "0c478039-03c8-319c-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.0f",
+        "min" : 1.0,
+        "max" : 25.0,
+        "step" : 1.0
+      },
+      "states" : {
+        "value" : "0c79c70b-033b-9bff-ffff6d9b8f6a24c4",
+        "error" : "0c79c70b-033b-9bfe-ffff7fdee74bd878"
+      }
+    },
+    "0c89a0ce-0198-5ad0-ffff6d9b8f6a24c4" : {
+      "name" : "Bed 2 Target Temp",
+      "type" : "Slider",
+      "uuidAction" : "0c89a0ce-0198-5ad0-ffff6d9b8f6a24c4",
+      "room" : "0c384ffc-023e-6bbb-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0027-02e0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f",
+        "min" : 15.0,
+        "max" : 20.0,
+        "step" : 1.0
+      },
+      "states" : {
+        "value" : "0c89a0ce-0198-5ad0-ffff6d9b8f6a24c4",
+        "error" : "0c89a0ce-0198-5acf-ffff2f634d2f1b51"
+      }
+    },
+    "0c3800f2-0193-67ca-ffff6d9b8f6a24c4" : {
+      "name" : "TA1 BED2",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c3800f2-0193-67ca-ffff6d9b8f6a24c4",
+      "room" : "0c384ffc-023e-6bbb-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0027-02e0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c3800f2-0193-67ca-ffff6d9b8f6a24c4",
+        "error" : "0c3800f2-0193-67c9-ffff56abab220c4f"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "TA1 BED2",
+          "format" : "%.1f°",
+          "uuid" : "0c3800f2-0193-67c8-ffff56abab220c4f",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c89a099-01c6-ef81-ffffb5b84d239072" : {
+      "name" : "Timer _ schedule",
+      "type" : "Daytimer",
+      "uuidAction" : "0c89a099-01c6-ef81-ffffb5b84d239072",
+      "room" : "0c384ffc-023e-6bbb-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0027-02e0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "analog" : true,
+        "format" : "%.1f"
+      },
+      "states" : {
+        "mode" : "0c89a099-01c6-ef89-ffffb5b84d239072",
+        "override" : "0c89a099-01c6-ef8c-ffffb5b84d239072",
+        "value" : "0c89a099-01c6-ef88-ffffb5b84d239072",
+        "needsActivation" : "0c89a099-01c6-ef8d-ffffb5b84d239072",
+        "modeList" : "0c89a099-01c6-ef8e-ffffb5b84d239072",
+        "entriesAndDefaultValue" : "0c89a099-01c6-ef81-ffffb5b84d239072",
+        "resetActive" : "0c89a099-01c6-ef83-ffffb5b84d239072"
+      }
+    },
+    "0ea25368-00a0-9283-ffff6d9b8f6a24c4" : {
+      "name" : "Push-button",
+      "type" : "Switch",
+      "uuidAction" : "0ea25368-00a0-9283-ffff6d9b8f6a24c4",
+      "room" : "0c384ffc-023e-6bbb-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0026-02d8-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "states" : {
+        "active" : "0ea25368-00a0-9282-ffff62858a25863a"
+      }
+    },
+    "0c65d9ea-0010-49f7-ffff72fa1def74e7" : {
+      "name" : "Calculated Power factor",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c65d9ea-0010-49f7-ffff72fa1def74e7",
+      "room" : "0c4783a0-0203-c8a1-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.3f"
+      },
+      "states" : {
+        "value" : "0c65d9ea-0010-49f7-ffff72fa1def74e7"
+      }
+    },
+    "0c65d9e5-00d3-1233-ffff6d9b8f6a24c4" : {
+      "name" : "Calculated active power",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c65d9e5-00d3-1233-ffff6d9b8f6a24c4",
+      "room" : "0c4783a0-0203-c8a1-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.3f"
+      },
+      "states" : {
+        "value" : "0c65d9e5-00d3-1233-ffff6d9b8f6a24c4"
+      },
+      "statistic" : {
+        "frequency" : 6,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Calculated active power",
+          "format" : "%.3f",
+          "uuid" : "0c65d9e5-00d3-1232-ffff41503fcb0ebb",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c40ff2b-026a-a122-ffff6d9b8f6a24c4" : {
+      "name" : "F1_HP Ground Loop",
+      "type" : "Meter",
+      "uuidAction" : "0c40ff2b-026a-a122-ffff6d9b8f6a24c4",
+      "room" : "0c4783a0-0203-c8a1-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1fL"
+      },
+      "states" : {
+        "actual" : "0c40ff2b-026a-a117-ffffc77c129cccc2",
+        "total" : "0c40ff2b-026a-a116-ffffc77c129cccc2"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "L",
+          "format" : "%.1fL",
+          "uuid" : "0c40ff2b-026a-a116-ffffc77c129cccc2",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "L/hr",
+          "format" : "%.3fkW",
+          "uuid" : "0c40ff2b-026a-a117-ffffc77c129cccc2",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37aa4a-00b4-06b7-ffff6d9b8f6a24c4" : {
+      "name" : "F1_HP Ground Loop",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37aa4a-00b4-06b7-ffff6d9b8f6a24c4",
+      "room" : "0c4783a0-0203-c8a1-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1fL/min"
+      },
+      "states" : {
+        "value" : "0c37aa4a-00b4-06b7-ffff6d9b8f6a24c4",
+        "error" : "0c37aa4a-00b4-06b6-ffff81f45bd48d6b"
+      }
+    },
+    "0c40ff39-03b3-d24d-ffff5894e83ef980" : {
+      "name" : "F2_HP House Loop",
+      "type" : "Meter",
+      "uuidAction" : "0c40ff39-03b3-d24d-ffff5894e83ef980",
+      "room" : "0c4783a0-0203-c8a1-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1fL"
+      },
+      "states" : {
+        "actual" : "0c40ff39-03b3-d258-ffff5894e83ef980",
+        "total" : "0c40ff39-03b3-d257-ffff5894e83ef980"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "L",
+          "format" : "%.1fL",
+          "uuid" : "0c40ff39-03b3-d257-ffff5894e83ef980",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "L/hr",
+          "format" : "%.3fkW",
+          "uuid" : "0c40ff39-03b3-d258-ffff5894e83ef980",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37aa4a-00b5-06bb-ffff6d9b8f6a24c4" : {
+      "name" : "F2_HP House Loop",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37aa4a-00b5-06bb-ffff6d9b8f6a24c4",
+      "room" : "0c4783a0-0203-c8a1-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1fL/min"
+      },
+      "states" : {
+        "value" : "0c37aa4a-00b5-06bb-ffff6d9b8f6a24c4",
+        "error" : "0c37aa4a-00b5-06ba-ffff81f45bd48d6b"
+      }
+    },
+    "0c842849-012c-5f2f-ffff6d9b8f6a24c4" : {
+      "name" : "Heat Pump Loss",
+      "type" : "Meter",
+      "uuidAction" : "0c842849-012c-5f2f-ffff6d9b8f6a24c4",
+      "room" : "0c4783a0-0203-c8a1-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1f"
+      },
+      "states" : {
+        "actual" : "0c842849-012c-5f24-ffff7480569489d0",
+        "total" : "0c842849-012c-5f23-ffff7480569489d0"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Energy",
+          "format" : "%.1f",
+          "uuid" : "0c842849-012c-5f23-ffff7480569489d0",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "Power",
+          "format" : "%.3fkW",
+          "uuid" : "0c842849-012c-5f24-ffff7480569489d0",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c479ac4-024b-e6ab-ffff6d9b8f6a24c4" : {
+      "name" : "M_HP COP",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c479ac4-024b-e6ab-ffff6d9b8f6a24c4",
+      "room" : "0c4783a0-0203-c8a1-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.3f"
+      },
+      "states" : {
+        "value" : "0c479ac4-024b-e6ab-ffff6d9b8f6a24c4"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "M_HP COP",
+          "format" : "%.3f",
+          "uuid" : "0c479ac4-024b-e6aa-ffffd1a1a475e4a1",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37edcb-012d-1860-ffff6d9b8f6a24c4" : {
+      "name" : "M_HP T INPUT",
+      "type" : "Meter",
+      "uuidAction" : "0c37edcb-012d-1860-ffff6d9b8f6a24c4",
+      "room" : "0c4783a0-0203-c8a1-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1fkWh"
+      },
+      "states" : {
+        "actual" : "0c37edcb-012d-1855-ffffa41880f3cb1c",
+        "total" : "0c37edcb-012d-1854-ffffa41880f3cb1c"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Energy",
+          "format" : "%.1fkWh",
+          "uuid" : "0c37edcb-012d-1854-ffffa41880f3cb1c",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "Power",
+          "format" : "%.3fkW",
+          "uuid" : "0c37edcb-012d-1855-ffffa41880f3cb1c",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37ee04-009a-3ae0-ffff1d8aa0f8167e" : {
+      "name" : "M_HP T OUTPUT",
+      "type" : "Meter",
+      "uuidAction" : "0c37ee04-009a-3ae0-ffff1d8aa0f8167e",
+      "room" : "0c4783a0-0203-c8a1-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1fkWh"
+      },
+      "states" : {
+        "actual" : "0c37ee04-009a-3aeb-ffff1d8aa0f8167e",
+        "total" : "0c37ee04-009a-3aea-ffff1d8aa0f8167e"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Energy",
+          "format" : "%.1fkWh",
+          "uuid" : "0c37ee04-009a-3aea-ffff1d8aa0f8167e",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "Power",
+          "format" : "%.3fkW",
+          "uuid" : "0c37ee04-009a-3aeb-ffff1d8aa0f8167e",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37ae94-02e1-3955-ffff6d9b8f6a24c4" : {
+      "name" : "T1_Into Ground Loop",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37ae94-02e1-3955-ffff6d9b8f6a24c4",
+      "room" : "0c4783a0-0203-c8a1-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c37ae94-02e1-3955-ffff6d9b8f6a24c4",
+        "error" : "0c37ae94-02e1-3954-ffff7f051f413f08"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "T1_Into Ground Loop",
+          "format" : "%.1f°",
+          "uuid" : "0c37ae94-02e1-3953-ffff7f051f413f08",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37ae7e-016c-2e06-ffff6d9b8f6a24c4" : {
+      "name" : "T2_Out of Ground Loop",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37ae7e-016c-2e06-ffff6d9b8f6a24c4",
+      "room" : "0c4783a0-0203-c8a1-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c37ae7e-016c-2e06-ffff6d9b8f6a24c4",
+        "error" : "0c37ae7e-016c-2e05-ffff48e32d31ed0f"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "T2_Out of Ground Loop",
+          "format" : "%.1f°",
+          "uuid" : "0c37ae7e-016c-2e04-ffff48e32d31ed0f",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37ae7b-0020-2bcf-ffff6d9b8f6a24c4" : {
+      "name" : "T3_HP to TS",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37ae7b-0020-2bcf-ffff6d9b8f6a24c4",
+      "room" : "0c4783a0-0203-c8a1-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c37ae7b-0020-2bcf-ffff6d9b8f6a24c4",
+        "error" : "0c37ae7b-0020-2bce-ffffd49af21d7692"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "T3_HP to TS",
+          "format" : "%.1f°",
+          "uuid" : "0c37ae7b-0020-2bcd-ffffd49af21d7692",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37ae84-02ce-3041-ffff6d9b8f6a24c4" : {
+      "name" : "T4_TS to HP",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37ae84-02ce-3041-ffff6d9b8f6a24c4",
+      "room" : "0c4783a0-0203-c8a1-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c37ae84-02ce-3041-ffff6d9b8f6a24c4",
+        "error" : "0c37ae84-02ce-3040-ffff35d5ad2ffa55"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "T4_TS to HP",
+          "format" : "%.1f°",
+          "uuid" : "0c37ae84-02ce-303f-ffff35d5ad2ffa55",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c9561bc-01c0-c93e-fffff4d59bbbf3b6" : {
+      "name" : "Living Room CO2",
+      "type" : "Meter",
+      "uuidAction" : "0c9561bc-01c0-c93e-fffff4d59bbbf3b6",
+      "room" : "0c37aa3d-0035-0366-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-002a-02fc-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : ""
+      },
+      "states" : {
+        "actual" : "0c9561bc-01c0-c949-fffff4d59bbbf3b6",
+        "total" : "0c9561bc-01c0-c948-fffff4d59bbbf3b6"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Energy",
+          "format" : "",
+          "uuid" : "0c9561bc-01c0-c948-fffff4d59bbbf3b6",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "Power",
+          "format" : "%.3fkW",
+          "uuid" : "0c9561bc-01c0-c949-fffff4d59bbbf3b6",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c956180-010a-1d45-ffff6d9b8f6a24c4" : {
+      "name" : "Living Room Humidity",
+      "type" : "Meter",
+      "uuidAction" : "0c956180-010a-1d45-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0035-0366-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-002a-02fc-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : ""
+      },
+      "states" : {
+        "actual" : "0c956180-010a-1d3a-ffff6dc380c27feb",
+        "total" : "0c956180-010a-1d39-ffff6dc380c27feb"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Energy",
+          "format" : "",
+          "uuid" : "0c956180-010a-1d39-ffff6dc380c27feb",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "Power",
+          "format" : "%.3fkW",
+          "uuid" : "0c956180-010a-1d3a-ffff6dc380c27feb",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c382b80-033f-299c-ffff6d9b8f6a24c4" : {
+      "name" : "TH2 Master Bedroom",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c382b80-033f-299c-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0037-0376-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0027-02e0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c382b80-033f-299c-ffff6d9b8f6a24c4",
+        "error" : "0c382b80-033f-299b-ffff5f6f5787acd1"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "TH2 Master Bedroom",
+          "format" : "%.1f°",
+          "uuid" : "0c382b80-033f-299a-ffff5f6f5787acd1",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c89c779-02a5-315a-ffff6d9b8f6a24c4" : {
+      "name" : "Timer _ schedule",
+      "type" : "Daytimer",
+      "uuidAction" : "0c89c779-02a5-315a-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0037-0376-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0027-02e0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "analog" : true,
+        "format" : "%.1f"
+      },
+      "states" : {
+        "mode" : "0c89c779-02a5-3156-ffff3f4f84a918a6",
+        "override" : "0c89c779-02a5-3159-ffff3f4f84a918a6",
+        "value" : "0c89c779-02a5-3155-ffff3f4f84a918a6",
+        "needsActivation" : "0c89c779-02a5-314d-ffff3f4f84a918a6",
+        "modeList" : "0c89c779-02a5-314e-ffff3f4f84a918a6",
+        "entriesAndDefaultValue" : "0c89c779-02a5-315a-ffff6d9b8f6a24c4",
+        "resetActive" : "0c89c779-02a5-3150-ffff3f4f84a918a6"
+      }
+    },
+    "0c37aa3d-0088-04ee-ffff6d9b8f6a24c4" : {
+      "name" : "Hot water element",
+      "type" : "InfoOnlyDigital",
+      "uuidAction" : "0c37aa3d-0088-04ee-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "text" : {
+          "off" : "Off",
+          "on" : "On"
+        },
+        "color" : {
+          "off" : "#BE1624",
+          "on" : "#73BA1B"
+        }
+      },
+      "states" : {
+        "active" : "0c37aa3d-0088-04ee-ffff6d9b8f6a24c4"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Hot water element",
+          "uuid" : "0c37aa3d-0088-04ed-ffffd410921f2f08",
+          "visuType" : 1
+        } ]
+      }
+    },
+    "0ca7c09b-01d1-a032-ffff6d9b8f6a24c4" : {
+      "name" : "Domestic Hot Water Temp",
+      "type" : "Slider",
+      "uuidAction" : "0ca7c09b-01d1-a032-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f",
+        "min" : 40.0,
+        "max" : 50.0,
+        "step" : 1.0
+      },
+      "states" : {
+        "value" : "0ca7c09b-01d1-a032-ffff6d9b8f6a24c4",
+        "error" : "0ca7c09b-01d1-a031-ffff321ac83d51ec"
+      }
+    },
+    "0ecf1c68-01e9-6885-ffff6d9b8f6a24c4" : {
+      "name" : "Frost call",
+      "type" : "Slider",
+      "uuidAction" : "0ecf1c68-01e9-6885-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f",
+        "min" : 0.0,
+        "max" : 1.0,
+        "step" : 1.0
+      },
+      "states" : {
+        "value" : "0ecf1c68-01e9-6885-ffff6d9b8f6a24c4",
+        "error" : "0ecf1c68-01e9-6884-ffff08d33b1bde5d"
+      }
+    },
+    "0ecf1c83-02ff-ca20-ffff6d9b8f6a24c4" : {
+      "name" : "HW call",
+      "type" : "Slider",
+      "uuidAction" : "0ecf1c83-02ff-ca20-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f",
+        "min" : 0.0,
+        "max" : 1.0,
+        "step" : 1.0
+      },
+      "states" : {
+        "value" : "0ecf1c83-02ff-ca20-ffff6d9b8f6a24c4",
+        "error" : "0ecf1c83-02ff-ca1f-ffff642b752bff91"
+      }
+    },
+    "0ca03550-0367-158a-ffff874c23d9f808" : {
+      "name" : "Maintenance counter",
+      "type" : "Hourcounter",
+      "uuidAction" : "0ca03550-0367-158a-ffff874c23d9f808",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "states" : {
+        "total" : "0ca03550-0367-1591-ffff874c23d9f808",
+        "remaining" : "0ca03550-0367-1593-ffff874c23d9f808",
+        "lastActivation" : "0ca03550-0367-1592-ffff874c23d9f808",
+        "overdue" : "0ca03550-0367-1590-ffff874c23d9f808",
+        "maintenanceInterval" : "0ca03550-0367-158f-ffff874c23d9f808",
+        "stateUnit" : "0ca03550-0367-158e-ffff874c23d9f808",
+        "active" : "0ca03550-0367-15a2-ffff874c23d9f808",
+        "overdueSince" : "0ca03550-0367-15a3-ffff874c23d9f808"
+      }
+    },
+    "0ca03497-031a-8c72-ffff6251204f982b" : {
+      "name" : "Maintenance counter",
+      "type" : "Hourcounter",
+      "uuidAction" : "0ca03497-031a-8c72-ffff6251204f982b",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "states" : {
+        "total" : "0ca03497-031a-8c79-ffff6251204f982b",
+        "remaining" : "0ca03497-031a-8c7b-ffff6251204f982b",
+        "lastActivation" : "0ca03497-031a-8c7a-ffff6251204f982b",
+        "overdue" : "0ca03497-031a-8c78-ffff6251204f982b",
+        "maintenanceInterval" : "0ca03497-031a-8c77-ffff6251204f982b",
+        "stateUnit" : "0ca03497-031a-8c76-ffff6251204f982b",
+        "active" : "0ca03497-031a-8c8a-ffff6251204f982b",
+        "overdueSince" : "0ca03497-031a-8c8b-ffff6251204f982b"
+      }
+    },
+    "0c8434e5-005b-107f-ffff881a91157f54" : {
+      "name" : "Maintenance counter",
+      "type" : "Hourcounter",
+      "uuidAction" : "0c8434e5-005b-107f-ffff881a91157f54",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "states" : {
+        "total" : "0c8434e5-005b-1086-ffff881a91157f54",
+        "remaining" : "0c8434e5-005b-1088-ffff881a91157f54",
+        "lastActivation" : "0c8434e5-005b-1087-ffff881a91157f54",
+        "overdue" : "0c8434e5-005b-1085-ffff881a91157f54",
+        "maintenanceInterval" : "0c8434e5-005b-1084-ffff881a91157f54",
+        "stateUnit" : "0c8434e5-005b-1083-ffff881a91157f54",
+        "active" : "0c8434e5-005b-108a-ffff881a91157f54",
+        "overdueSince" : "0c8434e5-005b-108b-ffff881a91157f54"
+      }
+    },
+    "0c806a34-032d-2180-ffff6d9b8f6a24c4" : {
+      "name" : "Maintenance counter",
+      "type" : "Hourcounter",
+      "uuidAction" : "0c806a34-032d-2180-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "states" : {
+        "total" : "0c806a34-032d-217c-ffff238f0081b566",
+        "remaining" : "0c806a34-032d-217e-ffff238f0081b566",
+        "lastActivation" : "0c806a34-032d-217d-ffff238f0081b566",
+        "overdue" : "0c806a34-032d-217b-ffff238f0081b566",
+        "maintenanceInterval" : "0c806a34-032d-217a-ffff238f0081b566",
+        "stateUnit" : "0c806a34-032d-2179-ffff238f0081b566",
+        "active" : "0c806a34-032d-2174-ffff238f0081b566",
+        "overdueSince" : "0c806a34-032d-2175-ffff238f0081b566"
+      }
+    },
+    "0c82f615-0138-6b3a-ffffc8d085ac5245" : {
+      "name" : "Maintenance counter",
+      "type" : "Hourcounter",
+      "uuidAction" : "0c82f615-0138-6b3a-ffffc8d085ac5245",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "states" : {
+        "total" : "0c82f615-0138-6b41-ffffc8d085ac5245",
+        "remaining" : "0c82f615-0138-6b43-ffffc8d085ac5245",
+        "lastActivation" : "0c82f615-0138-6b42-ffffc8d085ac5245",
+        "overdue" : "0c82f615-0138-6b40-ffffc8d085ac5245",
+        "maintenanceInterval" : "0c82f615-0138-6b3f-ffffc8d085ac5245",
+        "stateUnit" : "0c82f615-0138-6b3e-ffffc8d085ac5245",
+        "active" : "0c82f615-0138-6b45-ffffc8d085ac5245",
+        "overdueSince" : "0c82f615-0138-6b46-ffffc8d085ac5245"
+      }
+    },
+    "0ebf5ece-00a6-1065-ffff6d9b8f6a24c4" : {
+      "name" : "Push-button",
+      "type" : "Switch",
+      "uuidAction" : "0ebf5ece-00a6-1065-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "states" : {
+        "active" : "0ebf5ece-00a6-1064-ffffdc955e13f3c6"
+      }
+    },
+    "0ca00232-0212-7e3f-ffff356f5fa9a78b" : {
+      "name" : "Push-button (On_Off)",
+      "type" : "Switch",
+      "uuidAction" : "0ca00232-0212-7e3f-ffff356f5fa9a78b",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "states" : {
+        "active" : "0ca00232-0212-7e36-ffff356f5fa9a78b"
+      }
+    },
+    "0ca013ad-0071-3dbc-ffffc0c039d1af19" : {
+      "name" : "Push-button (On_Off)",
+      "type" : "Switch",
+      "uuidAction" : "0ca013ad-0071-3dbc-ffffc0c039d1af19",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "states" : {
+        "active" : "0ca013ad-0071-3db3-ffffc0c039d1af19"
+      }
+    },
+    "0eae288c-0015-3902-ffff6d9b8f6a24c4" : {
+      "name" : "STH3 Temperature sensor",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0eae288c-0015-3902-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0eae288c-0015-3902-ffff6d9b8f6a24c4",
+        "error" : "0eae288c-0015-3901-ffffed563d131ec9"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "STH3 Temperature sensor",
+          "format" : "%.1f°",
+          "uuid" : "0eae288c-0015-3900-ffffed563d131ec9",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0eae288c-001f-390a-ffff6d9b8f6a24c4" : {
+      "name" : "STH3 Voltage VAD",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0eae288c-001f-390a-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.3fV"
+      },
+      "states" : {
+        "value" : "0eae288c-001f-390a-ffff6d9b8f6a24c4",
+        "error" : "0eae288c-001f-3909-ffffed563d131ec9"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "STH3 Voltage VAD",
+          "format" : "%.3fV",
+          "uuid" : "0eae288c-001f-3908-ffffed563d131ec9",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0eae288c-001a-3906-ffff6d9b8f6a24c4" : {
+      "name" : "STH3 Voltage VDD",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0eae288c-001a-3906-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.2fV"
+      },
+      "states" : {
+        "value" : "0eae288c-001a-3906-ffff6d9b8f6a24c4",
+        "error" : "0eae288c-001a-3905-ffffed563d131ec9"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "STH3 Voltage VDD",
+          "format" : "%.2fV",
+          "uuid" : "0eae288c-001a-3904-ffffed563d131ec9",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0eae288c-0025-390e-ffff6d9b8f6a24c4" : {
+      "name" : "STH3 Voltage VSens",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0eae288c-0025-390e-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.2fV"
+      },
+      "states" : {
+        "value" : "0eae288c-0025-390e-ffff6d9b8f6a24c4",
+        "error" : "0eae288c-0025-390d-ffffed563d131ec9"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "STH3 Voltage VSens",
+          "format" : "%.2fV",
+          "uuid" : "0eae288c-0025-390c-ffffed563d131ec9",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0eae28a1-0301-5205-ffff6d9b8f6a24c4" : {
+      "name" : "STH4 Temperature sensor",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0eae28a1-0301-5205-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0eae28a1-0301-5205-ffff6d9b8f6a24c4",
+        "error" : "0eae28a1-0301-5204-ffff9413e7a72132"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "STH4 Temperature sensor",
+          "format" : "%.1f°",
+          "uuid" : "0eae28a1-0301-5203-ffff9413e7a72132",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0eae28a1-030e-520d-ffff6d9b8f6a24c4" : {
+      "name" : "STH4 Voltage VAD",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0eae28a1-030e-520d-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.3fV"
+      },
+      "states" : {
+        "value" : "0eae28a1-030e-520d-ffff6d9b8f6a24c4",
+        "error" : "0eae28a1-030e-520c-ffff9413e7a72132"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "STH4 Voltage VAD",
+          "format" : "%.3fV",
+          "uuid" : "0eae28a1-030e-520b-ffff9413e7a72132",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0eae28a1-0307-5209-ffff6d9b8f6a24c4" : {
+      "name" : "STH4 Voltage VDD",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0eae28a1-0307-5209-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.2fV"
+      },
+      "states" : {
+        "value" : "0eae28a1-0307-5209-ffff6d9b8f6a24c4",
+        "error" : "0eae28a1-0307-5208-ffff9413e7a72132"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "STH4 Voltage VDD",
+          "format" : "%.2fV",
+          "uuid" : "0eae28a1-0307-5207-ffff9413e7a72132",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0eae28a1-0314-5211-ffff6d9b8f6a24c4" : {
+      "name" : "STH4 Voltage VSens",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0eae28a1-0314-5211-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.2fV"
+      },
+      "states" : {
+        "value" : "0eae28a1-0314-5211-ffff6d9b8f6a24c4",
+        "error" : "0eae28a1-0314-5210-ffff9413e7a72132"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "STH4 Voltage VSens",
+          "format" : "%.2fV",
+          "uuid" : "0eae28a1-0314-520f-ffff9413e7a72132",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0ecf1c89-0314-faf2-ffff6d9b8f6a24c4" : {
+      "name" : "Space heating call",
+      "type" : "Slider",
+      "uuidAction" : "0ecf1c89-0314-faf2-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f",
+        "min" : 0.0,
+        "max" : 1.0,
+        "step" : 1.0
+      },
+      "states" : {
+        "value" : "0ecf1c89-0314-faf2-ffff6d9b8f6a24c4",
+        "error" : "0ecf1c89-0314-faf1-ffff21b87c0a7eb8"
+      }
+    },
+    "0f4f021a-02df-3a05-ffff6d9b8f6a24c4" : {
+      "name" : "TS temp",
+      "type" : "Slider",
+      "uuidAction" : "0f4f021a-02df-3a05-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f",
+        "min" : 0.0,
+        "max" : 55.0,
+        "step" : 1.0
+      },
+      "states" : {
+        "value" : "0f4f021a-02df-3a05-ffff6d9b8f6a24c4",
+        "error" : "0f4f021a-02df-3a04-ffffa720fe740fb8"
+      }
+    },
+    "0ce71a70-039a-ad1f-ffff301f1df46cbc" : {
+      "name" : "Timer _ schedule",
+      "type" : "Daytimer",
+      "uuidAction" : "0ce71a70-039a-ad1f-ffff301f1df46cbc",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "analog" : true,
+        "format" : "%.1f"
+      },
+      "states" : {
+        "mode" : "0ce71a70-039a-ad27-ffff301f1df46cbc",
+        "override" : "0ce71a70-039a-ad2a-ffff301f1df46cbc",
+        "value" : "0ce71a70-039a-ad26-ffff301f1df46cbc",
+        "needsActivation" : "0ce738cc-0193-b69d-ffff301f1df46cbc",
+        "modeList" : "0ce738cc-0193-b69e-ffff301f1df46cbc",
+        "entriesAndDefaultValue" : "0ce71a70-039a-ad1f-ffff301f1df46cbc",
+        "resetActive" : "0ce71a70-039a-ad21-ffff301f1df46cbc"
+      }
+    },
+    "0ce71a34-031d-0bce-ffff6d9b8f6a24c4" : {
+      "name" : "Timer _ schedule",
+      "type" : "Daytimer",
+      "uuidAction" : "0ce71a34-031d-0bce-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "analog" : true,
+        "format" : "%.1f"
+      },
+      "states" : {
+        "mode" : "0ce71a34-031d-0bca-ffff782a44d05348",
+        "override" : "0ce71a34-031d-0bcd-ffff782a44d05348",
+        "value" : "0ce71a34-031d-0bc9-ffff782a44d05348",
+        "needsActivation" : "0ce738cc-0193-b69b-ffff6d9b8f6a24c4",
+        "modeList" : "0ce738cc-0193-b69c-ffff6d9b8f6a24c4",
+        "entriesAndDefaultValue" : "0ce71a34-031d-0bce-ffff6d9b8f6a24c4",
+        "resetActive" : "0ce71a34-031d-0bc4-ffff782a44d05348"
+      }
+    },
+    "0ce71ab5-00fc-d5f1-ffff9a2c66d36f66" : {
+      "name" : "Timer _ schedule",
+      "type" : "Daytimer",
+      "uuidAction" : "0ce71ab5-00fc-d5f1-ffff9a2c66d36f66",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "analog" : true,
+        "format" : "%.1f"
+      },
+      "states" : {
+        "mode" : "0ce71ab5-00fc-d5f9-ffff9a2c66d36f66",
+        "override" : "0ce71ab5-00fc-d5fc-ffff9a2c66d36f66",
+        "value" : "0ce71ab5-00fc-d5f8-ffff9a2c66d36f66",
+        "needsActivation" : "0ce738cc-0193-b69f-ffff9a2c66d36f66",
+        "modeList" : "0ce738cc-0193-b6a0-ffff9a2c66d36f66",
+        "entriesAndDefaultValue" : "0ce71ab5-00fc-d5f1-ffff9a2c66d36f66",
+        "resetActive" : "0ce71ab5-00fc-d5f3-ffff9a2c66d36f66"
+      }
+    },
+    "0c8b1399-0236-9d5b-ffff6d9b8f6a24c4" : {
+      "name" : "Timer _ schedule",
+      "type" : "Daytimer",
+      "uuidAction" : "0c8b1399-0236-9d5b-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "analog" : false,
+        "text" : {
+          "on" : "Enabled",
+          "off" : "Disabled"
+        }
+      },
+      "states" : {
+        "mode" : "0c8b1399-0236-9d57-ffff6976939bd8d5",
+        "override" : "0c8b1399-0236-9d5a-ffff6976939bd8d5",
+        "value" : "0c8b1399-0236-9d56-ffff6976939bd8d5",
+        "needsActivation" : "0c8b1399-0236-9d4e-ffff6976939bd8d5",
+        "modeList" : "0c8b1399-0236-9d4f-ffff6976939bd8d5",
+        "entriesAndDefaultValue" : "0c8b1399-0236-9d5b-ffff6d9b8f6a24c4",
+        "resetActive" : "0c8b1399-0236-9d51-ffff6976939bd8d5"
+      }
+    },
+    "0ebf5e88-02b2-7fa1-ffff6d9b8f6a24c4" : {
+      "name" : "booked",
+      "type" : "Switch",
+      "uuidAction" : "0ebf5e88-02b2-7fa1-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "states" : {
+        "active" : "0ebf5e88-02b2-7fa1-ffff6d9b8f6a24c4"
+      }
+    },
+    "0ec050ef-00e8-d6b7-ffff6d9b8f6a24c4" : {
+      "name" : "hour",
+      "type" : "Slider",
+      "uuidAction" : "0ec050ef-00e8-d6b7-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f",
+        "min" : 0.0,
+        "max" : 24.0,
+        "step" : 1.0
+      },
+      "states" : {
+        "value" : "0ec050ef-00e8-d6b7-ffff6d9b8f6a24c4",
+        "error" : "0ec050ef-00e8-d6b6-ffffc635408c103a"
+      }
+    },
+    "0ec05107-0215-67c2-ffff6d9b8f6a24c4" : {
+      "name" : "minute",
+      "type" : "Slider",
+      "uuidAction" : "0ec05107-0215-67c2-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f",
+        "min" : 0.0,
+        "max" : 60.0,
+        "step" : 1.0
+      },
+      "states" : {
+        "value" : "0ec05107-0215-67c2-ffff6d9b8f6a24c4",
+        "error" : "0ec05107-0215-67c1-ffff781979bc3d90"
+      }
+    },
+    "0f237171-03b4-d9fe-ffff6d9b8f6a24c4" : {
+      "name" : "testImpulse",
+      "type" : "Pushbutton",
+      "uuidAction" : "0f237171-03b4-d9fe-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "states" : {
+        "active" : "0f237171-03b4-d9fe-ffff6d9b8f6a24c4"
+      }
+    },
+    "0f237011-033b-2578-ffff6d9b8f6a24c4" : {
+      "name" : "testStep - start_stop",
+      "type" : "Switch",
+      "uuidAction" : "0f237011-033b-2578-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "states" : {
+        "active" : "0f237011-033b-2578-ffff6d9b8f6a24c4"
+      }
+    },
+    "100a754a-03b0-b1e7-ffff6d9b8f6a24c4" : {
+      "name" : "time 2 target",
+      "type" : "Slider",
+      "uuidAction" : "100a754a-03b0-b1e7-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f",
+        "min" : 0.0,
+        "max" : 80000.0,
+        "step" : 1.0
+      },
+      "states" : {
+        "value" : "100a754a-03b0-b1e7-ffff6d9b8f6a24c4",
+        "error" : "100a754a-03b0-b1e6-ffff3fc1a860dea0"
+      }
+    },
+    "100a754a-01bc-9a22-ffff6d9b8f6a24c4" : {
+      "name" : "vol req",
+      "type" : "Slider",
+      "uuidAction" : "100a754a-01bc-9a22-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0034-035a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.3f",
+        "min" : 0.0,
+        "max" : 1.0,
+        "step" : 0.001
+      },
+      "states" : {
+        "value" : "100a754a-01bc-9a22-ffff6d9b8f6a24c4",
+        "error" : "100a754a-01bc-9a21-ffffdfc6b2b7373b"
+      }
+    },
+    "0c3800da-03a2-6364-ffff6d9b8f6a24c4" : {
+      "name" : "TH1_Outside Temp",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c3800da-03a2-6364-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0047-03f0-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0027-02e0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c3800da-03a2-6364-ffff6d9b8f6a24c4",
+        "error" : "0c3800da-03a2-6363-fffff61ecb0b6147"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "TH1_Outside Temp",
+          "format" : "%.1f°",
+          "uuid" : "0c3800da-03a2-6362-fffff61ecb0b6147",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0e475fc3-0160-38cc-ffff6d9b8f6a24c4" : {
+      "name" : "Steinel ihf 3D - dist 1",
+      "type" : "InfoOnlyDigital",
+      "uuidAction" : "0e475fc3-0160-38cc-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0047-03f0-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0028-02ec-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "text" : {
+          "off" : "Off",
+          "on" : "On"
+        },
+        "color" : {
+          "off" : "#BE1624",
+          "on" : "#73BA1B"
+        }
+      },
+      "states" : {
+        "active" : "0e475fc3-0160-38cc-ffff6d9b8f6a24c4"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Steinel ihf 3D - dist 1",
+          "uuid" : "0e475fc3-0160-38ca-ffffb4d1517974df",
+          "visuType" : 1
+        } ]
+      }
+    },
+    "0e475ff4-0394-8337-ffff6d9b8f6a24c4" : {
+      "name" : "Steinel ihf 3D - dist 2",
+      "type" : "InfoOnlyDigital",
+      "uuidAction" : "0e475ff4-0394-8337-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0047-03f0-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0028-02ec-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "text" : {
+          "off" : "Off",
+          "on" : "On"
+        },
+        "color" : {
+          "off" : "#BE1624",
+          "on" : "#73BA1B"
+        }
+      },
+      "states" : {
+        "active" : "0e475ff4-0394-8337-ffff6d9b8f6a24c4"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Steinel ihf 3D - dist 2",
+          "uuid" : "0e475ff4-0394-8335-ffff0f08b5972318",
+          "visuType" : 1
+        } ]
+      }
+    },
+    "0e476011-00c8-e67b-ffff6d9b8f6a24c4" : {
+      "name" : "Steinel ihf 3D - dist 3",
+      "type" : "InfoOnlyDigital",
+      "uuidAction" : "0e476011-00c8-e67b-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0047-03f0-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0028-02ec-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "text" : {
+          "off" : "Off",
+          "on" : "On"
+        },
+        "color" : {
+          "off" : "#BE1624",
+          "on" : "#73BA1B"
+        }
+      },
+      "states" : {
+        "active" : "0e476011-00c8-e67b-ffff6d9b8f6a24c4"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Steinel ihf 3D - dist 3",
+          "uuid" : "0e476011-00c8-e679-ffff95fbe1182b80",
+          "visuType" : 1
+        } ]
+      }
+    },
+    "0e473908-022c-d961-ffff6d9b8f6a24c4" : {
+      "name" : "Steinel ihf 3D - light level",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0e473908-022c-d961-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0047-03f0-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0028-02ec-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f"
+      },
+      "states" : {
+        "value" : "0e473908-022c-d961-ffff6d9b8f6a24c4",
+        "error" : "0e473908-022c-d960-ffffcfe60ebcf186"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Steinel ihf 3D - light level",
+          "format" : "%.1f",
+          "uuid" : "0e473908-022c-d95f-ffffcfe60ebcf186",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0e473897-00a5-fc47-ffff6d9b8f6a24c4" : {
+      "name" : "Steinel ihf 3D - motion left",
+      "type" : "InfoOnlyDigital",
+      "uuidAction" : "0e473897-00a5-fc47-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0047-03f0-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0028-02ec-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "text" : {
+          "off" : "Off",
+          "on" : "On"
+        },
+        "color" : {
+          "off" : "#BE1624",
+          "on" : "#73BA1B"
+        }
+      },
+      "states" : {
+        "active" : "0e473897-00a5-fc47-ffff6d9b8f6a24c4"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Steinel ihf 3D - motion left",
+          "uuid" : "0e473897-00a5-fc45-ffff6de1be6dc014",
+          "visuType" : 1
+        } ]
+      }
+    },
+    "0e4738cb-01b1-5e7c-ffff6d9b8f6a24c4" : {
+      "name" : "Steinel ihf 3D - motion right",
+      "type" : "InfoOnlyDigital",
+      "uuidAction" : "0e4738cb-01b1-5e7c-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0047-03f0-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0028-02ec-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "text" : {
+          "off" : "Off",
+          "on" : "On"
+        },
+        "color" : {
+          "off" : "#BE1624",
+          "on" : "#73BA1B"
+        }
+      },
+      "states" : {
+        "active" : "0e4738cb-01b1-5e7c-ffff6d9b8f6a24c4"
+      }
+    },
+    "0e47395b-02e1-5473-ffff6d9b8f6a24c4" : {
+      "name" : "Steinel ihf 3D - range front",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0e47395b-02e1-5473-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0047-03f0-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0028-02ec-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f"
+      },
+      "states" : {
+        "value" : "0e47395b-02e1-5473-ffff6d9b8f6a24c4",
+        "error" : "0e47395b-02e1-5472-ffff013c94a598fd"
+      },
+      "statistic" : {
+        "frequency" : 6,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Steinel ihf 3D - range front",
+          "format" : "%.1f",
+          "uuid" : "0e47395b-02e1-5471-ffff013c94a598fd",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0e473af2-03a6-d91b-ffff6d9b8f6a24c4" : {
+      "name" : "Steinel ihf 3D - range left",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0e473af2-03a6-d91b-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0047-03f0-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0028-02ec-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f"
+      },
+      "states" : {
+        "value" : "0e473af2-03a6-d91b-ffff6d9b8f6a24c4",
+        "error" : "0e473af2-03a6-d91a-ffff1d3cf72d46f8"
+      },
+      "statistic" : {
+        "frequency" : 6,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Steinel ihf 3D - range left",
+          "format" : "%.1f",
+          "uuid" : "0e473af2-03a6-d919-ffff1d3cf72d46f8",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0e473b8a-00d7-85cd-ffff6d9b8f6a24c4" : {
+      "name" : "Steinel ihf 3D - range right",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0e473b8a-00d7-85cd-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0047-03f0-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0028-02ec-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f"
+      },
+      "states" : {
+        "value" : "0e473b8a-00d7-85cd-ffff6d9b8f6a24c4",
+        "error" : "0e473b8a-00d7-85cc-ffff20a9a7511474"
+      },
+      "statistic" : {
+        "frequency" : 6,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Steinel ihf 3D - range right",
+          "format" : "%.1f",
+          "uuid" : "0e473b8a-00d7-85cb-ffff20a9a7511474",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0e475b8a-01f8-4827-ffff6d9b8f6a24c4" : {
+      "name" : "Steinel sensiQ - light level",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0e475b8a-01f8-4827-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0047-03f0-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0028-02ec-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f"
+      },
+      "states" : {
+        "value" : "0e475b8a-01f8-4827-ffff6d9b8f6a24c4",
+        "error" : "0e475b8a-01f8-4826-ffff030fe46ee2bd"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Steinel sensiQ - light level",
+          "format" : "%.1f",
+          "uuid" : "0e475b8a-01f8-4825-ffff030fe46ee2bd",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0e475b5d-0268-b3a4-ffff6d9b8f6a24c4" : {
+      "name" : "Steinel sensiQ close up range",
+      "type" : "InfoOnlyDigital",
+      "uuidAction" : "0e475b5d-0268-b3a4-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0047-03f0-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0028-02ec-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "text" : {
+          "off" : "Off",
+          "on" : "On"
+        },
+        "color" : {
+          "off" : "#BE1624",
+          "on" : "#73BA1B"
+        }
+      },
+      "states" : {
+        "active" : "0e475b5d-0268-b3a4-ffff6d9b8f6a24c4"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Steinel sensiQ close up range",
+          "uuid" : "0e475b5d-0268-b3a2-ffff9e41cf748b64",
+          "visuType" : 1
+        } ]
+      }
+    },
+    "0e475b2a-0368-0697-ffff6d9b8f6a24c4" : {
+      "name" : "Steinel sensiQ presence",
+      "type" : "InfoOnlyDigital",
+      "uuidAction" : "0e475b2a-0368-0697-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0047-03f0-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0028-02ec-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "text" : {
+          "off" : "Off",
+          "on" : "On"
+        },
+        "color" : {
+          "off" : "#BE1624",
+          "on" : "#73BA1B"
+        }
+      },
+      "states" : {
+        "active" : "0e475b2a-0368-0697-ffff6d9b8f6a24c4"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Steinel sensiQ presence",
+          "uuid" : "0e475b2a-0368-0695-ffff3466cfc6b715",
+          "visuType" : 1
+        } ]
+      }
+    },
+    "0e4737ca-0305-3832-ffff6d9b8f6a24c4" : {
+      "name" : "steinel ihf 3D - motion front",
+      "type" : "InfoOnlyDigital",
+      "uuidAction" : "0e4737ca-0305-3832-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0047-03f0-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0028-02ec-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "text" : {
+          "off" : "Off",
+          "on" : "On"
+        },
+        "color" : {
+          "off" : "#BE1624",
+          "on" : "#73BA1B"
+        }
+      },
+      "states" : {
+        "active" : "0e4737ca-0305-3832-ffff6d9b8f6a24c4"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "steinel ihf 3D - motion front",
+          "uuid" : "0e4737ca-0305-3830-ffffc976236c543e",
+          "visuType" : 1
+        } ]
+      }
+    },
+    "0e44649e-03d6-5e20-ffff6d9b8f6a24c4" : {
+      "name" : "steinel ihf 3D - presence",
+      "type" : "InfoOnlyDigital",
+      "uuidAction" : "0e44649e-03d6-5e20-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-0047-03f0-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0028-02ec-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "text" : {
+          "off" : "Off",
+          "on" : "On"
+        },
+        "color" : {
+          "off" : "#BE1624",
+          "on" : "#73BA1B"
+        }
+      },
+      "states" : {
+        "active" : "0e44649e-03d6-5e20-ffff6d9b8f6a24c4"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "steinel ihf 3D - presence",
+          "uuid" : "0e44649e-03d6-5e1e-ffff3ecace3c3182",
+          "visuType" : 1
+        } ]
+      }
+    },
+    "0c562876-00eb-cf98-ffff6d9b8f6a24c4" : {
+      "name" : "F3_SC",
+      "type" : "Meter",
+      "uuidAction" : "0c562876-00eb-cf98-ffff6d9b8f6a24c4",
+      "room" : "0c5651f4-0127-5602-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1fL"
+      },
+      "states" : {
+        "actual" : "0c562876-00eb-cf8d-ffff0574263fd42a",
+        "total" : "0c562876-00eb-cf8c-ffff0574263fd42a"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "L",
+          "format" : "%.1fL",
+          "uuid" : "0c562876-00eb-cf8c-ffff0574263fd42a",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "L/hr",
+          "format" : "%.3fkW",
+          "uuid" : "0c562876-00eb-cf8d-ffff0574263fd42a",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37aa3d-007f-04ce-ffff6d9b8f6a24c4" : {
+      "name" : "F3_SC",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37aa3d-007f-04ce-ffff6d9b8f6a24c4",
+      "room" : "0c5651f4-0127-5602-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f L/min"
+      },
+      "states" : {
+        "value" : "0c37aa3d-007f-04ce-ffff6d9b8f6a24c4",
+        "error" : "0c37aa3d-007f-04cd-ffffd410921f2f08"
+      },
+      "statistic" : {
+        "frequency" : 6,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "F3_SC",
+          "format" : "%.1f L/min",
+          "uuid" : "0c37aa3d-007f-04cc-ffffd410921f2f08",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c42510c-0246-d4c1-ffff6d9b8f6a24c4" : {
+      "name" : "M_SC T OUTPUT",
+      "type" : "Meter",
+      "uuidAction" : "0c42510c-0246-d4c1-ffff6d9b8f6a24c4",
+      "room" : "0c5651f4-0127-5602-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1fkWh"
+      },
+      "states" : {
+        "actual" : "0c42510c-0246-d4b6-ffff70f22b7235d7",
+        "total" : "0c42510c-0246-d4b5-ffff70f22b7235d7"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Energy",
+          "format" : "%.1fkWh",
+          "uuid" : "0c42510c-0246-d4b5-ffff70f22b7235d7",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "Power",
+          "format" : "%.3fkW",
+          "uuid" : "0c42510c-0246-d4b6-ffff70f22b7235d7",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c5621ca-0017-c0b7-ffff6d9b8f6a24c4" : {
+      "name" : "Manual SHW pump control",
+      "type" : "Slider",
+      "uuidAction" : "0c5621ca-0017-c0b7-ffff6d9b8f6a24c4",
+      "room" : "0c5651f4-0127-5602-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.0f",
+        "min" : 0.0,
+        "max" : 10.0,
+        "step" : 1.0
+      },
+      "states" : {
+        "value" : "0c5621ca-0017-c0b7-ffff6d9b8f6a24c4",
+        "error" : "0c5621ca-0017-c0b6-ffff051f11eeeb25"
+      }
+    },
+    "0c5a30c6-0370-8ebc-ffff6d9b8f6a24c4" : {
+      "name" : "SC I_O Temp Diff",
+      "type" : "Meter",
+      "uuidAction" : "0c5a30c6-0370-8ebc-ffff6d9b8f6a24c4",
+      "room" : "0c5651f4-0127-5602-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3f°C",
+        "totalFormat" : "%.1f"
+      },
+      "states" : {
+        "actual" : "0c5a30c6-0370-8eb1-ffff19df6e506c7f",
+        "total" : "0c5a30c6-0370-8eb0-ffff19df6e506c7f"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Energy",
+          "format" : "%.1f",
+          "uuid" : "0c5a30c6-0370-8eb0-ffff19df6e506c7f",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "Power",
+          "format" : "%.3f°C",
+          "uuid" : "0c5a30c6-0370-8eb1-ffff19df6e506c7f",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37acf0-01e7-1267-ffff6d9b8f6a24c4" : {
+      "name" : "SC PUMP PWM CONTROL",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37acf0-01e7-1267-ffff6d9b8f6a24c4",
+      "room" : "0c5651f4-0127-5602-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.0f%%"
+      },
+      "states" : {
+        "value" : "0c37acf0-01e7-1267-ffff6d9b8f6a24c4"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "SC PUMP PWM CONTROL",
+          "format" : "%.0f%",
+          "uuid" : "0c37acf0-01e7-1266-ffff51a415b3750f",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c561e7a-000b-3375-ffff6d9b8f6a24c4" : {
+      "name" : "T13_SC Out (High T)",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c561e7a-000b-3375-ffff6d9b8f6a24c4",
+      "room" : "0c5651f4-0127-5602-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c561e7a-000b-3375-ffff6d9b8f6a24c4",
+        "error" : "0c561e7a-000b-3374-ffff10f0b8d50ee3"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "T13_SC Out (High T)",
+          "format" : "%.1f°",
+          "uuid" : "0c561e7a-000b-3373-ffff10f0b8d50ee3",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c561e28-032f-f1c6-ffff6d9b8f6a24c4" : {
+      "name" : "T5_SC OUT",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c561e28-032f-f1c6-ffff6d9b8f6a24c4",
+      "room" : "0c5651f4-0127-5602-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c561e28-032f-f1c6-ffff6d9b8f6a24c4",
+        "error" : "0c561e28-032f-f1c5-ffff2f91ebcb1373"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "T5_SC OUT",
+          "format" : "%.1f°",
+          "uuid" : "0c561e28-032f-f1c4-ffff2f91ebcb1373",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c561e15-035e-e4ae-ffff6d9b8f6a24c4" : {
+      "name" : "T6_SC IN",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c561e15-035e-e4ae-ffff6d9b8f6a24c4",
+      "room" : "0c5651f4-0127-5602-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c561e15-035e-e4ae-ffff6d9b8f6a24c4",
+        "error" : "0c561e15-035e-e4ad-ffff67a2699aa80d"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "T6_SC IN",
+          "format" : "%.1f°",
+          "uuid" : "0c561e15-035e-e4ac-ffff67a2699aa80d",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37aa3d-0084-04df-ffff6d9b8f6a24c4" : {
+      "name" : "H - ZA1 OFFICE",
+      "type" : "InfoOnlyDigital",
+      "uuidAction" : "0c37aa3d-0084-04df-ffff6d9b8f6a24c4",
+      "room" : "0c478431-03a8-12b3-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0027-02e0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "text" : {
+          "off" : "Off",
+          "on" : "On"
+        },
+        "color" : {
+          "off" : "#BE1624",
+          "on" : "#73BA1B"
+        }
+      },
+      "states" : {
+        "active" : "0c37aa3d-0084-04df-ffff6d9b8f6a24c4"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "H - ZA1 OFFICE",
+          "uuid" : "0c37aa3d-0084-04de-ffffd410921f2f08",
+          "visuType" : 1
+        } ]
+      }
+    },
+    "0c37aa3d-0085-04e2-ffff6d9b8f6a24c4" : {
+      "name" : "H - ZA2  (MASTER BED)",
+      "type" : "InfoOnlyDigital",
+      "uuidAction" : "0c37aa3d-0085-04e2-ffff6d9b8f6a24c4",
+      "room" : "0c478431-03a8-12b3-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0027-02e0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "text" : {
+          "off" : "Off",
+          "on" : "On"
+        },
+        "color" : {
+          "off" : "#BE1624",
+          "on" : "#73BA1B"
+        }
+      },
+      "states" : {
+        "active" : "0c37aa3d-0085-04e2-ffff6d9b8f6a24c4"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "H - ZA2  (MASTER BED)",
+          "uuid" : "0c37aa3d-0085-04e1-ffffd410921f2f08",
+          "visuType" : 1
+        } ]
+      }
+    },
+    "0c37aa3d-0086-04e5-ffff6d9b8f6a24c4" : {
+      "name" : "H - ZA3 (BED2)",
+      "type" : "InfoOnlyDigital",
+      "uuidAction" : "0c37aa3d-0086-04e5-ffff6d9b8f6a24c4",
+      "room" : "0c478431-03a8-12b3-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0027-02e0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "text" : {
+          "off" : "Off",
+          "on" : "On"
+        },
+        "color" : {
+          "off" : "#BE1624",
+          "on" : "#73BA1B"
+        }
+      },
+      "states" : {
+        "active" : "0c37aa3d-0086-04e5-ffff6d9b8f6a24c4"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "H - ZA3 (BED2)",
+          "uuid" : "0c37aa3d-0086-04e4-ffffd410921f2f08",
+          "visuType" : 1
+        } ]
+      }
+    },
+    "0c40f306-0211-ab41-ffff6d9b8f6a24c4" : {
+      "name" : "M_Radiator T Loss",
+      "type" : "Meter",
+      "uuidAction" : "0c40f306-0211-ab41-ffff6d9b8f6a24c4",
+      "room" : "0c478431-03a8-12b3-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0027-02e0-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1fkWh"
+      },
+      "states" : {
+        "actual" : "0c40f306-0211-ab36-ffff0bfb6331aac6",
+        "total" : "0c40f306-0211-ab35-ffff0bfb6331aac6"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Energy",
+          "format" : "%.1fkWh",
+          "uuid" : "0c40f306-0211-ab35-ffff0bfb6331aac6",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "Power",
+          "format" : "%.3fkW",
+          "uuid" : "0c40f306-0211-ab36-ffff0bfb6331aac6",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c40ff54-02ac-258f-ffff5e4dc094c2ac" : {
+      "name" : "F4_TS to MS",
+      "type" : "Meter",
+      "uuidAction" : "0c40ff54-02ac-258f-ffff5e4dc094c2ac",
+      "room" : "0c478431-03a8-12b3-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1fL"
+      },
+      "states" : {
+        "actual" : "0c40ff54-02ac-259a-ffff5e4dc094c2ac",
+        "total" : "0c40ff54-02ac-2599-ffff5e4dc094c2ac"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "L",
+          "format" : "%.1fL",
+          "uuid" : "0c40ff54-02ac-2599-ffff5e4dc094c2ac",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "L/hr",
+          "format" : "%.3fkW",
+          "uuid" : "0c40ff54-02ac-259a-ffff5e4dc094c2ac",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37aa4a-00b6-06bf-ffff6d9b8f6a24c4" : {
+      "name" : "F4_TS to MS_Radiators",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37aa4a-00b6-06bf-ffff6d9b8f6a24c4",
+      "room" : "0c478431-03a8-12b3-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f L/min"
+      },
+      "states" : {
+        "value" : "0c37aa4a-00b6-06bf-ffff6d9b8f6a24c4",
+        "error" : "0c37aa4a-00b6-06be-ffff81f45bd48d6b"
+      }
+    },
+    "0c38262d-0254-3ce9-ffff6d9b8f6a24c4" : {
+      "name" : "T19_Temp Into Radiators",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c38262d-0254-3ce9-ffff6d9b8f6a24c4",
+      "room" : "0c478431-03a8-12b3-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c38262d-0254-3ce9-ffff6d9b8f6a24c4",
+        "error" : "0c38262d-0254-3ce8-ffff945f8ebda96e"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "T19_Temp Into Radiators",
+          "format" : "%.1f°",
+          "uuid" : "0c38262d-0254-3ce7-ffff945f8ebda96e",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37ae87-0331-3280-ffff6d9b8f6a24c4" : {
+      "name" : "T7_Temp Into Mixing Set",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37ae87-0331-3280-ffff6d9b8f6a24c4",
+      "room" : "0c478431-03a8-12b3-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c37ae87-0331-3280-ffff6d9b8f6a24c4",
+        "error" : "0c37ae87-0331-327f-ffffad66efe4478c"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "T7_Temp Into Mixing Set",
+          "format" : "%.1f°",
+          "uuid" : "0c37ae87-0331-327e-ffffad66efe4478c",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37ae8c-0011-34c3-ffff6d9b8f6a24c4" : {
+      "name" : "T8_Temp Out of Radiators",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37ae8c-0011-34c3-ffff6d9b8f6a24c4",
+      "room" : "0c478431-03a8-12b3-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c37ae8c-0011-34c3-ffff6d9b8f6a24c4",
+        "error" : "0c37ae8c-0011-34c2-ffff88706c4e55af"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "T8_Temp Out of Radiators",
+          "format" : "%.1f°",
+          "uuid" : "0c37ae8c-0011-34c1-ffff88706c4e55af",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c380436-0394-4eac-ffff6d9b8f6a24c4" : {
+      "name" : "Office temperature",
+      "type" : "Slider",
+      "uuidAction" : "0c380436-0394-4eac-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-003b-039a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0027-02e0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.0f",
+        "min" : 0.0,
+        "max" : 30.0,
+        "step" : 1.0
+      },
+      "states" : {
+        "value" : "0c380436-0394-4eac-ffff6d9b8f6a24c4",
+        "error" : "0c380436-0394-4eab-ffffd5fffefcc028"
+      }
+    },
+    "0c89886c-02ff-8f68-ffff6d9b8f6a24c4" : {
+      "name" : "Timer _ schedule",
+      "type" : "Daytimer",
+      "uuidAction" : "0c89886c-02ff-8f68-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-003b-039a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0027-02e0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "analog" : true,
+        "format" : "%.1f"
+      },
+      "states" : {
+        "mode" : "0c89886c-02ff-8f64-ffff25ed9edaeb56",
+        "override" : "0c89886c-02ff-8f67-ffff25ed9edaeb56",
+        "value" : "0c89886c-02ff-8f63-ffff25ed9edaeb56",
+        "needsActivation" : "0c89886c-02ff-8f5b-ffff25ed9edaeb56",
+        "modeList" : "0c89886c-02ff-8f5c-ffff25ed9edaeb56",
+        "entriesAndDefaultValue" : "0c89886c-02ff-8f68-ffff6d9b8f6a24c4",
+        "resetActive" : "0c89886c-02ff-8f5e-ffff25ed9edaeb56"
+      }
+    },
+    "0c54d48b-0011-eaa2-ffff6d9b8f6a24c4" : {
+      "name" : "Lighting controller",
+      "type" : "LightController",
+      "uuidAction" : "0c54d48b-0011-eaa2-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-003b-039a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0026-02d8-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "movementScene" : 1
+      },
+      "states" : {
+        "activeScene" : "0c54d48b-0011-ea9f-ffff8b3bcc271f93",
+        "sceneList" : "0f78599a-010b-1512-ffff504f941034df"
+      },
+      "subControls" : {
+        "0c54d48b-0011-eaa2-ffff6d9b8f6a24c4/AI1" : {
+          "name" : "OFFICE - NANO IO Relay Q1",
+          "type" : "Switch",
+          "uuidAction" : "0c54d48b-0011-eaa2-ffff6d9b8f6a24c4/AI1",
+          "defaultRating" : 0,
+          "isFavorite" : false,
+          "isSecured" : false,
+          "states" : {
+            "active" : "0c54d48b-0011-ea93-ffff8b3bcc271f93"
+          }
+        }
+      }
+    },
+    "0c50cc41-00e3-3a29-ffff6d9b8f6a24c4" : {
+      "name" : "OFFICE - NANO IO Relay Q1",
+      "type" : "InfoOnlyDigital",
+      "uuidAction" : "0c50cc41-00e3-3a29-ffff6d9b8f6a24c4",
+      "room" : "0c37aa3d-003b-039a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0026-02d8-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "text" : {
+          "off" : "Off",
+          "on" : "On"
+        },
+        "color" : {
+          "off" : "#BE1624",
+          "on" : "#73BA1B"
+        }
+      },
+      "states" : {
+        "active" : "0c50cc41-00e3-3a29-ffff6d9b8f6a24c4"
+      }
+    },
+    "0c819392-02ce-d318-ffff79a9e3ca837c" : {
+      "name" : "Push-button",
+      "type" : "Switch",
+      "uuidAction" : "0c819392-02ce-d318-ffff79a9e3ca837c",
+      "room" : "0c37aa3d-003b-039a-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0025-02d4-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "states" : {
+        "active" : "0c819392-02ce-d31e-ffff79a9e3ca837c"
+      }
+    },
+    "0c37ae20-01af-231b-ffff6d9b8f6a24c4" : {
+      "name" : "T14_TS Bottom",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37ae20-01af-231b-ffff6d9b8f6a24c4",
+      "room" : "0c478369-028d-bf5e-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c37ae20-01af-231b-ffff6d9b8f6a24c4",
+        "error" : "0c37ae20-01af-231a-ffff0ccb8cbc8511"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "T14_TS Bottom",
+          "format" : "%.1f°",
+          "uuid" : "0c37ae20-01af-2319-ffff0ccb8cbc8511",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37ae13-0230-20f8-ffff6d9b8f6a24c4" : {
+      "name" : "T15_TS Lower",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37ae13-0230-20f8-ffff6d9b8f6a24c4",
+      "room" : "0c478369-028d-bf5e-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c37ae13-0230-20f8-ffff6d9b8f6a24c4",
+        "error" : "0c37ae13-0230-20f7-ffffc544c386eb60"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "T15_TS Lower",
+          "format" : "%.1f°",
+          "uuid" : "0c37ae13-0230-20f6-ffffc544c386eb60",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37ae0d-023e-1ed9-ffff6d9b8f6a24c4" : {
+      "name" : "T16_TS Mid",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37ae0d-023e-1ed9-ffff6d9b8f6a24c4",
+      "room" : "0c478369-028d-bf5e-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c37ae0d-023e-1ed9-ffff6d9b8f6a24c4",
+        "error" : "0c37ae0d-023e-1ed8-ffff6d47f89173ba"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "T16_TS Mid",
+          "format" : "%.1f°",
+          "uuid" : "0c37ae0d-023e-1ed7-ffff6d47f89173ba",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37adf0-0332-1cbe-ffff6d9b8f6a24c4" : {
+      "name" : "T17_TS Upper",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37adf0-0332-1cbe-ffff6d9b8f6a24c4",
+      "room" : "0c478369-028d-bf5e-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c37adf0-0332-1cbe-ffff6d9b8f6a24c4",
+        "error" : "0c37adf0-0332-1cbd-ffffafdcc7a3648e"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "T17_TS Upper",
+          "format" : "%.1f°",
+          "uuid" : "0c37adf0-0332-1cbc-ffffafdcc7a3648e",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37adea-0257-1aa7-ffff6d9b8f6a24c4" : {
+      "name" : "T18_TS Top",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37adea-0257-1aa7-ffff6d9b8f6a24c4",
+      "room" : "0c478369-028d-bf5e-ffff6d9b8f6a24c4",
+      "cat" : "0c37aa3d-0029-02f0-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c37adea-0257-1aa7-ffff6d9b8f6a24c4",
+        "error" : "0c37adea-0257-1aa6-ffff193a6ad58fa2"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "T18_TS Top",
+          "format" : "%.1f°",
+          "uuid" : "0c37adea-0257-1aa5-ffff193a6ad58fa2",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0ca7bef6-023a-a8bc-ffff6d9b8f6a24c4" : {
+      "name" : "# Guests",
+      "type" : "Slider",
+      "uuidAction" : "0ca7bef6-023a-a8bc-ffff6d9b8f6a24c4",
+      "room" : "0c478369-028d-bf5e-ffff6d9b8f6a24c4",
+      "cat" : "0ca7bf34-0043-ccc2-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f",
+        "min" : 1.0,
+        "max" : 10.0,
+        "step" : 1.0
+      },
+      "states" : {
+        "value" : "0ca7bef6-023a-a8bc-ffff6d9b8f6a24c4",
+        "error" : "0ca7bef6-023a-a8bb-ffffade07feeef6f"
+      }
+    },
+    "0ca7c909-0097-53b9-ffff6d9b8f6a24c4" : {
+      "name" : "Budget Correction Factor",
+      "type" : "Slider",
+      "uuidAction" : "0ca7c909-0097-53b9-ffff6d9b8f6a24c4",
+      "room" : "0c478369-028d-bf5e-ffff6d9b8f6a24c4",
+      "cat" : "0ca7bf34-0043-ccc2-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f",
+        "min" : 1.0,
+        "max" : 2.0,
+        "step" : 0.1
+      },
+      "states" : {
+        "value" : "0ca7c909-0097-53b9-ffff6d9b8f6a24c4",
+        "error" : "0ca7c909-0097-53b8-ffff15d471b77f8d"
+      }
+    },
+    "0ca7f201-0034-5a43-ffff6d9b8f6a24c4" : {
+      "name" : "Currently Required Hot Water",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0ca7f201-0034-5a43-ffff6d9b8f6a24c4",
+      "room" : "0c478369-028d-bf5e-ffff6d9b8f6a24c4",
+      "cat" : "0ca7bf34-0043-ccc2-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f"
+      },
+      "states" : {
+        "value" : "0ca7f201-0034-5a43-ffff6d9b8f6a24c4",
+        "error" : "0ca7f201-0034-5a42-ffff3b61bc34676a"
+      }
+    },
+    "0ca7f3c7-03c7-6e40-ffff6d9b8f6a24c4" : {
+      "name" : "Enable Bottom",
+      "type" : "InfoOnlyDigital",
+      "uuidAction" : "0ca7f3c7-03c7-6e40-ffff6d9b8f6a24c4",
+      "room" : "0c478369-028d-bf5e-ffff6d9b8f6a24c4",
+      "cat" : "0ca7bf34-0043-ccc2-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "text" : {
+          "off" : "Off",
+          "on" : "On"
+        },
+        "color" : {
+          "off" : "#BE1624",
+          "on" : "#73BA1B"
+        }
+      },
+      "states" : {
+        "active" : "0ca7f3c7-03c7-6e40-ffff6d9b8f6a24c4"
+      }
+    },
+    "0ca7f3c2-004d-5b89-ffff6d9b8f6a24c4" : {
+      "name" : "Enable Lower",
+      "type" : "InfoOnlyDigital",
+      "uuidAction" : "0ca7f3c2-004d-5b89-ffff6d9b8f6a24c4",
+      "room" : "0c478369-028d-bf5e-ffff6d9b8f6a24c4",
+      "cat" : "0ca7bf34-0043-ccc2-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "text" : {
+          "off" : "Off",
+          "on" : "On"
+        },
+        "color" : {
+          "off" : "#BE1624",
+          "on" : "#73BA1B"
+        }
+      },
+      "states" : {
+        "active" : "0ca7f3c2-004d-5b89-ffff6d9b8f6a24c4"
+      }
+    },
+    "0ca7f3b7-026f-362d-ffff6d9b8f6a24c4" : {
+      "name" : "Enable Mid",
+      "type" : "InfoOnlyDigital",
+      "uuidAction" : "0ca7f3b7-026f-362d-ffff6d9b8f6a24c4",
+      "room" : "0c478369-028d-bf5e-ffff6d9b8f6a24c4",
+      "cat" : "0ca7bf34-0043-ccc2-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "text" : {
+          "off" : "Off",
+          "on" : "On"
+        },
+        "color" : {
+          "off" : "#BE1624",
+          "on" : "#73BA1B"
+        }
+      },
+      "states" : {
+        "active" : "0ca7f3b7-026f-362d-ffff6d9b8f6a24c4"
+      }
+    },
+    "0ca7f3b1-003c-237e-ffff6d9b8f6a24c4" : {
+      "name" : "Enable Upper",
+      "type" : "InfoOnlyDigital",
+      "uuidAction" : "0ca7f3b1-003c-237e-ffff6d9b8f6a24c4",
+      "room" : "0c478369-028d-bf5e-ffff6d9b8f6a24c4",
+      "cat" : "0ca7bf34-0043-ccc2-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "text" : {
+          "off" : "Off",
+          "on" : "On"
+        },
+        "color" : {
+          "off" : "#BE1624",
+          "on" : "#73BA1B"
+        }
+      },
+      "states" : {
+        "active" : "0ca7f3b1-003c-237e-ffff6d9b8f6a24c4"
+      }
+    },
+    "0ca7c178-0304-e6bd-ffff6d9b8f6a24c4" : {
+      "name" : "Estimated Daily Thermal Store Budget",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0ca7c178-0304-e6bd-ffff6d9b8f6a24c4",
+      "room" : "0c478369-028d-bf5e-ffff6d9b8f6a24c4",
+      "cat" : "0ca7bf34-0043-ccc2-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f"
+      },
+      "states" : {
+        "value" : "0ca7c178-0304-e6bd-ffff6d9b8f6a24c4",
+        "error" : "0ca7c178-0304-e6bc-ffffebb57353188d"
+      }
+    },
+    "0ca7bf69-001c-14e3-ffff6d9b8f6a24c4" : {
+      "name" : "Shower Length",
+      "type" : "Slider",
+      "uuidAction" : "0ca7bf69-001c-14e3-ffff6d9b8f6a24c4",
+      "room" : "0c478369-028d-bf5e-ffff6d9b8f6a24c4",
+      "cat" : "0ca7bf34-0043-ccc2-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.0f",
+        "min" : 5.0,
+        "max" : 15.0,
+        "step" : 1.0
+      },
+      "states" : {
+        "value" : "0ca7bf69-001c-14e3-ffff6d9b8f6a24c4",
+        "error" : "0ca7bf69-001c-14e2-ffffda064a1330e2"
+      }
+    },
+    "0f222c0a-005c-8b33-ffff6d9b8f6a24c4" : {
+      "name" : "Target collector temp",
+      "type" : "Slider",
+      "uuidAction" : "0f222c0a-005c-8b33-ffff6d9b8f6a24c4",
+      "room" : "0c478369-028d-bf5e-ffff6d9b8f6a24c4",
+      "cat" : "0ca7bf34-0043-ccc2-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f",
+        "min" : 0.0,
+        "max" : 80.0,
+        "step" : 1.0
+      },
+      "states" : {
+        "value" : "0f222c0a-005c-8b33-ffff6d9b8f6a24c4",
+        "error" : "0f222c0a-005c-8b32-ffff2537b3579318"
+      }
+    },
+    "0cc8cdd1-0388-b0b2-ffff6d9b8f6a24c4" : {
+      "name" : "Timer _ schedule",
+      "type" : "Daytimer",
+      "uuidAction" : "0cc8cdd1-0388-b0b2-ffff6d9b8f6a24c4",
+      "room" : "0c478369-028d-bf5e-ffff6d9b8f6a24c4",
+      "cat" : "0ca7bf34-0043-ccc2-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "analog" : true,
+        "format" : "%.1f"
+      },
+      "states" : {
+        "mode" : "0cc8cdd1-0388-b0ae-fffffeb26fda2749",
+        "override" : "0cc8cdd1-0388-b0b1-fffffeb26fda2749",
+        "value" : "0cc8cdd1-0388-b0ad-fffffeb26fda2749",
+        "needsActivation" : "0cc8cdd1-0388-b0a5-fffffeb26fda2749",
+        "modeList" : "0cc8cdd1-0388-b0a6-fffffeb26fda2749",
+        "entriesAndDefaultValue" : "0cc8cdd1-0388-b0b2-ffff6d9b8f6a24c4",
+        "resetActive" : "0cc8cdd1-0388-b0a8-fffffeb26fda2749"
+      }
+    },
+    "0c40fb1b-0247-55bb-ffff8429ac00d883" : {
+      "name" : "M2_Lighting",
+      "type" : "Meter",
+      "uuidAction" : "0c40fb1b-0247-55bb-ffff8429ac00d883",
+      "cat" : "0c3febfe-0066-1240-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1fkWh"
+      },
+      "states" : {
+        "actual" : "0c40fb1b-0247-55c6-ffff8429ac00d883",
+        "total" : "0c40fb1b-0247-55c5-ffff8429ac00d883"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Energy",
+          "format" : "%.1fkWh",
+          "uuid" : "0c40fb1b-0247-55c5-ffff8429ac00d883",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "Power",
+          "format" : "%.3fkW",
+          "uuid" : "0c40fb1b-0247-55c6-ffff8429ac00d883",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c40fb27-0390-6d27-ffff052442a3c34f" : {
+      "name" : "M4_CMS",
+      "type" : "Meter",
+      "uuidAction" : "0c40fb27-0390-6d27-ffff052442a3c34f",
+      "cat" : "0c3febfe-0066-1240-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.3fkWh"
+      },
+      "states" : {
+        "actual" : "0c40fb27-0390-6d32-ffff052442a3c34f",
+        "total" : "0c40fb27-0390-6d31-ffff052442a3c34f"
+      },
+      "statistic" : {
+        "frequency" : 1,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Energy",
+          "format" : "%.3fkWh",
+          "uuid" : "0c40fb27-0390-6d31-ffff052442a3c34f",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "Power",
+          "format" : "%.3fkW",
+          "uuid" : "0c40fb27-0390-6d32-ffff052442a3c34f",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c47933e-0332-ed8f-ffff6d9b8f6a24c4" : {
+      "name" : "M5_SC Pump",
+      "type" : "Meter",
+      "uuidAction" : "0c47933e-0332-ed8f-ffff6d9b8f6a24c4",
+      "cat" : "0c3febfe-0066-1240-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1fkWh"
+      },
+      "states" : {
+        "actual" : "0c47933e-0332-ed84-ffff6caa1ee51720",
+        "total" : "0c47933e-0332-ed83-ffff6caa1ee51720"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Energy",
+          "format" : "%.1fkWh",
+          "uuid" : "0c47933e-0332-ed83-ffff6caa1ee51720",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "Power",
+          "format" : "%.3fkW",
+          "uuid" : "0c47933e-0332-ed84-ffff6caa1ee51720",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c40fb4b-0336-e2dd-ffff0b1cdf6268da" : {
+      "name" : "M6_Mixing Set",
+      "type" : "Meter",
+      "uuidAction" : "0c40fb4b-0336-e2dd-ffff0b1cdf6268da",
+      "cat" : "0c3febfe-0066-1240-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1fkWh"
+      },
+      "states" : {
+        "actual" : "0c40fb4b-0336-e2e8-ffff0b1cdf6268da",
+        "total" : "0c40fb4b-0336-e2e7-ffff0b1cdf6268da"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Energy",
+          "format" : "%.1fkWh",
+          "uuid" : "0c40fb4b-0336-e2e7-ffff0b1cdf6268da",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "Power",
+          "format" : "%.3fkW",
+          "uuid" : "0c40fb4b-0336-e2e8-ffff0b1cdf6268da",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c40fb63-0367-2269-ffff8c839e3dc17d" : {
+      "name" : "M7_Friwa",
+      "type" : "Meter",
+      "uuidAction" : "0c40fb63-0367-2269-ffff8c839e3dc17d",
+      "cat" : "0c3febfe-0066-1240-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1fkWh"
+      },
+      "states" : {
+        "actual" : "0c40fb63-0367-2274-ffff8c839e3dc17d",
+        "total" : "0c40fb63-0367-2273-ffff8c839e3dc17d"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Energy",
+          "format" : "%.1fkWh",
+          "uuid" : "0c40fb63-0367-2273-ffff8c839e3dc17d",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "Power",
+          "format" : "%.3fkW",
+          "uuid" : "0c40fb63-0367-2274-ffff8c839e3dc17d",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c479423-02cf-b662-ffff6d9b8f6a24c4" : {
+      "name" : "M8_Ventilation",
+      "type" : "Meter",
+      "uuidAction" : "0c479423-02cf-b662-ffff6d9b8f6a24c4",
+      "cat" : "0c3febfe-0066-1240-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1fkWh"
+      },
+      "states" : {
+        "actual" : "0c479423-02cf-b657-fffff38f709fca91",
+        "total" : "0c479423-02cf-b656-fffff38f709fca91"
+      }
+    },
+    "0c40fb83-031b-8aaf-ffff2f3bde4ee697" : {
+      "name" : "M9_Heat Pump",
+      "type" : "Meter",
+      "uuidAction" : "0c40fb83-031b-8aaf-ffff2f3bde4ee697",
+      "cat" : "0c3febfe-0066-1240-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1fkWh"
+      },
+      "states" : {
+        "actual" : "0c40fb83-031b-8aba-ffff2f3bde4ee697",
+        "total" : "0c40fb83-031b-8ab9-ffff2f3bde4ee697"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Energy",
+          "format" : "%.1fkWh",
+          "uuid" : "0c40fb83-031b-8ab9-ffff2f3bde4ee697",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "Power",
+          "format" : "%.3fkW",
+          "uuid" : "0c40fb83-031b-8aba-ffff2f3bde4ee697",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c40fb02-00ed-1ef2-ffff6d9b8f6a24c4" : {
+      "name" : "M1_Total Test Cabin",
+      "type" : "Meter",
+      "uuidAction" : "0c40fb02-00ed-1ef2-ffff6d9b8f6a24c4",
+      "cat" : "0c3febfe-0066-1240-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1fkWh"
+      },
+      "states" : {
+        "actual" : "0c40fb02-00ed-1ee7-ffff78f7c79fac77",
+        "total" : "0c40fb02-00ed-1ee6-ffff78f7c79fac77"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Energy",
+          "format" : "%.1fkWh",
+          "uuid" : "0c40fb02-00ed-1ee6-ffff78f7c79fac77",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "Power",
+          "format" : "%.3fkW",
+          "uuid" : "0c40fb02-00ed-1ee7-ffff78f7c79fac77",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c40ff48-0162-0c55-ffff1c5b3ea08916" : {
+      "name" : "F5_Flow thru Friwa",
+      "type" : "Meter",
+      "uuidAction" : "0c40ff48-0162-0c55-ffff1c5b3ea08916",
+      "cat" : "0c478039-03c8-319c-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1fL"
+      },
+      "states" : {
+        "actual" : "0c40ff48-0162-0c60-ffff1c5b3ea08916",
+        "total" : "0c40ff48-0162-0c5f-ffff1c5b3ea08916"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "L",
+          "format" : "%.1fL",
+          "uuid" : "0c40ff48-0162-0c5f-ffff1c5b3ea08916",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "L/hr",
+          "format" : "%.3fkW",
+          "uuid" : "0c40ff48-0162-0c60-ffff1c5b3ea08916",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37aa4a-00b6-06c3-ffff6d9b8f6a24c4" : {
+      "name" : "F5_Flow thru Friwa",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37aa4a-00b6-06c3-ffff6d9b8f6a24c4",
+      "cat" : "0c478039-03c8-319c-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f L/min"
+      },
+      "states" : {
+        "value" : "0c37aa4a-00b6-06c3-ffff6d9b8f6a24c4",
+        "error" : "0c37aa4a-00b6-06c2-ffff81f45bd48d6b"
+      }
+    },
+    "0c40ff5b-02db-477b-ffff762773a44189" : {
+      "name" : "F6_Flow from Water Main",
+      "type" : "Meter",
+      "uuidAction" : "0c40ff5b-02db-477b-ffff762773a44189",
+      "cat" : "0c478039-03c8-319c-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1fL"
+      },
+      "states" : {
+        "actual" : "0c40ff5b-02db-4786-ffff762773a44189",
+        "total" : "0c40ff5b-02db-4785-ffff762773a44189"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "L",
+          "format" : "%.1fL",
+          "uuid" : "0c40ff5b-02db-4785-ffff762773a44189",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "L/hr",
+          "format" : "%.3fkW",
+          "uuid" : "0c40ff5b-02db-4786-ffff762773a44189",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37aa3d-007e-04ca-ffff6d9b8f6a24c4" : {
+      "name" : "F6_Flow from Water Main",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37aa3d-007e-04ca-ffff6d9b8f6a24c4",
+      "cat" : "0c478039-03c8-319c-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f L/min"
+      },
+      "states" : {
+        "value" : "0c37aa3d-007e-04ca-ffff6d9b8f6a24c4",
+        "error" : "0c37aa3d-007e-04c9-ffffd410921f2f08"
+      }
+    },
+    "0c381a13-0109-dfeb-fffff91858728367" : {
+      "name" : "M _Friwa T OUTPUT",
+      "type" : "Meter",
+      "uuidAction" : "0c381a13-0109-dfeb-fffff91858728367",
+      "cat" : "0c478039-03c8-319c-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1fkWh"
+      },
+      "states" : {
+        "actual" : "0c381a13-0109-dff6-fffff91858728367",
+        "total" : "0c381a13-0109-dff5-fffff91858728367"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Energy",
+          "format" : "%.1fkWh",
+          "uuid" : "0c381a13-0109-dff5-fffff91858728367",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "Power",
+          "format" : "%.3fkW",
+          "uuid" : "0c381a13-0109-dff6-fffff91858728367",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c479877-01ee-1e23-ffff6d9b8f6a24c4" : {
+      "name" : "M_Friwa COP",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c479877-01ee-1e23-ffff6d9b8f6a24c4",
+      "cat" : "0c478039-03c8-319c-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.3f"
+      },
+      "states" : {
+        "value" : "0c479877-01ee-1e23-ffff6d9b8f6a24c4"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "M_Friwa COP",
+          "format" : "%.3f",
+          "uuid" : "0c479877-01ee-1e22-fffffe0750f9641b",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c3819e0-012e-caf5-ffff02593009941c" : {
+      "name" : "M_Friwa T INPUT",
+      "type" : "Meter",
+      "uuidAction" : "0c3819e0-012e-caf5-ffff02593009941c",
+      "cat" : "0c478039-03c8-319c-ffff6d9b8f6a24c4",
+      "defaultRating" : 1,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "details" : {
+        "actualFormat" : "%.3fkW",
+        "totalFormat" : "%.1fkWh"
+      },
+      "states" : {
+        "actual" : "0c3819e0-012e-cb00-ffff02593009941c",
+        "total" : "0c3819e0-012e-caff-ffff02593009941c"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "Energy",
+          "format" : "%.1fkWh",
+          "uuid" : "0c3819e0-012e-caff-ffff02593009941c",
+          "visuType" : 2
+        }, {
+          "id" : 1,
+          "name" : "Power",
+          "format" : "%.3fkW",
+          "uuid" : "0c3819e0-012e-cb00-ffff02593009941c",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37ae3b-0393-276d-ffff6d9b8f6a24c4" : {
+      "name" : "T10_TS to Friwa",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37ae3b-0393-276d-ffff6d9b8f6a24c4",
+      "cat" : "0c478039-03c8-319c-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c37ae3b-0393-276d-ffff6d9b8f6a24c4",
+        "error" : "0c37ae3b-0393-276c-ffff64f3c060171f"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "T10_TS to Friwa",
+          "format" : "%.1f°",
+          "uuid" : "0c37ae3b-0393-276b-ffff64f3c060171f",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37ae45-01bc-299c-ffff6d9b8f6a24c4" : {
+      "name" : "T11_Main to Friwa",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37ae45-01bc-299c-ffff6d9b8f6a24c4",
+      "cat" : "0c478039-03c8-319c-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c37ae45-01bc-299c-ffff6d9b8f6a24c4",
+        "error" : "0c37ae45-01bc-299b-ffff3a2e178183aa"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "T11_Main to Friwa",
+          "format" : "%.1f°",
+          "uuid" : "0c37ae45-01bc-299a-ffff3a2e178183aa",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37ae91-0158-370a-ffff6d9b8f6a24c4" : {
+      "name" : "T12_Friwa to Fixtures",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37ae91-0158-370a-ffff6d9b8f6a24c4",
+      "cat" : "0c478039-03c8-319c-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c37ae91-0158-370a-ffff6d9b8f6a24c4",
+        "error" : "0c37ae91-0158-3709-ffff419b6957b88a"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "T12_Friwa to Fixtures",
+          "format" : "%.1f°",
+          "uuid" : "0c37ae91-0158-3708-ffff419b6957b88a",
+          "visuType" : 0
+        } ]
+      }
+    },
+    "0c37ae28-037b-2542-ffff6d9b8f6a24c4" : {
+      "name" : "T9_Friwa to TS",
+      "type" : "InfoOnlyAnalog",
+      "uuidAction" : "0c37ae28-037b-2542-ffff6d9b8f6a24c4",
+      "cat" : "0c478039-03c8-319c-ffff6d9b8f6a24c4",
+      "defaultRating" : 0,
+      "isFavorite" : false,
+      "isSecured" : false,
+      "defaultIcon" : null,
+      "details" : {
+        "format" : "%.1f°"
+      },
+      "states" : {
+        "value" : "0c37ae28-037b-2542-ffff6d9b8f6a24c4",
+        "error" : "0c37ae28-037b-2541-ffffd5df8c59e60f"
+      },
+      "statistic" : {
+        "frequency" : 2,
+        "outputs" : [ {
+          "id" : 0,
+          "name" : "T9_Friwa to TS",
+          "format" : "%.1f°",
+          "uuid" : "0c37ae28-037b-2540-ffffd5df8c59e60f",
+          "visuType" : 0
+        } ]
+      }
+    }
+  },
+  "weatherServer" : {
+    "states" : {
+      "actual" : "0e446468-025c-1fa9-ffff6d9b8f6a24c4",
+      "forecast" : "0e446468-025c-1fa8-ffff7016f97e4feb"
+    },
+    "format" : {
+      "relativeHumidity" : "%.0f%%",
+      "temperature" : "%.1f°",
+      "windSpeed" : "%.0fkm/h",
+      "precipitation" : "%.1fl/m²/h",
+      "barometricPressure" : "%.0fhPa"
+    },
+    "weatherTypeTexts" : {
+      "1" : "Clear Sky",
+      "2" : "Clear",
+      "3" : "Partly Cloudy",
+      "4" : "Heavy Cloud Cover",
+      "5" : "Cloudy",
+      "6" : "Fog",
+      "7" : "Overcast",
+      "8" : "not in use",
+      "9" : "not in use",
+      "10" : "Light rain",
+      "11" : "Rain",
+      "12" : "Heavy rain",
+      "13" : "Drizzle",
+      "14" : "Sleet",
+      "15" : "Heavy freezing rain",
+      "16" : "Light shower",
+      "17" : "Heavy rain showers",
+      "18" : "Thunderstorms",
+      "19" : "Strong thunderstorms",
+      "20" : "Light snow",
+      "21" : "Snow",
+      "22" : "Heavy snow",
+      "23" : "Light snow showers",
+      "24" : "Heavy snow showers",
+      "25" : "Light sleet",
+      "26" : "Sleet",
+      "27" : "Heavy Sleet",
+      "28" : "Light sleet showers",
+      "29" : "Heavy sleet showers"
+    },
+    "weatherFieldTypes" : {
+      "1" : {
+        "id" : 1,
+        "name" : "Temperature",
+        "analog" : true,
+        "unit" : "°C",
+        "format" : "%.1f"
+      },
+      "2" : {
+        "id" : 2,
+        "name" : "Dewpoint",
+        "analog" : true,
+        "unit" : "°C",
+        "format" : "%.1f"
+      },
+      "3" : {
+        "id" : 3,
+        "name" : "Rel. humidity",
+        "analog" : true,
+        "format" : "%.0f%%"
+      },
+      "4" : {
+        "id" : 4,
+        "name" : "Wind speed",
+        "analog" : true,
+        "unit" : "km/h",
+        "format" : "%.0f"
+      },
+      "5" : {
+        "id" : 5,
+        "name" : "Wind direction",
+        "analog" : true
+      },
+      "6" : {
+        "id" : 6,
+        "name" : "Gusts",
+        "analog" : true
+      },
+      "7" : {
+        "id" : 7,
+        "name" : "Radiation (absolute)",
+        "analog" : true
+      },
+      "8" : {
+        "id" : 8,
+        "name" : "Radiation (relative)",
+        "analog" : true
+      },
+      "9" : {
+        "id" : 9,
+        "name" : "Precipitation",
+        "analog" : true,
+        "unit" : "l/m²/h",
+        "format" : "%.1f"
+      },
+      "10" : {
+        "id" : 10,
+        "name" : "Weather type",
+        "analog" : true
+      },
+      "11" : {
+        "id" : 11,
+        "name" : "Air pressure",
+        "analog" : true,
+        "unit" : "hPa",
+        "format" : "%.0f"
+      },
+      "26" : {
+        "id" : 26,
+        "name" : "Perceived temperature",
+        "analog" : true,
+        "unit" : "°C",
+        "format" : "%.1f"
+      },
+      "27" : {
+        "id" : 27,
+        "name" : "Solar Radiation",
+        "analog" : true
+      },
+      "28" : {
+        "id" : 28,
+        "name" : "Chance of precipitation",
+        "analog" : true
+      },
+      "29" : {
+        "id" : 29,
+        "name" : "Snow percentage",
+        "analog" : true
+      },
+      "30" : {
+        "id" : 30,
+        "name" : "CAPE",
+        "analog" : true
+      },
+      "31" : {
+        "id" : 31,
+        "name" : "Low clouds",
+        "analog" : true
+      },
+      "32" : {
+        "id" : 32,
+        "name" : "Medium cloud cover",
+        "analog" : true
+      },
+      "33" : {
+        "id" : 33,
+        "name" : "High cloud cover",
+        "analog" : true
+      },
+      "34" : {
+        "id" : 34,
+        "name" : "Sunshine",
+        "analog" : false
+      }
+    }
+  },
+  "times" : {
+    "266" : {
+      "id" : 266,
+      "name" : "Days since 2009",
+      "analog" : true
+    },
+    "267" : {
+      "id" : 267,
+      "name" : "Year",
+      "analog" : true
+    },
+    "268" : {
+      "id" : 268,
+      "name" : "Month",
+      "analog" : true
+    },
+    "269" : {
+      "id" : 269,
+      "name" : "Day",
+      "analog" : true
+    },
+    "270" : {
+      "id" : 270,
+      "name" : "Weekday",
+      "analog" : true
+    },
+    "271" : {
+      "id" : 271,
+      "name" : "Active operating time",
+      "analog" : true
+    },
+    "272" : {
+      "id" : 272,
+      "name" : "Minutes past midnight",
+      "analog" : true
+    },
+    "273" : {
+      "id" : 273,
+      "name" : "Hour",
+      "analog" : true
+    },
+    "274" : {
+      "id" : 274,
+      "name" : "Minutes",
+      "analog" : true
+    },
+    "275" : {
+      "id" : 275,
+      "name" : "Seconds",
+      "analog" : true
+    },
+    "276" : {
+      "id" : 276,
+      "name" : "Seconds since boot",
+      "analog" : true
+    },
+    "277" : {
+      "id" : 277,
+      "name" : "Time of sunrise",
+      "analog" : true
+    },
+    "278" : {
+      "id" : 278,
+      "name" : "Time of sunset",
+      "analog" : true
+    },
+    "281" : {
+      "id" : 281,
+      "name" : "Daylight",
+      "analog" : false
+    },
+    "282" : {
+      "id" : 282,
+      "name" : "Daylight 30min",
+      "analog" : false
+    },
+    "283" : {
+      "id" : 283,
+      "name" : "Time of dawn",
+      "analog" : true
+    },
+    "284" : {
+      "id" : 284,
+      "name" : "Time of dusk",
+      "analog" : true
+    },
+    "285" : {
+      "id" : 285,
+      "name" : "Sun elevation",
+      "analog" : true
+    },
+    "286" : {
+      "id" : 286,
+      "name" : "Sun direction",
+      "analog" : true
+    },
+    "287" : {
+      "id" : 287,
+      "name" : "Start pulse",
+      "analog" : false
+    },
+    "288" : {
+      "id" : 288,
+      "name" : "Annual pulse",
+      "analog" : false
+    },
+    "289" : {
+      "id" : 289,
+      "name" : "Pulse for month",
+      "analog" : false
+    },
+    "290" : {
+      "id" : 290,
+      "name" : "Pulse for day",
+      "analog" : false
+    },
+    "291" : {
+      "id" : 291,
+      "name" : "Pulse for hour",
+      "analog" : false
+    },
+    "292" : {
+      "id" : 292,
+      "name" : "Pulse for minute",
+      "analog" : false
+    },
+    "293" : {
+      "id" : 293,
+      "name" : "Pulse for second",
+      "analog" : false
+    },
+    "294" : {
+      "id" : 294,
+      "name" : "Pulse for sunrise",
+      "analog" : false
+    },
+    "295" : {
+      "id" : 295,
+      "name" : "Pulse for sunset",
+      "analog" : false
+    },
+    "298" : {
+      "id" : 298,
+      "name" : "Pulse for dawn",
+      "analog" : false
+    },
+    "299" : {
+      "id" : 299,
+      "name" : "Pulse for dusk",
+      "analog" : false
+    }
+  },
+  "caller" : {
+    "0e1f7f5b-0259-28a4-ffff6d9b8f6a24c4" : {
+      "id" : "0e1f7f5b-0259-28a4-ffff6d9b8f6a24c4",
+      "name" : "Caller",
+      "phoneNumber" : ""
+    }
+  },
+  "autopilot" : { }
+}
