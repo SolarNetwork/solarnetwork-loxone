@@ -574,8 +574,8 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		@Override
 		public boolean onConnectFailure(Exception exception) {
 			counter++;
-			log.warn("Loxone {} connect failure {} ({}), will try reconnecting in {}s",
-					getConfiguration(), counter, exception.getMessage(), getDelay());
+			log.warn("Loxone {} connect failure {} ({}), will try reconnecting in {}s", host, counter,
+					exception.getMessage(), getDelay());
 			connectionDetailsChanged();
 			return false;
 		}
