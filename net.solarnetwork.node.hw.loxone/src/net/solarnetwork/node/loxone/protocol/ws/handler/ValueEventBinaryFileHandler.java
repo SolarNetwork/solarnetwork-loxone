@@ -44,7 +44,7 @@ import net.solarnetwork.node.loxone.protocol.ws.MessageType;
  * {@link BinaryFileHandler} for value-type event binary messages.
  * 
  * @author matt
- * @version 1.1
+ * @version 1.2
  */
 public class ValueEventBinaryFileHandler extends BaseEventBinaryFileHandler<ValueEvent> {
 
@@ -67,6 +67,7 @@ public class ValueEventBinaryFileHandler extends BaseEventBinaryFileHandler<Valu
 	public static final String EVENT_PROPERTY_VALUE_EVENTS = "valueEvents";
 
 	private boolean sendValueEventsUpdatedEvents = false;
+	private boolean ignoreUnchangedValues = true;
 
 	@Override
 	public boolean supportsDataMessage(MessageHeader header, ByteBuffer buffer) {
@@ -81,7 +82,7 @@ public class ValueEventBinaryFileHandler extends BaseEventBinaryFileHandler<Valu
 	}
 
 	@Override
-	public boolean handleDataMessage(MessageHeader header, Session session, ByteBuffer buffer,
+	protected boolean handleDataMessage(MessageHeader header, Session session, ByteBuffer buffer,
 			Long configId) {
 		int end = buffer.position() + (int) header.getLength();
 		Date now = new Date();
@@ -93,7 +94,7 @@ public class ValueEventBinaryFileHandler extends BaseEventBinaryFileHandler<Valu
 			log.trace("Parsed value event {} = {}", uuid, value);
 
 			// check existing value first, so we don't emit an event for a value that has not changed
-			ValueEvent existing = eventDao.loadEvent(configId, uuid);
+			ValueEvent existing = (ignoreUnchangedValues ? eventDao.loadEvent(configId, uuid) : null);
 			if ( existing != null && Double.compare(existing.getValue(), value) == 0 ) {
 				log.trace("ValueEvent {} unchanged: {}", uuid, value);
 			} else {
@@ -134,6 +135,27 @@ public class ValueEventBinaryFileHandler extends BaseEventBinaryFileHandler<Valu
 	 */
 	public void setSendValueEventsUpdatedEvents(boolean sendValueEventsUpdatedEvents) {
 		this.sendValueEventsUpdatedEvents = sendValueEventsUpdatedEvents;
+	}
+
+	/**
+	 * Toggle the flag to ignore unchanged value event values.
+	 * 
+	 * <p>
+	 * When {@literal true} (the default) then if the value of the control has
+	 * not changed from the last seen value for the same control, no updated
+	 * event will be generated and the value will not be re-saved. When
+	 * {@literal false} then all value events will be processed regardless of
+	 * their value, which can be useful if dealing with devices like RFID card
+	 * readers where the event must always be processed.
+	 * </p>
+	 * 
+	 * @param ignoreUnchangedValues
+	 *        {@literal true} to ignore processing unchanged value events;
+	 *        defaults to {@literal true}
+	 * @since 1.2
+	 */
+	public void setIgnoreUnchangedValues(boolean ignoreUnchangedValues) {
+		this.ignoreUnchangedValues = ignoreUnchangedValues;
 	}
 
 }
