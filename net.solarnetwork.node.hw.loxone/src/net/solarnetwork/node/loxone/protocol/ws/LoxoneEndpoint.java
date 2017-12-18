@@ -88,7 +88,7 @@ import net.solarnetwork.util.OptionalService;
  * date changes will request the structure file again from the Loxone server.
  * 
  * @author matt
- * @version 1.5
+ * @version 1.6
  */
 public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<ByteBuffer>, EventHandler {
 
@@ -321,8 +321,14 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 			try {
 				MessageHeader header = new MessageHeader(buf);
 				log.trace("Got message header {}", header);
+
 				incrementMessageCount();
-				if ( !headerQueue.offer(header) ) {
+
+				// skip keep-alive headers, there is no follow on message
+				if ( MessageType.Keepalive.equals(header.getType()) ) {
+					log.info("Received keepalive message from Loxone "
+							+ configuration.idToExternalForm());
+				} else if ( !headerQueue.offer(header) ) {
 					log.warn("Dropping message header: {}", header);
 				}
 			} catch ( IllegalArgumentException e ) {
