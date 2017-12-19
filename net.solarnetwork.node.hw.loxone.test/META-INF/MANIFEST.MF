@@ -2,14 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Loxone Test
 Bundle-SymbolicName: net.solarnetwork.node.hw.loxone.test
-Bundle-Version: 0.3.0
+Bundle-Version: 1.0.0
 Bundle-Vendor: Evident
-Fragment-Host: net.solarnetwork.node.hw.loxone;bundle-version="1.0.3"
+Fragment-Host: net.solarnetwork.node.hw.loxone;bundle-version="1.1.6"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: 
  com.fasterxml.jackson.databind.annotation,
  net.solarnetwork.node.test;version="[1.2,2.0)",
  org.easymock;version="[3.1,4.0)",
+ org.hamcrest;version="[1.1,2.0)",
  org.junit;version="[4.5,5.0)",
  org.junit.runner;version="[4.5,5.0)",
  org.springframework.asm;version="[4.2,5.0)",

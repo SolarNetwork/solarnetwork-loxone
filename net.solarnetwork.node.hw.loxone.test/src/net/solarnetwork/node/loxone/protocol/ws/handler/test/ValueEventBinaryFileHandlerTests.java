@@ -27,6 +27,10 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Base64;
@@ -53,7 +57,7 @@ import net.solarnetwork.util.StaticOptionalService;
  * Unit tests for the {@link ValueEventBinaryFileHandler} class.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class ValueEventBinaryFileHandlerTests {
 
@@ -107,7 +111,7 @@ public class ValueEventBinaryFileHandlerTests {
 
 		verify(session, eventAdmin, valueEventDao);
 
-		Assert.assertTrue("Handled", handled);
+		assertThat("Handled", handled, equalTo(true));
 
 		// test just the first few values
 		Object[][] expectedEventData = { { "0c89ebac-0021-02be-ffff-a1b98ee6c71d", 4.0 },
@@ -117,12 +121,95 @@ public class ValueEventBinaryFileHandlerTests {
 		int i = 0;
 		for ( Object[] eventData : expectedEventData ) {
 			ValueEvent event = valueEventCapture.getValues().get(i++);
-			Assert.assertNotNull("ValueEvent created date " + i, event.getCreated());
-			Assert.assertEquals("ValueEvent config ID " + i, TEST_CONFIG_ID, event.getConfigId());
-			Assert.assertEquals("ValueEvent UUID " + i, UUID.fromString((String) eventData[0]),
-					event.getUuid());
-			Assert.assertEquals("ValueEvent value" + i, ((Double) eventData[1]).doubleValue(),
-					event.getValue(), 0.01);
+			assertThat("ValueEvent created date " + i, event.getCreated(), notNullValue());
+			assertThat("ValueEvent config ID " + i, event.getConfigId(), equalTo(TEST_CONFIG_ID));
+			assertThat("ValueEvent UUID " + i, event.getUuid(),
+					equalTo(UUID.fromString((String) eventData[0])));
+			assertThat("ValueEvent value" + i, event.getValue(),
+					closeTo(((Double) eventData[1]).doubleValue(), 0.01));
+		}
+	}
+
+	@Test
+	public void testUnchangedValueEventIgnored() throws IOException {
+		byte[] data = FileCopyUtils.copyToByteArray(
+				Base64.getMimeDecoder().wrap(getClass().getResourceAsStream("value-events-02.b64")));
+		MessageHeader header = new MessageHeader(MessageType.EventTableValueStates, null, data.length);
+
+		// get Config ID from session
+		expect(session.getUserProperties())
+				.andReturn(
+						Collections.singletonMap(LoxoneEndpoint.CONFIG_ID_USER_PROPERTY, TEST_CONFIG_ID))
+				.times(2);
+
+		// should first query for existing data but not find value
+		expect(valueEventDao.loadEvent(EasyMock.anyObject(Long.class), EasyMock.anyObject(UUID.class)))
+				.andReturn(null);
+
+		ValueEvent seenValueEvent = new ValueEvent(
+				UUID.fromString("0c37ae7e-016c-2e06-ffff-6d9b8f6a24c4"), TEST_CONFIG_ID, 18.375);
+		expect(valueEventDao.loadEvent(EasyMock.anyObject(Long.class), EasyMock.anyObject(UUID.class)))
+				.andReturn(seenValueEvent);
+
+		Capture<ValueEvent> valueEventCapture = new Capture<>(CaptureType.ALL);
+		valueEventDao.storeEvent(capture(valueEventCapture));
+		expectLastCall().times(1);
+
+		replay(session, eventAdmin, valueEventDao);
+
+		ByteBuffer buffer = ByteBuffer.wrap(data);
+		boolean handled = handler.handleDataMessage(header, session, buffer);
+		assertThat("Message 1 handled", handled, equalTo(true));
+
+		buffer = ByteBuffer.wrap(data);
+		handled = handler.handleDataMessage(header, session, buffer);
+		assertThat("Message 2 handled", handled, equalTo(true));
+
+		verify(session, eventAdmin, valueEventDao);
+
+		ValueEvent ve = valueEventCapture.getValue();
+		assertThat("UUID", ve.getUuid(),
+				equalTo(UUID.fromString("0c37ae7e-016c-2e06-ffff-6d9b8f6a24c4")));
+		assertThat("Value", ve.getValue(), closeTo(18.375, 0.0001));
+	}
+
+	@Test
+	public void testUnchangedValueEventNotIgnored() throws IOException {
+		handler.setIgnoreUnchangedValues(false);
+
+		byte[] data = FileCopyUtils.copyToByteArray(
+				Base64.getMimeDecoder().wrap(getClass().getResourceAsStream("value-events-02.b64")));
+		MessageHeader header = new MessageHeader(MessageType.EventTableValueStates, null, data.length);
+
+		// get Config ID from session
+		expect(session.getUserProperties())
+				.andReturn(
+						Collections.singletonMap(LoxoneEndpoint.CONFIG_ID_USER_PROPERTY, TEST_CONFIG_ID))
+				.times(2);
+
+		// should NOT query for existing data
+
+		Capture<ValueEvent> valueEventCapture = new Capture<>(CaptureType.ALL);
+		valueEventDao.storeEvent(capture(valueEventCapture));
+		expectLastCall().times(2);
+
+		replay(session, eventAdmin, valueEventDao);
+
+		ByteBuffer buffer = ByteBuffer.wrap(data);
+		boolean handled = handler.handleDataMessage(header, session, buffer);
+		assertThat("Message 1 handled", handled, equalTo(true));
+
+		buffer = ByteBuffer.wrap(data);
+		handled = handler.handleDataMessage(header, session, buffer);
+		assertThat("Message 2 handled", handled, equalTo(true));
+
+		verify(session, eventAdmin, valueEventDao);
+
+		for ( int i = 0; i < 2; i++ ) {
+			ValueEvent ve = valueEventCapture.getValues().get(i);
+			assertThat("UUID " + (i + 1), ve.getUuid(),
+					equalTo(UUID.fromString("0c37ae7e-016c-2e06-ffff-6d9b8f6a24c4")));
+			assertThat("Value " + (i + 1), ve.getValue(), closeTo(18.375, 0.0001));
 		}
 	}
 
