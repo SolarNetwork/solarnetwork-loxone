@@ -140,7 +140,7 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 	@Override
 	public Control load(Long configId, UUID uuid) {
 		final Control result = getEntityByUUID(configId, uuid);
-		if ( result != null ) {
+		if ( result != null && result.getStates() == null ) {
 			final Map<String, UUID> stateMap = new LinkedHashMap<>(4);
 			getJdbcTemplate().query(new PreparedStatementCreator() {
 

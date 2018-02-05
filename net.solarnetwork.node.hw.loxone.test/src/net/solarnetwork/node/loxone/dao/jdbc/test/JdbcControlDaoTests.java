@@ -27,7 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Resource;
+import javax.cache.Cache;
+import javax.cache.CacheManager;
 import javax.sql.DataSource;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +48,8 @@ import net.solarnetwork.node.loxone.domain.BasicDatumPropertyUUIDEntity;
 import net.solarnetwork.node.loxone.domain.BasicDatumPropertyUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntity;
 import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntityParameters;
+import net.solarnetwork.node.loxone.domain.ConfigNameKey;
+import net.solarnetwork.node.loxone.domain.ConfigUUIDKey;
 import net.solarnetwork.node.loxone.domain.Control;
 import net.solarnetwork.node.loxone.domain.ControlDatumParameters;
 import net.solarnetwork.node.loxone.domain.ControlType;
@@ -78,6 +83,8 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 	private JdbcControlDao dao;
 	private Control lastControl;
 
+	private CacheManager cacheManager;
+
 	@Before
 	public void setup() {
 		DatabaseSetup setup = new DatabaseSetup();
@@ -107,6 +114,13 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 		dao = new JdbcControlDao();
 		dao.setDataSource(dataSource);
 		dao.init();
+	}
+
+	@After
+	public void teardown() {
+		if ( cacheManager != null ) {
+			cacheManager.close();
+		}
 	}
 
 	private Control createControl(UUID uuid) {
@@ -530,7 +544,118 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 		List<Control> results = dao.findAllForConfigAndName(TEST_CONFIG_ID, lastControl.getName(), null);
 		Assert.assertNotNull("Results", results);
 		Assert.assertEquals("Result count", 1, results.size());
-		Assert.assertEquals("Category", lastControl, results.get(0));
+		Assert.assertEquals("Control", lastControl, results.get(0));
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void setupCaches() {
+		cacheManager = CacheUtils.createCacheManager();
+		Cache<ConfigUUIDKey, Control> entityCache = CacheUtils.createCache(cacheManager, "Control",
+				ConfigUUIDKey.class, Control.class, null);
+		Cache nameCache = CacheUtils.createCache(cacheManager, "ControlByName", ConfigNameKey.class,
+				List.class, null);
+		dao.setEntityCache(entityCache);
+		dao.setEntityNameCache(nameCache);
+
+	}
+
+	@Test
+	public void insertWithCache() {
+		setupCaches();
+		insert(); // should add to cache
+
+		Control cachedEntity = dao.getEntityCache()
+				.get(new ConfigUUIDKey(lastControl.getConfigId(), lastControl.getUuid()));
+		Assert.assertEquals("Cached entity", lastControl, cachedEntity);
+	}
+
+	@Test
+	public void getByPKWithCacheMiss() {
+		setupCaches();
+		getByPK(); // should add to cache
+
+		Control cachedEntity = dao.getEntityCache()
+				.get(new ConfigUUIDKey(lastControl.getConfigId(), lastControl.getUuid()));
+		Assert.assertEquals("Cached entity", lastControl, cachedEntity);
+	}
+
+	@Test
+	public void getByPKWithCacheHit() {
+		getByPKWithCacheMiss();
+
+		Control cachedEntity = dao.getEntityCache()
+				.get(new ConfigUUIDKey(lastControl.getConfigId(), lastControl.getUuid()));
+		Assert.assertEquals("Cached entity", lastControl, cachedEntity);
+
+		Control control = dao.load(TEST_CONFIG_ID, lastControl.getUuid());
+		Assert.assertSame("Cached entity", cachedEntity, control);
+	}
+
+	@Test
+	public void getByPKWithStatesWithCacheMiss() {
+		setupCaches();
+		getByPKWithStates(); // should add to cache
+
+		Control cachedEntity = dao.getEntityCache()
+				.get(new ConfigUUIDKey(lastControl.getConfigId(), lastControl.getUuid()));
+		Assert.assertEquals("Cached entity", lastControl, cachedEntity);
+		Assert.assertEquals("Cache state map", lastControl.getStates(), cachedEntity.getStates());
+	}
+
+	@Test
+	public void getByPKWithStatesWithCacheHit() {
+		getByPKWithStatesWithCacheMiss();
+
+		Control cachedEntity = dao.getEntityCache()
+				.get(new ConfigUUIDKey(lastControl.getConfigId(), lastControl.getUuid()));
+		Assert.assertEquals("Cached entity", lastControl, cachedEntity);
+
+		Control control = dao.load(TEST_CONFIG_ID, lastControl.getUuid());
+		Assert.assertSame("Cached entity", cachedEntity, control);
+	}
+
+	@Test
+	public void findForNameCacheMiss() {
+		setupCaches();
+		insert();
+		List<Control> results = dao.findAllForConfigAndName(TEST_CONFIG_ID, lastControl.getName(), null);
+		Assert.assertNotNull("Results", results);
+		Assert.assertEquals("Result count", 1, results.size());
+		Assert.assertEquals("Control", lastControl, results.get(0));
+
+		List<Control> cachedEntities = dao.getEntityNameCache()
+				.get(new ConfigNameKey(lastControl.getConfigId(), lastControl.getName()));
+		Assert.assertEquals("Cached entities", results, cachedEntities);
+	}
+
+	@Test
+	public void findForNameCacheHit() {
+		findForNameCacheMiss();
+
+		List<Control> results = dao.findAllForConfigAndName(TEST_CONFIG_ID, lastControl.getName(), null);
+		Assert.assertNotNull("Results", results);
+		Assert.assertEquals("Result count", 1, results.size());
+		Assert.assertEquals("Control", lastControl, results.get(0));
+
+		List<Control> cachedEntities = dao.getEntityNameCache()
+				.get(new ConfigNameKey(lastControl.getConfigId(), lastControl.getName()));
+		Assert.assertSame("Cached entities", cachedEntities, results);
+	}
+
+	@Test
+	public void deleteForConfigWithCache() {
+		insertWithCache();
+		int result = dao.deleteAllForConfig(TEST_CONFIG_ID);
+		Assert.assertEquals("Deleted count", 1, result);
+		Control cat = dao.load(TEST_CONFIG_ID, lastControl.getUuid());
+		Assert.assertNull("Control no longer available", cat);
+
+		Control cachedEntity = dao.getEntityCache()
+				.get(new ConfigUUIDKey(lastControl.getConfigId(), lastControl.getUuid()));
+		Assert.assertNull("Cached control no longer available", cachedEntity);
+		List<Control> cachedEntities = dao.getEntityNameCache()
+				.get(new ConfigNameKey(lastControl.getConfigId(), lastControl.getName()));
+		Assert.assertNull("Cached control name list no longer available", cachedEntities);
 	}
 
 }
