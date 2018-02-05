@@ -29,7 +29,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Control type values.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public enum ControlType {
 
@@ -47,7 +47,7 @@ public enum ControlType {
 	Hourcounter("Hourcounter", 10),
 	InfoOnlyAnalog("InfoOnlyAnalog", 11),
 	InfoOnlyDigital("InfoOnlyDigital", 12),
-	IntelligentRoomController("Intelligent Room Controller", 13),
+	IntelligentRoomController("IRoomController", 13),
 	Intercom("Intercom", 14),
 	Jalousie("Jalousie", 15),
 	LightController("LightController", 16),
