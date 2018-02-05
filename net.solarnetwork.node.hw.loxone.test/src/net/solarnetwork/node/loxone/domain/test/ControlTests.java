@@ -167,4 +167,12 @@ public class ControlTests {
 		assertEquals("Color on", "On", tree.path("text").path("on").textValue());
 	}
 
+	@Test
+	public void jsonDeserializeIRC() throws IOException {
+		InputStream in = getClass().getResourceAsStream("control-04.json");
+		Control control = objectMapper.readValue(in, Control.class);
+		assertNotNull(control);
+		assertEquals("Type", ControlType.IntelligentRoomController, control.getType());
+	}
+
 }
