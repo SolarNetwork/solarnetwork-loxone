@@ -180,9 +180,28 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 	@Override
 	public List<Control> findAllForConfig(Long configId, List<SortDescriptor> sortDescriptors) {
 		String sql = getSqlResource(SQL_FIND_FOR_CONFIG);
-		sql = handleSortDescriptors(sql, sortDescriptors, sortDescriptorColumnMapping());
+		// SQL sorting not supported when grouping with states
 		List<Control> results = getJdbcTemplate().query(sql,
 				new ControlWithStateRowMapper(getRowMapper()), configId);
+		return results;
+	}
+
+	@Override
+	public List<Control> findAllForConfigAndName(Long configId, String name,
+			List<SortDescriptor> sortDescriptors) {
+		List<Control> results = (sortDescriptors == null
+				? findAllForConfigAndNameFromCache(configId, name)
+				: null);
+		if ( results != null ) {
+			return results;
+		}
+		String sql = getSqlResource(SQL_FIND_FOR_NAME);
+		// SQL sorting not supported when grouping with states
+		results = getJdbcTemplate().query(sql, new ControlWithStateRowMapper(getRowMapper()), configId,
+				name);
+		if ( results != null && sortDescriptors == null && !results.isEmpty() ) {
+			storeEntitiesForConfigAndNameInCache(configId, name, results);
+		}
 		return results;
 	}
 

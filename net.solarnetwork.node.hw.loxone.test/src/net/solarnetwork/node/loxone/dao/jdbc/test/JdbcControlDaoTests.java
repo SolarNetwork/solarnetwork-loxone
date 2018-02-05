@@ -547,6 +547,15 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 		Assert.assertEquals("Control", lastControl, results.get(0));
 	}
 
+	@Test
+	public void findForNameWithStates() {
+		insertWithStates();
+		List<Control> results = dao.findAllForConfigAndName(TEST_CONFIG_ID, lastControl.getName(), null);
+		Assert.assertNotNull("Results", results);
+		Assert.assertEquals("Result count", 1, results.size());
+		Assert.assertEquals("Control", lastControl, results.get(0));
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void setupCaches() {
 		cacheManager = CacheUtils.createCacheManager();
