@@ -173,6 +173,18 @@ public class ControlTests {
 		Control control = objectMapper.readValue(in, Control.class);
 		assertNotNull(control);
 		assertEquals("Type", ControlType.IntelligentRoomController, control.getType());
+		assertEquals("State count", 23, control.getStates().size());
+
+		String[] expectedTemps = new String[] { "1030808a-01de-58fe-ffff-89145a801961",
+				"1030808a-01de-58ff-ffff-89145a801961", "1030808a-01de-5900-ffff-89145a801961",
+				"1030808a-01de-5903-ffff-89145a801961", "1030808a-01de-5904-ffff-89145a801961",
+				"1030808a-01de-5902-ffff-89145a801961", "1030808a-01de-5901-ffff-89145a801961" };
+		for ( int i = 0; i < 7; i++ ) {
+			String stateName = "temperatures[" + i + "]";
+			assertNotNull("Temperatures " + i, control.getStates().get(stateName));
+			assertEquals("Temperatures " + i + " value", expectedTemps[i],
+					control.getStates().get(stateName).toString());
+		}
 	}
 
 }

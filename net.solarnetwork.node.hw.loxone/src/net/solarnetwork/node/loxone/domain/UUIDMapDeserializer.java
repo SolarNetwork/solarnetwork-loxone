@@ -33,14 +33,37 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 /**
- * Special deserializer for a map of string keys and UUID values, ignoring other
- * data types during parsing such as array values.
+ * Special deserializer for a map of string keys and UUID values, including
+ * arrays of UUID values.
  * 
+ * <p>
  * This can be useful when parsing control state objects, for example, where
- * some states are encoded as an array of UUID values.
+ * some states are encoded as an array of UUID values. When an array of strings
+ * is encountered, each array value is treated as a UUID and the resulting map
+ * key will have {@literal [i]} appended, where {@literal i} is the array index.
+ * </p>
+ * 
+ * <p>
+ * For example, given a JSON structure like this:
+ * </p>
+ * 
+ * <pre>
+ * <code>{"temperatures" : [ "1030808a-01de-58fe-ffff89145a801961", "1030808a-01de-58ff-ffff89145a801961" ]}</code>
+ * </pre>
+ * 
+ * <p>
+ * then the resulting map would contain two entries like this:
+ * </p>
+ * 
+ * <pre>
+ * <code>{
+ *   "temperatures[0]" -&gt; UUID("1030808a-01de-58fe-ffff-89145a801961"),
+ *   "temperatures[1]" -&gt; UUID("1030808a-01de-58ff-ffff-89145a801961")
+ * }</code>
+ * </pre>
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  * @since 1.0.4
  */
 public class UUIDMapDeserializer extends StdDeserializer<Map<String, UUID>> {
@@ -59,6 +82,17 @@ public class UUIDMapDeserializer extends StdDeserializer<Map<String, UUID>> {
 		while ( tok != null && tok != JsonToken.END_OBJECT ) {
 			if ( tok == JsonToken.VALUE_STRING && parser.getCurrentName() != null ) {
 				result.put(parser.getCurrentName(), UUIDDeserializer.deserializeUUID(parser.getText()));
+			} else if ( tok == JsonToken.START_ARRAY && parser.getCurrentName() != null ) {
+				// parse array values using indexed key names
+				String baseName = parser.getCurrentName();
+				int idx = 0;
+				for ( tok = parser.nextValue(); tok != null
+						&& tok != JsonToken.END_ARRAY; tok = parser.nextToken(), idx++ ) {
+					if ( tok == JsonToken.VALUE_STRING ) {
+						String arrayName = baseName + "[" + idx + "]";
+						result.put(arrayName, UUIDDeserializer.deserializeUUID(parser.getText()));
+					}
+				}
 			}
 			tok = parser.nextValue();
 		}
