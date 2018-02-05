@@ -69,7 +69,10 @@ public enum ControlType {
 	UpDownAnalog("UpDownAnalog", 32),
 	UpDownLeftRightAnalog("UpDownLeftRight analog", 33),
 	ValueSelector("ValueSelector", 34),
-	Webpage("Webpage", 35);
+	Webpage("Webpage", 35),
+	UpDownDigital("UpDownDigital", 36),
+	CentralLightController("CentralLightController", 37),
+	CentralJalousie("CentralJalousie", 38);
 
 	private String key;
 	private short index;
