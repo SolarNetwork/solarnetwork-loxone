@@ -347,6 +347,45 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 	}
 
 	@Test
+	public void findForConfigAndStateWithCacheMiss() {
+		setupCaches();
+		insertWithStates();
+		Control result = dao.getForConfigAndState(TEST_CONFIG_ID, lastControl.getStates().get("bar"));
+		Assert.assertNotNull(result);
+		Assert.assertEquals("Found object", lastControl.getUuid(), result.getUuid());
+		Assert.assertEquals("State map", lastControl.getStates(), result.getStates());
+
+		// should be in cache via control UUID and both state UUIDs
+
+		Control cachedEntity = dao.getEntityCache()
+				.get(new ConfigUUIDKey(lastControl.getConfigId(), lastControl.getUuid()));
+		Assert.assertEquals("Cached entity", lastControl, cachedEntity);
+
+		cachedEntity = dao.getEntityCache()
+				.get(new ConfigUUIDKey(lastControl.getConfigId(), lastControl.getStates().get("foo")));
+		Assert.assertEquals("Cached 'foo' state entity", lastControl, cachedEntity);
+
+		cachedEntity = dao.getEntityCache()
+				.get(new ConfigUUIDKey(lastControl.getConfigId(), lastControl.getStates().get("bar")));
+		Assert.assertEquals("Cached 'bar' state entity", lastControl, cachedEntity);
+	}
+
+	@Test
+	public void findForConfigAndStateWithCacheHit() {
+		findForConfigAndStateWithCacheMiss();
+
+		Control cachedEntity = dao.getEntityCache()
+				.get(new ConfigUUIDKey(lastControl.getConfigId(), lastControl.getUuid()));
+		Assert.assertEquals("Cached entity", lastControl, cachedEntity);
+
+		Control control = dao.getForConfigAndState(TEST_CONFIG_ID, lastControl.getStates().get("foo"));
+		Assert.assertSame("Cached 'foo' state entity", cachedEntity, control);
+
+		control = dao.getForConfigAndState(TEST_CONFIG_ID, lastControl.getStates().get("bar"));
+		Assert.assertSame("Cached 'bar' state entity", cachedEntity, control);
+	}
+
+	@Test
 	public void countForConfigSingleMatch() {
 		insert();
 		int result = dao.countForConfig(TEST_CONFIG_ID);
