@@ -33,8 +33,11 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javax.websocket.Session;
+import com.fasterxml.jackson.databind.JsonNode;
 import net.solarnetwork.node.RemoteServiceException;
 import net.solarnetwork.node.loxone.protocol.ws.CommandHandler;
+import net.solarnetwork.node.loxone.protocol.ws.CommandType;
+import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
 
 /**
  * Support {@link CommandHandler} for future-based request/response exchanges.
@@ -45,7 +48,7 @@ import net.solarnetwork.node.loxone.protocol.ws.CommandHandler;
  * </p>
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  * @since 1.1
  */
 public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
@@ -85,6 +88,7 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 		private final K name;
 		private boolean cancelled;
 		private V result;
+		private Throwable error;
 
 		private LatchBasedFuture(K name) {
 			super();
@@ -103,6 +107,17 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 				this.result = result;
 				latch.countDown();
 			}
+		}
+
+		/**
+		 * Set a result error.
+		 * 
+		 * @param t
+		 *        The error exception.
+		 */
+		private void setError(Throwable t) {
+			this.error = t;
+			cancel(true);
 		}
 
 		@Override
@@ -127,6 +142,9 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 		@Override
 		public V get() throws InterruptedException, ExecutionException {
 			latch.await();
+			if ( error != null ) {
+				throw new ExecutionException(error);
+			}
 			return result;
 		}
 
@@ -134,6 +152,9 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 		public V get(long timeout, TimeUnit unit)
 				throws InterruptedException, ExecutionException, TimeoutException {
 			latch.await(timeout, unit);
+			if ( error != null ) {
+				throw new ExecutionException(error);
+			}
 			return result;
 		}
 
@@ -197,6 +218,17 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 		}
 	}
 
+	@Override
+	protected boolean handleErrorCommand(CommandType command, MessageHeader header, Session session,
+			JsonNode tree, int statusCode) {
+		Long configId = getConfigId(session);
+		if ( supportsCommand(command) ) {
+			handleNextResultError(configId,
+					new RemoteServiceException(command + " returned error status " + statusCode));
+		}
+		return false;
+	}
+
 	/**
 	 * See what the next result key in the queue is, leaving it as the next
 	 * result key.
@@ -243,6 +275,25 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 		LatchBasedFuture f = requests.remove(key);
 		if ( f != null ) {
 			f.setResult(result);
+		}
+		return f;
+	}
+
+	/**
+	 * Handle the next result for the queue as an error.
+	 * 
+	 * @param configId
+	 *        the config ID of the queue to manage
+	 * @param t
+	 *        the error to set
+	 * @return the {@code Future} associated with the queue, with the result set
+	 */
+	protected Future<V> handleNextResultError(Long configId, Throwable t) {
+		K key = popNextResultKey(configId);
+		log.debug("Got error result {}: {}", key, t.getMessage());
+		LatchBasedFuture f = requests.remove(key);
+		if ( f != null ) {
+			f.setError(t);
 		}
 		return f;
 	}

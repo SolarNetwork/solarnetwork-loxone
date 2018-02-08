@@ -41,7 +41,7 @@ import net.solarnetwork.util.OptionalService;
  * Supporting abstract class for {@link CommandHandler} implementations.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public abstract class BaseCommandHandler implements CommandHandler {
 
@@ -67,7 +67,7 @@ public abstract class BaseCommandHandler implements CommandHandler {
 		int status = tree.path("Code").asInt();
 		if ( status != 200 ) {
 			log.warn("{} command returned error status {}", command, status);
-			return false;
+			return handleErrorCommand(command, header, session, tree, status);
 		}
 		String value = tree.path("value").textValue();
 		return handleCommandValue(command, header, session, tree, value);
@@ -78,7 +78,7 @@ public abstract class BaseCommandHandler implements CommandHandler {
 	 * 
 	 * @param session
 	 *        The current session.
-	 * @return The ID, or <em>null</em> if not found.
+	 * @return The ID, or {@literal null} if not found.
 	 */
 	protected Long getConfigId(Session session) {
 		Object id = session.getUserProperties().get(LoxoneEndpoint.CONFIG_ID_USER_PROPERTY);
@@ -107,7 +107,7 @@ public abstract class BaseCommandHandler implements CommandHandler {
 	 *        The JSON tree.
 	 * @param value
 	 *        The parsed command value.
-	 * @return <em>true</em> if the command was handled.
+	 * @return {@literal true} if the command was handled.
 	 * @throws IOException
 	 *         if any communication error occurs
 	 */
@@ -117,9 +117,38 @@ public abstract class BaseCommandHandler implements CommandHandler {
 	}
 
 	/**
+	 * Handle an error command.
+	 * 
+	 * <p>
+	 * This method is called from
+	 * {@link #handleCommand(CommandType, MessageHeader, Session, JsonNode)} if
+	 * the {@code Code} value is not {@literal 200}. This implementation simply
+	 * returns {@literal false} but extending implementations may need to
+	 * perform further processing.
+	 * </p>
+	 * 
+	 * @param command
+	 *        The command.
+	 * @param header
+	 *        The message header.
+	 * @param session
+	 *        The websocket session.
+	 * @param tree
+	 *        The JSON tree.
+	 * @param statusCode
+	 *        The command status code.
+	 * @return {@literal true} if the command was actually handled
+	 * @since 1.1
+	 */
+	protected boolean handleErrorCommand(CommandType command, MessageHeader header, Session session,
+			JsonNode tree, int statusCode) {
+		return false;
+	}
+
+	/**
 	 * Provides a default implementation that sends just the command's control
 	 * value asynchronously, as long as {@link #supportsCommand(CommandType)}
-	 * returns {@code null}.
+	 * returns {@literal null}.
 	 */
 	@Override
 	public Future<?> sendCommand(CommandType command, Session session, Object... args)
