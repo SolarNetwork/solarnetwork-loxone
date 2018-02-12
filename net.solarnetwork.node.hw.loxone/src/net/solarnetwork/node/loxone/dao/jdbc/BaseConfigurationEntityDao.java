@@ -121,6 +121,13 @@ public abstract class BaseConfigurationEntityDao<T extends BaseConfigurationEnti
 		return result;
 	}
 
+	@Override
+	protected int deleteAllEntitiesForConfig(Long configId) {
+		int result = super.deleteAllEntitiesForConfig(configId);
+		deleteAllEntitiesForConfigFromNameCache(configId);
+		return result;
+	}
+
 	/**
 	 * Remove all entities matching a specific {@code configId} from the entity
 	 * cache.
