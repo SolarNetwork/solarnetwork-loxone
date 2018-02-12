@@ -40,6 +40,7 @@ import net.solarnetwork.node.loxone.domain.SourceMapping;
 import net.solarnetwork.node.loxone.domain.UUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
+import net.solarnetwork.node.loxone.protocol.ws.ControlCommand;
 
 /**
  * API for a Loxone device.
@@ -188,13 +189,25 @@ public interface LoxoneService extends Identifiable {
 	/**
 	 * Asynchronously set the value of a control.
 	 * 
-	 * @param name
-	 *        the name of the control to set the state of
+	 * @param uuid
+	 *        the UUID of the control to set the state of
 	 * @param value
 	 *        the control value to set
 	 * @return the resulting control state
 	 * @since 1.2
 	 */
 	Future<List<ValueEvent>> setControlState(UUID uuid, Double value);
+
+	/**
+	 * Asynchronously send a command to a control.
+	 * 
+	 * @param uuid
+	 *        the UUID of the control to send the command to
+	 * @param command
+	 *        the command to send
+	 * @return the resulting control state
+	 * @since 1.2
+	 */
+	Future<List<ValueEvent>> sendControlCommand(ControlCommand command);
 
 }
