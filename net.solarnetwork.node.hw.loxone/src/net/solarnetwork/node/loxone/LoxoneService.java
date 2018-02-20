@@ -40,7 +40,7 @@ import net.solarnetwork.node.loxone.domain.SourceMapping;
 import net.solarnetwork.node.loxone.domain.UUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
-import net.solarnetwork.node.loxone.protocol.ws.ControlCommand;
+import net.solarnetwork.node.loxone.domain.command.ControlCommand;
 
 /**
  * API for a Loxone device.

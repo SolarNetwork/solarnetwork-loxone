@@ -20,7 +20,7 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.loxone.protocol.ws;
+package net.solarnetwork.node.loxone.domain.command;
 
 import java.util.UUID;
 
@@ -40,6 +40,9 @@ import java.util.UUID;
  */
 public class SetTempControlCommand extends IndexedStateControlCommand {
 
+	/** The {@literal settemp} command name. */
+	public static final String SET_TEMP_COMMAND = "settemp";
+
 	/**
 	 * Construct from a string command value.
 	 * 
@@ -50,7 +53,7 @@ public class SetTempControlCommand extends IndexedStateControlCommand {
 	 */
 	public SetTempControlCommand(UUID uuid, String command) {
 		super(uuid, command);
-		if ( !"settemp".equals(getSubCommand()) ) {
+		if ( !SET_TEMP_COMMAND.equals(getSubCommand()) ) {
 			throw new IllegalArgumentException("Command is not in the form settemp/N/V");
 		}
 	}
@@ -66,7 +69,7 @@ public class SetTempControlCommand extends IndexedStateControlCommand {
 	 *        the temperature value to set
 	 */
 	public SetTempControlCommand(UUID uuid, int index, double value) {
-		super(uuid, "settemp", index, value);
+		super(uuid, SET_TEMP_COMMAND, index, value);
 	}
 
 }

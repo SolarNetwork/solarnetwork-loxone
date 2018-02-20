@@ -20,7 +20,7 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.loxone.protocol.ws;
+package net.solarnetwork.node.loxone.domain.command;
 
 import java.util.UUID;
 import java.util.regex.Matcher;

@@ -1,5 +1,5 @@
 /* ==================================================================
- * ControlCommand.java - 9/02/2018 2:53:50 PM
+ * StopTimerControlCommand.java - 20/02/2018 4:47:31 PM
  * 
  * Copyright 2018 SolarNetwork.net Dev Team
  * 
@@ -20,36 +20,46 @@
  * ==================================================================
  */
 
-package net.solarnetwork.node.loxone.protocol.ws;
+package net.solarnetwork.node.loxone.domain.command;
 
 import java.util.UUID;
 
 /**
- * API for a control command object.
+ * Control command for stopping a timer on something like an intelligent room
+ * controller.
  * 
  * @author matt
  * @version 1.0
  * @since 1.2
  */
-public interface ControlCommand {
+public class StopTimerControlCommand extends GenericControlCommand {
+
+	/** The {@literal stoptimer} command name. */
+	public static final String STOP_TIMER_COMMAND = "stoptimer";
 
 	/**
-	 * Get the control UUID the command is for.
+	 * Construct from a string command value.
 	 * 
-	 * @return the UUID
+	 * @param uuid
+	 *        the UUID of the control to update
+	 * @param command
+	 *        the string command
 	 */
-	UUID getUuid();
+	public StopTimerControlCommand(UUID uuid, String command) {
+		super(uuid, command);
+		if ( !STOP_TIMER_COMMAND.equals(command) ) {
+			throw new IllegalArgumentException("Command is not in the form stoptimer");
+		}
+	}
 
 	/**
-	 * Get the command as a string value.
+	 * Construct from values.
 	 * 
-	 * <p>
-	 * It is expected that the {@code toString()} method of any class that
-	 * implements this interface will return the same value as this method.
-	 * </p>
-	 * 
-	 * @return the command string
+	 * @param uuid
+	 *        the UUID of the control to update
 	 */
-	String getCommandValue();
+	public StopTimerControlCommand(UUID uuid) {
+		super(uuid, STOP_TIMER_COMMAND);
+	}
 
 }
