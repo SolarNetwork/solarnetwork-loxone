@@ -72,4 +72,29 @@ public class SetTempControlCommand extends IndexedStateControlCommand {
 		super(uuid, SET_TEMP_COMMAND, index, value);
 	}
 
+	/**
+	 * Construct from values.
+	 * 
+	 * @param uuid
+	 *        the UUID of the control to update
+	 * @param indexedState
+	 *        the temperature state to update
+	 * @param value
+	 *        the temperature value to set
+	 */
+	public SetTempControlCommand(UUID uuid, IndexedControlState indexedState, double value) {
+		super(uuid, SET_TEMP_COMMAND, indexedState, value);
+	}
+
+	/**
+	 * Get a temperature enum for the configured temperature state.
+	 * 
+	 * @return the enum
+	 * @throws IllegalArgumentException
+	 *         if the index is not a valid value
+	 */
+	public IntelligentRoomControllerTemperature getTemperatureState() {
+		return IntelligentRoomControllerTemperature.forControlStateIndex(getIndex());
+	}
+
 }

@@ -88,6 +88,23 @@ public class IndexedStateControlCommand extends GenericControlCommand {
 	}
 
 	/**
+	 * Construct from values.
+	 * 
+	 * @param uuid
+	 *        the UUID of the control to update
+	 * @param subCommand
+	 *        the sub-command to use
+	 * @param indexedState
+	 *        the state to update
+	 * @param value
+	 *        the state value to set
+	 */
+	public IndexedStateControlCommand(UUID uuid, String subCommand, IndexedControlState indexedState,
+			double value) {
+		this(uuid, subCommand, indexedState.getControlStateIndex(), value);
+	}
+
+	/**
 	 * Get the sub-command name.
 	 * 
 	 * @return the sub-command
