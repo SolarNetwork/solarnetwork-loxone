@@ -99,7 +99,7 @@ import net.solarnetwork.util.OptionalService;
  * Websocket based implementation of {@link LoxoneService}.
  * 
  * @author matt
- * @version 1.5
+ * @version 1.6
  */
 public class WebsocketLoxoneService extends LoxoneEndpoint
 		implements LoxoneService, SettingSpecifierProvider, WebsocketLoxoneServiceSettings,
@@ -517,13 +517,13 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		final Scheduler sched = scheduler;
 
 		if ( sched == null ) {
-			log.warn("No scheduler avaialable, cannot schedule Loxone {} datum logger job",
+			log.info("No scheduler avaialable, cannot schedule Loxone {} datum logger job",
 					configIdDisplay);
 			return false;
 		}
 		final DatumDao<GeneralNodeDatum> dao = (datumDao != null ? datumDao.service() : null);
 		if ( dao == null ) {
-			log.warn(
+			log.info(
 					"No DatumDao<GeneralNodeDatum> avaialable, cannot schedule Loxone {} datum logger job",
 					configIdDisplay);
 			return false;
