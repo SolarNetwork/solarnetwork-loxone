@@ -11,14 +11,15 @@
 		<artifact type="sources" ext="jar" conf="sources" m:classifier="sources"/>
 	</publications>
 	<dependencies defaultconfmapping="runtime->default(runtime);compile->default(compile)">
+		<dependency org="org.apache.servicemix.bundles" name="org.apache.servicemix.bundles.javax-cache-api" rev="1.0.0_1" />
 		<dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.4.3"/>
 		<dependency org="commons-codec" name="commons-codec" rev="1.10"/>
 		<dependency org="org.eclipse.virgo.mirrored" name="javax.websocket" rev="1.0.0.v201312030745"/>
-    	<dependency org="org.glassfish.tyrus.bundles" name="tyrus-standalone-client-jdk" rev="1.13" />
-    	<dependency org="net.solarnetwork.node" name="net.solarnetwork.node" rev="[1.46,2.0)"/>
+		<dependency org="org.glassfish.tyrus.bundles" name="tyrus-standalone-client-jdk" rev="1.13" />
+		<dependency org="net.solarnetwork.node" name="net.solarnetwork.node" rev="[1.46,2.0)"/>
 	    <dependency org="net.solarnetwork.node" name="net.solarnetwork.node.dao.jdbc" rev="[1.19.1,2.0)"/>
 		<dependency org="org.osgi" name="org.osgi.compendium" rev="4.2.0"/>
-    	<dependency org="org.slf4j" name="slf4j-api" rev="1.7.21"/>
+		<dependency org="org.slf4j" name="slf4j-api" rev="1.7.21"/>
 		<dependency org="org.springframework" name="spring-beans" rev="4.2.6.RELEASE"/>
 		<dependency org="org.springframework" name="spring-messaging" rev="4.2.6.RELEASE"/>
 	</dependencies>

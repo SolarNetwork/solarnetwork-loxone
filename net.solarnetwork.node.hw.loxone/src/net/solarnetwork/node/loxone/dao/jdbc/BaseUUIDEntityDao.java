@@ -28,22 +28,27 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.UUID;
+import javax.cache.Cache;
+import javax.cache.Cache.Entry;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.RowMapper;
 import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.dao.jdbc.AbstractJdbcDao;
 import net.solarnetwork.node.loxone.domain.Config;
+import net.solarnetwork.node.loxone.domain.ConfigUUIDKey;
 import net.solarnetwork.node.loxone.domain.UUIDEntity;
 
 /**
  * Base class for supporting DAO operations on {@link UUIDEntity} objects.
  * 
  * @author matt
- * @version 1.1
+ * @version 1.2
  */
 public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJdbcDao<T> {
 
@@ -95,6 +100,8 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 	private final String baseSqlResourceTemplate;
 	private final Class<T> entityClass;
 	private final RowMapper<T> rowMapper;
+
+	private Cache<ConfigUUIDKey, T> entityCache;
 
 	/**
 	 * Init with an an entity name and table version, deriving various names
@@ -189,6 +196,10 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 	/**
 	 * Insert or update an entity.
 	 * 
+	 * <p>
+	 * The object will also be added to the entity cache, if configured.
+	 * </p>
+	 * 
 	 * @param entity
 	 *        The entity to store.
 	 */
@@ -200,24 +211,72 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 		} else {
 			insertDomainObject(entity, getSqlResource(SQL_INSERT));
 		}
+		storeEntityInCache(entity);
+	}
+
+	/**
+	 * Store an entity in the entity cache.
+	 * 
+	 * <p>
+	 * This method does nothing if the entity cache is not configured.
+	 * </p>
+	 * 
+	 * @param entity
+	 *        The entity to cache.
+	 * @since 1.2
+	 */
+	protected void storeEntityInCache(T entity) {
+		Cache<ConfigUUIDKey, T> cache = getEntityCache();
+		if ( cache != null ) {
+			cache.put(new ConfigUUIDKey(entity.getConfigId(), entity.getUuid()), entity);
+		}
 	}
 
 	/**
 	 * Load an entity by its UUID.
 	 * 
+	 * <p>
+	 * The entity cache, if configured, will be used.
+	 * </p>
+	 * 
 	 * @param configId
 	 *        The config ID to match.
 	 * @param uuid
 	 *        The UUID of the entity to load.
-	 * @return The loaded entity, or <em>null</em> if no matching entity found.
+	 * @return The loaded entity, or {@literal null} if no matching entity
+	 *         found.
 	 */
 	protected T getEntityByUUID(Long configId, UUID uuid) {
-		List<T> results = getJdbcTemplate().query(getSqlResource(SQL_GET_BY_PK), rowMapper,
-				uuid.getMostSignificantBits(), uuid.getLeastSignificantBits(), configId);
-		if ( results != null && results.size() > 0 ) {
-			return results.get(0);
+		T result = getEntityFromCache(configId, uuid);
+		if ( result == null ) {
+			List<T> results = getJdbcTemplate().query(getSqlResource(SQL_GET_BY_PK), rowMapper,
+					uuid.getMostSignificantBits(), uuid.getLeastSignificantBits(), configId);
+			if ( results != null && results.size() > 0 ) {
+				result = results.get(0);
+				storeEntityInCache(result);
+			}
 		}
-		return null;
+		return result;
+	}
+
+	/**
+	 * Get a previously cached entity from the entity cache.
+	 * 
+	 * @param configId
+	 *        The configuration ID of the entity to get.
+	 * @param uuid
+	 *        The UUID of the entity to get.
+	 * @return The cached entity, or {@literal null} if not found in the cache
+	 *         or no cache is configured.
+	 * @since 1.2
+	 */
+	protected T getEntityFromCache(Long configId, UUID uuid) {
+		final Cache<ConfigUUIDKey, T> cache = getEntityCache();
+		if ( cache == null ) {
+			return null;
+		}
+		ConfigUUIDKey key = new ConfigUUIDKey(configId, uuid);
+		return cache.get(key);
 	}
 
 	/**
@@ -280,19 +339,56 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 	/**
 	 * Delete all entities matching a specific {@code configId}.
 	 * 
+	 * <p>
+	 * All matching entities will also be removed from the entity cache, if
+	 * configured.
+	 * </p>
+	 * 
 	 * @param configId
 	 *        The ID of the {@link Config} to delete all entities for.
 	 * @return The number of deleted entities
 	 */
 	protected int deleteAllEntitiesForConfig(Long configId) {
 		int result = getJdbcTemplate().update(getSqlResource(SQL_DELETE_FOR_CONFIG), configId);
+		deleteAllEntitiesForConfigFromCache(configId);
 		return result;
+	}
+
+	/**
+	 * Remove all entities matching a specific {@code configId} from the entity
+	 * cache.
+	 * 
+	 * <p>
+	 * This method does nothing if the entity cache is not configured.
+	 * </p>
+	 * 
+	 * @param configId
+	 *        The ID of the {@link Config} to delete all entities for.
+	 * @since 1.2
+	 */
+	protected void deleteAllEntitiesForConfigFromCache(Long configId) {
+		Cache<ConfigUUIDKey, T> cache = getEntityCache();
+		if ( cache == null ) {
+			return;
+		}
+		Set<ConfigUUIDKey> keysToRemove = new HashSet<>();
+		for ( Entry<ConfigUUIDKey, T> entry : cache ) {
+			if ( entry.getKey().getConfigId().equals(configId) ) {
+				keysToRemove.add(entry.getKey());
+			}
+		}
+		if ( !keysToRemove.isEmpty() ) {
+			cache.removeAll(keysToRemove);
+		}
 	}
 
 	/**
 	 * Delete an entity matching a specific {@code configId} and {@code uuid}.
 	 * 
-	 * The {@link BaseUUIDEntityDao#SQL_DELETE_BY_PK} resource is used.
+	 * <p>
+	 * The {@link BaseUUIDEntityDao#SQL_DELETE_BY_PK} resource is used. The
+	 * entity will also be removed from the entity cache, if configured.
+	 * </p>
 	 * 
 	 * @param configId
 	 *        The ID of the {@link Config} of the entity to delete.
@@ -303,7 +399,31 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 	protected int deleteEntity(Long configId, UUID uuid) {
 		int result = getJdbcTemplate().update(getSqlResource(SQL_DELETE_BY_PK),
 				uuid.getMostSignificantBits(), uuid.getLeastSignificantBits(), configId);
+		deleteEntityFromCache(configId, uuid);
 		return result;
+	}
+
+	/**
+	 * Delete an entity from the entity cache.
+	 * 
+	 * <p>
+	 * This method does nothing if the entity cache is not configured.
+	 * </p>
+	 * 
+	 * @param configId
+	 *        The configuration ID of the entity to remove.
+	 * @param uuid
+	 *        The UUID of the entity to remove.
+	 * @return {@literal true} if the entity was found in the cache and removed;
+	 *         {@literal false} if not found in the cache or no cache is
+	 *         configured
+	 */
+	protected boolean deleteEntityFromCache(Long configId, UUID uuid) {
+		Cache<ConfigUUIDKey, T> cache = getEntityCache();
+		if ( cache == null ) {
+			return false;
+		}
+		return cache.remove(new ConfigUUIDKey(configId, uuid));
 	}
 
 	/**
@@ -400,6 +520,32 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 			}
 		}
 		return sql;
+	}
+
+	/**
+	 * Get the entity cache.
+	 * 
+	 * @return The cache, or {@literal null} if not configured.
+	 * @since 1.2
+	 */
+	public Cache<ConfigUUIDKey, T> getEntityCache() {
+		return entityCache;
+	}
+
+	/**
+	 * Set an entity cache.
+	 * 
+	 * <p>
+	 * The entity cache will be used to cache entities fetched from the
+	 * underlying database.
+	 * </p>
+	 * 
+	 * @param entityCache
+	 *        The cache to use, or {@code null} to not use one.
+	 * @since 1.2
+	 */
+	public void setEntityCache(Cache<ConfigUUIDKey, T> entityCache) {
+		this.entityCache = entityCache;
 	}
 
 }

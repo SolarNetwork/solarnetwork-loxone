@@ -32,6 +32,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import javax.cache.Cache;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -46,6 +47,7 @@ import net.solarnetwork.node.loxone.dao.SourceMappingDao;
 import net.solarnetwork.node.loxone.dao.jdbc.JdbcDatumUUIDSetDao.DatumUUIDEntityParametersRowMapper;
 import net.solarnetwork.node.loxone.domain.BasicControlDatumParameters;
 import net.solarnetwork.node.loxone.domain.BasicValueEventDatumParameters;
+import net.solarnetwork.node.loxone.domain.ConfigUUIDKey;
 import net.solarnetwork.node.loxone.domain.Control;
 import net.solarnetwork.node.loxone.domain.ControlDatumParameters;
 import net.solarnetwork.node.loxone.domain.ControlType;
@@ -136,11 +138,37 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 		});
 	}
 
+	@Override
+	protected void storeEntityInCache(Control entity) {
+		Cache<ConfigUUIDKey, Control> cache = getEntityCache();
+		if ( cache == null ) {
+			return;
+		}
+
+		// if the control has states, also add those states to the cache to help with the findForConfigAndState
+		Map<String, UUID> states = entity.getStates();
+		if ( states == null || states.isEmpty() ) {
+			super.storeEntityInCache(entity);
+			return;
+		}
+
+		Map<ConfigUUIDKey, Control> cacheEntries = new HashMap<>(states.size());
+		for ( UUID stateUuid : states.values() ) {
+			cacheEntries.put(new ConfigUUIDKey(entity.getConfigId(), stateUuid), entity);
+		}
+		ConfigUUIDKey controlUuidKey = new ConfigUUIDKey(entity.getConfigId(), entity.getUuid());
+		if ( !cacheEntries.containsKey(controlUuidKey) ) {
+			cacheEntries.put(controlUuidKey, entity);
+		}
+
+		cache.putAll(cacheEntries);
+	}
+
 	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 	@Override
 	public Control load(Long configId, UUID uuid) {
 		final Control result = getEntityByUUID(configId, uuid);
-		if ( result != null ) {
+		if ( result != null && result.getStates() == null ) {
 			final Map<String, UUID> stateMap = new LinkedHashMap<>(4);
 			getJdbcTemplate().query(new PreparedStatementCreator() {
 
@@ -169,20 +197,49 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 
 	@Override
 	public Control getForConfigAndState(Long configId, UUID stateUuid) {
+		// check entity cache first
+		Control result = getEntityFromCache(configId, stateUuid);
+		if ( result != null ) {
+			return result;
+		}
+
 		String sql = getSqlResource(SQL_FIND_FOR_STATE_UUID);
 		List<Control> results = getJdbcTemplate().query(sql,
 				new ControlWithStateRowMapper(getRowMapper()), configId,
 				stateUuid.getMostSignificantBits(), stateUuid.getLeastSignificantBits());
-		return (results == null || results.isEmpty() ? null : results.get(0));
+		result = (results == null || results.isEmpty() ? null : results.get(0));
+		if ( result != null ) {
+			storeEntityInCache(result);
+		}
+		return result;
 	}
 
 	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 	@Override
 	public List<Control> findAllForConfig(Long configId, List<SortDescriptor> sortDescriptors) {
 		String sql = getSqlResource(SQL_FIND_FOR_CONFIG);
-		sql = handleSortDescriptors(sql, sortDescriptors, sortDescriptorColumnMapping());
+		// SQL sorting not supported when grouping with states
 		List<Control> results = getJdbcTemplate().query(sql,
 				new ControlWithStateRowMapper(getRowMapper()), configId);
+		return results;
+	}
+
+	@Override
+	public List<Control> findAllForConfigAndName(Long configId, String name,
+			List<SortDescriptor> sortDescriptors) {
+		List<Control> results = (sortDescriptors == null
+				? findAllForConfigAndNameFromCache(configId, name)
+				: null);
+		if ( results != null ) {
+			return results;
+		}
+		String sql = getSqlResource(SQL_FIND_FOR_NAME);
+		// SQL sorting not supported when grouping with states
+		results = getJdbcTemplate().query(sql, new ControlWithStateRowMapper(getRowMapper()), configId,
+				name);
+		if ( results != null && sortDescriptors == null && !results.isEmpty() ) {
+			storeEntitiesForConfigAndNameInCache(configId, name, results);
+		}
 		return results;
 	}
 

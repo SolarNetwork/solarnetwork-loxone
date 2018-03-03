@@ -26,12 +26,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Resource;
+import javax.cache.Cache;
+import javax.cache.CacheManager;
 import javax.sql.DataSource;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import net.solarnetwork.node.dao.jdbc.DatabaseSetup;
 import net.solarnetwork.node.loxone.dao.jdbc.JdbcValueEventDao;
+import net.solarnetwork.node.loxone.domain.ConfigUUIDKey;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
 import net.solarnetwork.node.test.AbstractNodeTransactionalTest;
 
@@ -52,6 +56,8 @@ public class JdbcValueEventDaoTests extends AbstractNodeTransactionalTest {
 	private JdbcValueEventDao dao;
 	private ValueEvent lastValueEvent;
 
+	private CacheManager cacheManager;
+
 	@Before
 	public void setup() {
 		DatabaseSetup setup = new DatabaseSetup();
@@ -61,6 +67,13 @@ public class JdbcValueEventDaoTests extends AbstractNodeTransactionalTest {
 		dao = new JdbcValueEventDao();
 		dao.setDataSource(dataSource);
 		dao.init();
+	}
+
+	@After
+	public void teardown() {
+		if ( cacheManager != null ) {
+			cacheManager.close();
+		}
 	}
 
 	@Test
@@ -111,4 +124,42 @@ public class JdbcValueEventDaoTests extends AbstractNodeTransactionalTest {
 		Assert.assertEquals("Found object", lastValueEvent.getUuid(), results.get(0).getUuid());
 	}
 
+	private void setupCaches() {
+		cacheManager = CacheUtils.createCacheManager();
+		Cache<ConfigUUIDKey, ValueEvent> entityCache = CacheUtils.createCache(cacheManager, "ValueEvent",
+				ConfigUUIDKey.class, ValueEvent.class, null);
+		dao.setEntityCache(entityCache);
+	}
+
+	@Test
+	public void insertWithCache() {
+		setupCaches();
+		insert(); // should add to cache
+
+		ValueEvent cachedEntity = dao.getEntityCache()
+				.get(new ConfigUUIDKey(lastValueEvent.getConfigId(), lastValueEvent.getUuid()));
+		Assert.assertEquals("Cached entity", lastValueEvent, cachedEntity);
+	}
+
+	@Test
+	public void getByPKWithCacheMiss() {
+		setupCaches();
+		getByPK(); // should add to cache
+
+		ValueEvent cachedEntity = dao.getEntityCache()
+				.get(new ConfigUUIDKey(lastValueEvent.getConfigId(), lastValueEvent.getUuid()));
+		Assert.assertEquals("Cached entity", lastValueEvent, cachedEntity);
+	}
+
+	@Test
+	public void getByPKWithCacheHit() {
+		getByPKWithCacheMiss();
+
+		ValueEvent cachedEntity = dao.getEntityCache()
+				.get(new ConfigUUIDKey(lastValueEvent.getConfigId(), lastValueEvent.getUuid()));
+		Assert.assertEquals("Cached entity", lastValueEvent, cachedEntity);
+
+		ValueEvent control = dao.loadEvent(TEST_CONFIG_ID, lastValueEvent.getUuid());
+		Assert.assertSame("Cached entity", cachedEntity, control);
+	}
 }

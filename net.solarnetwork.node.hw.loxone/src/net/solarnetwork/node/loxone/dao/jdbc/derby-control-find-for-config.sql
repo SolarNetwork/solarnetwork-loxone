@@ -7,4 +7,4 @@ LEFT OUTER JOIN solarnode.loxone_control_state st
 LEFT OUTER JOIN solarnode.loxone_smap sm
 	ON sm.uuid_hi = co.uuid_hi AND sm.uuid_lo = co.uuid_lo AND sm.config_id = co.config_id
 WHERE co.config_id = ?
-ORDER BY co.sort DESC, lower(co.name) ASC
+ORDER BY co.uuid_hi, co.uuid_lo, st.name

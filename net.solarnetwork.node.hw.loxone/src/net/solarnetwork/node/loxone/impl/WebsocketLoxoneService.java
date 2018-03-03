@@ -81,6 +81,7 @@ import net.solarnetwork.node.loxone.domain.UUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
 import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
+import net.solarnetwork.node.loxone.domain.command.ControlCommand;
 import net.solarnetwork.node.loxone.protocol.ws.CommandType;
 import net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint;
 import net.solarnetwork.node.reactor.Instruction;
@@ -98,7 +99,7 @@ import net.solarnetwork.util.OptionalService;
  * Websocket based implementation of {@link LoxoneService}.
  * 
  * @author matt
- * @version 1.5
+ * @version 1.6
  */
 public class WebsocketLoxoneService extends LoxoneEndpoint
 		implements LoxoneService, SettingSpecifierProvider, WebsocketLoxoneServiceSettings,
@@ -235,6 +236,19 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		try {
 			result = (Future<List<ValueEvent>>) sendCommandIfPossible(CommandType.IoControl, uuid,
 					state);
+		} catch ( IOException e ) {
+			throw new RemoteServiceException(e);
+		}
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Future<List<ValueEvent>> sendControlCommand(ControlCommand command) {
+		Future<List<ValueEvent>> result;
+		try {
+			result = (Future<List<ValueEvent>>) sendCommandIfPossible(CommandType.IoControl,
+					command.getUuid(), command);
 		} catch ( IOException e ) {
 			throw new RemoteServiceException(e);
 		}
@@ -503,13 +517,13 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		final Scheduler sched = scheduler;
 
 		if ( sched == null ) {
-			log.warn("No scheduler avaialable, cannot schedule Loxone {} datum logger job",
+			log.info("No scheduler avaialable, cannot schedule Loxone {} datum logger job",
 					configIdDisplay);
 			return false;
 		}
 		final DatumDao<GeneralNodeDatum> dao = (datumDao != null ? datumDao.service() : null);
 		if ( dao == null ) {
-			log.warn(
+			log.info(
 					"No DatumDao<GeneralNodeDatum> avaialable, cannot schedule Loxone {} datum logger job",
 					configIdDisplay);
 			return false;

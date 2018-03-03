@@ -35,7 +35,7 @@ import net.solarnetwork.node.loxone.domain.BaseEventEntity;
  * Base DAO for {@link BaseEventEntity} classes.
  * 
  * @author matt
- * @version 1.1
+ * @version 1.2
  */
 public abstract class BaseEventEntityDao<T extends BaseEventEntity> extends BaseUUIDEntityDao<T>
 		implements EventEntityDao<T> {
@@ -96,6 +96,7 @@ public abstract class BaseEventEntityDao<T extends BaseEventEntity> extends Base
 		if ( count == 0 ) {
 			insertDomainObject(entity, getSqlResource(SQL_INSERT));
 		}
+		storeEntityInCache(entity);
 	}
 
 	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
