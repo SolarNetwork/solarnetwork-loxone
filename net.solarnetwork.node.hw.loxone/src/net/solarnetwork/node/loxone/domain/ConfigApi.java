@@ -23,6 +23,7 @@
 package net.solarnetwork.node.loxone.domain;
 
 import java.net.URI;
+import java.security.PublicKey;
 import java.util.Arrays;
 
 /**
@@ -35,18 +36,27 @@ import java.util.Arrays;
 public class ConfigApi {
 
 	private final URI websocketUri;
+	private final PublicKey publicKey;
 	private final String snr;
 	private final String version;
 	private final int[] versionComponents;
 
 	/**
+	 * Constructor.
+	 * 
 	 * @param websocketUri
+	 *        the URI for the websocket
+	 * @param publicKey
+	 *        the server's public key
 	 * @param snr
+	 *        the SNR
 	 * @param version
+	 *        the version string
 	 */
-	public ConfigApi(URI websocketUri, String snr, String version) {
+	public ConfigApi(URI websocketUri, PublicKey publicKey, String snr, String version) {
 		super();
 		this.websocketUri = websocketUri;
+		this.publicKey = publicKey;
 		this.snr = snr;
 		this.version = version;
 		this.versionComponents = versionArray(version);
@@ -59,6 +69,15 @@ public class ConfigApi {
 	 */
 	public URI getWebsocketUri() {
 		return websocketUri;
+	}
+
+	/**
+	 * Get the server's public key.
+	 * 
+	 * @return the public key
+	 */
+	public PublicKey getPublicKey() {
+		return publicKey;
 	}
 
 	/**

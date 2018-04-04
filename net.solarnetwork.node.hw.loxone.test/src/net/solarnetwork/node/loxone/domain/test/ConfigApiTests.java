@@ -37,37 +37,37 @@ public class ConfigApiTests {
 
 	@Test
 	public void majorVersionEqual() {
-		ConfigApi config = new ConfigApi(null, null, "9.1.10.30");
+		ConfigApi config = new ConfigApi(null, null, null, "9.1.10.30");
 		assertThat("Version at least", config.isVersionAtLeast(9), equalTo(true));
 	}
 
 	@Test
 	public void majorVersionGreater() {
-		ConfigApi config = new ConfigApi(null, null, "9.1.10.30");
+		ConfigApi config = new ConfigApi(null, null, null, "9.1.10.30");
 		assertThat("Version at least", config.isVersionAtLeast(8), equalTo(true));
 	}
 
 	@Test
 	public void majorVersionLess() {
-		ConfigApi config = new ConfigApi(null, null, "9.1.10.30");
+		ConfigApi config = new ConfigApi(null, null, null, "9.1.10.30");
 		assertThat("Version at least", config.isVersionAtLeast(10), equalTo(false));
 	}
 
 	@Test
 	public void minorVersionEqual() {
-		ConfigApi config = new ConfigApi(null, null, "9.1.10.30");
+		ConfigApi config = new ConfigApi(null, null, null, "9.1.10.30");
 		assertThat("Version at least", config.isVersionAtLeast(9, 1), equalTo(true));
 	}
 
 	@Test
 	public void minorVersionGreater() {
-		ConfigApi config = new ConfigApi(null, null, "9.1.10.30");
+		ConfigApi config = new ConfigApi(null, null, null, "9.1.10.30");
 		assertThat("Version at least", config.isVersionAtLeast(9, 0), equalTo(true));
 	}
 
 	@Test
 	public void minorVersionLess() {
-		ConfigApi config = new ConfigApi(null, null, "9.1.10.30");
+		ConfigApi config = new ConfigApi(null, null, null, "9.1.10.30");
 		assertThat("Version at least", config.isVersionAtLeast(9, 2), equalTo(false));
 	}
 

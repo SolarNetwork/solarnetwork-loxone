@@ -34,6 +34,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
@@ -74,6 +75,7 @@ import net.solarnetwork.node.loxone.dao.ConfigDao;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.ConfigApi;
 import net.solarnetwork.node.loxone.protocol.ws.handler.BaseCommandHandler;
+import net.solarnetwork.node.loxone.util.SecurityUtils;
 import net.solarnetwork.util.JsonUtils;
 import net.solarnetwork.util.OptionalService;
 
@@ -223,19 +225,52 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 				"ws://" + host + (host.contains(WEBSOCKET_CONNECT_PATH) ? "" : WEBSOCKET_CONNECT_PATH));
 		String resp = FileCopyUtils.copyToString(new InputStreamReader(conn.getInputStream(), "UTF-8"));
 		log.debug("Got API configuration response: {}", resp);
-		Map<String, Object> responseMap = JsonUtils.getStringMap(resp);
+		String respValue = extractJsonResponseValue(resp);
 		Map<String, Object> infoMap = Collections.emptyMap();
+		if ( respValue != null ) {
+			// the "value" property is not actually JSON; it has ' instead of " so we can do a quick replace here
+			infoMap = JsonUtils.getStringMap(respValue.replace('\'', '"'));
+		}
+
+		// now get public key
+		URL pubKeyUrl = new URL("http://" + host + "/jdev/sys/getPublicKey");
+		conn = (HttpURLConnection) pubKeyUrl.openConnection();
+		conn.setRequestMethod("GET");
+		conn.setConnectTimeout(30000);
+		conn.setReadTimeout(10000);
+		conn.setUseCaches(false);
+		conn.setInstanceFollowRedirects(false);
+		conn.setDoInput(true);
+
+		if ( conn.getResponseCode() != 200 ) {
+			throw new IOException("Public key request [" + pubKeyUrl + "] returned non-success result: "
+					+ conn.getResponseCode());
+		}
+
+		resp = FileCopyUtils.copyToString(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+		log.debug("Got public key response: {}", resp);
+		respValue = extractJsonResponseValue(resp);
+		PublicKey publicKey = null;
+		if ( respValue != null ) {
+			publicKey = SecurityUtils.parsePublicKey(respValue);
+			log.debug("Got Loxone {} public key: {}", host, publicKey);
+		}
+
+		return new ConfigApi(uri, publicKey,
+				infoMap.get("snr") instanceof String ? (String) infoMap.get("snr") : null,
+				infoMap.get("version") instanceof String ? (String) infoMap.get("version") : null);
+	}
+
+	private String extractJsonResponseValue(String resp) {
+		Map<String, Object> responseMap = JsonUtils.getStringMap(resp);
 		if ( responseMap.get("LL") instanceof Map ) {
 			@SuppressWarnings("unchecked")
 			Map<String, Object> llMap = (Map<String, Object>) responseMap.get("LL");
 			if ( llMap.get("value") instanceof String ) {
-				// the "value" property is not actually JSON; it has ' instead of " so we can do a quick replace here
-				infoMap = JsonUtils.getStringMap(((String) llMap.get("value")).replace('\'', '"'));
+				return (String) llMap.get("value");
 			}
 		}
-		return new ConfigApi(uri,
-				infoMap.get("snr") instanceof String ? (String) infoMap.get("snr") : null,
-				infoMap.get("version") instanceof String ? (String) infoMap.get("version") : null);
+		return null;
 	}
 
 	/**
