@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  * Supported commands.
  * 
  * @author matt
- * @version 1.1
+ * @version 1.2
  */
 public enum CommandType {
 
@@ -42,6 +42,55 @@ public enum CommandType {
 	/** Authenticate response. */
 	Auth("Auth"),
 
+	/**
+	 * Get the X.509 public key.
+	 * 
+	 * @since 1.2
+	 */
+	GetPublicKey("j?dev/sys/getPublicKey"),
+
+	/**
+	 * Perform a session key exchange.
+	 * 
+	 * @since 1.2
+	 */
+	KeyExchange("^j?dev/sys/keyexchange/.*", true),
+
+	/**
+	 * Get the key to use for authenticating the connection via a token.
+	 * 
+	 * @since 1.2
+	 */
+	GetTokenKey("^j?dev/sys/getkey2/.*", true),
+
+	/**
+	 * Get an authentication token.
+	 * 
+	 * @since 1.2
+	 */
+	GetToken("^j?dev/sys/gettoken/.*", true),
+
+	/**
+	 * Authenticate the connection with a token.
+	 * 
+	 * @since 1.2
+	 */
+	AuthenticateWithToken("^authwithtoken/.*", true),
+
+	/**
+	 * Refresh an authentication token.
+	 * 
+	 * @since 1.2
+	 */
+	RefreshToken("^j?dev/sys/refreshtoken/.*", true),
+
+	/**
+	 * Delete an authentication token.
+	 * 
+	 * @since 1.2
+	 */
+	DeleteToken("^j?dev/sys/killtoken/.*", true),
+
 	/** Get the last modificaiton date of the structure file. */
 	StructureFileLastModifiedDate("jdev/sps/LoxAPPversion3", "^j?dev/sps/LoxAPPversion3"),
 
@@ -52,7 +101,9 @@ public enum CommandType {
 	EnableInputStatusUpdate("jdev/sps/enablebinstatusupdate"),
 
 	/** Icons are requested by sending the desired icon name as the command. */
-	GetIcon("00000000-0000-0020-2000000000000000", "^(?i)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{16}"),
+	GetIcon(
+			"00000000-0000-0020-2000000000000000",
+			"^(?i)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{16}"),
 
 	/**
 	 * Read or update control values.

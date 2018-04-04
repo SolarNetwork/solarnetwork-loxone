@@ -24,6 +24,7 @@ package net.solarnetwork.node.loxone.protocol.ws;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
@@ -35,9 +36,13 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
@@ -62,11 +67,14 @@ import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.TaskScheduler;
+import org.springframework.util.FileCopyUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.solarnetwork.node.loxone.dao.ConfigDao;
 import net.solarnetwork.node.loxone.domain.Config;
+import net.solarnetwork.node.loxone.domain.ConfigApi;
 import net.solarnetwork.node.loxone.protocol.ws.handler.BaseCommandHandler;
+import net.solarnetwork.util.JsonUtils;
 import net.solarnetwork.util.OptionalService;
 
 /**
@@ -107,6 +115,10 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	public static final CloseReason.CloseCode DISCONNECT_USER_INITIATED = CloseReason.CloseCodes
 			.getCloseCode(3000);
 
+	private static final Set<CommandType> INTERNAL_CMDS = EnumSet.of(CommandType.GetAuthenticationKey,
+			CommandType.Authenticate, CommandType.Auth, CommandType.EnableInputStatusUpdate,
+			CommandType.KeepAlive);
+
 	private String host = "10.0.0.1:3000";
 	private String username = null;
 	private String password = null;
@@ -137,6 +149,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	private ScheduledFuture<?> keepAliveFuture = null;
 	private ScheduledFuture<?> connectFuture = null;
 	private Config configuration = null;
+	private ConfigApi apiConfiguration = null;
 	private long messageCount = 0;
 
 	private synchronized void connect() {
@@ -144,21 +157,24 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		container.getProperties().put(ClientProperties.RECONNECT_HANDLER, reconnectHandler);
 		ClientEndpointConfig config = ClientEndpointConfig.Builder.create()
 				.preferredSubprotocols(Arrays.asList("remotecontrol")).build();
+		apiConfiguration = null;
 		session = null;
 		connectFuture = null;
-		URI wsURI;
+		ConfigApi configApi;
 		try {
-			wsURI = getWebsocketURI();
+			configApi = getConfigApi();
 		} catch ( Exception e ) {
 			logConciseException("Error establishing websocket connection to {}", e, host);
 			reconnectHandler.onConnectFailure(e);
 			return;
 		}
 		try {
-			log.debug("Opening Loxone websocket connection to {}", wsURI);
-			session = container.connectToServer(this, config, wsURI);
+			log.debug("Opening Loxone websocket connection to {} (API version {})",
+					configApi.getWebsocketUri(), configApi.getVersion());
+			apiConfiguration = configApi;
+			session = container.connectToServer(this, config, configApi.getWebsocketUri());
 		} catch ( Exception e ) {
-			logConciseException("Error connecting to {}", e, wsURI);
+			logConciseException("Error connecting to {}", e, configApi.getWebsocketUri());
 		}
 	}
 
@@ -166,21 +182,26 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	 * Get the URI to connect to a Loxone websocket, with support for Loxone's
 	 * CloudDNS style redirects.
 	 * 
-	 * @return The URI to use.
+	 * @return The API configuration to use.
 	 * @throws IOException
 	 *         If a problem occurs connecting to the host.
 	 * @throws URISyntaxException
 	 *         If a problem occurs parsing the host string.
 	 */
-	private URI getWebsocketURI() throws IOException, URISyntaxException {
-		log.debug("Testing Loxone connection to {} for HTTP redirect", host);
-		URL connUrl = new URL("http://" + host);
+	private ConfigApi getConfigApi() throws IOException, URISyntaxException {
+		return getConfigApiForHost(this.host);
+	}
+
+	private ConfigApi getConfigApiForHost(String host) throws IOException, URISyntaxException {
+		log.debug("Testing Loxone connection to {}", host);
+		URL connUrl = new URL("http://" + host + "/jdev/cfg/api");
 		HttpURLConnection conn = (HttpURLConnection) connUrl.openConnection();
-		conn.setRequestMethod("HEAD");
+		conn.setRequestMethod("GET");
 		conn.setConnectTimeout(30000);
 		conn.setReadTimeout(10000);
 		conn.setUseCaches(false);
 		conn.setInstanceFollowRedirects(false);
+		conn.setDoInput(true);
 
 		switch (conn.getResponseCode()) {
 			case 301:
@@ -190,13 +211,27 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 				String loc = conn.getHeaderField("Location");
 				if ( loc != null ) {
 					URL locURL = new URL(loc);
-					return new URI("ws://" + locURL.getHost() + ":" + locURL.getPort()
-							+ WEBSOCKET_CONNECT_PATH);
+					return getConfigApiForHost(locURL.getHost() + ":" + locURL.getPort());
 				}
 				break;
 		}
-		return new URI(
+		URI uri = new URI(
 				"ws://" + host + (host.contains(WEBSOCKET_CONNECT_PATH) ? "" : WEBSOCKET_CONNECT_PATH));
+		String resp = FileCopyUtils.copyToString(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+		log.debug("Got API configuration response: {}", resp);
+		Map<String, Object> responseMap = JsonUtils.getStringMap(resp);
+		Map<String, Object> infoMap = Collections.emptyMap();
+		if ( responseMap.get("LL") instanceof Map ) {
+			@SuppressWarnings("unchecked")
+			Map<String, Object> llMap = (Map<String, Object>) responseMap.get("LL");
+			if ( llMap.get("value") instanceof String ) {
+				// the "value" property is not actually JSON; it has ' instead of " so we can do a quick replace here
+				infoMap = JsonUtils.getStringMap(((String) llMap.get("value")).replace('\'', '"'));
+			}
+		}
+		return new ConfigApi(uri,
+				infoMap.get("snr") instanceof String ? (String) infoMap.get("snr") : null,
+				infoMap.get("version") instanceof String ? (String) infoMap.get("version") : null);
 	}
 
 	/**
@@ -233,6 +268,15 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 				configuration = changed;
 			}
 		}
+	}
+
+	/**
+	 * Get the API configuration of this service.
+	 * 
+	 * @return the configuration, or {@literal null} if not known
+	 */
+	public ConfigApi getApiConfiguration() {
+		return apiConfiguration;
 	}
 
 	/**
@@ -419,9 +463,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 		@Override
 		public boolean supportsCommand(CommandType command) {
-			return (command == CommandType.GetAuthenticationKey || command == CommandType.Authenticate
-					|| command == CommandType.Auth || command == CommandType.EnableInputStatusUpdate
-					|| command == CommandType.KeepAlive);
+			return INTERNAL_CMDS.contains(command);
 		}
 
 		@Override
