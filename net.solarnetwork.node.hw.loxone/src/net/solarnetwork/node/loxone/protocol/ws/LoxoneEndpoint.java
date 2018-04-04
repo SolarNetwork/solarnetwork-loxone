@@ -96,7 +96,7 @@ import net.solarnetwork.util.OptionalService;
  * date changes will request the structure file again from the Loxone server.
  * 
  * @author matt
- * @version 1.6
+ * @version 1.7
  */
 public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<ByteBuffer>, EventHandler {
 
@@ -133,6 +133,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	private ConfigDao configDao;
 	private int statusMessageCount = 500;
 	private boolean authenticationFailure = false;
+	private Map<String, Object> clientProperties = null;
 
 	/** A class-level logger. */
 	protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -154,6 +155,9 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	private synchronized void connect() {
 		ClientManager container = ClientManager.createClient(JdkClientContainer.class.getName());
+		if ( clientProperties != null ) {
+			container.getProperties().putAll(clientProperties);
+		}
 		container.getProperties().put(ClientProperties.RECONNECT_HANDLER, reconnectHandler);
 		ClientEndpointConfig config = ClientEndpointConfig.Builder.create()
 				.preferredSubprotocols(Arrays.asList("remotecontrol")).build();
@@ -947,6 +951,26 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	 */
 	public final boolean isAuthenticationFailure() {
 		return authenticationFailure;
+	}
+
+	/**
+	 * Get the configured extra websocket client properties.
+	 * 
+	 * @return the client properties, or {@literal null}
+	 */
+	public Map<String, Object> getClientProperties() {
+		return clientProperties;
+	}
+
+	/**
+	 * Set extra websocket client properties to use when connecting.
+	 * 
+	 * @param clientProperties
+	 *        the properties to use, or {@literal null}
+	 * @since 1.7
+	 */
+	public void setClientProperties(Map<String, Object> clientProperties) {
+		this.clientProperties = clientProperties;
 	}
 
 }
