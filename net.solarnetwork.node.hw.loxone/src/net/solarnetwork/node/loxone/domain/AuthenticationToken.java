@@ -23,6 +23,9 @@
 package net.solarnetwork.node.loxone.domain;
 
 import java.util.Set;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.HmacUtils;
 import org.joda.time.DateTime;
 
 /**
@@ -38,7 +41,7 @@ public class AuthenticationToken {
 	private final DateTime validUntil;
 	private final Set<AuthenticationTokenPermission> permissions;
 	private final boolean passwordUnsecure;
-	private final String key;
+	private final byte[] key;
 
 	/**
 	 * Constructor.
@@ -52,17 +55,21 @@ public class AuthenticationToken {
 	 * @param passwordUnsecure
 	 *        {@literal true} if the password is considered unsecure and should
 	 *        be changed
-	 * @param key
-	 *        the key to use for commands
+	 * @param keyHex
+	 *        the hex-encoded key to use for commands
 	 */
 	public AuthenticationToken(String token, DateTime validUntil,
-			Set<AuthenticationTokenPermission> permissions, boolean passwordUnsecure, String key) {
+			Set<AuthenticationTokenPermission> permissions, boolean passwordUnsecure, String keyHex) {
 		super();
 		this.token = token;
 		this.validUntil = validUntil;
 		this.permissions = permissions;
 		this.passwordUnsecure = passwordUnsecure;
-		this.key = key;
+		try {
+			this.key = keyHex != null ? Hex.decodeHex(keyHex.toCharArray()) : null;
+		} catch ( DecoderException e ) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -106,6 +113,29 @@ public class AuthenticationToken {
 		return new DateTime(ms);
 	}
 
+	/**
+	 * Encode a username for use with token authentication.
+	 * 
+	 * @param username
+	 *        the username
+	 * @param password
+	 *        the password
+	 * @return the hashed token value to authenticate with
+	 */
+	public String hash(String username) {
+		String authString = username + ":" + token;
+		return HmacUtils.hmacSha1Hex(this.key, authString.getBytes()).toUpperCase();
+	}
+
+	/**
+	 * Test if the token has expired.
+	 * 
+	 * @return {@literal true} if the token is not valid right now
+	 */
+	public boolean isExpired() {
+		return validUntil == null || validUntil.isBeforeNow();
+	}
+
 	public String getToken() {
 		return token;
 	}
@@ -122,8 +152,8 @@ public class AuthenticationToken {
 		return passwordUnsecure;
 	}
 
-	public String getKey() {
-		return key;
+	public String getKeyHex() {
+		return new String(Hex.encodeHex(key, false));
 	}
 
 }

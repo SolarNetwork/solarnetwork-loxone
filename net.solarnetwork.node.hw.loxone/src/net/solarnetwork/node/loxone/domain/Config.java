@@ -22,19 +22,22 @@
 
 package net.solarnetwork.node.loxone.domain;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Overall configuration, related to the Loxone structure file.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class Config {
 
 	private final Long id;
 	private final Date lastModified;
+	private final UUID clientUuid;
 
 	/**
 	 * Construct with just an ID.
@@ -57,9 +60,55 @@ public class Config {
 	 *        The modified date.
 	 */
 	public Config(Long configId, Date lastModified) {
+		this(configId, lastModified, (UUID) null);
+	}
+
+	/**
+	 * Construct with values.
+	 * 
+	 * @param configId
+	 *        The config ID.
+	 * @param lastModified
+	 *        The modified date.
+	 * @param clientUuid
+	 *        The UUID as a string.
+	 * @since 1.1
+	 */
+	public Config(Long configId, Date lastModified, String clientUuid) {
+		this(configId, lastModified, parseUuid(clientUuid));
+	}
+
+	/**
+	 * Construct with values.
+	 * 
+	 * @param configId
+	 *        The config ID.
+	 * @param lastModified
+	 *        The modified date.
+	 * @param clientUuid
+	 *        The UUID.
+	 * @since 1.1
+	 */
+	public Config(Long configId, Date lastModified, UUID clientUuid) {
 		super();
 		this.id = configId;
 		this.lastModified = lastModified;
+		this.clientUuid = (clientUuid != null ? clientUuid : UUID.randomUUID());
+	}
+
+	private static final UUID parseUuid(String uuid) {
+		UUID result = null;
+		if ( uuid != null ) {
+			try {
+				result = UUIDDeserializer.deserializeUUID(uuid);
+			} catch ( IOException e ) {
+				// ignore
+			}
+		}
+		if ( result == null ) {
+			result = UUID.randomUUID();
+		}
+		return result;
 	}
 
 	/**
@@ -80,6 +129,26 @@ public class Config {
 		return lastModified;
 	}
 
+	/**
+	 * Get the client UUID.
+	 * 
+	 * @return The UUID, never {@literal null}.
+	 * @since 1.1
+	 */
+	public UUID getClientUuid() {
+		return clientUuid;
+	}
+
+	/**
+	 * Get the client UUID as a string.
+	 * 
+	 * @return The UUID as a Loxone string, never {@literal null}.
+	 * @since 1.1
+	 */
+	public String getClientUuidString() {
+		return UUIDSerializer.serializeUUID(clientUuid);
+	}
+
 	@Override
 	public String toString() {
 		return "Config{id=" + idToExternalForm() + ", lastModified=" + lastModified + "}";
@@ -93,7 +162,7 @@ public class Config {
 	 * @return The copy.
 	 */
 	public Config withLastModified(Date lastModified) {
-		return new Config(id, lastModified);
+		return new Config(id, lastModified, clientUuid);
 	}
 
 	/**
@@ -133,13 +202,12 @@ public class Config {
 				nonZeroIndex = i;
 			}
 			// allow 0-9,A-Z,_,a-z
-			if ( friendly && nonZeroIndex >= 0
-					&& !((b >= 0x30 && b <= 0x39) // 0-9
-							|| (b >= 0x2D && b <= 0x2E) // .-
-							|| (b >= 0x41 && b <= 0x5A) // A-Z
-							|| b == 0x5F // _
-							|| (b >= 0x61 && b <= 0x7A) // a-z
-					) ) {
+			if ( friendly && nonZeroIndex >= 0 && !((b >= 0x30 && b <= 0x39) // 0-9
+					|| (b >= 0x2D && b <= 0x2E) // .-
+					|| (b >= 0x41 && b <= 0x5A) // A-Z
+					|| b == 0x5F // _
+					|| (b >= 0x61 && b <= 0x7A) // a-z
+			) ) {
 				friendly = false;
 			}
 			bytes[i] = b;

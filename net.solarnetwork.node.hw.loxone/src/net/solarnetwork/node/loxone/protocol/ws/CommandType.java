@@ -43,53 +43,53 @@ public enum CommandType {
 	Auth("Auth"),
 
 	/**
-	 * Get the X.509 public key.
-	 * 
-	 * @since 1.2
-	 */
-	GetPublicKey("j?dev/sys/getPublicKey"),
-
-	/**
 	 * Perform a session key exchange.
 	 * 
 	 * @since 1.2
 	 */
-	KeyExchange("^j?dev/sys/keyexchange/.*", true),
+	KeyExchange("jdev/sys/keyexchange", "^j?dev/sys/keyexchange/.*"),
 
 	/**
 	 * Get the key to use for authenticating the connection via a token.
 	 * 
 	 * @since 1.2
 	 */
-	GetTokenKey("^j?dev/sys/getkey2/.*", true),
+	GetTokenKey("jdev/sys/getkey2", "^j?dev/sys/getkey2/.*"),
 
 	/**
 	 * Get an authentication token.
 	 * 
 	 * @since 1.2
 	 */
-	GetToken("^j?dev/sys/gettoken/.*", true),
+	GetToken("jdev/sys/gettoken", "^j?dev/sys/gettoken/.*"),
 
 	/**
 	 * Authenticate the connection with a token.
 	 * 
 	 * @since 1.2
 	 */
-	AuthenticateWithToken("^authwithtoken/.*", true),
+	AuthenticateWithToken("authwithtoken", "^authwithtoken/.*"),
 
 	/**
 	 * Refresh an authentication token.
 	 * 
 	 * @since 1.2
 	 */
-	RefreshToken("^j?dev/sys/refreshtoken/.*", true),
+	RefreshToken("jdev/sys/refreshtoken", "^j?dev/sys/refreshtoken/.*"),
 
 	/**
 	 * Delete an authentication token.
 	 * 
 	 * @since 1.2
 	 */
-	DeleteToken("^j?dev/sys/killtoken/.*", true),
+	DeleteToken("jdev/sys/killtoken", "^j?dev/sys/killtoken/.*"),
+
+	/**
+	 * An encrypted command.
+	 * 
+	 * @since 1.2
+	 */
+	EncryptedCommand("jdev/sys/enc", "^j?dev/sys/enc/.*"),
 
 	/** Get the last modificaiton date of the structure file. */
 	StructureFileLastModifiedDate("jdev/sps/LoxAPPversion3", "^j?dev/sps/LoxAPPversion3"),

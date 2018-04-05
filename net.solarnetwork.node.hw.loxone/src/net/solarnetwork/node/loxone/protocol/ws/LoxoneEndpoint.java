@@ -72,6 +72,9 @@ import org.springframework.util.FileCopyUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.solarnetwork.node.loxone.dao.ConfigDao;
+import net.solarnetwork.node.loxone.domain.AuthenticationKey;
+import net.solarnetwork.node.loxone.domain.AuthenticationToken;
+import net.solarnetwork.node.loxone.domain.AuthenticationTokenPermission;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.ConfigApi;
 import net.solarnetwork.node.loxone.protocol.ws.handler.BaseCommandHandler;
@@ -111,6 +114,14 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	public static final String CONFIG_ID_USER_PROPERTY = "config-id";
 
 	/**
+	 * A session user property key that can provide the {@link SecurityHelper}
+	 * ID value to use.
+	 * 
+	 * @since 1.8
+	 */
+	public static final String SECURITY_HELPER_USER_PROPERTY = "security-helper";
+
+	/**
 	 * An internal CloseCode for a user-initiated disconnection, where a
 	 * connection retry should not be attempted.
 	 */
@@ -119,7 +130,8 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	private static final Set<CommandType> INTERNAL_CMDS = EnumSet.of(CommandType.GetAuthenticationKey,
 			CommandType.Authenticate, CommandType.Auth, CommandType.EnableInputStatusUpdate,
-			CommandType.KeepAlive);
+			CommandType.KeepAlive, CommandType.KeyExchange, CommandType.EncryptedCommand,
+			CommandType.GetTokenKey, CommandType.GetToken, CommandType.RefreshToken);
 
 	private String host = "10.0.0.1:3000";
 	private String username = null;
@@ -136,6 +148,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	private int statusMessageCount = 500;
 	private boolean authenticationFailure = false;
 	private Map<String, Object> clientProperties = null;
+	private AuthenticationType authenticationType = AuthenticationType.Auto;
 
 	/** A class-level logger. */
 	protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -472,6 +485,13 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		}
 		session.getUserProperties().put(CONFIG_ID_USER_PROPERTY, configId);
 
+		if ( authenticationType == AuthenticationType.Token
+				|| (authenticationType == AuthenticationType.Auto && apiConfiguration != null
+						&& apiConfiguration.isVersionAtLeast(9)) ) {
+			TokenSecurityHelper securityHelper = new TokenSecurityHelper(apiConfiguration);
+			session.getUserProperties().put(SECURITY_HELPER_USER_PROPERTY, securityHelper);
+		}
+
 		setConfiguration(configDao.getConfig(configId));
 
 		// add binary handler to decode message headers and other binary messages
@@ -484,8 +504,8 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 		// authenticate
 		try {
-			log.info("Connected to Loxone server, will request authenticaiton key now.");
-			internalCommandHandler.sendCommand(CommandType.GetAuthenticationKey, session);
+			log.info("Connected to Loxone server, will authenticate now.");
+			internalCommandHandler.authenticate();
 		} catch ( IOException e ) {
 			log.error("Communication error authenticating: {}", e.getMessage());
 		}
@@ -499,6 +519,16 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 		// Use the logger from LoxoneEndpoint directly
 		private final Logger log = LoxoneEndpoint.this.log;
+
+		private void authenticate() throws IOException {
+			SecurityHelper securityHelper = getSecurityHelper(session);
+			if ( securityHelper != null ) {
+				// exchange keys for token auth
+				sendCommand(CommandType.KeyExchange, session, securityHelper.generateSessionKey());
+			} else {
+				sendCommand(CommandType.GetAuthenticationKey, session);
+			}
+		}
 
 		@Override
 		public boolean supportsCommand(CommandType command) {
@@ -522,7 +552,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 		@Override
 		public boolean handleCommandValue(CommandType command, MessageHeader header, Session session,
-				JsonNode parser, String value) throws IOException {
+				JsonNode json, String value) throws IOException {
 			if ( log.isTraceEnabled() ) {
 				log.trace("Handling message {} command {} data: {}", header, command, value);
 			} else {
@@ -537,8 +567,8 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 				}
 				String authString = getUsername() + ":" + getPassword();
 				if ( log.isDebugEnabled() ) {
-					log.debug("Authenticating using key {} and user {}", new String(key, "UTF-8"),
-							getUsername());
+					log.debug("{} authenticating using key {} and user {}",
+							configuration.idToExternalForm(), new String(key, "UTF-8"), getUsername());
 				}
 				String msg = "authenticate/" + HmacUtils.hmacSha1Hex(key, authString.getBytes("UTF-8"));
 				session.getBasicRemote().sendText(msg);
@@ -552,6 +582,59 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 				return true;
 			} else if ( command == CommandType.Auth ) {
 				return true;
+			} else if ( command == CommandType.KeyExchange ) {
+				// acquire a token if we don't have one, otherwise authenticate with token
+				SecurityHelper helper = getSecurityHelper(session);
+				if ( helper != null ) {
+					AuthenticationToken token = helper.getAuthenticationToken();
+					if ( token != null && !token.isExpired() ) {
+						sendCommand(CommandType.AuthenticateWithToken, session,
+								token.hash(getUsername()));
+					} else {
+						sendCommand(CommandType.GetTokenKey, session, getUsername());
+					}
+					return true;
+				} else {
+					log.warn("{} SecurityHelper not available, cannot request token authentication key",
+							configuration.idToExternalForm());
+				}
+				authenticationFailure = true;
+			} else if ( command == CommandType.GetTokenKey ) {
+				SecurityHelper helper = getSecurityHelper(session);
+				if ( helper != null ) {
+					// "value" is actual JSON object here
+					Map<String, Object> data = JsonUtils.getStringMapFromTree(json.path("value"));
+					AuthenticationKey key = helper.extractAuthenticationKey(data);
+					if ( key != null ) {
+						log.debug("{} requesting token using key {} and user {}",
+								configuration.idToExternalForm(), key.getKey(), getUsername());
+						// TODO: make requested permission configurable
+						sendCommand(CommandType.GetToken, session,
+								key.hash(getUsername(), getPassword()), getUsername(),
+								AuthenticationTokenPermission.App.getCode(),
+								configuration.getClientUuidString(), "SolarNode");
+						return true;
+					} else {
+						log.warn("{} authentication key cannot be determined from {}",
+								configuration.idToExternalForm(), data);
+					}
+				} else {
+					log.warn("{} SecurityHelper not available, cannot get authentication token",
+							configuration.idToExternalForm());
+				}
+				authenticationFailure = true;
+			} else if ( command == CommandType.GetToken ) {
+				SecurityHelper helper = getSecurityHelper(session);
+				if ( helper != null ) {
+					// "value" is actual JSON object here
+					Map<String, Object> data = JsonUtils.getStringMapFromTree(json.path("value"));
+					AuthenticationToken token = helper.extractTokenValue(data);
+					log.info("Got autentication token {} for Loxone {}, valid until {}",
+							token.getToken(), configuration.idToExternalForm(), token.getValidUntil());
+				} else {
+					log.warn("{} SecurityHelper not available, cannot save authentication token",
+							configuration.idToExternalForm());
+				}
 			} else if ( command == CommandType.KeepAlive ) {
 				log.debug("Keepalive response received");
 				return true;
@@ -611,7 +694,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 			log.debug("Handling text message {}: {}", header, payload);
 
 			if ( (header != null && header.getType() == MessageType.TextMessage)
-					|| (header == null && LL_JSON_PAT.matcher(payload).find()) ) {
+					|| (header == null && payload != null && LL_JSON_PAT.matcher(payload).find()) ) {
 				// start inspecting the message to know what to do
 				try {
 					JsonNode json = getObjectMapper().readTree(payload);
@@ -619,6 +702,16 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 						JsonNode root = json.path("LL");
 						String control = root.path("control").textValue();
 						CommandType command = CommandType.forControlValue(control);
+
+						if ( command == CommandType.EncryptedCommand ) {
+							SecurityHelper helper = (SecurityHelper) session.getUserProperties()
+									.get(LoxoneEndpoint.SECURITY_HELPER_USER_PROPERTY);
+							if ( helper != null ) {
+								control = helper.decryptCommand(control);
+								command = CommandType.forControlValue(control);
+							}
+						}
+
 						handleCommandIfPossible(command, header, root);
 					} else {
 						log.debug("Unknown command message {}: {}", header, payload);
@@ -1006,6 +1099,18 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	 */
 	public void setClientProperties(Map<String, Object> clientProperties) {
 		this.clientProperties = clientProperties;
+	}
+
+	/**
+	 * Set the authentication type to use.
+	 * 
+	 * @param authenticationType
+	 *        the type to use; defaults to {@link AuthenticationType#Auto}
+	 * @since 1.8
+	 */
+	public void setAuthenticationType(AuthenticationType authenticationType) {
+		this.authenticationType = (authenticationType != null ? authenticationType
+				: AuthenticationType.Auto);
 	}
 
 }

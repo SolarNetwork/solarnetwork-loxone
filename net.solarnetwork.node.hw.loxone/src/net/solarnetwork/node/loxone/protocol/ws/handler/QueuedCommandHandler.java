@@ -48,7 +48,7 @@ import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
  * </p>
  * 
  * @author matt
- * @version 1.1
+ * @version 1.2
  * @since 1.1
  */
 public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
@@ -210,7 +210,7 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 			if ( oldReq != null ) {
 				oldReq.cancel(true);
 			}
-			session.getBasicRemote().sendText(text);
+			sendCommandText(session, text);
 			return request;
 		} catch ( IOException e ) {
 			queue.poll();
