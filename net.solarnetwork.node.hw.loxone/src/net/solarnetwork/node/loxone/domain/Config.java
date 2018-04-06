@@ -57,7 +57,7 @@ public class Config {
 	 * @param configId
 	 *        The config ID.
 	 * @param lastModified
-	 *        The modified date.
+	 *        The modified date, or {@literal null} if not known.
 	 */
 	public Config(Long configId, Date lastModified) {
 		this(configId, lastModified, (UUID) null);
@@ -69,7 +69,7 @@ public class Config {
 	 * @param configId
 	 *        The config ID.
 	 * @param lastModified
-	 *        The modified date.
+	 *        The modified date, or {@literal null} if not known.
 	 * @param clientUuid
 	 *        The UUID as a string.
 	 * @since 1.1
@@ -84,7 +84,7 @@ public class Config {
 	 * @param configId
 	 *        The config ID.
 	 * @param lastModified
-	 *        The modified date.
+	 *        The modified date, or {@literal null} if not known.
 	 * @param clientUuid
 	 *        The UUID.
 	 * @since 1.1

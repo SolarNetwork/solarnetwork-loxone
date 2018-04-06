@@ -45,7 +45,7 @@ public interface ConfigDao {
 	 * 
 	 * @param id
 	 *        The ID of the config to get.
-	 * @return The config, or <em>null</em> if not available.
+	 * @return The config, or {@literal null} if not available.
 	 */
 	Config getConfig(Long id);
 
