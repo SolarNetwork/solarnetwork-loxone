@@ -1306,6 +1306,16 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	}
 
 	/**
+	 * Get the configured authentication type.
+	 * 
+	 * @return the type
+	 * @since 1.8
+	 */
+	public AuthenticationType getAuthenticationType() {
+		return authenticationType;
+	}
+
+	/**
 	 * Set the authentication type to use.
 	 * 
 	 * @param authenticationType
@@ -1329,6 +1339,16 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	}
 
 	/**
+	 * Get the permission to request for authentication tokens.
+	 * 
+	 * @return the permission
+	 * @since 1.8
+	 */
+	public AuthenticationTokenPermission getTokenRequestPermission() {
+		return tokenRequestPermission;
+	}
+
+	/**
 	 * Set the permission to request for authentication tokens.
 	 * 
 	 * @param tokenRequestPermission
@@ -1337,11 +1357,21 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	 *         if {@code tokenRequestPermission} is {@literal null}
 	 * @since 1.8
 	 */
-	public void setTokenRequestPermissions(AuthenticationTokenPermission tokenRequestPermission) {
+	public void setTokenRequestPermission(AuthenticationTokenPermission tokenRequestPermission) {
 		if ( tokenRequestPermission == null ) {
 			throw new IllegalArgumentException("Token request permission must not be null");
 		}
 		this.tokenRequestPermission = tokenRequestPermission;
+	}
+
+	/**
+	 * Get the number of hours before a token expires to try and refresh it.
+	 * 
+	 * @return the refresh hours
+	 * @since 1.8
+	 */
+	public int getTokenRefreshOffsetHours() {
+		return tokenRefreshOffsetHours;
 	}
 
 	/**

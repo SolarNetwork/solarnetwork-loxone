@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -71,6 +72,7 @@ import net.solarnetwork.node.loxone.dao.ControlDao;
 import net.solarnetwork.node.loxone.dao.EventEntityDao;
 import net.solarnetwork.node.loxone.dao.SourceMappingDao;
 import net.solarnetwork.node.loxone.dao.UUIDSetDao;
+import net.solarnetwork.node.loxone.domain.AuthenticationTokenPermission;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
 import net.solarnetwork.node.loxone.domain.Control;
@@ -82,6 +84,7 @@ import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
 import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
 import net.solarnetwork.node.loxone.domain.command.ControlCommand;
+import net.solarnetwork.node.loxone.protocol.ws.AuthenticationType;
 import net.solarnetwork.node.loxone.protocol.ws.CommandType;
 import net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint;
 import net.solarnetwork.node.reactor.Instruction;
@@ -89,6 +92,7 @@ import net.solarnetwork.node.reactor.InstructionHandler;
 import net.solarnetwork.node.reactor.InstructionStatus.InstructionState;
 import net.solarnetwork.node.settings.SettingSpecifier;
 import net.solarnetwork.node.settings.SettingSpecifierProvider;
+import net.solarnetwork.node.settings.support.BasicMultiValueSettingSpecifier;
 import net.solarnetwork.node.settings.support.BasicSetupResourceSettingSpecifier;
 import net.solarnetwork.node.settings.support.BasicTextFieldSettingSpecifier;
 import net.solarnetwork.node.settings.support.BasicTitleSettingSpecifier;
@@ -99,7 +103,7 @@ import net.solarnetwork.util.OptionalService;
  * Websocket based implementation of {@link LoxoneService}.
  * 
  * @author matt
- * @version 1.6
+ * @version 1.7
  */
 public class WebsocketLoxoneService extends LoxoneEndpoint
 		implements LoxoneService, SettingSpecifierProvider, WebsocketLoxoneServiceSettings,
@@ -439,7 +443,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 
 	@Override
 	public List<SettingSpecifier> getSettingSpecifiers() {
-		LoxoneEndpoint defaults = new LoxoneEndpoint();
+		WebsocketLoxoneService defaults = new WebsocketLoxoneService();
 		List<SettingSpecifier> results = new ArrayList<SettingSpecifier>(16);
 
 		if ( isAuthenticationFailure() ) {
@@ -447,17 +451,38 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 					messageSource.getMessage("error.authFailure", null, null), true));
 		}
 
+		// service settings
 		results.add(new BasicTextFieldSettingSpecifier("uid", DEFAULT_UID));
 		results.add(new BasicTextFieldSettingSpecifier("groupUID", null));
 		results.add(new BasicTextFieldSettingSpecifier("configKey", defaults.getConfigKey()));
 		results.add(new BasicTextFieldSettingSpecifier("host", defaults.getHost()));
+
+		// authentication
 		results.add(new BasicTextFieldSettingSpecifier("username", defaults.getUsername()));
 		results.add(new BasicTextFieldSettingSpecifier("password", defaults.getPassword(), true));
+
+		BasicMultiValueSettingSpecifier authTypeSpec = new BasicMultiValueSettingSpecifier(
+				"authenticationTypeCode", String.valueOf(defaults.getAuthenticationTypeCode()));
+		authTypeSpec.setValueTitles(Arrays.stream(AuthenticationType.values())
+				.collect(Collectors.toMap(t -> String.valueOf(t.getCode()), t -> t.toString())));
+		results.add(authTypeSpec);
+
+		BasicMultiValueSettingSpecifier tokenPermSpec = new BasicMultiValueSettingSpecifier(
+				"tokenRequestPermissionCode", String.valueOf(defaults.getTokenRequestPermissionCode()));
+		tokenPermSpec.setValueTitles(Arrays.stream(AuthenticationTokenPermission.values())
+				.collect(Collectors.toMap(t -> String.valueOf(t.getCode()), t -> t.toString())));
+		results.add(tokenPermSpec);
+
+		results.add(new BasicTextFieldSettingSpecifier("tokenRefreshOffsetHours",
+				String.valueOf(defaults.getTokenRefreshOffsetHours())));
+
+		// datum logging
 		results.add(new BasicTextFieldSettingSpecifier("datumLoggerFrequencySeconds",
 				String.valueOf(DATUM_LOGGER_JOB_INTERVAL)));
 		results.add(new BasicTextFieldSettingSpecifier("datumDataSource.defaultFrequencySeconds",
 				String.valueOf(ControlDatumDataSource.DEFAULT_FREQUENCY_SECONDS)));
 
+		// other
 		String configurationId = getConfigurationIdExternalForm();
 		if ( configurationId != null ) {
 			results.add(new BasicTitleSettingSpecifier("configurationId", configurationId, true));
@@ -760,4 +785,73 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		this.sourceMappingDao = sourceMappingDao;
 	}
 
+	/**
+	 * Configure the {@link AuthenticationType} via a code value.
+	 * 
+	 * <p>
+	 * If {@code code} is not supported, then {@link AuthenticationType#Auto}
+	 * will be used.
+	 * </p>
+	 * 
+	 * @param code
+	 *        the {@link AuthenticationType#getCode()} value to use
+	 * @see #setAuthenticationType(AuthenticationType)
+	 * @since 1.7
+	 */
+	public void setAuthenticationTypeCode(int code) {
+		AuthenticationType type;
+		try {
+			type = AuthenticationType.forCode(code);
+		} catch ( IllegalArgumentException e ) {
+			type = AuthenticationType.Auto;
+		}
+		setAuthenticationType(type);
+	}
+
+	/**
+	 * Get the {@link AuthenticationType} as a code value.
+	 * 
+	 * @return the {@link AuthenticationType} code
+	 * @see #getAuthenticationType()
+	 * @since 1.7
+	 */
+	public int getAuthenticationTypeCode() {
+		AuthenticationType type = getAuthenticationType();
+		return (type != null ? type.getCode() : AuthenticationType.Auto.getCode());
+	}
+
+	/**
+	 * Get the {@link AuthenticationTokenPermission} code to request for
+	 * authentication tokens.
+	 * 
+	 * @return the permission code
+	 * @since 1.7
+	 */
+	public int getTokenRequestPermissionCode() {
+		AuthenticationTokenPermission perm = getTokenRequestPermission();
+		return (perm != null ? perm.getCode() : AuthenticationTokenPermission.App.getCode());
+	}
+
+	/**
+	 * Set the {@link AuthenticationTokenPermission} code to request for
+	 * authentication tokens.
+	 *
+	 * <p>
+	 * If {@code code} is not supported, then
+	 * {@link AuthenticationTokenPermission#App} will be used.
+	 * </p>
+	 *
+	 * @param code
+	 *        the permission code to use; defaults to {@literal App}
+	 * @since 1.7
+	 */
+	public void setTokenRequestPermissionsCode(int code) {
+		AuthenticationTokenPermission perm;
+		try {
+			perm = AuthenticationTokenPermission.forCode(code);
+		} catch ( IllegalArgumentException e ) {
+			perm = AuthenticationTokenPermission.App;
+		}
+		setTokenRequestPermission(perm);
+	}
 }
