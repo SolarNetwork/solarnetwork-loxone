@@ -27,6 +27,7 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.joda.time.DateTime;
+import net.solarnetwork.node.loxone.protocol.ws.CommandType;
 
 /**
  * An authentication token.
@@ -95,6 +96,22 @@ public class AuthenticationToken {
 	}
 
 	/**
+	 * Create a new instance as a copy of this with updated properties from a
+	 * refresh operation.
+	 * 
+	 * @param validUntilSeconds
+	 *        the valid until date, as Loxone epoch seconds
+	 * @param passwordUnsecure
+	 *        {@literal true} if the password is considered unsecure and should
+	 *        be changed
+	 * @return the new instance
+	 */
+	public AuthenticationToken refreshedCopy(long validUntilSeconds, boolean passwordUnsecure) {
+		return new AuthenticationToken(token, validUntilSeconds, getPermissionsBitmask(),
+				passwordUnsecure, getKeyHex());
+	}
+
+	/**
 	 * The Java timestamp in milliseconds for the Loxone epoch of 1 Jan 2009
 	 * UTC.
 	 */
@@ -128,6 +145,19 @@ public class AuthenticationToken {
 	}
 
 	/**
+	 * Encode this token for use with token refresh.
+	 * 
+	 * @param key
+	 *        the key to use, which is the result of a
+	 *        {@link CommandType#GetAuthenticationKey} request
+	 * @return the hashed token value to refresh with
+	 */
+	public String hashToken(byte[] key) {
+		String authString = token;
+		return HmacUtils.hmacSha1Hex(key, authString.getBytes()).toUpperCase();
+	}
+
+	/**
 	 * Test if the token has expired.
 	 * 
 	 * @return {@literal true} if the token is not valid right now
@@ -146,6 +176,15 @@ public class AuthenticationToken {
 
 	public Set<AuthenticationTokenPermission> getPermissions() {
 		return permissions;
+	}
+
+	/**
+	 * Get the permissions as a bitmask.
+	 * 
+	 * @return the permissions bitmask
+	 */
+	public int getPermissionsBitmask() {
+		return AuthenticationTokenPermission.bitmaskForPermissions(permissions);
 	}
 
 	public boolean isPasswordUnsecure() {

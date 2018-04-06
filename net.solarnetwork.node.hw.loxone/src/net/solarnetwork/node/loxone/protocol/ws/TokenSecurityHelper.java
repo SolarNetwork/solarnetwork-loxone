@@ -80,7 +80,7 @@ public class TokenSecurityHelper implements SecurityHelper {
 	private String salt;
 	private int saltUseCount;
 	private long saltTimestamp;
-	private AuthenticationKey authKey;
+	private boolean encryptionReady;
 	private AuthenticationToken authToken;
 
 	private final byte[] aesInitVector = new byte[AES_IV_LENGTH_BYTES];
@@ -182,8 +182,27 @@ public class TokenSecurityHelper implements SecurityHelper {
 	}
 
 	@Override
+	public AuthenticationToken extractTokenRefreshValue(Map<String, Object> data) {
+		AuthenticationToken token = this.authToken;
+		if ( data != null && token != null ) {
+			Number validUntil = data.containsKey("validUntil") ? (Number) data.get("validUntil") : null;
+			Boolean unsecurePass = data.containsKey("unsecurePass") ? (Boolean) data.get("unsecurePass")
+					: null;
+			if ( validUntil != null && unsecurePass != null ) {
+				this.authToken = token.refreshedCopy(validUntil.longValue(), unsecurePass);
+			}
+		}
+		return this.authToken;
+	}
+
+	@Override
 	public AuthenticationToken getAuthenticationToken() {
 		return authToken;
+	}
+
+	@Override
+	public void setAuthenticationToken(AuthenticationToken token) {
+		this.authToken = token;
 	}
 
 	@Override
@@ -193,15 +212,20 @@ public class TokenSecurityHelper implements SecurityHelper {
 
 	@Override
 	public AuthenticationKey extractAuthenticationKey(Map<String, Object> data) {
+		AuthenticationKey key = null;
 		if ( data != null && data.containsKey("key") && data.containsKey("salt") ) {
-			this.authKey = new AuthenticationKey(data.get("key").toString(),
-					data.get("salt").toString());
+			key = new AuthenticationKey(data.get("key").toString(), data.get("salt").toString());
 		}
-		return this.authKey;
+		return key;
+	}
+
+	@Override
+	public void keyExchangeComplete() {
+		encryptionReady = true;
 	}
 
 	private boolean isEncryptionReady() {
-		return (authKey != null);
+		return encryptionReady;
 	}
 
 	@Override

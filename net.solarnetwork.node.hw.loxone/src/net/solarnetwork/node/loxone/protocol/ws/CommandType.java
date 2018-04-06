@@ -37,7 +37,7 @@ public enum CommandType {
 	GetAuthenticationKey("jdev/sys/getkey"),
 
 	/** Authenticate the connection. */
-	Authenticate("^authenticate/.*", true),
+	Authenticate("authenticate", "^authenticate/.*"),
 
 	/** Authenticate response. */
 	Auth("Auth"),

@@ -50,12 +50,13 @@ public interface SecurityHelper {
 	boolean hasValidToken();
 
 	/**
-	 * Extract and save an authentication key from a command response.
-	 * 
-	 * <p>
-	 * Once this method has been called successfully, encrypted commands can be
-	 * used.
-	 * </p>
+	 * Signal to the helper that the encryption key exchange has completed
+	 * successfully.
+	 */
+	public void keyExchangeComplete();
+
+	/**
+	 * Extract an authentication key from a command response.
 	 * 
 	 * @param data
 	 *        the data to extract a key from, taken from the value of a
@@ -74,11 +75,28 @@ public interface SecurityHelper {
 	 * </p>
 	 * 
 	 * @param data
-	 *        the data to extract a key from, taken from the value of a
-	 *        {@link CommandType#GetToken} response
+	 *        the data to extract a token details from, taken from the value of
+	 *        a {@link CommandType#GetToken} response
 	 * @return the token, or {@literal null} if one cannot be extracted
 	 */
 	AuthenticationToken extractTokenValue(Map<String, Object> data);
+
+	/**
+	 * Extract and save refreshed authentication token data from a command
+	 * response.
+	 * 
+	 * <p>
+	 * Once this method has been called successfully, the token will be saved
+	 * and {@link SecurityHelper#hasValidToken()} will return {@literal true}
+	 * until the token expires.
+	 * </p>
+	 * 
+	 * @param data
+	 *        the data to extract token refresh details from, taken from the
+	 *        value of a {@link CommandType#RefreshToken} response
+	 * @return the token, or {@literal null} if one cannot be extracted
+	 */
+	AuthenticationToken extractTokenRefreshValue(Map<String, Object> data);
 
 	/**
 	 * Get the saved authentication token.
@@ -86,6 +104,19 @@ public interface SecurityHelper {
 	 * @return the saved token
 	 */
 	AuthenticationToken getAuthenticationToken();
+
+	/**
+	 * Configure an existing token.
+	 * 
+	 * <p>
+	 * The configured token will be used for any future token authentication,
+	 * until replaced or refreshed.
+	 * </p>
+	 * 
+	 * @param token
+	 *        the token to use
+	 */
+	void setAuthenticationToken(AuthenticationToken token);
 
 	/**
 	 * Encrypt a command.

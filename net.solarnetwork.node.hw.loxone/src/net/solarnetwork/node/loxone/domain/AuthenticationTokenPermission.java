@@ -22,6 +22,7 @@
 
 package net.solarnetwork.node.loxone.domain;
 
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
@@ -82,11 +83,29 @@ public enum AuthenticationTokenPermission {
 	public static Set<AuthenticationTokenPermission> permissionsForBitmask(int bitmask) {
 		Set<AuthenticationTokenPermission> perms = new HashSet<>(4);
 		for ( AuthenticationTokenPermission p : AuthenticationTokenPermission.values() ) {
-			if ( (bitmask & p.getCode()) == p.code ) {
+			int bit = 1 << p.getCode();
+			if ( (bitmask & bit) == bit ) {
 				perms.add(p);
 			}
 		}
-		return EnumSet.copyOf(perms);
+		return (perms.isEmpty() ? Collections.emptySet() : EnumSet.copyOf(perms));
+	}
+
+	/**
+	 * Get a bitmask out of a set of permissions.
+	 * 
+	 * @param the
+	 *        set of permissions
+	 * @return the bitmask of permission codes
+	 */
+	public static int bitmaskForPermissions(Set<AuthenticationTokenPermission> permissions) {
+		int mask = 0;
+		if ( permissions != null ) {
+			for ( AuthenticationTokenPermission p : permissions ) {
+				mask |= (1 << p.getCode());
+			}
+		}
+		return mask;
 	}
 
 }
