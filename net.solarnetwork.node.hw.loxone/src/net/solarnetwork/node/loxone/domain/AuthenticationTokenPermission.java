@@ -83,7 +83,7 @@ public enum AuthenticationTokenPermission {
 	public static Set<AuthenticationTokenPermission> permissionsForBitmask(int bitmask) {
 		Set<AuthenticationTokenPermission> perms = new HashSet<>(4);
 		for ( AuthenticationTokenPermission p : AuthenticationTokenPermission.values() ) {
-			int bit = 1 << p.getCode();
+			int bit = p.getCode();
 			if ( (bitmask & bit) == bit ) {
 				perms.add(p);
 			}
@@ -102,7 +102,7 @@ public enum AuthenticationTokenPermission {
 		int mask = 0;
 		if ( permissions != null ) {
 			for ( AuthenticationTokenPermission p : permissions ) {
-				mask |= (1 << p.getCode());
+				mask |= p.getCode();
 			}
 		}
 		return mask;

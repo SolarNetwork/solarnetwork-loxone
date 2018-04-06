@@ -42,29 +42,43 @@ public class AuthenticationTokenPermissionTests {
 	public void bitmaskForPermission() {
 		int result = AuthenticationTokenPermission
 				.bitmaskForPermissions(EnumSet.of(AuthenticationTokenPermission.App));
-		assertThat("Mask", result, equalTo(0x10));
+		assertThat("Mask", result, equalTo(4));
 	}
 
 	@Test
 	public void bitmaskForPermissions() {
 		int result = AuthenticationTokenPermission.bitmaskForPermissions(
 				EnumSet.of(AuthenticationTokenPermission.App, AuthenticationTokenPermission.Web));
-		assertThat("Mask", result, equalTo(0x14));
+		assertThat("Mask", result, equalTo(6));
 	}
 
 	@Test
 	public void permissionForBitmask() {
 		Set<AuthenticationTokenPermission> perms = AuthenticationTokenPermission
-				.permissionsForBitmask(0x10);
+				.permissionsForBitmask(4);
 		assertThat("Set", perms, containsInAnyOrder(AuthenticationTokenPermission.App));
 	}
 
 	@Test
 	public void permissionsForBitmask() {
 		Set<AuthenticationTokenPermission> perms = AuthenticationTokenPermission
-				.permissionsForBitmask(0x14);
+				.permissionsForBitmask(6);
 		assertThat("Set", perms, containsInAnyOrder(AuthenticationTokenPermission.App,
 				AuthenticationTokenPermission.Web));
+	}
+
+	@Test
+	public void permissionsForBitmask1026() {
+		Set<AuthenticationTokenPermission> perms = AuthenticationTokenPermission
+				.permissionsForBitmask(1026);
+		assertThat("Set", perms, containsInAnyOrder(AuthenticationTokenPermission.Web));
+	}
+
+	@Test
+	public void permissionsForBitmask1028() {
+		Set<AuthenticationTokenPermission> perms = AuthenticationTokenPermission
+				.permissionsForBitmask(1028);
+		assertThat("Set", perms, containsInAnyOrder(AuthenticationTokenPermission.App));
 	}
 
 }
