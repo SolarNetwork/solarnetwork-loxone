@@ -65,15 +65,31 @@ public abstract class BaseCommandHandler implements CommandHandler {
 		this.eventAdmin = eventAdmin;
 	}
 
-	@Override
-	public boolean handleCommand(CommandType command, MessageHeader header, Session session,
-			JsonNode tree) throws IOException {
+	/**
+	 * Extract a {@code Code} response value.
+	 * 
+	 * <p>
+	 * This method also handles the lower-case version {@code code}.
+	 * </p>
+	 * 
+	 * @param tree
+	 *        the response JSON
+	 * @return the code
+	 * @since 1.2
+	 */
+	protected int extractResponseCode(JsonNode tree) {
 		JsonNode codeNode = tree.path("Code");
 		if ( codeNode.isMissingNode() ) {
 			// try lowercase... dammit Loxone!
 			codeNode = tree.path("code");
 		}
-		int status = codeNode.asInt();
+		return codeNode.asInt();
+	}
+
+	@Override
+	public boolean handleCommand(CommandType command, MessageHeader header, Session session,
+			JsonNode tree) throws IOException {
+		int status = extractResponseCode(tree);
 		if ( status != 200 ) {
 			log.warn("{} command returned error status {}", command, status);
 			return handleErrorCommand(command, header, session, tree, status);
@@ -168,14 +184,14 @@ public abstract class BaseCommandHandler implements CommandHandler {
 				cmdValue += "/"
 						+ Arrays.stream(args).map(Object::toString).collect(Collectors.joining("/"));
 			}
-			sendCommandText(session, cmdValue);
+			sendCommandText(session, command, cmdValue);
 		}
 		return null;
 	}
 
 	/**
-	 * Send a command asynchronously, handling encryption of a
-	 * {@link SecurityHelper} is avaialble.
+	 * Send a command asynchronously, handling encryption if a
+	 * {@link SecurityHelper} is available.
 	 * 
 	 * <p>
 	 * If a {@link SecurityHelper} is available via
@@ -183,27 +199,35 @@ public abstract class BaseCommandHandler implements CommandHandler {
 	 * using {@link SecurityHelper#encryptCommand(String)}.
 	 * </p>
 	 * 
+	 * <p>
+	 * <b>Note</b> that the {@code command} value is used for logic purposes
+	 * only; it will <b>not</b> be prepended to {@code text} before sending.
+	 * </p>
+	 * 
 	 * @param session
 	 *        the session
+	 * @param type
+	 *        an optional command type, or {@literal null} if no type
 	 * @param command
 	 *        the command to send
 	 * @throws IOException
 	 *         if any IO error occurs
 	 * @since 1.2
 	 */
-	protected void sendCommandText(Session session, String command) throws IOException {
+	protected void sendCommandText(Session session, CommandType type, String command)
+			throws IOException {
 
 		SecurityHelper helper = getSecurityHelper(session);
 		String cmdToSend = command;
 		if ( helper != null ) {
-			cmdToSend = helper.encryptCommand(command);
+			cmdToSend = helper.encryptCommand(type, command);
 		}
-		if ( log.isTraceEnabled() ) {
+		if ( log.isDebugEnabled() ) {
 			if ( cmdToSend.equals(command) ) {
-				log.trace("{} sending command: {}", Config.idToExternalForm(getConfigId(session)),
+				log.debug("{} sending command: {}", Config.idToExternalForm(getConfigId(session)),
 						command);
 			} else {
-				log.trace("{} sending encrypted command {}: {}",
+				log.debug("{} sending encrypted command {}: {}",
 						Config.idToExternalForm(getConfigId(session)), command, cmdToSend);
 			}
 		}

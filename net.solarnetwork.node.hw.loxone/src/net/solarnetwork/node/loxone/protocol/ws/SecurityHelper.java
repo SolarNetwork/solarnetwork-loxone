@@ -127,12 +127,14 @@ public interface SecurityHelper {
 	 * will return {@code command} unaltered.
 	 * </p>
 	 * 
+	 * @param type
+	 *        the command type, or {@literal null} if no type
 	 * @param command
 	 *        the command to encrypt if possible
 	 * @return the encrypted command, or {@code command} if encryption not
 	 *         available
 	 */
-	String encryptCommand(String command);
+	String encryptCommand(CommandType type, String command);
 
 	/**
 	 * Decrypt a command.

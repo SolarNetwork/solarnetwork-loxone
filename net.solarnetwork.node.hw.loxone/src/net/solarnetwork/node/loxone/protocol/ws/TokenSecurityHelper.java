@@ -229,8 +229,8 @@ public class TokenSecurityHelper implements SecurityHelper {
 	}
 
 	@Override
-	public synchronized String encryptCommand(String command) {
-		if ( !isEncryptionReady() ) {
+	public synchronized String encryptCommand(CommandType type, String command) {
+		if ( !isEncryptionReady() || (type != null && !type.isEncryptionSupported()) ) {
 			return command;
 		}
 		String strToEncrypt;

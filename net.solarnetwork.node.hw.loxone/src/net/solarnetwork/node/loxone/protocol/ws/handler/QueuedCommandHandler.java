@@ -210,7 +210,7 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 			if ( oldReq != null ) {
 				oldReq.cancel(true);
 			}
-			sendCommandText(session, text);
+			sendCommandText(session, null, text);
 			return request;
 		} catch ( IOException e ) {
 			queue.poll();
