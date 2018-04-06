@@ -80,14 +80,11 @@ public class SettingsConfigDao implements ConfigDao {
 		} catch ( NullPointerException e ) {
 			// ignore
 		}
-		if ( ts < 0 ) {
-			return null;
-		}
 		UUID globalUuid = GLOBAL_UUID.get();
 		if ( globalUuid == null ) {
 			String globalUuidValue = settingDao.getSetting(GLOBAL_UUID_SETTING_KEY);
 			if ( globalUuidValue != null ) {
-				UUID uuid = new Config(id, new Date(ts), globalUuidValue).getClientUuid();
+				UUID uuid = new Config(id, null, globalUuidValue).getClientUuid();
 				if ( GLOBAL_UUID.compareAndSet(null, uuid) ) {
 					globalUuid = uuid;
 				} else {
@@ -98,13 +95,13 @@ public class SettingsConfigDao implements ConfigDao {
 				if ( GLOBAL_UUID.compareAndSet(null, globalUuid) ) {
 					globalUuid = uuid;
 					settingDao.storeSetting(GLOBAL_UUID_SETTING_KEY,
-							new Config(id, new Date(ts), uuid).getClientUuidString());
+							new Config(id, null, uuid).getClientUuidString());
 				} else {
 					globalUuid = GLOBAL_UUID.get();
 				}
 			}
 		}
-		return new Config(id, new Date(ts), globalUuid);
+		return new Config(id, (ts > 0 ? new Date(ts) : null), globalUuid);
 	}
 
 	public SettingDao getSettingDao() {
