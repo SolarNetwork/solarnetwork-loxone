@@ -46,6 +46,14 @@ public interface ConfigAuthenticationTokenDao {
 	void storeConfigAuthenticationToken(ConfigAuthenticationToken token);
 
 	/**
+	 * Delete the token for a Config ID.
+	 * 
+	 * @param id
+	 *        The Config ID of the token to delete.
+	 */
+	void deleteConfigAuthenticationToken(Long configId);
+
+	/**
 	 * Get a token.
 	 * 
 	 * @param id

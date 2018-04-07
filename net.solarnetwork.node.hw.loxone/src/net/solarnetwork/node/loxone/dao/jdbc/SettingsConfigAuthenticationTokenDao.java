@@ -81,6 +81,15 @@ public class SettingsConfigAuthenticationTokenDao implements ConfigAuthenticatio
 				String.valueOf(token.isPasswordUnsecure()));
 	}
 
+	@Override
+	public void deleteConfigAuthenticationToken(Long configId) {
+		if ( configId == null ) {
+			return;
+		}
+		// deleting the token is sufficient for getConfigAuthenticationToken() to think it's not there 
+		settingDao.deleteSetting(settingKey(configId), TOKEN_SETTING);
+	}
+
 	private String settingForKey(List<KeyValuePair> settings, String key) {
 		if ( settings == null ) {
 			return null;

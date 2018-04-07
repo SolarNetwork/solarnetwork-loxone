@@ -138,4 +138,15 @@ public class SettingsConfigAuthenticationTokenDaoTests extends AbstractNodeTest 
 		authTokenDao.storeConfigAuthenticationToken(authToken);
 	}
 
+	@Test
+	public void deleteAuthToken() {
+		// given
+		expect(settingDao.deleteSetting("loxone/1/auth-token",
+				SettingsConfigAuthenticationTokenDao.TOKEN_SETTING)).andReturn(true);
+
+		// when
+		replay(settingDao);
+		authTokenDao.deleteConfigAuthenticationToken(1L);
+	}
+
 }
