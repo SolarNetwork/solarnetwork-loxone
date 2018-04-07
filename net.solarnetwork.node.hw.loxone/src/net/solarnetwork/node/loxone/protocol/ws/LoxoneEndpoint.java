@@ -617,12 +617,25 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		public boolean handleCommand(CommandType command, MessageHeader header, Session session,
 				JsonNode tree) throws IOException {
 			// look specifically for authentication failure, to prevent re-trying to connect
-			if ( command == CommandType.Authenticate || command == CommandType.AuthenticateWithToken
-					|| command == CommandType.GetToken || command == CommandType.RefreshToken ) {
-				int status = extractResponseCode(tree);
-				if ( status >= 400 && status < 500 ) {
-					log.warn("Loxone authentication failure to {}: wrong username/password?", host);
+			int status = extractResponseCode(tree);
+			if ( status >= 400 && status < 500 ) {
+				if ( command == CommandType.Authenticate || command == CommandType.GetToken
+						|| command == CommandType.GetTokenKey ) {
+					log.warn("Loxone {} failure ({}) to {}: wrong username/password?", command, status,
+							host);
 					authenticationFailure = true;
+					return false;
+				} else if ( command == CommandType.AuthenticateWithToken
+						|| command == CommandType.RefreshToken ) {
+					log.warn("Loxone {} failure ({}) to {}, will reconnect and request new token",
+							command, status, host);
+					SecurityHelper helper = getSecurityHelper(session);
+					if ( helper != null ) {
+						helper.setAuthenticationToken(null);
+					}
+					if ( configAuthTokenDao != null && configuration != null ) {
+						configAuthTokenDao.deleteConfigAuthenticationToken(configuration.getId());
+					}
 					return false;
 				}
 			}
