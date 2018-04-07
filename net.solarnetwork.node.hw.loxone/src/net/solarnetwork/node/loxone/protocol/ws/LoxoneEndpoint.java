@@ -188,7 +188,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	private boolean authenticationFailure = false;
 	private Map<String, Object> clientProperties = null;
 	private AuthenticationType authenticationType = AuthenticationType.Auto;
-	private AuthenticationTokenPermission tokenRequestPermission = AuthenticationTokenPermission.Web;
+	private AuthenticationTokenPermission tokenRequestPermission = AuthenticationTokenPermission.App;
 	private int tokenRefreshOffsetHours = 12;
 
 	/** A class-level logger. */
