@@ -149,9 +149,13 @@ public class TokenSecurityHelper implements SecurityHelper {
 
 	}
 
-	private boolean isSaltExpired() {
+	private synchronized boolean isSaltExpired() {
 		return (salt != null && ((saltTimestamp + saltMaxAge < System.currentTimeMillis())
 				|| saltUseCount > saltMaxUse));
+	}
+
+	private String currSalt() {
+		return salt;
 	}
 
 	private String generateSalt() {
@@ -160,6 +164,14 @@ public class TokenSecurityHelper implements SecurityHelper {
 		String salt = Hex.encodeHexString(bytes);
 		log.info("Generated salt for [{}]: {}", apiConfig.getWebsocketUri(), salt);
 		return salt;
+	}
+
+	private synchronized String generateAndSaveSalt() {
+		String newSalt = generateSalt();
+		saltTimestamp = System.currentTimeMillis();
+		saltUseCount = 0;
+		salt = newSalt;
+		return newSalt;
 	}
 
 	@Override
@@ -235,18 +247,15 @@ public class TokenSecurityHelper implements SecurityHelper {
 		}
 		String strToEncrypt;
 		if ( isSaltExpired() ) {
-			String prevSalt = salt;
-			salt = generateSalt();
-			saltTimestamp = System.currentTimeMillis();
-			saltUseCount = 0;
-			strToEncrypt = "nextSalt/" + prevSalt + "/" + salt + "/" + command + "\0";
+			String prevSalt = currSalt();
+			String currSalt = generateAndSaveSalt();
+			strToEncrypt = "nextSalt/" + prevSalt + "/" + currSalt + "/" + command + "\0";
 		} else {
-			if ( salt == null ) {
-				salt = generateSalt();
-				saltTimestamp = System.currentTimeMillis();
-				saltUseCount = 0;
+			String currSalt = currSalt();
+			if ( currSalt == null ) {
+				currSalt = generateAndSaveSalt();
 			}
-			strToEncrypt = "salt/" + salt + "/" + command + "\0";
+			strToEncrypt = "salt/" + currSalt + "/" + command + "\0";
 		}
 		try {
 			String encrypted = null;
