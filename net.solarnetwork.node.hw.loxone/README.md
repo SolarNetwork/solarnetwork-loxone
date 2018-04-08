@@ -1,6 +1,6 @@
 # SolarNode Loxone Miniserver Datum Source
 
-This project provides SolarNode plugin that can collect arbitrary data from
+This project provides a SolarNode plugin that can collect arbitrary data from
 [Loxone][loxone] Miniserver devices. This plugin provides a basic SolarNode
 component for collecting datum data.
 
