@@ -51,17 +51,14 @@ Each device configuration contains the following overall settings:
 	<dd>Starting with Loxone Config v9.0, a token-based authentication scheme was introduced. Leaving
 	this configured as <code>Auto</code> means SolarNode will use token-based authentication if it
 	detects the Miniserver is running v9.0 or higher.</dd>
-
 	<dt>Token Permission</dt>
 	<dd>The <code>App</code> permission gives token a longer lifespan before they expire and must be
 	refreshed. The <code>Web</code> permission gives token a relatively short lifespan.</dd>
-
 	<dt>Datum Logger Frequency</dt>
 	<dd>This plugin will look for Loxone data to turn into SolarNode datum for uploading to
 	SolarNetwork at this frequency. Set this to the smallest value for all sample properties
 	you intend to collect data from. For example, if you want to collect a temperature value
 	every 5 minutes but a meter power value every 1 minute, you'd configure <code>60</code>.</dd>
-
 	<dt>Default Sample Frequency</dt>
 	<dd>Each control SolarNode will collect samples from can be configured to
 	capture data at a different frequency in the Loxone Web Setup. For example
