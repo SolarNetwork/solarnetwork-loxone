@@ -578,8 +578,6 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		// add a streaming text handler to support very large responses (such as structure file)
 		session.addMessageHandler(new TextMessageHandler());
 
-		reconnectHandler.connected();
-
 		// authenticate
 		try {
 			log.info("Connected to Loxone server, will authenticate now.");
@@ -644,6 +642,9 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 		private void handlePostAuthenticationTasks(CommandType command, Session session)
 				throws IOException {
+			// clear disconnection counter only now, after successful authentication
+			reconnectHandler.connected();
+
 			// immediately after authentication, check for last modification date of structure file
 			sendCommandIfPossible(CommandType.StructureFileLastModifiedDate);
 
@@ -952,6 +953,10 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		private int counter = 0;
 
 		private void connected() {
+			reset();
+		}
+
+		private void reset() {
 			counter = 0;
 		}
 
@@ -961,9 +966,9 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 				counter = 0;
 				return false;
 			}
-			log.warn("Loxone {} disconnected ({}), will attempt to reconnect...", configuration,
-					closeReason);
 			counter++;
+			log.warn("Loxone {} disconnected ({}), will attempt to reconnect in {}s",
+					configuredConfigIdExternalForm(), closeReason, getDelay());
 			connectionDetailsChanged();
 			return false;
 		}
@@ -971,8 +976,8 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		@Override
 		public boolean onConnectFailure(Exception exception) {
 			counter++;
-			log.warn("Loxone {} connect failure {} ({}), will try reconnecting in {}s", host, counter,
-					exception.getMessage(), getDelay());
+			log.warn("Loxone {} connect failure {} ({}), will try reconnecting in {}s",
+					configuredConfigIdExternalForm(), counter, exception.getMessage(), getDelay());
 			connectionDetailsChanged();
 			return false;
 		}
@@ -1172,6 +1177,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		if ( this.username == null || !this.username.equals(username) ) {
 			this.username = username;
 			this.authenticationFailure = false;
+			this.reconnectHandler.reset();
 			connectionDetailsChanged();
 		}
 	}
@@ -1184,6 +1190,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		if ( this.password == null || !this.password.equals(password) ) {
 			this.password = password;
 			this.authenticationFailure = false;
+			this.reconnectHandler.reset();
 			connectionDetailsChanged();
 		}
 	}
