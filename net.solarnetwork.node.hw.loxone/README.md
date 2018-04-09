@@ -11,9 +11,9 @@ configuring which Loxone controls to collect data samples from.
 
 ![settings](docs/solarnode-loxone-datum-logging-configuration.png)
 
-**Note** that this plugin can also be used outside of SolarNode as a Java
-based client for a Loxone Miniserver. See [below](#UseOutsideSolarNode) for
-more details.
+**Note** that this plugin can also be used outside of SolarNode as a Java based
+client for a Loxone Miniserver. See [below](#use-outside-solarnode) for more
+details.
 
 
 # Install
