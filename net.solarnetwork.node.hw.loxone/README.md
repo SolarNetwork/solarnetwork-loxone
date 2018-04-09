@@ -11,6 +11,10 @@ configuring which Loxone controls to collect data samples from.
 
 ![settings](docs/solarnode-loxone-datum-logging-configuration.png)
 
+**Note** that this plugin can also be used outside of SolarNode as a Java
+based client for a Loxone Miniserver. See [below](#UseOutsideSolarNode) for
+more details.
+
 
 # Install
 
@@ -75,6 +79,50 @@ Use the **Configure** button at the bottom of the settings form for a given Mini
 to configure the specific datum properties to collect via the [Loxone Web Setup][setup-web]
 from the Miniserver.
 
+## Caching of data
+
+This plugin stores a copy of all control values read from the Miniserver it is
+connected to, in various database tables. It listens for value change events (in
+real time) from the Miniserver and then updates the local copy of that value in
+the database. When asked for the value of any particular Loxone control, the
+data is read from the local database, not the Miniserver. In practice there is
+no real difference in the returned values, because SolarNode gets updated values
+in real time from Loxone. If there is a connection problem to Loxone, however,
+SolarNode might return stale data until the connection is restored and the
+changed values can be refreshed.
+
+
+# Use outside SolarNode
+
+This SolarNode plugin can be used outside of SolarNode, even outside OSGi, with a little bit
+of setup. The `net.solarnetwork.node.loxone.impl.WebsocketLoxoneService` is the main client
+class you'd use to interact with the Miniserver, which adheres to the
+`net.solarnetwork.node.loxone.LoxoneService` interface.
+
+## Database setup
+
+The client requires a JDBC connection and access to several tables to store data captured
+from the Miniserver. Each DAO used by the `WebsocketLoxoneService` comes with basic
+SQL DDL setup files targeted for the Apache Derby database in the
+`net.solarnetwork.node.loxone.dao.jdbc` package. At a minimum the following DAOs
+are required at runtime, with these associated DDL scripts:
+
+ * **CategoryDao** - `derby-category-init.sql`
+ * **ControlDao** - `derby-control-init.sql`
+ * **RoomDao** - `derby-room-init.sql`
+ * **ValueEventDao** - `derby-vevent-init.sql`
+
+The SQL is fairly generic, and can easily be ported to other database systems. See
+the example in the next section, which has a PostgreSQL DDL script as an example.
+
+## Runtime configuration
+
+See this [Spring Boot example configuration][boot-example] that shows how a Spring
+Boot application can configure and inject a `WebsocketLoxoneService` into the
+runtime container, as well as a PostgreSQL DDL script for creating the associated
+database tables required.
+
 
  [loxone]: https://www.loxone.com/
  [setup-web]: https://github.com/evidentlimited/solarnetwork-loxone/tree/master/net.solarnetwork.node.setup.web.loxone
+ [boot-example]: https://gist.github.com/msqr/c1cda8595e56b00e3bf7e0c2d956df1a
