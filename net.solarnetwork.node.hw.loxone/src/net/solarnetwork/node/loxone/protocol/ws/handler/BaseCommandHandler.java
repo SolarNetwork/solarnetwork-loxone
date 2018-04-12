@@ -249,6 +249,9 @@ public abstract class BaseCommandHandler implements CommandHandler {
 	 * @since 1.2
 	 */
 	protected SecurityHelper getSecurityHelper(Session session) {
+		if ( session == null ) {
+			return null;
+		}
 		Object helper = session.getUserProperties().get(LoxoneEndpoint.SECURITY_HELPER_USER_PROPERTY);
 		return (helper instanceof SecurityHelper ? (SecurityHelper) helper : null);
 	}
