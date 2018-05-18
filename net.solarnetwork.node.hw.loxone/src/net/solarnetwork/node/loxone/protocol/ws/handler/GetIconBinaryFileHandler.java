@@ -39,7 +39,7 @@ import net.solarnetwork.node.loxone.protocol.ws.MessageType;
  * Request and handle image resources.
  * 
  * @author matt
- * @version 1.1
+ * @version 1.2
  */
 public class GetIconBinaryFileHandler extends QueuedCommandHandler<String, Resource>
 		implements BinaryFileHandler {
@@ -86,17 +86,16 @@ public class GetIconBinaryFileHandler extends QueuedCommandHandler<String, Resou
 
 	@Override
 	public boolean handleDataMessage(MessageHeader header, Session session, ByteBuffer buffer) {
-		Long configId = getConfigId(session);
 		byte[] data = new byte[buffer.remaining()];
 		buffer.get(data);
-		handleImageData(configId, data);
+		handleImageData(session, data);
 		return true;
 	}
 
-	private void handleImageData(Long configId, byte[] data) {
-		String name = peekNextResultKey(configId);
+	private void handleImageData(Session session, byte[] data) {
+		String name = peekNextResultKey(session);
 		Resource result = new ByteArrayIconResource(data, name);
-		handleNextResult(configId, result);
+		handleNextResult(session, result);
 	}
 
 	/**
@@ -131,10 +130,9 @@ public class GetIconBinaryFileHandler extends QueuedCommandHandler<String, Resou
 	@Override
 	public boolean handleTextMessage(MessageHeader header, Session session, Reader reader)
 			throws IOException {
-		Long configId = getConfigId(session);
 		String s = FileCopyUtils.copyToString(reader);
 		log.debug("Got SVG image {}", s);
-		handleImageData(configId, s.getBytes());
+		handleImageData(session, s.getBytes());
 		return true;
 	}
 

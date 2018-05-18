@@ -41,7 +41,7 @@ import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
  * Handler for {@code IoControl} messages.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  * @since 1.1
  */
 public class IoControlCommandHandler extends QueuedCommandHandler<String, List<ValueEvent>> {
@@ -94,7 +94,7 @@ public class IoControlCommandHandler extends QueuedCommandHandler<String, List<V
 				result = Arrays.asList(new ValueEvent(controlUuid, configId, Double.parseDouble(value)));
 			}
 		}
-		handleNextResult(configId, result);
+		handleNextResult(session, result);
 		return true;
 	}
 
