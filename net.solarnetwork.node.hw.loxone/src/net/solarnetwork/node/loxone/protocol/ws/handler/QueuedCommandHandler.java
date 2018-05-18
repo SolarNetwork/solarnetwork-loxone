@@ -48,16 +48,17 @@ import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
  * </p>
  * 
  * @author matt
- * @version 1.1
+ * @version 1.2
  * @since 1.1
  */
 public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 
-	private static final int DEFAULT_QUEUE_SIZE = 5;
+	private static final int DEFAULT_QUEUE_SIZE = 8;
+
+	private static final String QUEUE_SESSION_KEY = "net.solarnetwork.node.loxone.QueuedCommandHandler.QUEUE";
+	private static final String REQ_SESSION_KEY = "net.solarnetwork.node.loxone.QueuedCommandHandler.REQUESTS";
 
 	private final int queueSize;
-	private final ConcurrentMap<Long, BlockingQueue<K>> queues;
-	private final ConcurrentMap<K, LatchBasedFuture> requests;
 
 	/**
 	 * Construct with a default queue size.
@@ -73,8 +74,6 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 	 *        the queue size
 	 */
 	public QueuedCommandHandler(int queueSize) {
-		queues = new ConcurrentHashMap<>();
-		requests = new ConcurrentHashMap<>(10);
 		this.queueSize = queueSize;
 	}
 
@@ -86,14 +85,16 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 
 		private final CountDownLatch latch;
 		private final K name;
+		private final ConcurrentMap<K, LatchBasedFuture> requests;
 		private boolean cancelled;
 		private V result;
 		private Throwable error;
 
-		private LatchBasedFuture(K name) {
+		private LatchBasedFuture(K name, ConcurrentMap<K, LatchBasedFuture> requests) {
 			super();
 			this.latch = new CountDownLatch(1);
 			this.name = name;
+			this.requests = requests;
 		}
 
 		/**
@@ -160,6 +161,20 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 
 	}
 
+	private BlockingQueue<K> getQueue(Session session) {
+		@SuppressWarnings("unchecked")
+		BlockingQueue<K> q = (BlockingQueue<K>) session.getUserProperties()
+				.computeIfAbsent(QUEUE_SESSION_KEY, k -> new ArrayBlockingQueue<>(queueSize));
+		return q;
+	}
+
+	private ConcurrentMap<K, LatchBasedFuture> getRequests(Session session) {
+		@SuppressWarnings("unchecked")
+		ConcurrentMap<K, LatchBasedFuture> m = (ConcurrentMap<K, LatchBasedFuture>) session
+				.getUserProperties().computeIfAbsent(REQ_SESSION_KEY, k -> new ConcurrentHashMap<>(10));
+		return m;
+	}
+
 	/**
 	 * Set a future-based text request.
 	 * 
@@ -189,14 +204,7 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 	 *        the request future to handle the response
 	 */
 	protected Future<V> sendTextForKey(Session session, Long configId, K key, String text) {
-		BlockingQueue<K> queue = queues.get(configId);
-		if ( queue == null ) {
-			queue = new ArrayBlockingQueue<>(queueSize);
-			BlockingQueue<K> existingQueue = queues.putIfAbsent(configId, queue);
-			if ( existingQueue != null ) {
-				queue = existingQueue;
-			}
-		}
+		BlockingQueue<K> queue = getQueue(session);
 		try {
 			if ( !queue.offer(key, 1, TimeUnit.MINUTES) ) {
 				throw new RemoteServiceException("Timeout waiting to request [" + text + "]");
@@ -204,8 +212,9 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 		} catch ( InterruptedException e ) {
 			throw new RemoteServiceException("Interrupted waiting to request [" + text + "]");
 		}
+		ConcurrentMap<K, LatchBasedFuture> requests = getRequests(session);
 		try {
-			LatchBasedFuture request = new LatchBasedFuture(key);
+			LatchBasedFuture request = new LatchBasedFuture(key, requests);
 			LatchBasedFuture oldReq = requests.put(key, request);
 			if ( oldReq != null ) {
 				oldReq.cancel(true);
@@ -221,9 +230,8 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 	@Override
 	protected boolean handleErrorCommand(CommandType command, MessageHeader header, Session session,
 			JsonNode tree, int statusCode) {
-		Long configId = getConfigId(session);
 		if ( supportsCommand(command) ) {
-			handleNextResultError(configId,
+			handleNextResultError(session,
 					new RemoteServiceException(command + " returned error status " + statusCode));
 		}
 		return false;
@@ -233,24 +241,24 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 	 * See what the next result key in the queue is, leaving it as the next
 	 * result key.
 	 * 
-	 * @param configId
-	 *        the config ID of the queue to manage
+	 * @param session
+	 *        the session of the queue to manage
 	 * @return the next result key, or {@literal null} if not available
 	 */
-	protected K peekNextResultKey(Long configId) {
-		BlockingQueue<K> queue = queues.get(configId);
+	protected K peekNextResultKey(Session session) {
+		BlockingQueue<K> queue = getQueue(session);
 		return (queue != null ? queue.peek() : null);
 	}
 
 	/**
 	 * Get the next result key is, removing it from the queue.
 	 * 
-	 * @param configId
-	 *        the config ID of the queue to manage
+	 * @param session
+	 *        the session of the queue to manage
 	 * @return the next result key, or {@literal null} if not available
 	 */
-	protected K popNextResultKey(Long configId) {
-		BlockingQueue<K> queue = queues.get(configId);
+	protected K popNextResultKey(Session session) {
+		BlockingQueue<K> queue = getQueue(session);
 		return (queue != null ? queue.poll() : null);
 	}
 
@@ -263,16 +271,16 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 	 * that key.
 	 * </p>
 	 * 
-	 * @param configId
-	 *        the config ID of the queue to manage
+	 * @param session
+	 *        the session of the queue to manage
 	 * @param result
 	 *        the result value to set
 	 * @return the {@code Future} associated with the queue, with the result set
 	 */
-	protected Future<V> handleNextResult(Long configId, V result) {
-		K key = popNextResultKey(configId);
+	protected Future<V> handleNextResult(Session session, V result) {
+		K key = popNextResultKey(session);
 		log.debug("Got result {}: {}", key, result);
-		LatchBasedFuture f = requests.remove(key);
+		LatchBasedFuture f = getRequests(session).remove(key);
 		if ( f != null ) {
 			f.setResult(result);
 		}
@@ -282,16 +290,16 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 	/**
 	 * Handle the next result for the queue as an error.
 	 * 
-	 * @param configId
-	 *        the config ID of the queue to manage
+	 * @param session
+	 *        the session of the queue to manage
 	 * @param t
 	 *        the error to set
 	 * @return the {@code Future} associated with the queue, with the result set
 	 */
-	protected Future<V> handleNextResultError(Long configId, Throwable t) {
-		K key = popNextResultKey(configId);
+	protected Future<V> handleNextResultError(Session session, Throwable t) {
+		K key = popNextResultKey(session);
 		log.debug("Got error result {}: {}", key, t.getMessage());
-		LatchBasedFuture f = requests.remove(key);
+		LatchBasedFuture f = getRequests(session).remove(key);
 		if ( f != null ) {
 			f.setError(t);
 		}
