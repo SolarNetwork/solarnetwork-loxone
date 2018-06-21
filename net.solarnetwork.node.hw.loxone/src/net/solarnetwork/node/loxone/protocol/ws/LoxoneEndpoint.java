@@ -434,7 +434,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		}
 		if ( authenticationFailure ) {
 			log.warn(
-					"Will not reconnect to {} after authenticaiton failure; update the username/password settings.",
+					"Will not reconnect to {} after authentication failure; update the username/password settings.",
 					host);
 			return;
 		}
@@ -660,6 +660,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 			}
 		}
 
+		@SuppressWarnings("deprecation")
 		@Override
 		public boolean handleCommandValue(CommandType command, MessageHeader header, Session session,
 				JsonNode json, String value) throws IOException {
