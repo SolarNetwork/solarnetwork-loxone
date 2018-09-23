@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  * Supported commands.
  * 
  * @author matt
- * @version 1.1
+ * @version 1.2
  */
 public enum CommandType {
 
@@ -37,22 +37,74 @@ public enum CommandType {
 	GetAuthenticationKey("jdev/sys/getkey"),
 
 	/** Authenticate the connection. */
-	Authenticate("^authenticate/.*", true),
+	Authenticate("authenticate", "^authenticate/.*", false),
 
 	/** Authenticate response. */
 	Auth("Auth"),
+
+	/**
+	 * Perform a session key exchange.
+	 * 
+	 * @since 1.2
+	 */
+	KeyExchange("jdev/sys/keyexchange", "^j?dev/sys/keyexchange/.*"),
+
+	/**
+	 * Get the key to use for authenticating the connection via a token.
+	 * 
+	 * @since 1.2
+	 */
+	GetTokenKey("jdev/sys/getkey2", "^j?dev/sys/getkey2/.*"),
+
+	/**
+	 * Get an authentication token.
+	 * 
+	 * @since 1.2
+	 */
+	GetToken("jdev/sys/gettoken", "^j?dev/sys/gettoken/.*"),
+
+	/**
+	 * Authenticate the connection with a token.
+	 * 
+	 * @since 1.2
+	 */
+	AuthenticateWithToken("authwithtoken", "^authwithtoken/.*"),
+
+	/**
+	 * Refresh an authentication token.
+	 * 
+	 * @since 1.2
+	 */
+	RefreshToken("jdev/sys/refreshtoken", "^j?dev/sys/refreshtoken/.*"),
+
+	/**
+	 * Delete an authentication token.
+	 * 
+	 * @since 1.2
+	 */
+	DeleteToken("jdev/sys/killtoken", "^j?dev/sys/killtoken/.*"),
+
+	/**
+	 * An encrypted command.
+	 * 
+	 * @since 1.2
+	 */
+	EncryptedCommand("jdev/sys/enc", "^j?dev/sys/enc/.*"),
 
 	/** Get the last modificaiton date of the structure file. */
 	StructureFileLastModifiedDate("jdev/sps/LoxAPPversion3", "^j?dev/sps/LoxAPPversion3"),
 
 	/** Get the entire structure file. */
-	GetStructureFile("data/LoxAPP3.json"),
+	GetStructureFile("data/LoxAPP3.json", null, false),
 
 	/** Enable receiving status updates from the server. */
-	EnableInputStatusUpdate("jdev/sps/enablebinstatusupdate"),
+	EnableInputStatusUpdate("jdev/sps/enablebinstatusupdate", null, false),
 
 	/** Icons are requested by sending the desired icon name as the command. */
-	GetIcon("00000000-0000-0020-2000000000000000", "^(?i)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{16}"),
+	GetIcon(
+			"00000000-0000-0020-2000000000000000",
+			"^(?i)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{16}",
+			false),
 
 	/**
 	 * Read or update control values.
@@ -65,23 +117,28 @@ public enum CommandType {
 	 * Ping message to server does not disconnect the client after 5 minutes of
 	 * inactivity.
 	 */
-	KeepAlive("keepalive");
+	KeepAlive("keepalive", null, false);
 
 	private final String control;
 	private final Pattern regex;
+	private final boolean encryptionSupported;
 
 	private CommandType(String control) {
 		this(control, false);
 	}
 
 	private CommandType(String control, boolean regex) {
-		this.control = (regex ? null : control);
-		this.regex = (regex ? Pattern.compile(control) : null);
+		this(regex ? null : control, (regex ? control : null));
 	}
 
 	private CommandType(String control, String regex) {
+		this(control, regex, true);
+	}
+
+	private CommandType(String control, String regex, boolean encryptionSupported) {
 		this.control = control;
-		this.regex = Pattern.compile(regex);
+		this.regex = (regex != null ? Pattern.compile(regex) : null);
+		this.encryptionSupported = encryptionSupported;
 	}
 
 	/**
@@ -128,6 +185,16 @@ public enum CommandType {
 	 */
 	public Matcher getMatcher(String value) {
 		return (regex != null ? regex.matcher(value) : null);
+	}
+
+	/**
+	 * Test if a command supports encryption.
+	 * 
+	 * @return {@literal true} if the command supports command encryption
+	 * @since 1.2
+	 */
+	public boolean isEncryptionSupported() {
+		return encryptionSupported;
 	}
 
 }

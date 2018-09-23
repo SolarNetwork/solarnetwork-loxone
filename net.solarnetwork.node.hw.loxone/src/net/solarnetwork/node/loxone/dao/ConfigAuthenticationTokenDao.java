@@ -1,7 +1,7 @@
 /* ==================================================================
- * ConfigDao.java - 18/09/2016 6:03:08 AM
+ * ConfigAuthenticationTokenDao.java - 6/04/2018 8:32:51 AM
  * 
- * Copyright 2007-2016 SolarNetwork.net Dev Team
+ * Copyright 2018 SolarNetwork.net Dev Team
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License as 
@@ -22,31 +22,44 @@
 
 package net.solarnetwork.node.loxone.dao;
 
-import net.solarnetwork.node.loxone.domain.Config;
+import net.solarnetwork.node.loxone.domain.ConfigAuthenticationToken;
 
 /**
- * DAO API for {@link Config} data.
+ * DAO API for {@link ConfigAuthenticationToken} data.
+ * 
+ * <p>
+ * This DAO assumes just one token is allowed per Config ID.
+ * </p>
  * 
  * @author matt
  * @version 1.0
+ * @since 1.3
  */
-public interface ConfigDao {
+public interface ConfigAuthenticationTokenDao {
 
 	/**
-	 * Store (create or update) a config.
+	 * Store (create or update) a token.
 	 * 
-	 * @param config
-	 *        The config to store.
+	 * @param token
+	 *        the token to store
 	 */
-	void storeConfig(Config config);
+	void storeConfigAuthenticationToken(ConfigAuthenticationToken token);
 
 	/**
-	 * Get the {@link Config}.
+	 * Delete the token for a Config ID.
 	 * 
 	 * @param id
-	 *        The ID of the config to get.
-	 * @return The config, or {@literal null} if not available.
+	 *        The Config ID of the token to delete.
 	 */
-	Config getConfig(Long id);
+	void deleteConfigAuthenticationToken(Long configId);
+
+	/**
+	 * Get a token.
+	 * 
+	 * @param id
+	 *        The Config ID of the token to get.
+	 * @return the token, or {@literal null} if not available
+	 */
+	ConfigAuthenticationToken getConfigAuthenticationToken(Long id);
 
 }

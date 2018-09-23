@@ -4,13 +4,13 @@ Bundle-Name: Loxone Setup Web App
 Bundle-SymbolicName: net.solarnetwork.node.setup.web.loxone
 Bundle-Description: Loxone integration with the SolarNode Setup Web App that
  allows configuring what data SolarNode captures from Loxone Miniservers.
-Bundle-Version: 1.1.0
+Bundle-Version: 1.1.1
 Fragment-Host: net.solarnetwork.node.setup.web;bundle-version="1.28.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Evident
 Bundle-ClassPath: WEB-INF/classes/
 Export-Package: 
- net.solarnetwork.node.setup.web.loxone;version="1.0.0"
+ net.solarnetwork.node.setup.web.loxone;version="1.0.1"
 Import-Package: 
  com.fasterxml.jackson.annotation;version="[2.4,3.0)",
  net.solarnetwork.node.loxone;version="1.0.0",

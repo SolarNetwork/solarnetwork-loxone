@@ -23,7 +23,9 @@
 package net.solarnetwork.node.loxone.protocol.ws.handler;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import javax.websocket.Session;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
@@ -31,17 +33,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
+import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.protocol.ws.CommandHandler;
 import net.solarnetwork.node.loxone.protocol.ws.CommandType;
 import net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint;
 import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
+import net.solarnetwork.node.loxone.protocol.ws.SecurityHelper;
 import net.solarnetwork.util.OptionalService;
 
 /**
  * Supporting abstract class for {@link CommandHandler} implementations.
  * 
  * @author matt
- * @version 1.1
+ * @version 1.2
  */
 public abstract class BaseCommandHandler implements CommandHandler {
 
@@ -61,10 +65,31 @@ public abstract class BaseCommandHandler implements CommandHandler {
 		this.eventAdmin = eventAdmin;
 	}
 
+	/**
+	 * Extract a {@code Code} response value.
+	 * 
+	 * <p>
+	 * This method also handles the lower-case version {@code code}.
+	 * </p>
+	 * 
+	 * @param tree
+	 *        the response JSON
+	 * @return the code
+	 * @since 1.2
+	 */
+	protected int extractResponseCode(JsonNode tree) {
+		JsonNode codeNode = tree.path("Code");
+		if ( codeNode.isMissingNode() ) {
+			// try lowercase... dammit Loxone!
+			codeNode = tree.path("code");
+		}
+		return codeNode.asInt();
+	}
+
 	@Override
 	public boolean handleCommand(CommandType command, MessageHeader header, Session session,
 			JsonNode tree) throws IOException {
-		int status = tree.path("Code").asInt();
+		int status = extractResponseCode(tree);
 		if ( status != 200 ) {
 			log.warn("{} command returned error status {}", command, status);
 			return handleErrorCommand(command, header, session, tree, status);
@@ -154,9 +179,81 @@ public abstract class BaseCommandHandler implements CommandHandler {
 	public Future<?> sendCommand(CommandType command, Session session, Object... args)
 			throws IOException {
 		if ( supportsCommand(command) ) {
-			session.getBasicRemote().sendText(command.getControlValue());
+			String cmdValue = command.getControlValue();
+			if ( args != null && args.length > 0 ) {
+				cmdValue += "/"
+						+ Arrays.stream(args).map(Object::toString).collect(Collectors.joining("/"));
+			}
+			sendCommandText(session, command, cmdValue);
 		}
 		return null;
+	}
+
+	/**
+	 * Send a command asynchronously, handling encryption if a
+	 * {@link SecurityHelper} is available.
+	 * 
+	 * <p>
+	 * If a {@link SecurityHelper} is available via
+	 * {@link #getSecurityHelper(Session)}, then the command will be encrypted
+	 * using {@link SecurityHelper#encryptCommand(String)}.
+	 * </p>
+	 * 
+	 * <p>
+	 * <b>Note</b> that the {@code command} value is used for logic purposes
+	 * only; it will <b>not</b> be prepended to {@code text} before sending.
+	 * </p>
+	 * 
+	 * @param session
+	 *        the session
+	 * @param type
+	 *        an optional command type, or {@literal null} if no type
+	 * @param command
+	 *        the command to send
+	 * @throws IOException
+	 *         if any IO error occurs
+	 * @since 1.2
+	 */
+	protected void sendCommandText(Session session, CommandType type, String command)
+			throws IOException {
+
+		SecurityHelper helper = getSecurityHelper(session);
+		String cmdToSend = command;
+		if ( helper != null ) {
+			cmdToSend = helper.encryptCommand(type, command);
+		}
+		if ( log.isDebugEnabled() ) {
+			if ( cmdToSend.equals(command) ) {
+				log.debug("{} sending command: {}", Config.idToExternalForm(getConfigId(session)),
+						command);
+			} else {
+				log.debug("{} sending encrypted command {}: {}",
+						Config.idToExternalForm(getConfigId(session)), command, cmdToSend);
+			}
+		}
+		session.getBasicRemote().sendText(cmdToSend);
+	}
+
+	/**
+	 * Get the session {@link SecurityHelper}.
+	 * 
+	 * <p>
+	 * This method looks for a {@link SecurityHelper} on the
+	 * {@link LoxoneEndpoint#SECURITY_HELPER_USER_PROPERTY} session user
+	 * property.
+	 * </p>
+	 * 
+	 * @param session
+	 *        the session
+	 * @return the helper, or {@literal null} if none available
+	 * @since 1.2
+	 */
+	protected SecurityHelper getSecurityHelper(Session session) {
+		if ( session == null ) {
+			return null;
+		}
+		Object helper = session.getUserProperties().get(LoxoneEndpoint.SECURITY_HELPER_USER_PROPERTY);
+		return (helper instanceof SecurityHelper ? (SecurityHelper) helper : null);
 	}
 
 	/**

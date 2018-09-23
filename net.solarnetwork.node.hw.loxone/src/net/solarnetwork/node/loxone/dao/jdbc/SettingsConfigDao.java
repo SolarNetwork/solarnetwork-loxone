@@ -23,6 +23,8 @@
 package net.solarnetwork.node.loxone.dao.jdbc;
 
 import java.util.Date;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import net.solarnetwork.node.dao.SettingDao;
 import net.solarnetwork.node.loxone.dao.ConfigDao;
 import net.solarnetwork.node.loxone.domain.Config;
@@ -31,13 +33,22 @@ import net.solarnetwork.node.loxone.domain.Config;
  * {@link ConfigDao} that persists data via a {@link SettingDao}.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class SettingsConfigDao implements ConfigDao {
 
+	/**
+	 * A global setting key used for the client UUID.
+	 * 
+	 * @since 1.1
+	 */
+	public static final String GLOBAL_UUID_SETTING_KEY = "loxone/uuid";
+
+	private static final AtomicReference<UUID> GLOBAL_UUID = new AtomicReference<UUID>(null);
+
 	private SettingDao settingDao;
 
-	private String lastModifiedDateSettingKey(Long configId) {
+	private static String lastModifiedDateSettingKey(Long configId) {
 		return "loxone/" + Config.idToExternalForm(configId) + "/lastModified";
 	}
 
@@ -48,11 +59,14 @@ public class SettingsConfigDao implements ConfigDao {
 			return;
 		}
 		Date lastModified = config.getLastModified();
-		if ( lastModified == null ) {
-			return;
+		if ( lastModified != null ) {
+			settingDao.storeSetting(lastModifiedDateSettingKey(configId),
+					Long.toString(lastModified.getTime(), 16));
 		}
-		settingDao.storeSetting(lastModifiedDateSettingKey(configId),
-				Long.toString(lastModified.getTime(), 16));
+		String uuid = config.getClientUuidString();
+		if ( uuid != null ) {
+			settingDao.storeSetting(GLOBAL_UUID_SETTING_KEY, uuid);
+		}
 	}
 
 	@Override
@@ -66,11 +80,28 @@ public class SettingsConfigDao implements ConfigDao {
 		} catch ( NullPointerException e ) {
 			// ignore
 		}
-		if ( ts < 0 ) {
-			return null;
+		UUID globalUuid = GLOBAL_UUID.get();
+		if ( globalUuid == null ) {
+			String globalUuidValue = settingDao.getSetting(GLOBAL_UUID_SETTING_KEY);
+			if ( globalUuidValue != null ) {
+				UUID uuid = new Config(id, null, globalUuidValue).getClientUuid();
+				if ( GLOBAL_UUID.compareAndSet(null, uuid) ) {
+					globalUuid = uuid;
+				} else {
+					globalUuid = GLOBAL_UUID.get();
+				}
+			} else {
+				UUID uuid = UUID.randomUUID();
+				if ( GLOBAL_UUID.compareAndSet(null, globalUuid) ) {
+					globalUuid = uuid;
+					settingDao.storeSetting(GLOBAL_UUID_SETTING_KEY,
+							new Config(id, null, uuid).getClientUuidString());
+				} else {
+					globalUuid = GLOBAL_UUID.get();
+				}
+			}
 		}
-		Config result = new Config(id, new Date(ts));
-		return result;
+		return new Config(id, (ts > 0 ? new Date(ts) : null), globalUuid);
 	}
 
 	public SettingDao getSettingDao() {

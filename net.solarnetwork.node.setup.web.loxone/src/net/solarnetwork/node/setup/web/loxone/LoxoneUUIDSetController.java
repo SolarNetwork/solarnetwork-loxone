@@ -45,7 +45,7 @@ import net.solarnetwork.web.domain.Response;
  * Controller for managing UUID sets.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 @RestController
 @RequestMapping("/a/loxone/{configId}/uuidsets")
@@ -117,7 +117,7 @@ public class LoxoneUUIDSetController extends BaseLoxoneWebServiceController {
 		if ( result != null ) {
 			result = new UUIDMap<>(result);
 		}
-		return Response.response(result);
+		return FullResponse.response(result);
 	}
 
 	private <T extends UUIDSetEntity<P>, P extends UUIDEntityParameters> Response<Object> updateUUIDSetForConfigId(
@@ -128,7 +128,7 @@ public class LoxoneUUIDSetController extends BaseLoxoneWebServiceController {
 			return new Response<Object>(Boolean.FALSE, "404", "Service not available", null);
 		}
 		service.updateUUIDSet(type, add, remove, parameters);
-		return Response.response(null);
+		return FullResponse.response(null);
 	}
 
 }
