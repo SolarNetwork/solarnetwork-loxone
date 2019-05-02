@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
+import net.solarnetwork.node.RemoteServiceException;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.protocol.ws.CommandHandler;
 import net.solarnetwork.node.loxone.protocol.ws.CommandType;
@@ -45,7 +46,7 @@ import net.solarnetwork.util.OptionalService;
  * Supporting abstract class for {@link CommandHandler} implementations.
  * 
  * @author matt
- * @version 1.2
+ * @version 1.3
  */
 public abstract class BaseCommandHandler implements CommandHandler {
 
@@ -106,6 +107,10 @@ public abstract class BaseCommandHandler implements CommandHandler {
 	 * @return The ID, or {@literal null} if not found.
 	 */
 	protected Long getConfigId(Session session) {
+		if ( session == null ) {
+			log.warn("Session not available: cannot determine config ID");
+			return null;
+		}
 		Object id = session.getUserProperties().get(LoxoneEndpoint.CONFIG_ID_USER_PROPERTY);
 		if ( !(id instanceof Long) ) {
 			log.warn("Session user property {} invalid: {}", LoxoneEndpoint.CONFIG_ID_USER_PROPERTY, id);
@@ -216,7 +221,10 @@ public abstract class BaseCommandHandler implements CommandHandler {
 	 */
 	protected void sendCommandText(Session session, CommandType type, String command)
 			throws IOException {
-
+		if ( session == null ) {
+			throw new RemoteServiceException(
+					"No session available: cannot send " + type + " command [" + command + "]");
+		}
 		SecurityHelper helper = getSecurityHelper(session);
 		String cmdToSend = command;
 		if ( helper != null ) {

@@ -48,7 +48,7 @@ import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
  * </p>
  * 
  * @author matt
- * @version 1.2
+ * @version 1.3
  * @since 1.1
  */
 public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
@@ -204,6 +204,10 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 	 *        the request future to handle the response
 	 */
 	protected Future<V> sendTextForKey(Session session, Long configId, K key, String text) {
+		if ( session == null ) {
+			throw new RemoteServiceException("No session available: cannot request text [" + text
+					+ "] with key [" + key + "] for config " + configId);
+		}
 		BlockingQueue<K> queue = getQueue(session);
 		try {
 			if ( !queue.offer(key, 1, TimeUnit.MINUTES) ) {
