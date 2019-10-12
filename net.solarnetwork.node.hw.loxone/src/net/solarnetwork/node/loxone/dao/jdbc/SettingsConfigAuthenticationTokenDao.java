@@ -25,12 +25,12 @@ package net.solarnetwork.node.loxone.dao.jdbc;
 import java.util.Collections;
 import java.util.List;
 import org.joda.time.DateTime;
+import net.solarnetwork.domain.KeyValuePair;
 import net.solarnetwork.node.dao.SettingDao;
 import net.solarnetwork.node.loxone.dao.ConfigAuthenticationTokenDao;
 import net.solarnetwork.node.loxone.domain.AuthenticationTokenPermission;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.ConfigAuthenticationToken;
-import net.solarnetwork.node.support.KeyValuePair;
 
 /**
  * {@link ConfigAuthenticationTokenDao} that persists data via a
@@ -107,7 +107,7 @@ public class SettingsConfigAuthenticationTokenDao implements ConfigAuthenticatio
 		if ( id == null ) {
 			return null;
 		}
-		List<KeyValuePair> settings = settingDao.getSettings(settingKey(id));
+		List<KeyValuePair> settings = settingDao.getSettingValues(settingKey(id));
 		String key = settingForKey(settings, KEY_SETTING);
 		String tok = settingForKey(settings, TOKEN_SETTING);
 		String exp = settingForKey(settings, VALID_UNTIL_SETTING);

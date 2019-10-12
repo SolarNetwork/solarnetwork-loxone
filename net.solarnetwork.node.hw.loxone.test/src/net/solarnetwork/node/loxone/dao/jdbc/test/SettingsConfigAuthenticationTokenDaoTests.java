@@ -37,18 +37,18 @@ import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import net.solarnetwork.domain.KeyValuePair;
 import net.solarnetwork.node.dao.SettingDao;
 import net.solarnetwork.node.loxone.dao.jdbc.SettingsConfigAuthenticationTokenDao;
 import net.solarnetwork.node.loxone.domain.AuthenticationTokenPermission;
 import net.solarnetwork.node.loxone.domain.ConfigAuthenticationToken;
-import net.solarnetwork.node.support.KeyValuePair;
 import net.solarnetwork.node.test.AbstractNodeTest;
 
 /**
  * Test cases for the {@link SettingsConfigAuthenticationTokenDao} class.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class SettingsConfigAuthenticationTokenDaoTests extends AbstractNodeTest {
 
@@ -72,7 +72,7 @@ public class SettingsConfigAuthenticationTokenDaoTests extends AbstractNodeTest 
 	public void getAuthTokenNoData() {
 		// given
 		List<KeyValuePair> settings = Collections.emptyList();
-		expect(settingDao.getSettings("loxone/1/auth-token")).andReturn(settings);
+		expect(settingDao.getSettingValues("loxone/1/auth-token")).andReturn(settings);
 
 		// when
 		replay(settingDao);
@@ -97,7 +97,7 @@ public class SettingsConfigAuthenticationTokenDaoTests extends AbstractNodeTest 
 						String.valueOf(expected.getPermissionsBitmask())),
 				new KeyValuePair(SettingsConfigAuthenticationTokenDao.PASSWORD_UNSECURE_SETTING,
 						String.valueOf(expected.isPasswordUnsecure())));
-		expect(settingDao.getSettings("loxone/1/auth-token")).andReturn(settings);
+		expect(settingDao.getSettingValues("loxone/1/auth-token")).andReturn(settings);
 
 		// when
 		replay(settingDao);

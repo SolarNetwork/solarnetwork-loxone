@@ -37,6 +37,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import net.solarnetwork.domain.KeyValuePair;
 import net.solarnetwork.node.Setting;
 import net.solarnetwork.node.dao.SettingDao;
 import net.solarnetwork.node.domain.GeneralNodeDatum;
@@ -51,13 +52,12 @@ import net.solarnetwork.node.loxone.domain.DatumValueType;
 import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
 import net.solarnetwork.node.loxone.impl.ControlDatumDataSource;
-import net.solarnetwork.node.support.KeyValuePair;
 
 /**
  * Test cases for the {@link ControlDatumDataSource} class.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class ControlDatumDataSourceTests {
 
@@ -110,7 +110,7 @@ public class ControlDatumDataSourceTests {
 				.setDatumPropertyParameters(Collections.singletonMap(valueEvent.getUuid(), valueParams));
 		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays.asList(
 				new UUIDEntityParametersPair<Control, ControlDatumParameters>(control, controlParams));
-		expect(settingDao.getSettings(settingKey)).andReturn(Collections.emptyList());
+		expect(settingDao.getSettingValues(settingKey)).andReturn(Collections.emptyList());
 		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
 		Capture<Setting> settingCapture = new Capture<>();
@@ -153,7 +153,7 @@ public class ControlDatumDataSourceTests {
 				.setDatumPropertyParameters(Collections.singletonMap(valueEvent.getUuid(), valueParams));
 		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays.asList(
 				new UUIDEntityParametersPair<Control, ControlDatumParameters>(control, controlParams));
-		expect(settingDao.getSettings(settingKey)).andReturn(Collections.emptyList());
+		expect(settingDao.getSettingValues(settingKey)).andReturn(Collections.emptyList());
 		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
 		Capture<Setting> settingCapture = new Capture<>();
@@ -198,7 +198,7 @@ public class ControlDatumDataSourceTests {
 				new UUIDEntityParametersPair<Control, ControlDatumParameters>(control, controlParams));
 		final List<KeyValuePair> saveSettings = Arrays
 				.asList(new KeyValuePair(sourceId, Long.toString(now - 100000, 16)));
-		expect(settingDao.getSettings(settingKey)).andReturn(saveSettings);
+		expect(settingDao.getSettingValues(settingKey)).andReturn(saveSettings);
 		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
 		replayAll();
@@ -229,7 +229,7 @@ public class ControlDatumDataSourceTests {
 				new UUIDEntityParametersPair<Control, ControlDatumParameters>(control, controlParams));
 		final List<KeyValuePair> saveSettings = Arrays
 				.asList(new KeyValuePair(sourceId, Long.toString(now - 300001, 16)));
-		expect(settingDao.getSettings(settingKey)).andReturn(saveSettings);
+		expect(settingDao.getSettingValues(settingKey)).andReturn(saveSettings);
 		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
 		Capture<Setting> settingCapture = new Capture<>();

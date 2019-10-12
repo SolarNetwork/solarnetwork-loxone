@@ -30,6 +30,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import net.solarnetwork.domain.KeyValuePair;
 import net.solarnetwork.node.DatumDataSource;
 import net.solarnetwork.node.MultiDatumDataSource;
 import net.solarnetwork.node.Setting;
@@ -44,13 +45,12 @@ import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.DatumValueType;
 import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
 import net.solarnetwork.node.loxone.domain.ValueEventDatumParameters;
-import net.solarnetwork.node.support.KeyValuePair;
 
 /**
  * A {@link DatumDataSource} to upload Loxone values on a fixed schedule.
  * 
  * @author matt
- * @version 1.2
+ * @version 1.3
  */
 public class ControlDatumDataSource
 		implements MultiDatumDataSource<GeneralNodeDatum>, DatumDataSource<GeneralNodeDatum> {
@@ -139,7 +139,8 @@ public class ControlDatumDataSource
 			final DatumUUIDEntityParameters datumParams = (params != null ? params.getDatumParameters()
 					: null);
 			final Collection<ValueEventDatumParameters> propParamsList = (params != null
-					? params.getDatumPropertyParameters().values() : null);
+					? params.getDatumPropertyParameters().values()
+					: null);
 			boolean create = false;
 			if ( propParamsList != null && !propParamsList.isEmpty()
 					&& !(datumParams != null && datumParams.getSaveFrequencySeconds() != null
@@ -149,7 +150,8 @@ public class ControlDatumDataSource
 					offset = datumParams.getSaveFrequencySeconds().intValue();
 				}
 				final Long lastSaveTime = (createdSettings.containsKey(sourceId)
-						? Long.valueOf(createdSettings.get(sourceId), 16) : null);
+						? Long.valueOf(createdSettings.get(sourceId), 16)
+						: null);
 				if ( lastSaveTime == null || (lastSaveTime + (offset * 1000)) < now.getTime() ) {
 					create = true;
 				}
@@ -192,7 +194,7 @@ public class ControlDatumDataSource
 	}
 
 	private Map<String, String> loadCreationSettings(String key) {
-		List<KeyValuePair> pairs = settingDao.getSettings(key);
+		List<KeyValuePair> pairs = settingDao.getSettingValues(key);
 		Map<String, String> result;
 		if ( pairs != null && !pairs.isEmpty() ) {
 			result = pairs.stream()

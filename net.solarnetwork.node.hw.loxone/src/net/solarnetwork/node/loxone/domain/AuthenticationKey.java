@@ -58,6 +58,7 @@ public class AuthenticationKey {
 	 *        the password
 	 * @return the hashed token value to authenticate with
 	 */
+	@SuppressWarnings("deprecation")
 	public String hash(String username, String password) {
 		String pwHash = DigestUtils.sha1Hex(password + ":" + saltHex).toUpperCase();
 		String authString = username + ":" + pwHash;
