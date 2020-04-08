@@ -144,6 +144,7 @@
 		<property name="eventAdmin" ref="eventAdmin"/>
 		<property name="genericEventDao" ref="valueEventDao"/>
 		<property name="messageSendingOps" ref="messageSendingOperations"/>
+		<property name="sendValueEventsUpdatedEvents" value="true"/>
 	</bean>
 	
 	<bean id="text-event-handler" class="net.solarnetwork.node.loxone.protocol.ws.handler.TextEventBinaryFileHandler">
@@ -262,6 +263,7 @@
 				<beans:array value-type="java.lang.String">
 					<beans:value>#{T(net.solarnetwork.node.loxone.protocol.ws.LoxoneEvents).STRUCTURE_FILE_MODIFICATION_DATE_EVENT}</beans:value>
 					<beans:value>#{T(net.solarnetwork.node.loxone.protocol.ws.LoxoneEvents).STRUCTURE_FILE_SAVED_EVENT}</beans:value>
+					<beans:value>#{T(net.solarnetwork.node.loxone.protocol.ws.handler.ValueEventBinaryFileHandler).VALUE_EVENTS_UPDATED_EVENT}</beans:value>
 				</beans:array>
 			</beans:entry>
 			<beans:entry key="instruction">

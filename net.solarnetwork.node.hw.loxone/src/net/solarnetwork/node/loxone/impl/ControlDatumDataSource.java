@@ -22,6 +22,11 @@
 
 package net.solarnetwork.node.loxone.impl;
 
+import static java.util.stream.Collectors.toMap;
+import static net.solarnetwork.node.loxone.protocol.ws.LoxoneEvents.EVENT_PROPERTY_CONFIG_ID;
+import static net.solarnetwork.node.loxone.protocol.ws.LoxoneEvents.EVENT_PROPERTY_DATE;
+import static net.solarnetwork.node.loxone.protocol.ws.handler.ValueEventBinaryFileHandler.EVENT_PROPERTY_VALUE_EVENTS;
+import static net.solarnetwork.node.loxone.protocol.ws.handler.ValueEventBinaryFileHandler.VALUE_EVENTS_UPDATED_EVENT;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,7 +34,10 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventHandler;
 import net.solarnetwork.domain.KeyValuePair;
 import net.solarnetwork.node.DatumDataSource;
 import net.solarnetwork.node.MultiDatumDataSource;
@@ -44,16 +52,18 @@ import net.solarnetwork.node.loxone.domain.ControlDatumParameters;
 import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.DatumValueType;
 import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
+import net.solarnetwork.node.loxone.domain.ValueEvent;
 import net.solarnetwork.node.loxone.domain.ValueEventDatumParameters;
+import net.solarnetwork.node.support.DatumDataSourceSupport;
 
 /**
  * A {@link DatumDataSource} to upload Loxone values on a fixed schedule.
  * 
  * @author matt
- * @version 1.3
+ * @version 1.5
  */
-public class ControlDatumDataSource
-		implements MultiDatumDataSource<GeneralNodeDatum>, DatumDataSource<GeneralNodeDatum> {
+public class ControlDatumDataSource extends DatumDataSourceSupport implements
+		MultiDatumDataSource<GeneralNodeDatum>, DatumDataSource<GeneralNodeDatum>, EventHandler {
 
 	/**
 	 * The default interval at which to save {@code Datum} instances from Loxone
@@ -133,59 +143,124 @@ public class ControlDatumDataSource
 		List<GeneralNodeDatum> results = new ArrayList<>(datumParameters.size());
 
 		for ( UUIDEntityParametersPair<Control, ControlDatumParameters> pair : datumParameters ) {
-			final Control valueEvent = pair.getEntity();
-			final String sourceId = valueEvent.getSourceIdValue();
-			final ControlDatumParameters params = pair.getParameters();
-			final DatumUUIDEntityParameters datumParams = (params != null ? params.getDatumParameters()
-					: null);
-			final Collection<ValueEventDatumParameters> propParamsList = (params != null
-					? params.getDatumPropertyParameters().values()
-					: null);
-			boolean create = false;
-			if ( propParamsList != null && !propParamsList.isEmpty()
-					&& !(datumParams != null && datumParams.getSaveFrequencySeconds() != null
-							&& datumParams.getSaveFrequencySeconds().intValue() < 0) ) {
-				int offset = defaultFrequencySeconds;
-				if ( datumParams != null && datumParams.getSaveFrequencySeconds() != null ) {
-					offset = datumParams.getSaveFrequencySeconds().intValue();
-				}
-				final Long lastSaveTime = (createdSettings.containsKey(sourceId)
-						? Long.valueOf(createdSettings.get(sourceId), 16)
-						: null);
-				if ( lastSaveTime == null || (lastSaveTime + (offset * 1000)) < now.getTime() ) {
-					create = true;
-				}
-			}
-			if ( !create ) {
+			GeneralNodeDatum datum = generateDatum(now, pair, createdSettings);
+			if ( datum == null ) {
 				continue;
-			}
-			GeneralNodeDatum datum = new GeneralNodeDatum();
-			datum.setSourceId(sourceId);
-			datum.setCreated(now);
-			for ( ValueEventDatumParameters propParams : propParamsList ) {
-				String propName = propParams.getName();
-				if ( propName == null ) {
-					propName = "value";
-				}
-				if ( propParams.getDatumValueType() == null
-						|| propParams.getDatumValueType() == DatumValueType.Unknown
-						|| propParams.getDatumValueType() == DatumValueType.Instantaneous ) {
-					datum.putInstantaneousSampleValue(propName, propParams.getValue());
-				} else if ( propParams.getDatumValueType() == DatumValueType.Accumulating ) {
-					datum.putAccumulatingSampleValue(propName, propParams.getValue());
-				} else {
-					datum.putStatusSampleValue(propName, propParams.getValue());
-				}
 			}
 			results.add(datum);
 
-			Setting s = new Setting(settingKey, sourceId, nowSetting,
+			Setting s = new Setting(settingKey, datum.getSourceId(), nowSetting,
 					EnumSet.of(SettingFlag.Volatile, SettingFlag.IgnoreModificationDate));
 			settingDao.storeSetting(s);
 		}
 
 		return results;
 
+	}
+
+	@Override
+	public void handleEvent(Event event) {
+		if ( event == null || event.getTopic() == null
+				|| !event.getTopic().equals(VALUE_EVENTS_UPDATED_EVENT) ) {
+			return;
+		}
+		if ( !(event.getProperty(EVENT_PROPERTY_CONFIG_ID) instanceof Long) ) {
+			return;
+		}
+		Long configId = (Long) event.getProperty(EVENT_PROPERTY_CONFIG_ID);
+		if ( !configId.equals(this.configId) ) {
+			return;
+		}
+		if ( !(event.getProperty(EVENT_PROPERTY_VALUE_EVENTS) instanceof Collection<?>) ) {
+			return;
+		}
+		if ( !(event.getProperty(EVENT_PROPERTY_DATE) instanceof Long) ) {
+			return;
+		}
+		final Date now = new Date((Long) event.getProperty(EVENT_PROPERTY_DATE));
+		@SuppressWarnings("unchecked")
+		Collection<ValueEvent> valueEvents = (Collection<ValueEvent>) event
+				.getProperty(EVENT_PROPERTY_VALUE_EVENTS);
+		if ( valueEvents.isEmpty() ) {
+			return;
+		}
+
+		log.trace("Got VALUE_EVENTS_UPDATED event: {}", valueEvents);
+
+		Map<UUID, ValueEvent> valueEventsMap = valueEvents.stream()
+				.collect(toMap(e -> e.getUuid(), e -> e));
+
+		List<UUIDEntityParametersPair<Control, ControlDatumParameters>> datumParameters = controlDao
+				.findAllForDatumPropertyUUIDEntities(configId);
+
+		for ( UUIDEntityParametersPair<Control, ControlDatumParameters> pair : datumParameters ) {
+			final Control control = pair.getEntity();
+			final Collection<UUID> controlStates = (control.getStates() != null
+					? control.getStates().values()
+					: Collections.emptySet());
+			if ( !(valueEventsMap.containsKey(control.getUuid()) || controlStates.stream()
+					.filter(u -> controlStates.contains(u)).findAny().isPresent()) ) {
+				continue;
+			}
+			GeneralNodeDatum d = generateDatum(now, pair, null);
+			if ( d != null ) {
+				postDatumCapturedEvent(d);
+			}
+		}
+	}
+
+	private GeneralNodeDatum generateDatum(Date now,
+			UUIDEntityParametersPair<Control, ControlDatumParameters> pair,
+			Map<String, String> createdSettings) {
+		final Control valueEvent = pair.getEntity();
+		final String sourceId = valueEvent.getSourceIdValue();
+		final ControlDatumParameters params = pair.getParameters();
+		final DatumUUIDEntityParameters datumParams = (params != null ? params.getDatumParameters()
+				: null);
+		final Collection<ValueEventDatumParameters> propParamsList = (params != null
+				? params.getDatumPropertyParameters().values()
+				: null);
+		boolean create = false;
+		if ( propParamsList != null && !propParamsList.isEmpty()
+				&& !(datumParams != null && datumParams.getSaveFrequencySeconds() != null
+						&& datumParams.getSaveFrequencySeconds().intValue() < 0) ) {
+			int offset = defaultFrequencySeconds;
+			if ( datumParams != null && datumParams.getSaveFrequencySeconds() != null ) {
+				offset = datumParams.getSaveFrequencySeconds().intValue();
+			}
+			if ( createdSettings != null ) {
+				final Long lastSaveTime = (createdSettings.containsKey(sourceId)
+						? Long.valueOf(createdSettings.get(sourceId), 16)
+						: null);
+				if ( lastSaveTime == null || (lastSaveTime + (offset * 1000)) < now.getTime() ) {
+					create = true;
+				}
+			} else {
+				create = true;
+			}
+		}
+		if ( !create ) {
+			return null;
+		}
+		GeneralNodeDatum datum = new GeneralNodeDatum();
+		datum.setSourceId(sourceId);
+		datum.setCreated(now);
+		for ( ValueEventDatumParameters propParams : propParamsList ) {
+			String propName = propParams.getName();
+			if ( propName == null ) {
+				propName = "value";
+			}
+			if ( propParams.getDatumValueType() == null
+					|| propParams.getDatumValueType() == DatumValueType.Unknown
+					|| propParams.getDatumValueType() == DatumValueType.Instantaneous ) {
+				datum.putInstantaneousSampleValue(propName, propParams.getValue());
+			} else if ( propParams.getDatumValueType() == DatumValueType.Accumulating ) {
+				datum.putAccumulatingSampleValue(propName, propParams.getValue());
+			} else {
+				datum.putStatusSampleValue(propName, propParams.getValue());
+			}
+		}
+		return datum;
 	}
 
 	private String settingKey() {
