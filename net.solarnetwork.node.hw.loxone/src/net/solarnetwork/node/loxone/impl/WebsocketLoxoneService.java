@@ -113,7 +113,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		NodeControlProvider, InstructionHandler {
 
 	/**
-	 * The name used to schedule the {@link PostOfflineChargeSessionsJob} as.
+	 * The name used to schedule the {@link ControlDatumDataSource} as.
 	 */
 	public static final String DATUM_LOGGER_JOB_NAME = "Loxone_DatumLogger";
 

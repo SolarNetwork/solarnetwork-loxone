@@ -61,7 +61,7 @@ public abstract class BaseEventBinaryFileHandler<T extends BaseEventEntity>
 	/** An optional {@link EventAdmin} service to use. */
 	protected OptionalService<EventAdmin> eventAdmin;
 
-	/** An optional {@Link SimpMessageSendingOperations} service to use. */
+	/** An optional {@link SimpMessageSendingOperations} service to use. */
 	protected OptionalService<SimpMessageSendingOperations> messageSendingOps;
 
 	/** A class-level logger. */
@@ -258,7 +258,7 @@ public abstract class BaseEventBinaryFileHandler<T extends BaseEventEntity>
 	/**
 	 * Set a {@link SimpMessageSendingOperations} to publish messages with.
 	 * 
-	 * @param messageSendingOps
+	 * @param messagingOps
 	 *        The service to use.
 	 */
 	public void setMessageSendingOps(OptionalService<SimpMessageSendingOperations> messagingOps) {

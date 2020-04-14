@@ -41,6 +41,8 @@ public interface ControlDao extends ConfigurationEntityDao<Control> {
 	 * Get a list of persisted entities associated with
 	 * {@link DatumPropertyUUIDEntity}.
 	 * 
+	 * @param configId
+	 *        The config ID to get the count for.
 	 * @return list of all persisted entities that have associated
 	 *         {@link DatumPropertyUUIDEntity} values, or empty list if none
 	 *         available
@@ -65,6 +67,7 @@ public interface ControlDao extends ConfigurationEntityDao<Control> {
 	 *        The config ID to the the control for.
 	 * @param stateUuid
 	 *        The UUID of the state to get the control for.
+	 * @return the control, or {@literal null} if not available
 	 * @since 1.2
 	 */
 	Control getForConfigAndState(Long configId, UUID stateUuid);

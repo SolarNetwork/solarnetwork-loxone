@@ -40,7 +40,6 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -95,11 +94,12 @@ import net.solarnetwork.util.OptionalService;
  * binary or text message with the actual payload of the response. This class
  * acts as a broker for the messages, and handles the authentication of the
  * connection. It then relies on {@link CommandHandler} instances to deal with
- * all other messages, configured via {@link #setCommandHandlers(List)}.
+ * all other messages, configured via
+ * {@link #setCommandHandlers(CommandHandler[])}.
  * 
  * This class also relies on a list of {@link BinaryFileHandler} instances to
  * deal with the {@code BinaryFile} message type, configured via
- * {@link #setBinaryFileHandlers(List)}.
+ * {@link #setBinaryFileHandlers(BinaryFileHandler[])}.
  * 
  * This class listens for the
  * {@code LoxoneEvents#STRUCTURE_FILE_MODIFICATION_DATE_EVENT} event and if that

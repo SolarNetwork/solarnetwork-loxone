@@ -54,7 +54,7 @@ public interface EventEntityDao<T extends EventEntity> {
 	/**
 	 * Get an event for a given UUID.
 	 * 
-	 * @param config
+	 * @param configId
 	 *        ID The config ID to match.
 	 * @param uuid
 	 *        The UUID of the event to get.
@@ -65,12 +65,15 @@ public interface EventEntityDao<T extends EventEntity> {
 	/**
 	 * Get a list of persisted entities, optionally sorted in some way.
 	 * 
+	 * <p>
 	 * The {@code sortDescriptors} parameter can be {@code null}, in which case
 	 * the sort order should default to the {@link EventEntity#getCreated()} in
 	 * descending order followed by {@link EventEntity#getUuid()} in ascending
 	 * order.
 	 * </p>
 	 * 
+	 * @param configId
+	 *        ID The config ID to match.
 	 * @param sortDescriptors
 	 *        list of sort descriptors to sort the results by
 	 * @return list of all persisted entities, or empty list if none available

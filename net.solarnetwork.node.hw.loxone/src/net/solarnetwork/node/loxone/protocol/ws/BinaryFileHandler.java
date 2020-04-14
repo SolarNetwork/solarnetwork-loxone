@@ -44,7 +44,9 @@ public interface BinaryFileHandler {
 	 *        The reader. Only a small amount of text should be read.
 	 * @param limit
 	 *        The limit of characters that should be read.
-	 * @return <em>true</em> if the message can be handled by this instance.
+	 * @return {@literal true} if the message can be handled by this instance.
+	 * @throws IOException
+	 *         if any communication error occurs
 	 */
 	boolean supportsTextMessage(MessageHeader header, Reader reader, int limit) throws IOException;
 
@@ -57,7 +59,7 @@ public interface BinaryFileHandler {
 	 *        The websocket session.
 	 * @param reader
 	 *        The reader.
-	 * @return <em>true</em> if the command was handled.
+	 * @return {@literal true} if the command was handled.
 	 * @throws IOException
 	 *         if any communication error occurs
 	 */
@@ -70,7 +72,7 @@ public interface BinaryFileHandler {
 	 *        The message header.
 	 * @param buffer
 	 *        The byte buffer with the data to inspect.
-	 * @return <em>true</em> if the message can be handled by this instance.
+	 * @return {@literal true} if the message can be handled by this instance.
 	 */
 	boolean supportsDataMessage(MessageHeader header, ByteBuffer buffer);
 
@@ -83,7 +85,7 @@ public interface BinaryFileHandler {
 	 *        The websocket session.
 	 * @param buffer
 	 *        The byte buffer with the data to process.
-	 * @return <em>true</em> if the command was handled.
+	 * @return {@literal true} if the command was handled.
 	 */
 	boolean handleDataMessage(MessageHeader header, Session session, ByteBuffer buffer);
 

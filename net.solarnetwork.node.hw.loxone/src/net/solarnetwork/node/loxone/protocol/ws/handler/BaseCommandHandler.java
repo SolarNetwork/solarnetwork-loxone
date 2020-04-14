@@ -31,7 +31,6 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import net.solarnetwork.node.RemoteServiceException;
 import net.solarnetwork.node.loxone.domain.Config;
@@ -121,7 +120,7 @@ public abstract class BaseCommandHandler implements CommandHandler {
 
 	/**
 	 * Internal method called by
-	 * {@link #handleCommand(CommandType, MessageHeader, Session, JsonParser)}
+	 * {@link #handleCommand(CommandType, MessageHeader, Session, JsonNode)}
 	 * with the parsed command value.
 	 * 
 	 * This implementation simply returns <em>false</em>. Extending classes can
@@ -201,7 +200,7 @@ public abstract class BaseCommandHandler implements CommandHandler {
 	 * <p>
 	 * If a {@link SecurityHelper} is available via
 	 * {@link #getSecurityHelper(Session)}, then the command will be encrypted
-	 * using {@link SecurityHelper#encryptCommand(String)}.
+	 * using {@link SecurityHelper#encryptCommand(CommandType, String)}.
 	 * </p>
 	 * 
 	 * <p>
