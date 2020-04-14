@@ -106,7 +106,7 @@ import net.solarnetwork.util.OptionalService;
  * date changes will request the structure file again from the Loxone server.
  * 
  * @author matt
- * @version 1.8
+ * @version 1.9
  */
 public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<ByteBuffer>, EventHandler {
 
@@ -1139,7 +1139,23 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 			} catch ( IOException e ) {
 				logConciseException("Communication problem requesting status updates", e);
 			}
+		} else {
+			handleEvent(event, eventConfigId);
 		}
+	}
+
+	/**
+	 * Handle a Loxone event.
+	 * 
+	 * @param event
+	 *        the event
+	 * @param configId
+	 *        the config ID, already verified to match the connected's session's
+	 *        config ID
+	 * @since 1.9
+	 */
+	protected void handleEvent(Event event, Long configId) {
+		// extendig classes might do something here
 	}
 
 	private void logConciseException(String msg, Throwable t, Object... params) {

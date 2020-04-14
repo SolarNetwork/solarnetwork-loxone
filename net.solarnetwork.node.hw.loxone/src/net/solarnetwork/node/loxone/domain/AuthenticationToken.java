@@ -139,6 +139,7 @@ public class AuthenticationToken {
 	 *        the password
 	 * @return the hashed token value to authenticate with
 	 */
+	@SuppressWarnings("deprecation")
 	public String hash(String username) {
 		String authString = username + ":" + token;
 		return HmacUtils.hmacSha1Hex(this.key, authString.getBytes()).toUpperCase();
@@ -152,6 +153,7 @@ public class AuthenticationToken {
 	 *        {@link CommandType#GetAuthenticationKey} request
 	 * @return the hashed token value to refresh with
 	 */
+	@SuppressWarnings("deprecation")
 	public String hashToken(byte[] key) {
 		String authString = token;
 		return HmacUtils.hmacSha1Hex(key, authString.getBytes()).toUpperCase();

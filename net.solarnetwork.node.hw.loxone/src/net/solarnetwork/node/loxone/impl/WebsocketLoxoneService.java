@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
 import javax.websocket.CloseReason;
 import javax.websocket.EndpointConfig;
 import javax.websocket.Session;
+import org.osgi.service.event.Event;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -103,7 +104,7 @@ import net.solarnetwork.util.OptionalService;
  * Websocket based implementation of {@link LoxoneService}.
  * 
  * @author matt
- * @version 1.7
+ * @version 1.8
  */
 public class WebsocketLoxoneService extends LoxoneEndpoint
 		implements LoxoneService, SettingSpecifierProvider, WebsocketLoxoneServiceSettings,
@@ -150,6 +151,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	public void init() {
 		super.init();
 		datumDataSource = new ControlDatumDataSource(null, controlDao, settingDao);
+		datumDataSource.setEventAdmin(getEventAdmin());
 	}
 
 	@Override
@@ -393,6 +395,13 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 			}
 		}
 		return null;
+	}
+
+	@Override
+	protected void handleEvent(Event event, Long configId) {
+		if ( datumDataSource != null ) {
+			datumDataSource.handleEvent(event);
+		}
 	}
 
 	@Override
