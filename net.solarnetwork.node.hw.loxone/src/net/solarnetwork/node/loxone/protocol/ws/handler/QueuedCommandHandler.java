@@ -182,8 +182,8 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 	 * Calling this method will queue a {@link Future} for the provided
 	 * {@code key}. Later on, when the response comes (for example, via
 	 * {@link CommandHandler#handleCommand(net.solarnetwork.node.loxone.protocol.ws.CommandType, net.solarnetwork.node.loxone.protocol.ws.MessageHeader, Session, com.fasterxml.jackson.databind.JsonNode)})
-	 * then {@link #handleNextResult(Long, V)} can be called to add the result
-	 * to the {@code Future}.
+	 * then {@link #handleNextResult(Session, Object)} can be called to add the
+	 * result to the {@code Future}.
 	 * </p>
 	 * 
 	 * <p>
@@ -200,8 +200,7 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 	 *        {@code text})
 	 * @param text
 	 *        the text to send
-	 * @param request
-	 *        the request future to handle the response
+	 * @return the request future to handle the response
 	 */
 	protected Future<V> sendTextForKey(Session session, Long configId, K key, String text) {
 		if ( session == null ) {
@@ -270,7 +269,7 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 	 * Handle the next result for the queue.
 	 * 
 	 * <p>
-	 * This will call {@link #popNextResultKey(Long)} to get the next result
+	 * This will call {@link #popNextResultKey(Session)} to get the next result
 	 * key, and then set {@code result} on the {@link Future} associated with
 	 * that key.
 	 * </p>

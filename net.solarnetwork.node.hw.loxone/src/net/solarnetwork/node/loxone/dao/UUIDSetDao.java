@@ -97,6 +97,7 @@ public interface UUIDSetDao<T extends UUIDSetEntity<P>, P extends UUIDEntityPara
 	 *        The config ID to match.
 	 * @param uuid
 	 *        The UUID of the entity to get.
+	 * @return The count of deleted items.
 	 */
 	int delete(Long configId, UUID uuid);
 
@@ -112,6 +113,7 @@ public interface UUIDSetDao<T extends UUIDSetEntity<P>, P extends UUIDEntityPara
 	/**
 	 * Get a list of persisted entities, optionally sorted in some way.
 	 * 
+	 * <p>
 	 * The {@code sortDescriptors} parameter can be {@code null}, in which case
 	 * the sort order should default to the
 	 * {@link ConfigurationEntity#getDefaultRating()} followed by

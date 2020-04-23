@@ -94,8 +94,8 @@ public enum AuthenticationTokenPermission {
 	/**
 	 * Get a bitmask out of a set of permissions.
 	 * 
-	 * @param the
-	 *        set of permissions
+	 * @param permissions
+	 *        the set of permissions
 	 * @return the bitmask of permission codes
 	 */
 	public static int bitmaskForPermissions(Set<AuthenticationTokenPermission> permissions) {

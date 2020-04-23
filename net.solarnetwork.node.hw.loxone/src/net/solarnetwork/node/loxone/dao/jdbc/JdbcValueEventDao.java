@@ -44,7 +44,7 @@ public class JdbcValueEventDao extends BaseEventEntityDao<ValueEvent> implements
 	/** The default tables version. */
 	public static final int TABLES_VERSION = 1;
 
-	/** SQL resource used in {@link #findAllForDatumUUIDEntities(Long)}. */
+	/** SQL resource to find value events for a datum set. */
 	public static final String SQL_FIND_FOR_DATUMSET = "derby-vevent-find-for-datumset";
 
 	/**

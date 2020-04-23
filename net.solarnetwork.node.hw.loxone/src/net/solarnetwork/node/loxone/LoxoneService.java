@@ -60,6 +60,8 @@ public interface LoxoneService extends Identifiable {
 	/**
 	 * Get all available configuration entities of a specific type.
 	 * 
+	 * @param <T>
+	 *        the entity type
 	 * @param type
 	 *        The type of configuration to get.
 	 * @param sortDescriptors
@@ -73,6 +75,8 @@ public interface LoxoneService extends Identifiable {
 	/**
 	 * Get all available event entities of a specific type.
 	 * 
+	 * @param <T>
+	 *        the entity type
 	 * @param type
 	 *        The type of events to get.
 	 * @param sortDescriptors
@@ -96,6 +100,10 @@ public interface LoxoneService extends Identifiable {
 	 * Get all available UUID values of a specific {@code UUIDEntity} set type,
 	 * and their associated parameters.
 	 * 
+	 * @param <T>
+	 *        the set type
+	 * @param <P>
+	 *        the parameters type
 	 * @param type
 	 *        The type of UUID to get.
 	 * @param sortDescriptors
@@ -112,6 +120,10 @@ public interface LoxoneService extends Identifiable {
 	 * If a UUID exists in both {@code add} and {@code remove}, it will be
 	 * removed.
 	 * 
+	 * @param <T>
+	 *        the set type
+	 * @param <P>
+	 *        the parameters type
 	 * @param type
 	 *        The set type to update.
 	 * @param add
@@ -201,8 +213,6 @@ public interface LoxoneService extends Identifiable {
 	/**
 	 * Asynchronously send a command to a control.
 	 * 
-	 * @param uuid
-	 *        the UUID of the control to send the command to
 	 * @param command
 	 *        the command to send
 	 * @return the resulting control state

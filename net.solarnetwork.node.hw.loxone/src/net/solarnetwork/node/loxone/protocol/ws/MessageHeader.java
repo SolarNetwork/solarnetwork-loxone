@@ -45,6 +45,13 @@ public class MessageHeader {
 
 	/**
 	 * Construct with values.
+	 * 
+	 * @param type
+	 *        the message type
+	 * @param info
+	 *        the message info
+	 * @param length
+	 *        the message length
 	 */
 	public MessageHeader(MessageType type, Set<MessageInfo> info, long length) {
 		super();

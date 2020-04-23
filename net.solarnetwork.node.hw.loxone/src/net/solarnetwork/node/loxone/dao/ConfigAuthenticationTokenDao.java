@@ -48,7 +48,7 @@ public interface ConfigAuthenticationTokenDao {
 	/**
 	 * Delete the token for a Config ID.
 	 * 
-	 * @param id
+	 * @param configId
 	 *        The Config ID of the token to delete.
 	 */
 	void deleteConfigAuthenticationToken(Long configId);
@@ -56,10 +56,10 @@ public interface ConfigAuthenticationTokenDao {
 	/**
 	 * Get a token.
 	 * 
-	 * @param id
+	 * @param configId
 	 *        The Config ID of the token to get.
 	 * @return the token, or {@literal null} if not available
 	 */
-	ConfigAuthenticationToken getConfigAuthenticationToken(Long id);
+	ConfigAuthenticationToken getConfigAuthenticationToken(Long configId);
 
 }

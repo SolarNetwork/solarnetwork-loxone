@@ -54,6 +54,7 @@ import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import net.solarnetwork.domain.NodeControlInfo;
@@ -97,6 +98,7 @@ import net.solarnetwork.node.settings.support.BasicMultiValueSettingSpecifier;
 import net.solarnetwork.node.settings.support.BasicSetupResourceSettingSpecifier;
 import net.solarnetwork.node.settings.support.BasicTextFieldSettingSpecifier;
 import net.solarnetwork.node.settings.support.BasicTitleSettingSpecifier;
+import net.solarnetwork.node.settings.support.BasicToggleSettingSpecifier;
 import net.solarnetwork.node.setup.SetupResourceProvider;
 import net.solarnetwork.util.OptionalService;
 
@@ -104,14 +106,14 @@ import net.solarnetwork.util.OptionalService;
  * Websocket based implementation of {@link LoxoneService}.
  * 
  * @author matt
- * @version 1.8
+ * @version 1.9
  */
 public class WebsocketLoxoneService extends LoxoneEndpoint
 		implements LoxoneService, SettingSpecifierProvider, WebsocketLoxoneServiceSettings,
 		NodeControlProvider, InstructionHandler {
 
 	/**
-	 * The name used to schedule the {@link PostOfflineChargeSessionsJob} as.
+	 * The name used to schedule the {@link ControlDatumDataSource} as.
 	 */
 	public static final String DATUM_LOGGER_JOB_NAME = "Loxone_DatumLogger";
 
@@ -143,6 +145,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	private Scheduler scheduler;
 	private int datumLoggerFrequencySeconds = DATUM_LOGGER_JOB_INTERVAL;
 	private MessageSource messageSource;
+	private TaskExecutor taskExecutor;
 
 	private ControlDatumDataSource datumDataSource;
 	private SimpleTrigger datumLoggerTrigger;
@@ -152,6 +155,8 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		super.init();
 		datumDataSource = new ControlDatumDataSource(null, controlDao, settingDao);
 		datumDataSource.setEventAdmin(getEventAdmin());
+		datumDataSource.setDatumDao(datumDao);
+		datumDataSource.setTaskExecutor(taskExecutor);
 	}
 
 	@Override
@@ -490,6 +495,8 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 				String.valueOf(DATUM_LOGGER_JOB_INTERVAL)));
 		results.add(new BasicTextFieldSettingSpecifier("datumDataSource.defaultFrequencySeconds",
 				String.valueOf(ControlDatumDataSource.DEFAULT_FREQUENCY_SECONDS)));
+		results.add(new BasicToggleSettingSpecifier("datumDataSource.datumDaoPersistOnlyStatusUpdates",
+				ControlDatumDataSource.DEFAULT_PERSIST_ONLY_STATUS_UPDATES));
 
 		// other
 		String configurationId = getConfigurationIdExternalForm();
@@ -863,4 +870,33 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		}
 		setTokenRequestPermission(perm);
 	}
+
+	/**
+	 * Get the task executor.
+	 * 
+	 * @return the executor
+	 * @since 1.9
+	 */
+	public TaskExecutor getTaskExecutor() {
+		return taskExecutor;
+	}
+
+	/**
+	 * Set the task executor.
+	 * 
+	 * <p>
+	 * This must be configured for status update events to be handled.
+	 * </p>
+	 * 
+	 * @param taskExecutor
+	 *        the executor to set
+	 * @since 1.9
+	 */
+	public void setTaskExecutor(TaskExecutor taskExecutor) {
+		this.taskExecutor = taskExecutor;
+		if ( datumDataSource != null ) {
+			datumDataSource.setTaskExecutor(taskExecutor);
+		}
+	}
+
 }

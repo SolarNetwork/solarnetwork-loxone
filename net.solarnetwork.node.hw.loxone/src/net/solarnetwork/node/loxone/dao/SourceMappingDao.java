@@ -41,6 +41,7 @@ public interface SourceMappingDao extends ConfigurationEntityDao<SourceMapping> 
 	 *        The config ID to match.
 	 * @param uuid
 	 *        The UUID of the entity to remove.
+	 * @return the number of entities deleted
 	 */
 	int delete(Long configId, UUID uuid);
 

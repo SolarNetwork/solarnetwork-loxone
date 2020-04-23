@@ -74,6 +74,7 @@ public interface ConfigurationEntityDao<T extends ConfigurationEntity> {
 	/**
 	 * Get a list of persisted entities, optionally sorted in some way.
 	 * 
+	 * <p>
 	 * The {@code sortDescriptors} parameter can be {@code null}, in which case
 	 * the sort order should default to the
 	 * {@link ConfigurationEntity#getDefaultRating()} followed by
@@ -92,6 +93,7 @@ public interface ConfigurationEntityDao<T extends ConfigurationEntity> {
 	 * Get a list of persisted entities matching a given name, optionally sorted
 	 * in some way.
 	 * 
+	 * <p>
 	 * The {@code sortDescriptors} parameter can be {@code null}, in which case
 	 * the sort order should default to the
 	 * {@link ConfigurationEntity#getDefaultRating()} followed by

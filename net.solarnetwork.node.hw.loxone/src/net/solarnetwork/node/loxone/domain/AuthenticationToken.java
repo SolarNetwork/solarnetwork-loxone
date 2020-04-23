@@ -135,8 +135,6 @@ public class AuthenticationToken {
 	 * 
 	 * @param username
 	 *        the username
-	 * @param password
-	 *        the password
 	 * @return the hashed token value to authenticate with
 	 */
 	@SuppressWarnings("deprecation")
