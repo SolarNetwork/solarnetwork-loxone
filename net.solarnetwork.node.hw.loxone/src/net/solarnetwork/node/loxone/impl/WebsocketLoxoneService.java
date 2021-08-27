@@ -106,7 +106,7 @@ import net.solarnetwork.util.OptionalService;
  * Websocket based implementation of {@link LoxoneService}.
  * 
  * @author matt
- * @version 1.9
+ * @version 1.10
  */
 public class WebsocketLoxoneService extends LoxoneEndpoint
 		implements LoxoneService, SettingSpecifierProvider, WebsocketLoxoneServiceSettings,
@@ -154,7 +154,6 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	public void init() {
 		super.init();
 		datumDataSource = new ControlDatumDataSource(null, controlDao, settingDao);
-		datumDataSource.setEventAdmin(getEventAdmin());
 		datumDataSource.setDatumDao(datumDao);
 		datumDataSource.setTaskExecutor(taskExecutor);
 	}

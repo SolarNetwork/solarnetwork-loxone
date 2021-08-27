@@ -23,12 +23,10 @@
 package net.solarnetwork.node.loxone.impl.test;
 
 import static java.lang.Long.parseLong;
-import static net.solarnetwork.node.DatumDataSource.EVENT_TOPIC_DATUM_CAPTURED;
 import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
@@ -48,7 +46,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
 import net.solarnetwork.domain.KeyValuePair;
 import net.solarnetwork.node.Setting;
 import net.solarnetwork.node.dao.DatumDao;
@@ -82,7 +79,6 @@ public class ControlDatumDataSourceTests {
 
 	private ControlDao controlDao;
 	private SettingDao settingDao;
-	private EventAdmin eventAdmin;
 	DatumDao<GeneralNodeDatum> datumDao;
 	private ControlDatumDataSource dataSource;
 
@@ -91,10 +87,8 @@ public class ControlDatumDataSourceTests {
 	public void setup() {
 		controlDao = EasyMock.createMock(ControlDao.class);
 		settingDao = EasyMock.createMock(SettingDao.class);
-		eventAdmin = EasyMock.createMock(EventAdmin.class);
 		datumDao = EasyMock.createMock(DatumDao.class);
 		dataSource = new ControlDatumDataSource(TEST_CONFIG_ID, controlDao, settingDao);
-		dataSource.setEventAdmin(new StaticOptionalService<>(eventAdmin));
 		dataSource.setDatumDao(new StaticOptionalService<>(datumDao));
 	}
 
@@ -104,11 +98,11 @@ public class ControlDatumDataSourceTests {
 	}
 
 	private void replayAll() {
-		EasyMock.replay(controlDao, settingDao, eventAdmin, datumDao);
+		EasyMock.replay(controlDao, settingDao, datumDao);
 	}
 
 	private void verifyAll() {
-		EasyMock.verify(controlDao, settingDao, eventAdmin, datumDao);
+		EasyMock.verify(controlDao, settingDao, datumDao);
 	}
 
 	private String settingKey() {
@@ -279,54 +273,6 @@ public class ControlDatumDataSourceTests {
 	}
 
 	@Test
-	public void produceDatumCaptured() {
-		// GIVEN
-		final long now = System.currentTimeMillis();
-		final Control control = new Control(UUID.randomUUID(), TEST_CONFIG_ID);
-		final ValueEvent valueEvent = new ValueEvent(UUID.randomUUID(), TEST_CONFIG_ID, 456.7);
-		control.setStates(Collections.singletonMap("Value", valueEvent.getUuid()));
-		final BasicControlDatumParameters controlParams = new BasicControlDatumParameters();
-		final String sourceId = control.getSourceIdValue();
-		final BasicDatumUUIDEntityParameters datumParams = new BasicDatumUUIDEntityParameters(300);
-		controlParams.setDatumParameters(datumParams);
-		final BasicValueEventDatumParameters valueParams = new BasicValueEventDatumParameters();
-		valueParams.setDatumValueType(DatumValueType.Instantaneous);
-		valueParams.setName("foo");
-		valueParams.setValue(valueEvent.getValue());
-		controlParams
-				.setDatumPropertyParameters(Collections.singletonMap(valueEvent.getUuid(), valueParams));
-		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays.asList(
-				new UUIDEntityParametersPair<Control, ControlDatumParameters>(control, controlParams));
-		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
-
-		Capture<Event> eventCaptor = new Capture<>();
-		eventAdmin.postEvent(capture(eventCaptor));
-
-		// WHEN
-		replayAll();
-		Map<String, Object> eventProps = new LinkedHashMap<>();
-		eventProps.put(LoxoneEvents.EVENT_PROPERTY_CONFIG_ID, TEST_CONFIG_ID);
-		eventProps.put(LoxoneEvents.EVENT_PROPERTY_DATE, now);
-		eventProps.put(ValueEventBinaryFileHandler.EVENT_PROPERTY_VALUE_EVENTS,
-				Collections.singleton(valueEvent));
-		Event event = new Event(ValueEventBinaryFileHandler.VALUE_EVENTS_UPDATED_EVENT, eventProps);
-		dataSource.handleEvent(event);
-
-		verifyAll();
-
-		Event evt = eventCaptor.getValue();
-		assertThat("Datum captured event topic", evt.getTopic(), equalTo(EVENT_TOPIC_DATUM_CAPTURED));
-
-		Map<String, Object> datumCapturedProps = new LinkedHashMap<>();
-		for ( String propName : evt.getPropertyNames() ) {
-			datumCapturedProps.put(propName, evt.getProperty(propName));
-		}
-		assertThat("Datum captured source ID", datumCapturedProps, hasEntry("sourceId", sourceId));
-		assertThat("Datum captured foo property", datumCapturedProps,
-				hasEntry("foo", valueEvent.getValue()));
-	}
-
-	@Test
 	public void realTimeStatusDatumPersisted() {
 		// GIVEN
 		final long now = System.currentTimeMillis();
@@ -347,9 +293,6 @@ public class ControlDatumDataSourceTests {
 				new UUIDEntityParametersPair<Control, ControlDatumParameters>(control, controlParams));
 		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
-		Capture<Event> eventCaptor = new Capture<>();
-		eventAdmin.postEvent(capture(eventCaptor));
-
 		Capture<GeneralNodeDatum> datumCaptor = new Capture<>();
 		datumDao.storeDatum(capture(datumCaptor));
 
@@ -364,17 +307,6 @@ public class ControlDatumDataSourceTests {
 		dataSource.handleEvent(event);
 
 		verifyAll();
-
-		Event evt = eventCaptor.getValue();
-		assertThat("Datum captured event topic", evt.getTopic(), equalTo(EVENT_TOPIC_DATUM_CAPTURED));
-
-		Map<String, Object> datumCapturedProps = new LinkedHashMap<>();
-		for ( String propName : evt.getPropertyNames() ) {
-			datumCapturedProps.put(propName, evt.getProperty(propName));
-		}
-		assertThat("Datum captured source ID", datumCapturedProps, hasEntry("sourceId", sourceId));
-		assertThat("Datum captured foo property", datumCapturedProps,
-				hasEntry("foo", valueEvent.getValue()));
 
 		GeneralNodeDatum d = datumCaptor.getValue();
 		assertThat("Datum persisted", d, notNullValue());
@@ -413,9 +345,6 @@ public class ControlDatumDataSourceTests {
 				new UUIDEntityParametersPair<Control, ControlDatumParameters>(control, controlParams));
 		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
-		Capture<Event> eventCaptor = new Capture<>();
-		eventAdmin.postEvent(capture(eventCaptor));
-
 		Capture<GeneralNodeDatum> datumCaptor = new Capture<>();
 		datumDao.storeDatum(capture(datumCaptor));
 
@@ -430,17 +359,6 @@ public class ControlDatumDataSourceTests {
 		dataSource.handleEvent(event);
 
 		verifyAll();
-
-		Event evt = eventCaptor.getValue();
-		assertThat("Datum captured event topic", evt.getTopic(), equalTo(EVENT_TOPIC_DATUM_CAPTURED));
-
-		Map<String, Object> datumCapturedProps = new LinkedHashMap<>();
-		for ( String propName : evt.getPropertyNames() ) {
-			datumCapturedProps.put(propName, evt.getProperty(propName));
-		}
-		assertThat("Datum captured source ID", datumCapturedProps, hasEntry("sourceId", sourceId));
-		assertThat("Datum captured foo property", datumCapturedProps,
-				hasEntry("foo", valueEvent.getValue()));
 
 		GeneralNodeDatum d = datumCaptor.getValue();
 		assertThat("Datum persisted", d, notNullValue());
