@@ -32,19 +32,19 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.solarnetwork.codec.ObjectMapperFactoryBean;
 import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.UUIDDeserializer;
 import net.solarnetwork.node.loxone.domain.UUIDSerializer;
 import net.solarnetwork.node.setup.web.loxone.DatumUUIDPatchSet;
 import net.solarnetwork.node.setup.web.loxone.LoxoneUUIDSetController;
 import net.solarnetwork.node.test.AbstractNodeTest;
-import net.solarnetwork.util.ObjectMapperFactoryBean;
 
 /**
  * Test cases for the {@link LoxoneUUIDSetController} class.
  * 
  * @author matt
- * @version 1.0
+ * @version 2.0
  */
 public class DatumUUIDPatchSetTests extends AbstractNodeTest {
 
