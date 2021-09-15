@@ -22,13 +22,13 @@
 
 package net.solarnetwork.node.loxone.domain;
 
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * API for Loxone event entities.
  * 
  * @author matt
- * @version 1.0
+ * @version 2.0
  */
 public interface EventEntity extends UUIDEntity {
 
@@ -37,6 +37,6 @@ public interface EventEntity extends UUIDEntity {
 	 * 
 	 * @return The created date.
 	 */
-	Date getCreated();
+	Instant getCreated();
 
 }

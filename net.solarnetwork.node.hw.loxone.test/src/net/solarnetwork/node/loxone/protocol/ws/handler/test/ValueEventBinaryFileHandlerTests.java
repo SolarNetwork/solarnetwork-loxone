@@ -51,13 +51,13 @@ import net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint;
 import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
 import net.solarnetwork.node.loxone.protocol.ws.MessageType;
 import net.solarnetwork.node.loxone.protocol.ws.handler.ValueEventBinaryFileHandler;
-import net.solarnetwork.util.StaticOptionalService;
+import net.solarnetwork.service.StaticOptionalService;
 
 /**
  * Unit tests for the {@link ValueEventBinaryFileHandler} class.
  * 
  * @author matt
- * @version 1.1
+ * @version 2.0
  */
 public class ValueEventBinaryFileHandlerTests {
 
@@ -76,7 +76,7 @@ public class ValueEventBinaryFileHandlerTests {
 		valueEventDao = EasyMock.createMock(ValueEventDao.class);
 		handler = new ValueEventBinaryFileHandler();
 		handler.setEventDao(valueEventDao);
-		handler.setEventAdmin(new StaticOptionalService<EventAdmin>(eventAdmin));
+		handler.setEventAdmin(new StaticOptionalService<>(eventAdmin));
 	}
 
 	@Test

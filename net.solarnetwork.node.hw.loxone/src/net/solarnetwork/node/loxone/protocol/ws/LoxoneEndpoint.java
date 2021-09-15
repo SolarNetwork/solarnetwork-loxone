@@ -35,6 +35,7 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.security.PublicKey;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
@@ -63,7 +64,6 @@ import org.apache.commons.codec.digest.HmacUtils;
 import org.glassfish.tyrus.client.ClientManager;
 import org.glassfish.tyrus.client.ClientProperties;
 import org.glassfish.tyrus.container.jdk.client.JdkClientContainer;
-import org.joda.time.DateTime;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 import org.osgi.service.event.EventHandler;
@@ -84,7 +84,7 @@ import net.solarnetwork.node.loxone.domain.ConfigApi;
 import net.solarnetwork.node.loxone.domain.ConfigAuthenticationToken;
 import net.solarnetwork.node.loxone.protocol.ws.handler.BaseCommandHandler;
 import net.solarnetwork.node.loxone.util.SecurityUtils;
-import net.solarnetwork.util.OptionalService;
+import net.solarnetwork.service.OptionalService;
 
 /**
  * Endpoint for the Loxone miniserver websocket API.
@@ -106,7 +106,7 @@ import net.solarnetwork.util.OptionalService;
  * date changes will request the structure file again from the Loxone server.
  * 
  * @author matt
- * @version 1.9
+ * @version 2.9
  */
 public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<ByteBuffer>, EventHandler {
 
@@ -824,8 +824,8 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		if ( token == null || token.getValidUntil() == null ) {
 			return;
 		}
-		DateTime expires = token.getValidUntil();
-		long expiresAt = expires.getMillis();
+		Instant expires = token.getValidUntil();
+		long expiresAt = expires.toEpochMilli();
 		long now = System.currentTimeMillis();
 		Date runTime;
 		if ( expiresAt <= now ) {

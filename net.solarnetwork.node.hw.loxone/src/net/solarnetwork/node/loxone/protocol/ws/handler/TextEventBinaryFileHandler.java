@@ -24,8 +24,8 @@ package net.solarnetwork.node.loxone.protocol.ws.handler;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import javax.websocket.Session;
@@ -52,9 +52,9 @@ public class TextEventBinaryFileHandler extends BaseEventBinaryFileHandler<TextE
 	@Override
 	protected boolean handleDataMessage(MessageHeader header, Session session, ByteBuffer buffer,
 			Long configId) {
-		int end = buffer.position() + (int) header.getLength();
-		Date now = new Date();
-		List<TextEvent> updated = new ArrayList<>();
+		final int end = buffer.position() + (int) header.getLength();
+		final Instant now = Instant.now();
+		final List<TextEvent> updated = new ArrayList<>();
 		while ( buffer.hasRemaining() && buffer.position() < end ) {
 			UUID uuid = readUUID(buffer);
 			UUID icon = readUUID(buffer);

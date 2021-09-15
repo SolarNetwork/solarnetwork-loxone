@@ -32,20 +32,20 @@ import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
-import net.solarnetwork.node.RemoteServiceException;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.protocol.ws.CommandHandler;
 import net.solarnetwork.node.loxone.protocol.ws.CommandType;
 import net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint;
 import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
 import net.solarnetwork.node.loxone.protocol.ws.SecurityHelper;
-import net.solarnetwork.util.OptionalService;
+import net.solarnetwork.service.OptionalService;
+import net.solarnetwork.service.RemoteServiceException;
 
 /**
  * Supporting abstract class for {@link CommandHandler} implementations.
  * 
  * @author matt
- * @version 1.3
+ * @version 2.0
  */
 public abstract class BaseCommandHandler implements CommandHandler {
 

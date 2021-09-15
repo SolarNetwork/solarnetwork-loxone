@@ -31,7 +31,6 @@ import java.util.UUID;
 import java.util.concurrent.Future;
 import org.springframework.core.io.Resource;
 import net.solarnetwork.domain.SortDescriptor;
-import net.solarnetwork.node.Identifiable;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
 import net.solarnetwork.node.loxone.domain.Control;
@@ -41,12 +40,13 @@ import net.solarnetwork.node.loxone.domain.UUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
 import net.solarnetwork.node.loxone.domain.command.ControlCommand;
+import net.solarnetwork.service.Identifiable;
 
 /**
  * API for a Loxone device.
  * 
  * @author matt
- * @version 1.2
+ * @version 2.0
  */
 public interface LoxoneService extends Identifiable {
 

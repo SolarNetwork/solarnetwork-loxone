@@ -23,6 +23,7 @@
 package net.solarnetwork.node.loxone.protocol.ws.handler;
 
 import java.nio.ByteBuffer;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -43,7 +44,7 @@ import net.solarnetwork.node.loxone.protocol.ws.MessageType;
  * {@link BinaryFileHandler} for weather-type event binary messages.
  * 
  * @author matt
- * @version 1.0
+ * @version 2.0
  * @since 1.1
  */
 public class WeatherEventBinaryFileHandler extends BaseEventBinaryFileHandler<WeatherEvent> {
@@ -72,8 +73,8 @@ public class WeatherEventBinaryFileHandler extends BaseEventBinaryFileHandler<We
 	@Override
 	protected boolean handleDataMessage(MessageHeader header, Session session, ByteBuffer buffer,
 			Long configId) {
-		int end = buffer.position() + (int) header.getLength();
-		Date now = new Date();
+		final int end = buffer.position() + (int) header.getLength();
+		final Instant now = Instant.now();
 		while ( buffer.hasRemaining() && buffer.position() < end ) {
 			UUID uuid = readUUID(buffer);
 			long modDate = buffer.getInt() & 0xFFFFFFFFL; // 4 bytes as unsigned int;
@@ -92,7 +93,7 @@ public class WeatherEventBinaryFileHandler extends BaseEventBinaryFileHandler<We
 			if ( sendWeatherEvents ) {
 				Map<String, Object> eventProps = new LinkedHashMap<>(2);
 				eventProps.put(LoxoneEvents.EVENT_PROPERTY_CONFIG_ID, configId);
-				eventProps.put(LoxoneEvents.EVENT_PROPERTY_DATE, now.getTime());
+				eventProps.put(LoxoneEvents.EVENT_PROPERTY_DATE, now.toEpochMilli());
 				eventProps.put(EVENT_PROPERTY_WEATHER_EVENT, we);
 				postEvent(new Event(WEATHER_EVENT, eventProps));
 			}

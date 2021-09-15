@@ -22,6 +22,7 @@
 
 package net.solarnetwork.node.loxone.domain;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -30,7 +31,7 @@ import java.util.UUID;
  * A weather event.
  * 
  * @author matt
- * @version 1.0
+ * @version 2.0
  * @since 1.1
  */
 public class WeatherEvent extends BaseEventEntity {
@@ -52,7 +53,7 @@ public class WeatherEvent extends BaseEventEntity {
 	 * @param entries
 	 *        The entries associated with this event.
 	 */
-	public WeatherEvent(UUID uuid, Long configId, Date created, Date lastModified,
+	public WeatherEvent(UUID uuid, Long configId, Instant created, Date lastModified,
 			List<WeatherEventEntry> entries) {
 		super(uuid, configId, created);
 		this.lastModified = lastModified;

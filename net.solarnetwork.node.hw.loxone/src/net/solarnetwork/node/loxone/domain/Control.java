@@ -31,7 +31,6 @@ import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import net.solarnetwork.util.SerializeIgnore;
 
 /**
  * An input/output device, sensor, etc.
@@ -42,7 +41,7 @@ import net.solarnetwork.util.SerializeIgnore;
  * {@code uuid}.
  * 
  * @author matt
- * @version 1.1
+ * @version 2.0
  */
 public class Control extends BaseConfigurationEntity {
 
@@ -68,7 +67,6 @@ public class Control extends BaseConfigurationEntity {
 
 	@Override
 	@JsonIgnore
-	@SerializeIgnore
 	public boolean isValid() {
 		if ( !super.isValid() ) {
 			return false;

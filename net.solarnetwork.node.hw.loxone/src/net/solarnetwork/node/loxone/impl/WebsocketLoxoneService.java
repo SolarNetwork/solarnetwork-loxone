@@ -22,6 +22,8 @@
 
 package net.solarnetwork.node.loxone.impl;
 
+import static net.solarnetwork.service.OptionalService.service;
+import static net.solarnetwork.service.support.BasicIdentifiable.basicIdentifiableSettings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -57,16 +59,14 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import net.solarnetwork.domain.BasicNodeControlInfo;
+import net.solarnetwork.domain.InstructionStatus.InstructionState;
 import net.solarnetwork.domain.NodeControlInfo;
 import net.solarnetwork.domain.NodeControlPropertyType;
 import net.solarnetwork.domain.SortDescriptor;
-import net.solarnetwork.node.NodeControlProvider;
-import net.solarnetwork.node.RemoteServiceException;
-import net.solarnetwork.node.dao.DatumDao;
 import net.solarnetwork.node.dao.SettingDao;
-import net.solarnetwork.node.domain.GeneralNodeDatum;
-import net.solarnetwork.node.domain.NodeControlInfoDatum;
-import net.solarnetwork.node.job.DatumDataSourceLoggerJob;
+import net.solarnetwork.node.domain.datum.SimpleNodeControlInfoDatum;
+import net.solarnetwork.node.job.DatumDataSourcePollJob;
 import net.solarnetwork.node.loxone.LoxoneService;
 import net.solarnetwork.node.loxone.LoxoneSourceMappingParser;
 import net.solarnetwork.node.loxone.dao.ConfigurationEntityDao;
@@ -91,22 +91,26 @@ import net.solarnetwork.node.loxone.protocol.ws.CommandType;
 import net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint;
 import net.solarnetwork.node.reactor.Instruction;
 import net.solarnetwork.node.reactor.InstructionHandler;
-import net.solarnetwork.node.reactor.InstructionStatus.InstructionState;
-import net.solarnetwork.node.settings.SettingSpecifier;
-import net.solarnetwork.node.settings.SettingSpecifierProvider;
-import net.solarnetwork.node.settings.support.BasicMultiValueSettingSpecifier;
+import net.solarnetwork.node.reactor.InstructionStatus;
+import net.solarnetwork.node.reactor.InstructionUtils;
+import net.solarnetwork.node.service.DatumQueue;
+import net.solarnetwork.node.service.NodeControlProvider;
 import net.solarnetwork.node.settings.support.BasicSetupResourceSettingSpecifier;
-import net.solarnetwork.node.settings.support.BasicTextFieldSettingSpecifier;
-import net.solarnetwork.node.settings.support.BasicTitleSettingSpecifier;
-import net.solarnetwork.node.settings.support.BasicToggleSettingSpecifier;
 import net.solarnetwork.node.setup.SetupResourceProvider;
-import net.solarnetwork.util.OptionalService;
+import net.solarnetwork.service.OptionalService;
+import net.solarnetwork.service.RemoteServiceException;
+import net.solarnetwork.settings.SettingSpecifier;
+import net.solarnetwork.settings.SettingSpecifierProvider;
+import net.solarnetwork.settings.support.BasicMultiValueSettingSpecifier;
+import net.solarnetwork.settings.support.BasicTextFieldSettingSpecifier;
+import net.solarnetwork.settings.support.BasicTitleSettingSpecifier;
+import net.solarnetwork.settings.support.BasicToggleSettingSpecifier;
 
 /**
  * Websocket based implementation of {@link LoxoneService}.
  * 
  * @author matt
- * @version 1.10
+ * @version 2.0
  */
 public class WebsocketLoxoneService extends LoxoneEndpoint
 		implements LoxoneService, SettingSpecifierProvider, WebsocketLoxoneServiceSettings,
@@ -115,7 +119,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	/**
 	 * The name used to schedule the {@link ControlDatumDataSource} as.
 	 */
-	public static final String DATUM_LOGGER_JOB_NAME = "Loxone_DatumLogger";
+	public static final String DATUM_POLL_JOB_NAME = "Loxone_DatumPoll";
 
 	/**
 	 * The job and trigger group used to schedule the
@@ -133,7 +137,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	private static final String DEFAULT_UID = "Loxone";
 
 	private String uid = DEFAULT_UID;
-	private String groupUID;
+	private String groupUid;
 	private List<ConfigurationEntityDao<ConfigurationEntity>> configurationDaos;
 	private List<EventEntityDao<? extends EventEntity>> eventDaos;
 	private List<UUIDSetDao<UUIDSetEntity<UUIDEntityParameters>, UUIDEntityParameters>> uuidSetDaos;
@@ -141,7 +145,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	private SettingDao settingDao;
 	private ControlDao controlDao;
 	private SourceMappingDao sourceMappingDao;
-	private OptionalService<DatumDao<GeneralNodeDatum>> datumDao;
+	private OptionalService<DatumQueue> datumQueue;
 	private Scheduler scheduler;
 	private int datumLoggerFrequencySeconds = DATUM_LOGGER_JOB_INTERVAL;
 	private MessageSource messageSource;
@@ -154,7 +158,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	public void init() {
 		super.init();
 		datumDataSource = new ControlDatumDataSource(null, controlDao, settingDao);
-		datumDataSource.setDatumDao(datumDao);
+		datumDataSource.setDatumQueue(datumQueue);
 		datumDataSource.setTaskExecutor(taskExecutor);
 	}
 
@@ -409,10 +413,6 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	}
 
 	@Override
-	public String getUID() {
-		return uid;
-	}
-
 	public String getUid() {
 		return uid;
 	}
@@ -421,13 +421,29 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		this.uid = uid;
 	}
 
+	public String getUID() {
+		return getUid();
+	}
+
+	public void setUID(String uid) {
+		setUid(uid);
+	}
+
 	@Override
+	public String getGroupUid() {
+		return groupUid;
+	}
+
+	public void setGroupUid(String groupUid) {
+		this.groupUid = groupUid;
+	}
+
 	public String getGroupUID() {
-		return groupUID;
+		return getGroupUid();
 	}
 
 	public void setGroupUID(String groupUID) {
-		this.groupUID = groupUID;
+		setGroupUid(groupUID);
 	}
 
 	private String getConfigurationIdExternalForm() {
@@ -436,7 +452,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	}
 
 	@Override
-	public String getSettingUID() {
+	public String getSettingUid() {
 		return "net.solarnetwork.node.loxone.ws";
 	}
 
@@ -465,8 +481,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		}
 
 		// service settings
-		results.add(new BasicTextFieldSettingSpecifier("uid", DEFAULT_UID));
-		results.add(new BasicTextFieldSettingSpecifier("groupUID", null));
+		results.addAll(basicIdentifiableSettings("", DEFAULT_UID, null));
 		results.add(new BasicTextFieldSettingSpecifier("configKey", defaults.getConfigKey()));
 		results.add(new BasicTextFieldSettingSpecifier("host", defaults.getHost()));
 
@@ -557,14 +572,13 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		final Scheduler sched = scheduler;
 
 		if ( sched == null ) {
-			log.info("No scheduler avaialable, cannot schedule Loxone {} datum logger job",
+			log.info("No scheduler avaialable, cannot schedule Loxone {} datum poll job",
 					configIdDisplay);
 			return false;
 		}
-		final DatumDao<GeneralNodeDatum> dao = (datumDao != null ? datumDao.service() : null);
-		if ( dao == null ) {
-			log.info(
-					"No DatumDao<GeneralNodeDatum> avaialable, cannot schedule Loxone {} datum logger job",
+		final DatumQueue queue = service(datumQueue);
+		if ( queue == null ) {
+			log.info("No DatumQueue avaialable, cannot schedule Loxone {} datum poll job",
 					configIdDisplay);
 			return false;
 		}
@@ -572,29 +586,29 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		if ( trigger != null ) {
 			// check if interval actually changed
 			if ( trigger.getRepeatInterval() == interval ) {
-				log.debug("Loxone {} datum logger interval unchanged at {}s", configIdDisplay, interval);
+				log.debug("Loxone {} datum poll interval unchanged at {}s", configIdDisplay, interval);
 				return true;
 			}
 			// trigger has changed!
 			if ( interval == 0 ) {
 				try {
 					sched.unscheduleJob(trigger.getKey());
-					log.info("Unscheduled Loxone {} datum logger job", configIdDisplay);
+					log.info("Unscheduled Loxone {} datum poll job", configIdDisplay);
 				} catch ( SchedulerException e ) {
-					log.error("Error unscheduling Loxone {} datum logger job", configIdDisplay, e);
+					log.error("Error unscheduling Loxone {} datum poll job", configIdDisplay, e);
 				} finally {
 					datumLoggerTrigger = null;
 				}
 			} else {
 				trigger = TriggerBuilder.newTrigger().withIdentity(trigger.getKey())
-						.forJob(DATUM_LOGGER_JOB_NAME, SCHEDULER_GROUP)
+						.forJob(DATUM_POLL_JOB_NAME, SCHEDULER_GROUP)
 						.withSchedule(
 								SimpleScheduleBuilder.repeatMinutelyForever((int) (interval / (60000L))))
 						.build();
 				try {
 					sched.rescheduleJob(trigger.getKey(), trigger);
 				} catch ( SchedulerException e ) {
-					log.error("Error rescheduling Loxone {} datum logger job", configIdDisplay, e);
+					log.error("Error rescheduling Loxone {} datum poll job", configIdDisplay, e);
 				} finally {
 					datumLoggerTrigger = null;
 				}
@@ -606,18 +620,18 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 
 		synchronized ( sched ) {
 			try {
-				final JobKey jobKey = new JobKey(DATUM_LOGGER_JOB_NAME, SCHEDULER_GROUP);
+				final JobKey jobKey = new JobKey(DATUM_POLL_JOB_NAME, SCHEDULER_GROUP);
 				JobDetail jobDetail = sched.getJobDetail(jobKey);
 				if ( jobDetail == null ) {
-					jobDetail = JobBuilder.newJob(DatumDataSourceLoggerJob.class).withIdentity(jobKey)
+					jobDetail = JobBuilder.newJob(DatumDataSourcePollJob.class).withIdentity(jobKey)
 							.storeDurably().build();
 					sched.addJob(jobDetail, true);
 				}
 				final TriggerKey triggerKey = new TriggerKey(
-						DATUM_LOGGER_JOB_NAME + config.idToExternalForm(), SCHEDULER_GROUP);
+						DATUM_POLL_JOB_NAME + config.idToExternalForm(), SCHEDULER_GROUP);
 				final Map<String, Object> jd = new HashMap<>();
 				jd.put("datumDataSource", datumDataSource);
-				jd.put("datumDao", dao);
+				jd.put("datumQueue", queue);
 				trigger = TriggerBuilder.newTrigger().withIdentity(triggerKey).forJob(jobKey)
 						.startAt(new Date(System.currentTimeMillis() + interval))
 						.usingJobData(new JobDataMap(jd))
@@ -672,7 +686,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 			return null;
 		}
 		log.debug("Reading {} status", controlId);
-		NodeControlInfoDatum result = null;
+		SimpleNodeControlInfoDatum result = null;
 		EventEntityDao<ValueEvent> valueEventDao = eventDaoForType(ValueEvent.class);
 		try {
 			ValueEvent value = valueEventDao.loadEvent(config.getId(), control.getUuid());
@@ -683,14 +697,16 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		return result;
 	}
 
-	private NodeControlInfoDatum newNodeControlInfoDatum(String controlId, ValueEvent valueEvent) {
-		NodeControlInfoDatum info = new NodeControlInfoDatum();
-		info.setCreated(valueEvent.getCreated());
-		info.setSourceId(valueEvent.getSourceIdValue());
-		info.setType(NodeControlPropertyType.Float);
-		info.setReadonly(false);
-		info.setValue(String.valueOf(valueEvent.getValue()));
-		return info;
+	private SimpleNodeControlInfoDatum newNodeControlInfoDatum(String controlId, ValueEvent valueEvent) {
+		// @formatter:off
+		NodeControlInfo info = BasicNodeControlInfo.builder()
+				.withControlId(valueEvent.getSourceIdValue())
+				.withType(NodeControlPropertyType.Float)
+				.withReadonly(false)
+				.withValue(String.valueOf(valueEvent.getValue()))
+				.build();
+		// @formatter:on
+		return new SimpleNodeControlInfoDatum(info, valueEvent.getCreated());
 	}
 
 	// InstructionHandler
@@ -701,7 +717,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	}
 
 	@Override
-	public InstructionState processInstruction(Instruction instruction) {
+	public InstructionStatus processInstruction(Instruction instruction) {
 		Config config = getConfiguration();
 		if ( config == null || config.getId() == null ) {
 			return null;
@@ -742,7 +758,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 				}
 			}
 		}
-		return result;
+		return InstructionUtils.createStatus(instruction, result);
 	}
 
 	// General getters/setters
@@ -784,8 +800,8 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		this.scheduler = scheduler;
 	}
 
-	public void setDatumDao(OptionalService<DatumDao<GeneralNodeDatum>> datumDao) {
-		this.datumDao = datumDao;
+	public void setDatumDao(OptionalService<DatumQueue> datumQueue) {
+		this.datumQueue = datumQueue;
 	}
 
 	public void setSettingDao(SettingDao settingDao) {

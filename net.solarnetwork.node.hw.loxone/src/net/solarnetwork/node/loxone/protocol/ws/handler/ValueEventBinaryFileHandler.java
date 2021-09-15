@@ -23,8 +23,8 @@
 package net.solarnetwork.node.loxone.protocol.ws.handler;
 
 import java.nio.ByteBuffer;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +44,7 @@ import net.solarnetwork.node.loxone.protocol.ws.MessageType;
  * {@link BinaryFileHandler} for value-type event binary messages.
  * 
  * @author matt
- * @version 1.2
+ * @version 2.0
  */
 public class ValueEventBinaryFileHandler extends BaseEventBinaryFileHandler<ValueEvent> {
 
@@ -84,9 +84,9 @@ public class ValueEventBinaryFileHandler extends BaseEventBinaryFileHandler<Valu
 	@Override
 	protected boolean handleDataMessage(MessageHeader header, Session session, ByteBuffer buffer,
 			Long configId) {
-		int end = buffer.position() + (int) header.getLength();
-		Date now = new Date();
-		List<ValueEvent> updated = new ArrayList<>();
+		final int end = buffer.position() + (int) header.getLength();
+		final Instant now = Instant.now();
+		final List<ValueEvent> updated = new ArrayList<>();
 		while ( buffer.hasRemaining() && buffer.position() < end ) {
 			UUID uuid = readUUID(buffer);
 			double value = buffer.asDoubleBuffer().get();
@@ -110,7 +110,7 @@ public class ValueEventBinaryFileHandler extends BaseEventBinaryFileHandler<Valu
 			if ( sendValueEventsUpdatedEvents ) {
 				Map<String, Object> eventProps = new LinkedHashMap<>(2);
 				eventProps.put(LoxoneEvents.EVENT_PROPERTY_CONFIG_ID, configId);
-				eventProps.put(LoxoneEvents.EVENT_PROPERTY_DATE, now.getTime());
+				eventProps.put(LoxoneEvents.EVENT_PROPERTY_DATE, now.toEpochMilli());
 				eventProps.put(EVENT_PROPERTY_VALUE_EVENTS, updated);
 				postEvent(new Event(VALUE_EVENTS_UPDATED_EVENT, eventProps));
 			}

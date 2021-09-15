@@ -34,10 +34,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javax.websocket.Session;
 import com.fasterxml.jackson.databind.JsonNode;
-import net.solarnetwork.node.RemoteServiceException;
 import net.solarnetwork.node.loxone.protocol.ws.CommandHandler;
 import net.solarnetwork.node.loxone.protocol.ws.CommandType;
 import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
+import net.solarnetwork.service.RemoteServiceException;
 
 /**
  * Support {@link CommandHandler} for future-based request/response exchanges.
@@ -48,7 +48,7 @@ import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
  * </p>
  * 
  * @author matt
- * @version 1.3
+ * @version 2.0
  * @since 1.1
  */
 public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {

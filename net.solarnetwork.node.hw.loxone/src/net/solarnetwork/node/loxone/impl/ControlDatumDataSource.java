@@ -22,14 +22,18 @@
 
 package net.solarnetwork.node.loxone.impl;
 
+import static net.solarnetwork.domain.datum.DatumSamplesType.Accumulating;
+import static net.solarnetwork.domain.datum.DatumSamplesType.Instantaneous;
+import static net.solarnetwork.domain.datum.DatumSamplesType.Status;
 import static net.solarnetwork.node.loxone.protocol.ws.LoxoneEvents.EVENT_PROPERTY_CONFIG_ID;
 import static net.solarnetwork.node.loxone.protocol.ws.LoxoneEvents.EVENT_PROPERTY_DATE;
 import static net.solarnetwork.node.loxone.protocol.ws.handler.ValueEventBinaryFileHandler.EVENT_PROPERTY_VALUE_EVENTS;
 import static net.solarnetwork.node.loxone.protocol.ws.handler.ValueEventBinaryFileHandler.VALUE_EVENTS_UPDATED_EVENT;
+import static net.solarnetwork.service.OptionalService.service;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
@@ -39,15 +43,14 @@ import java.util.stream.Collectors;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 import org.springframework.core.task.TaskExecutor;
-import net.solarnetwork.domain.GeneralDatumSamples;
 import net.solarnetwork.domain.KeyValuePair;
-import net.solarnetwork.node.DatumDataSource;
-import net.solarnetwork.node.MultiDatumDataSource;
-import net.solarnetwork.node.Setting;
-import net.solarnetwork.node.Setting.SettingFlag;
-import net.solarnetwork.node.dao.DatumDao;
+import net.solarnetwork.domain.datum.DatumSamplesOperations;
+import net.solarnetwork.domain.datum.MutableDatumSamplesOperations;
 import net.solarnetwork.node.dao.SettingDao;
-import net.solarnetwork.node.domain.GeneralNodeDatum;
+import net.solarnetwork.node.domain.Setting;
+import net.solarnetwork.node.domain.Setting.SettingFlag;
+import net.solarnetwork.node.domain.datum.NodeDatum;
+import net.solarnetwork.node.domain.datum.SimpleDatum;
 import net.solarnetwork.node.loxone.dao.ControlDao;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.Control;
@@ -57,17 +60,19 @@ import net.solarnetwork.node.loxone.domain.DatumValueType;
 import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
 import net.solarnetwork.node.loxone.domain.ValueEventDatumParameters;
-import net.solarnetwork.node.support.DatumDataSourceSupport;
-import net.solarnetwork.util.OptionalService;
+import net.solarnetwork.node.service.DatumDataSource;
+import net.solarnetwork.node.service.DatumQueue;
+import net.solarnetwork.node.service.MultiDatumDataSource;
+import net.solarnetwork.node.service.support.DatumDataSourceSupport;
 
 /**
  * A {@link DatumDataSource} to upload Loxone values on a fixed schedule.
  * 
  * @author matt
- * @version 1.7
+ * @version 2.0
  */
-public class ControlDatumDataSource extends DatumDataSourceSupport implements
-		MultiDatumDataSource<GeneralNodeDatum>, DatumDataSource<GeneralNodeDatum>, EventHandler {
+public class ControlDatumDataSource extends DatumDataSourceSupport
+		implements MultiDatumDataSource, DatumDataSource, EventHandler {
 
 	/**
 	 * The default interval at which to save {@code Datum} instances from Loxone
@@ -86,8 +91,7 @@ public class ControlDatumDataSource extends DatumDataSourceSupport implements
 	private final SettingDao settingDao;
 	private Long configId;
 	private int defaultFrequencySeconds = DEFAULT_FREQUENCY_SECONDS;
-	private OptionalService<DatumDao<GeneralNodeDatum>> datumDao;
-	private boolean datumDaoPersistOnlyStatusUpdates = DEFAULT_PERSIST_ONLY_STATUS_UPDATES;
+	private boolean datumPersistOnlyStatusUpdates = DEFAULT_PERSIST_ONLY_STATUS_UPDATES;
 	private TaskExecutor taskExecutor;
 
 	/**
@@ -123,23 +127,23 @@ public class ControlDatumDataSource extends DatumDataSourceSupport implements
 	}
 
 	@Override
-	public Class<? extends GeneralNodeDatum> getDatumType() {
-		return GeneralNodeDatum.class;
+	public Class<? extends NodeDatum> getDatumType() {
+		return NodeDatum.class;
 	}
 
 	@Override
-	public GeneralNodeDatum readCurrentDatum() {
-		Collection<GeneralNodeDatum> multi = readMultipleDatum();
+	public NodeDatum readCurrentDatum() {
+		Collection<NodeDatum> multi = readMultipleDatum();
 		return (multi == null || multi.isEmpty() ? null : multi.iterator().next());
 	}
 
 	@Override
-	public Class<? extends GeneralNodeDatum> getMultiDatumType() {
-		return GeneralNodeDatum.class;
+	public Class<? extends NodeDatum> getMultiDatumType() {
+		return NodeDatum.class;
 	}
 
 	@Override
-	public Collection<GeneralNodeDatum> readMultipleDatum() {
+	public Collection<NodeDatum> readMultipleDatum() {
 		final String settingKey = settingKey();
 
 		// load all Datum "last created" settings
@@ -152,13 +156,13 @@ public class ControlDatumDataSource extends DatumDataSourceSupport implements
 			return null;
 		}
 
-		final boolean statusOnly = isDatumDaoPersistOnlyStatusUpdates();
-		final Date now = new Date();
-		final String nowSetting = Long.toString(now.getTime(), 16);
-		List<GeneralNodeDatum> results = new ArrayList<>(datumParameters.size());
+		final boolean statusOnly = isDatumPersistOnlyStatusUpdates();
+		final Instant now = Instant.now();
+		final String nowSetting = Long.toString(now.toEpochMilli(), 16);
+		List<NodeDatum> results = new ArrayList<>(datumParameters.size());
 
 		for ( UUIDEntityParametersPair<Control, ControlDatumParameters> pair : datumParameters ) {
-			GeneralNodeDatum datum = generateDatum(now, pair, createdSettings);
+			NodeDatum datum = generateDatum(now, pair, createdSettings);
 			if ( datum == null ) {
 				continue;
 			}
@@ -166,10 +170,10 @@ public class ControlDatumDataSource extends DatumDataSourceSupport implements
 			final ControlDatumParameters params = pair.getParameters();
 			final DatumUUIDEntityParameters datumParams = (params != null ? params.getDatumParameters()
 					: null);
-			GeneralDatumSamples samples = datum.getSamples();
+			DatumSamplesOperations ops = datum.asSampleOperations();
 			if ( statusOnly && (datumParams == null || datumParams.getSaveFrequencySeconds() == null)
-					&& samples != null && samples.getInstantaneous() == null
-					&& samples.getAccumulating() == null && samples.getStatus() != null ) {
+					&& ops != null && ops.getSampleData(Instantaneous) == null
+					&& ops.getSampleData(Accumulating) == null && ops.getSampleData(Status) != null ) {
 				// no datum-specific frequency provided and only Status properties collected; don't collect
 				// this datum for the default schedule
 				log.debug("Ignoring scheduled datum because contains only status properties: {}", datum);
@@ -205,7 +209,7 @@ public class ControlDatumDataSource extends DatumDataSourceSupport implements
 		if ( !(event.getProperty(EVENT_PROPERTY_DATE) instanceof Long) ) {
 			return;
 		}
-		final Date now = new Date((Long) event.getProperty(EVENT_PROPERTY_DATE));
+		final Instant now = Instant.ofEpochMilli((Long) event.getProperty(EVENT_PROPERTY_DATE));
 		@SuppressWarnings("unchecked")
 		Collection<ValueEvent> valueEvents = (Collection<ValueEvent>) event
 				.getProperty(EVENT_PROPERTY_VALUE_EVENTS);
@@ -234,7 +238,7 @@ public class ControlDatumDataSource extends DatumDataSourceSupport implements
 							.filter(u -> valueEventIds.contains(u)).findAny().isPresent()) ) {
 						continue;
 					}
-					GeneralNodeDatum d = generateDatum(now, pair, null);
+					NodeDatum d = generateDatum(now, pair, null);
 					if ( d != null ) {
 						persistDatum(valueEventIds, pair, d);
 					}
@@ -251,9 +255,9 @@ public class ControlDatumDataSource extends DatumDataSourceSupport implements
 	}
 
 	private void persistDatum(Set<UUID> valueEventIds,
-			UUIDEntityParametersPair<Control, ControlDatumParameters> pair, GeneralNodeDatum d) {
-		final DatumDao<GeneralNodeDatum> dao = datumDao();
-		if ( dao == null ) {
+			UUIDEntityParametersPair<Control, ControlDatumParameters> pair, NodeDatum d) {
+		final DatumQueue queue = service(getDatumQueue());
+		if ( queue == null ) {
 			return;
 		}
 		final ControlDatumParameters params = pair.getParameters();
@@ -264,7 +268,7 @@ public class ControlDatumDataSource extends DatumDataSourceSupport implements
 			return;
 		}
 
-		final boolean statusOnly = isDatumDaoPersistOnlyStatusUpdates();
+		final boolean statusOnly = isDatumPersistOnlyStatusUpdates();
 		boolean updateForStatusProperty = false;
 		if ( statusOnly ) {
 			for ( UUID eventUuid : valueEventIds ) {
@@ -280,10 +284,10 @@ public class ControlDatumDataSource extends DatumDataSourceSupport implements
 			return;
 		}
 		log.info("Persisting datum because of updated status property: {}", d);
-		dao.storeDatum(d);
+		queue.offer(d);
 	}
 
-	private GeneralNodeDatum generateDatum(Date now,
+	private NodeDatum generateDatum(Instant now,
 			UUIDEntityParametersPair<Control, ControlDatumParameters> pair,
 			Map<String, String> createdSettings) {
 		final Control valueEvent = pair.getEntity();
@@ -306,7 +310,7 @@ public class ControlDatumDataSource extends DatumDataSourceSupport implements
 				final Long lastSaveTime = (createdSettings.containsKey(sourceId)
 						? Long.valueOf(createdSettings.get(sourceId), 16)
 						: null);
-				if ( lastSaveTime == null || (lastSaveTime + (offset * 1000)) < now.getTime() ) {
+				if ( lastSaveTime == null || (lastSaveTime + (offset * 1000)) < now.toEpochMilli() ) {
 					create = true;
 				}
 			} else {
@@ -316,9 +320,8 @@ public class ControlDatumDataSource extends DatumDataSourceSupport implements
 		if ( !create ) {
 			return null;
 		}
-		GeneralNodeDatum datum = new GeneralNodeDatum();
-		datum.setSourceId(sourceId);
-		datum.setCreated(now);
+		SimpleDatum datum = SimpleDatum.nodeDatum(resolvePlaceholders(sourceId), now);
+		MutableDatumSamplesOperations ops = datum.asMutableSampleOperations();
 		for ( ValueEventDatumParameters propParams : propParamsList ) {
 			String propName = propParams.getName();
 			if ( propName == null ) {
@@ -327,11 +330,11 @@ public class ControlDatumDataSource extends DatumDataSourceSupport implements
 			if ( propParams.getDatumValueType() == null
 					|| propParams.getDatumValueType() == DatumValueType.Unknown
 					|| propParams.getDatumValueType() == DatumValueType.Instantaneous ) {
-				datum.putInstantaneousSampleValue(propName, propParams.getValue());
+				ops.putSampleValue(Instantaneous, propName, propParams.getValue());
 			} else if ( propParams.getDatumValueType() == DatumValueType.Accumulating ) {
-				datum.putAccumulatingSampleValue(propName, propParams.getValue());
+				ops.putSampleValue(Accumulating, propName, propParams.getValue());
 			} else {
-				datum.putStatusSampleValue(propName, propParams.getValue());
+				ops.putSampleValue(Status, propName, propParams.getValue());
 			}
 		}
 		return datum;
@@ -352,11 +355,6 @@ public class ControlDatumDataSource extends DatumDataSourceSupport implements
 			result = Collections.emptyMap();
 		}
 		return result;
-	}
-
-	private DatumDao<GeneralNodeDatum> datumDao() {
-		OptionalService<DatumDao<GeneralNodeDatum>> s = getDatumDao();
-		return (s != null ? s.service() : null);
 	}
 
 	/**
@@ -380,54 +378,27 @@ public class ControlDatumDataSource extends DatumDataSourceSupport implements
 	}
 
 	/**
-	 * Get the datum DAO.
-	 * 
-	 * @return the DAO, or {@literal null}
-	 * @since 1.6
-	 */
-	public OptionalService<DatumDao<GeneralNodeDatum>> getDatumDao() {
-		return datumDao;
-	}
-
-	/**
-	 * Set the datum DAO to use for real-time update handling.
-	 * 
-	 * <p>
-	 * If this optional service is configured and a DAO is available at runtime
-	 * when {@link #handleEvent(Event)} is called, then datum will be persisted
-	 * to this DAO as the update events are processed.
-	 * </p>
-	 * 
-	 * @param datumDao
-	 *        the DAO to set
-	 * @since 1.6
-	 */
-	public void setDatumDao(OptionalService<DatumDao<GeneralNodeDatum>> datumDao) {
-		this.datumDao = datumDao;
-	}
-
-	/**
 	 * Get the status-change-only datum persistence setting.
 	 * 
 	 * @return {@literal true} to only persist datum that are updated;
 	 *         {@literal false} to persist all updates; defaults to
 	 *         {@link #DEFAULT_PERSIST_ONLY_STATUS_UPDATES}
-	 * @since 1.6
+	 * @since 2.0
 	 */
-	public boolean isDatumDaoPersistOnlyStatusUpdates() {
-		return datumDaoPersistOnlyStatusUpdates;
+	public boolean isDatumPersistOnlyStatusUpdates() {
+		return datumPersistOnlyStatusUpdates;
 	}
 
 	/**
 	 * Toggle the status-change-only datum persistence setting.
 	 * 
-	 * @param datumDaoPersistOnlyStatusUpdates
+	 * @param datumPersistOnlyStatusUpdates
 	 *        {@literal true} to only persist datum that are updated from status
 	 *        property type changes
-	 * @since 1.6
+	 * @since 2.0
 	 */
-	public void setDatumDaoPersistOnlyStatusUpdates(boolean datumDaoPersistOnlyStatusUpdates) {
-		this.datumDaoPersistOnlyStatusUpdates = datumDaoPersistOnlyStatusUpdates;
+	public void setDatumPersistOnlyStatusUpdates(boolean datumPersistOnlyStatusUpdates) {
+		this.datumPersistOnlyStatusUpdates = datumPersistOnlyStatusUpdates;
 	}
 
 	/**

@@ -23,7 +23,7 @@
 	<reference id="scheduler" interface="org.quartz.Scheduler" filter="(function=node)"/>
 
 	<reference id="objectMapperService" 
-		interface="net.solarnetwork.util.ObjectMapperService"
+		interface="net.solarnetwork.service.ObjectMapperService"
 		filter="(function=node)"/>
 	
 	<reference id="txManager" interface="org.springframework.transaction.PlatformTransactionManager"
@@ -37,10 +37,10 @@
 	<reference id="taskExecutor" interface="org.springframework.core.task.TaskExecutor"
 		filter="(function=node)"/>
 
-	<bean id="generalNodeDatumDao" class="net.solarnetwork.util.DynamicServiceTracker">
+	<bean id="datumQueue" class="net.solarnetwork.util.DynamicServiceTracker">
 		<property name="bundleContext" ref="bundleContext"/>
-		<property name="serviceClassName" value="net.solarnetwork.node.dao.DatumDao"/>
-		<property name="serviceFilter" value="(datumClassName=net.solarnetwork.node.domain.GeneralNodeDatum)"/>
+		<property name="serviceClassName" value="net.solarnetwork.node.service.DatumQueue"/>
+		<property name="sticky" value="true"/>
 	</bean>
 	
 	<bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" 
@@ -49,18 +49,20 @@
 	<bean id="eventAdmin" class="net.solarnetwork.util.DynamicServiceTracker">
 		<property name="bundleContext" ref="bundleContext"/>
 		<property name="serviceClassName" value="org.osgi.service.event.EventAdmin"/>
+		<property name="sticky" value="true"/>
 	</bean>
 	
 	<bean id="messageSendingOperations" class="net.solarnetwork.util.DynamicServiceTracker">
 		<property name="bundleContext" ref="bundleContext"/>
 		<property name="serviceClassName" value="org.springframework.messaging.simp.SimpMessageSendingOperations"/>
 		<property name="serviceFilter" value="(channel=broker)"/>
+		<property name="sticky" value="true"/>
 	</bean>
 
 	<reference id="dataSource" interface="javax.sql.DataSource" filter="(db=node)"/>
 	
 	<!-- Add Loxone UUID support to the platform ObjectMapper -->
-	<bean class="net.solarnetwork.util.ObjectMapperModuleContributor" init-method="setupModule">
+	<bean class="net.solarnetwork.codec.ObjectMapperModuleContributor" init-method="setupModule">
 		<property name="moduleName" value="Loxone"/>
 		<property name="objectMapperService" ref="objectMapperService"/>
 		<property name="serializers">
@@ -190,6 +192,7 @@
 			<list>
 				<value>net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint</value>
 				<value>net.solarnetwork.node.loxone.impl.WebsocketLoxoneService</value>
+				<value>net.solarnetwork.service.support.BasicIdentifiable</value>
 			</list>
 		</property>
 	</bean>
@@ -232,8 +235,8 @@
 		</bean>
 	</service>
 	
-	<service interface="net.solarnetwork.node.settings.SettingSpecifierProviderFactory">
-		<bean class="net.solarnetwork.node.settings.support.BasicSettingSpecifierProviderFactory">
+	<service interface="net.solarnetwork.settings.SettingSpecifierProviderFactory">
+		<bean class="net.solarnetwork.settings.support.BasicSettingSpecifierProviderFactory">
 			<property name="displayName" value="Loxone Client"/>
 			<property name="factoryUID" value="net.solarnetwork.node.loxone.ws"/>
 			<property name="messageSource" ref="messageSource"/>
@@ -254,7 +257,7 @@
 			-->
 			<beans:value>net.solarnetwork.node.loxone.LoxoneService</beans:value>
 			<beans:value>net.solarnetwork.node.reactor.InstructionHandler</beans:value>
-			<beans:value>net.solarnetwork.node.settings.SettingSpecifierProvider</beans:value>
+			<beans:value>net.solarnetwork.settings.SettingSpecifierProvider</beans:value>
 			<beans:value>org.osgi.service.event.EventHandler</beans:value>
 		</osgix:interfaces>
 		<osgix:service-properties>
@@ -288,7 +291,7 @@
 			<property name="settingResourceProvider" ref="settingResourceProvider"/>
 			<property name="scheduler" ref="scheduler"/>
 			<property name="controlDao" ref="controlDao"/>
-			<property name="datumDao" ref="generalNodeDatumDao"/>
+			<property name="datumQueue" ref="datumQueue"/>
 			<property name="settingDao" ref="settingDao"/>
 			<property name="sourceMappingDao" ref="sourceMappingDao"/>
 		</bean>
