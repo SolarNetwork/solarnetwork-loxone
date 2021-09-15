@@ -800,7 +800,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		this.scheduler = scheduler;
 	}
 
-	public void setDatumDao(OptionalService<DatumQueue> datumQueue) {
+	public void setDatumQueue(OptionalService<DatumQueue> datumQueue) {
 		this.datumQueue = datumQueue;
 	}
 

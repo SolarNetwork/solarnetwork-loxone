@@ -37,8 +37,8 @@
 	<reference id="taskExecutor" interface="org.springframework.core.task.TaskExecutor"
 		filter="(function=node)"/>
 
-	<bean id="datumQueue" class="net.solarnetwork.util.DynamicServiceTracker">
-		<property name="bundleContext" ref="bundleContext"/>
+	<bean id="datumQueue" class="net.solarnetwork.common.osgi.service.DynamicServiceTracker">
+		<argument ref="bundleContext"/>
 		<property name="serviceClassName" value="net.solarnetwork.node.service.DatumQueue"/>
 		<property name="sticky" value="true"/>
 	</bean>
@@ -46,14 +46,14 @@
 	<bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" 
 		factory-ref="objectMapperService" factory-method="getObjectMapper"/>
 	
-	<bean id="eventAdmin" class="net.solarnetwork.util.DynamicServiceTracker">
-		<property name="bundleContext" ref="bundleContext"/>
+	<bean id="eventAdmin" class="net.solarnetwork.common.osgi.service.DynamicServiceTracker">
+		<argument ref="bundleContext"/>
 		<property name="serviceClassName" value="org.osgi.service.event.EventAdmin"/>
 		<property name="sticky" value="true"/>
 	</bean>
 	
-	<bean id="messageSendingOperations" class="net.solarnetwork.util.DynamicServiceTracker">
-		<property name="bundleContext" ref="bundleContext"/>
+	<bean id="messageSendingOperations" class="net.solarnetwork.common.osgi.service.DynamicServiceTracker">
+		<argument ref="bundleContext"/>
 		<property name="serviceClassName" value="org.springframework.messaging.simp.SimpMessageSendingOperations"/>
 		<property name="serviceFilter" value="(channel=broker)"/>
 		<property name="sticky" value="true"/>
@@ -238,7 +238,7 @@
 	<service interface="net.solarnetwork.settings.SettingSpecifierProviderFactory">
 		<bean class="net.solarnetwork.settings.support.BasicSettingSpecifierProviderFactory">
 			<property name="displayName" value="Loxone Client"/>
-			<property name="factoryUID" value="net.solarnetwork.node.loxone.ws"/>
+			<property name="factoryUid" value="net.solarnetwork.node.loxone.ws"/>
 			<property name="messageSource" ref="messageSource"/>
 		</bean>
 	</service>
