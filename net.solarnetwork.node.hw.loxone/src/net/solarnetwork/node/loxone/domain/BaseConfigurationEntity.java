@@ -68,7 +68,7 @@ public abstract class BaseConfigurationEntity extends BasicUUIDEntity implements
 	 * Get a source ID value from a source ID.
 	 * 
 	 * This method will use the provided {@code sourceId} if it is not
-	 * {@code null}. Otherwise it will use the configured {@code name} with all
+	 * {@literal null}. Otherwise it will use the configured {@code name} with all
 	 * whitespace removed.
 	 */
 	@Override

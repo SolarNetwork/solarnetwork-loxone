@@ -38,7 +38,6 @@ import net.solarnetwork.node.loxone.domain.UUIDDeserializer;
 import net.solarnetwork.node.loxone.domain.UUIDSerializer;
 import net.solarnetwork.node.setup.web.loxone.DatumUUIDPatchSet;
 import net.solarnetwork.node.setup.web.loxone.LoxoneUUIDSetController;
-import net.solarnetwork.node.test.AbstractNodeTest;
 
 /**
  * Test cases for the {@link LoxoneUUIDSetController} class.
@@ -46,7 +45,7 @@ import net.solarnetwork.node.test.AbstractNodeTest;
  * @author matt
  * @version 2.0
  */
-public class DatumUUIDPatchSetTests extends AbstractNodeTest {
+public class DatumUUIDPatchSetTests {
 
 	private ObjectMapper objectMapper;
 

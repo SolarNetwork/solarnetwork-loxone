@@ -123,8 +123,8 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 
 	/**
 	 * The job and trigger group used to schedule the
-	 * {@link DatumDataSourceLoggerJob} with. Note the trigger name will be the
-	 * {@link #getUID()} property value.
+	 * {@link DatumDataSourcePollJob} with. Note the trigger name will be the
+	 * {@link #getUid()} property value.
 	 */
 	public static final String SCHEDULER_GROUP = "Loxone";
 

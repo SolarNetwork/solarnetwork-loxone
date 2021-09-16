@@ -34,7 +34,7 @@ public interface DatumPropertyUUIDEntityParameters extends UUIDEntityParameters 
 	 * Get the type of value this UUID's associated values should be represented
 	 * as when translated into a {@code Datum} instance.
 	 * 
-	 * @return The datum value type, or {@code null} to be treated in a default
+	 * @return The datum value type, or {@literal null} to be treated in a default
 	 *         manner.
 	 */
 	DatumValueType getDatumValueType();

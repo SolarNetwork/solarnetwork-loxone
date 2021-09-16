@@ -25,7 +25,7 @@ package net.solarnetwork.node.loxone.domain;
 /**
  * API for a "datum" UUID entity, for managing a set of {@link Control} UUIDs
  * that should be allowed to be saved as
- * {@link net.solarnetwork.node.domain.Datum} objects.
+ * {@link net.solarnetwork.domain.datum.Datum} objects.
  * 
  * @author matt
  * @version 1.0

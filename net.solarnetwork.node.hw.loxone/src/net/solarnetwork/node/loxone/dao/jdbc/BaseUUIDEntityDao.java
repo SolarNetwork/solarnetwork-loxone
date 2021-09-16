@@ -467,7 +467,7 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 	 * Add an {@code ORDER BY} clause to a SQL query based on a set of sort
 	 * descriptors.
 	 * 
-	 * If {@code sortDescriptors} is {@code null} or empty, this method does
+	 * If {@code sortDescriptors} is {@literal null} or empty, this method does
 	 * nothing.
 	 * 
 	 * Otherwise, the method will look for an existing {@code ORDER BY} clause
@@ -541,7 +541,7 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 	 * </p>
 	 * 
 	 * @param entityCache
-	 *        The cache to use, or {@code null} to not use one.
+	 *        The cache to use, or {@literal null} to not use one.
 	 * @since 1.2
 	 */
 	public void setEntityCache(Cache<ConfigUUIDKey, T> entityCache) {

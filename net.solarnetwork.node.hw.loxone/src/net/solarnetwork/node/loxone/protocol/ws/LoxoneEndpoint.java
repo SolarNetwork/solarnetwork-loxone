@@ -393,7 +393,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	 * changed.
 	 * 
 	 * @return a new {@link Config} if it should be changed in some way,
-	 *         {@code null} otherwise
+	 *         {@literal null} otherwise
 	 */
 	protected Config configurationIdDidChange() {
 		// subclasses can do something interesting here
@@ -1215,7 +1215,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	/**
 	 * Get the config key.
 	 * 
-	 * @return The config key, or {@code null}.
+	 * @return The config key, or {@literal null}.
 	 * @since 1.1
 	 */
 	public String getConfigKey() {
