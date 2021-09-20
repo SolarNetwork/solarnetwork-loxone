@@ -73,6 +73,7 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.util.FileCopyUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.solarnetwork.codec.JsonUtils;
 import net.solarnetwork.node.loxone.dao.ConfigAuthenticationTokenDao;
 import net.solarnetwork.node.loxone.dao.ConfigDao;
 import net.solarnetwork.node.loxone.domain.AuthenticationKey;
@@ -83,7 +84,6 @@ import net.solarnetwork.node.loxone.domain.ConfigApi;
 import net.solarnetwork.node.loxone.domain.ConfigAuthenticationToken;
 import net.solarnetwork.node.loxone.protocol.ws.handler.BaseCommandHandler;
 import net.solarnetwork.node.loxone.util.SecurityUtils;
-import net.solarnetwork.util.JsonUtils;
 import net.solarnetwork.util.OptionalService;
 
 /**

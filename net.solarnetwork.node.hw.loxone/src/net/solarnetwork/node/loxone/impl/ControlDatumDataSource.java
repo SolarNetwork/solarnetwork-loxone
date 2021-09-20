@@ -64,7 +64,7 @@ import net.solarnetwork.util.OptionalService;
  * A {@link DatumDataSource} to upload Loxone values on a fixed schedule.
  * 
  * @author matt
- * @version 1.6
+ * @version 1.7
  */
 public class ControlDatumDataSource extends DatumDataSourceSupport implements
 		MultiDatumDataSource<GeneralNodeDatum>, DatumDataSource<GeneralNodeDatum>, EventHandler {
@@ -236,7 +236,6 @@ public class ControlDatumDataSource extends DatumDataSourceSupport implements
 					}
 					GeneralNodeDatum d = generateDatum(now, pair, null);
 					if ( d != null ) {
-						postDatumCapturedEvent(d);
 						persistDatum(valueEventIds, pair, d);
 					}
 				}
