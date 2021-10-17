@@ -27,7 +27,7 @@ import net.solarnetwork.node.loxone.domain.DatumPropertyUUIDEntityParameters;
 
 /**
  * DAO to track a list of control state UUID values that should be allowed to be
- * persisted as properties on {@link net.solarnetwork.node.domain.Datum}
+ * persisted as properties on {@link net.solarnetwork.domain.datum.Datum}
  * objects.
  * 
  * @author matt

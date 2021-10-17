@@ -22,14 +22,14 @@
 
 package net.solarnetwork.node.loxone.domain;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 /**
  * A text event.
  * 
  * @author matt
- * @version 1.0
+ * @version 2.0
  */
 public class TextEvent extends BaseEventEntity {
 
@@ -50,7 +50,7 @@ public class TextEvent extends BaseEventEntity {
 	 * @param text
 	 *        The text.
 	 */
-	public TextEvent(UUID uuid, Long configId, Date created, UUID iconUUID, String text) {
+	public TextEvent(UUID uuid, Long configId, Instant created, UUID iconUUID, String text) {
 		super(uuid, configId, created);
 		this.iconUUID = iconUUID;
 		this.text = text;
@@ -70,7 +70,7 @@ public class TextEvent extends BaseEventEntity {
 	 *        The text.
 	 */
 	public TextEvent(UUID uuid, Long configId, UUID iconUUID, String text) {
-		this(uuid, configId, new Date(), iconUUID, text);
+		this(uuid, configId, Instant.now(), iconUUID, text);
 	}
 
 	public UUID getIconUUID() {

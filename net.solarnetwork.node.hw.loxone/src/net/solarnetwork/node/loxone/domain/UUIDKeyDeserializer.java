@@ -27,13 +27,13 @@ import java.util.UUID;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.KeyDeserializer;
-import net.solarnetwork.util.TypedKeyDeserializer;
+import net.solarnetwork.codec.TypedKeyDeserializer;
 
 /**
  * A {@link KeyDeserializer} for Loxone UUID values.
  * 
  * @author matt
- * @version 1.0
+ * @version 2.0
  */
 public class UUIDKeyDeserializer extends KeyDeserializer implements TypedKeyDeserializer {
 

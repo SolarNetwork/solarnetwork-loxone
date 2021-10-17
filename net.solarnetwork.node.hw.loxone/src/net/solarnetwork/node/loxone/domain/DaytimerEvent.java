@@ -22,7 +22,7 @@
 
 package net.solarnetwork.node.loxone.domain;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,7 +30,7 @@ import java.util.UUID;
  * A daytimer event.
  * 
  * @author matt
- * @version 1.0
+ * @version 2.0
  */
 public class DaytimerEvent extends BaseEventEntity {
 
@@ -49,7 +49,7 @@ public class DaytimerEvent extends BaseEventEntity {
 	 * @param entries
 	 *        The entries associated with this event.
 	 */
-	public DaytimerEvent(UUID uuid, Long configId, Date created, double defaultValue,
+	public DaytimerEvent(UUID uuid, Long configId, Instant created, double defaultValue,
 			List<DaytimerEventEntry> entries) {
 		super(uuid, configId, created);
 		this.defaultValue = defaultValue;

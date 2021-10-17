@@ -35,7 +35,7 @@ public interface UUIDSetEntity<P> extends UUIDEntity {
 	/**
 	 * Get an optional parameters object.
 	 * 
-	 * @return A parameters object, or {@code null}.
+	 * @return A parameters object, or {@literal null}.
 	 */
 	P getParameters();
 

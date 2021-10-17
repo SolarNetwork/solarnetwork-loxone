@@ -116,7 +116,7 @@ public class JdbcDatumUUIDSetDao extends BaseUUIDSetDao<DatumUUIDEntity, DatumUU
 	 * A {@link RowMapper} that maps columns to a
 	 * {@link DatumUUIDEntityParameters} object.
 	 * 
-	 * <b>Note</b> this mapper will return {@code null} if the parameters
+	 * <b>Note</b> this mapper will return {@literal null} if the parameters
 	 * represent default values only!
 	 */
 	public static final class DatumUUIDEntityParametersRowMapper

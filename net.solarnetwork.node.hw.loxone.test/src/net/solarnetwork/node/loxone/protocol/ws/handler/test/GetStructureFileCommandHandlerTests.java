@@ -50,6 +50,7 @@ import org.osgi.service.event.EventAdmin;
 import org.springframework.util.FileCopyUtils;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.solarnetwork.codec.ObjectMapperFactoryBean;
 import net.solarnetwork.node.loxone.dao.CategoryDao;
 import net.solarnetwork.node.loxone.dao.ConfigDao;
 import net.solarnetwork.node.loxone.dao.ControlDao;
@@ -66,14 +67,13 @@ import net.solarnetwork.node.loxone.protocol.ws.LoxoneEvents;
 import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
 import net.solarnetwork.node.loxone.protocol.ws.MessageType;
 import net.solarnetwork.node.loxone.protocol.ws.handler.GetStructureFileCommandHandler;
-import net.solarnetwork.util.ObjectMapperFactoryBean;
-import net.solarnetwork.util.StaticOptionalService;
+import net.solarnetwork.service.StaticOptionalService;
 
 /**
  * Unit tests for the {@link GetStructureFileCommandHandler} class.
  * 
  * @author matt
- * @version 1.0
+ * @version 2.0
  */
 public class GetStructureFileCommandHandlerTests {
 
@@ -106,7 +106,7 @@ public class GetStructureFileCommandHandlerTests {
 		roomDao = EasyMock.createMock(RoomDao.class);
 
 		handler = new GetStructureFileCommandHandler();
-		handler.setEventAdmin(new StaticOptionalService<EventAdmin>(eventAdmin));
+		handler.setEventAdmin(new StaticOptionalService<>(eventAdmin));
 		handler.setObjectMapper(objectMapper);
 		handler.setConfigDao(configDao);
 		handler.setCategoryDao(categoryDao);

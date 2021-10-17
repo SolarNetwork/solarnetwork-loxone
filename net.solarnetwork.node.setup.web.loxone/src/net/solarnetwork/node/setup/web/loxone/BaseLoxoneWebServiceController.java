@@ -52,9 +52,9 @@ public class BaseLoxoneWebServiceController {
 	/**
 	 * Get a specific {@link LoxoneService} based on its UID.
 	 * 
-	 * @param uid
-	 *        The UID value to get.
-	 * @return
+	 * @param configId
+	 *        The configuration ID of the service to get.
+	 * @return the service
 	 */
 	protected LoxoneService serviceForConfigId(String configId) {
 		if ( loxoneServices == null ) {
@@ -70,7 +70,7 @@ public class BaseLoxoneWebServiceController {
 	}
 
 	/**
-	 * Handle an {@link AuthorizationException}.
+	 * Handle an {@link AuthenticationException}.
 	 * 
 	 * @param e
 	 *        the exception

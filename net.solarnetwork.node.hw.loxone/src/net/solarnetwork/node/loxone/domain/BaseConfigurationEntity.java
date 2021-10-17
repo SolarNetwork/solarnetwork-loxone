@@ -23,13 +23,12 @@
 package net.solarnetwork.node.loxone.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import net.solarnetwork.util.SerializeIgnore;
 
 /**
  * A base entity object for Loxone configuration.
  * 
  * @author matt
- * @version 1.1
+ * @version 2.0
  */
 public abstract class BaseConfigurationEntity extends BasicUUIDEntity implements ConfigurationEntity {
 
@@ -61,7 +60,6 @@ public abstract class BaseConfigurationEntity extends BasicUUIDEntity implements
 	 */
 	@Override
 	@JsonIgnore
-	@SerializeIgnore
 	public boolean isValid() {
 		return (getUuid() != null && getConfigId() != null && getName() != null);
 	}
@@ -70,7 +68,7 @@ public abstract class BaseConfigurationEntity extends BasicUUIDEntity implements
 	 * Get a source ID value from a source ID.
 	 * 
 	 * This method will use the provided {@code sourceId} if it is not
-	 * {@code null}. Otherwise it will use the configured {@code name} with all
+	 * {@literal null}. Otherwise it will use the configured {@code name} with all
 	 * whitespace removed.
 	 */
 	@Override

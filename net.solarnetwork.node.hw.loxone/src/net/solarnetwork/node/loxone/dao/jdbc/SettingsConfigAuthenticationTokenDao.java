@@ -22,9 +22,9 @@
 
 package net.solarnetwork.node.loxone.dao.jdbc;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
-import org.joda.time.DateTime;
 import net.solarnetwork.domain.KeyValuePair;
 import net.solarnetwork.node.dao.SettingDao;
 import net.solarnetwork.node.loxone.dao.ConfigAuthenticationTokenDao;
@@ -37,7 +37,7 @@ import net.solarnetwork.node.loxone.domain.ConfigAuthenticationToken;
  * {@link SettingDao}.
  * 
  * @author matt
- * @version 1.0
+ * @version 2.0
  * @since 1.3
  */
 public class SettingsConfigAuthenticationTokenDao implements ConfigAuthenticationTokenDao {
@@ -75,8 +75,8 @@ public class SettingsConfigAuthenticationTokenDao implements ConfigAuthenticatio
 				String.valueOf(token.getPermissionsBitmask()));
 		String value = token.getToken();
 		settingDao.storeSetting(settingKey(configId), TOKEN_SETTING, value == null ? "" : value);
-		settingDao.storeSetting(settingKey(configId), VALID_UNTIL_SETTING,
-				String.valueOf(token.getValidUntil() != null ? token.getValidUntil().getMillis() : 0));
+		settingDao.storeSetting(settingKey(configId), VALID_UNTIL_SETTING, String
+				.valueOf(token.getValidUntil() != null ? token.getValidUntil().toEpochMilli() : 0));
 		settingDao.storeSetting(settingKey(configId), PASSWORD_UNSECURE_SETTING,
 				String.valueOf(token.isPasswordUnsecure()));
 	}
@@ -119,7 +119,7 @@ public class SettingsConfigAuthenticationTokenDao implements ConfigAuthenticatio
 			return null;
 		}
 
-		return new ConfigAuthenticationToken(id, tok, new DateTime(Long.parseLong(exp)),
+		return new ConfigAuthenticationToken(id, tok, Instant.ofEpochMilli(Long.parseLong(exp)),
 				(perms != null
 						? AuthenticationTokenPermission.permissionsForBitmask(Integer.parseInt(perms))
 						: Collections.emptySet()),

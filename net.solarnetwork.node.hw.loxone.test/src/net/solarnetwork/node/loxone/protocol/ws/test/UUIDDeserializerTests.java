@@ -29,14 +29,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.solarnetwork.codec.ObjectMapperFactoryBean;
 import net.solarnetwork.node.loxone.domain.UUIDDeserializer;
-import net.solarnetwork.util.ObjectMapperFactoryBean;
 
 /**
  * Unit tests for the {@link UUIDDeserializer} class.
  * 
  * @author matt
- * @version 1.0
+ * @version 2.0
  */
 public class UUIDDeserializerTests {
 

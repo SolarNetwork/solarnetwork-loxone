@@ -22,24 +22,24 @@
 
 package net.solarnetwork.node.loxone.domain;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 /**
  * A value event.
  * 
  * @author matt
- * @version 1.0
+ * @version 2.0
  */
 public class ValueEvent extends BaseEventEntity {
 
 	private final double value;
 
 	public ValueEvent(UUID uuid, Long configId, double value) {
-		this(uuid, configId, new Date(), value);
+		this(uuid, configId, Instant.now(), value);
 	}
 
-	public ValueEvent(UUID uuid, Long configId, Date created, double value) {
+	public ValueEvent(UUID uuid, Long configId, Instant created, double value) {
 		super(uuid, configId, created);
 		this.value = value;
 	}

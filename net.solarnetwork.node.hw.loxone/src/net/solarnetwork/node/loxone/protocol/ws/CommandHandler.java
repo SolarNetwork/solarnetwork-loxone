@@ -73,7 +73,7 @@ public interface CommandHandler {
 	 *        Any optional arguments to pass with the command. These are command
 	 *        specific.
 	 * @return A {@link Future} if the command supports a reply object, or
-	 *         {@code null} otherwise.
+	 *         {@literal null} otherwise.
 	 * @throws IOException
 	 *         if any communication error occurs
 	 */

@@ -44,13 +44,13 @@ import net.solarnetwork.node.loxone.protocol.ws.LoxoneEvents;
 import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
 import net.solarnetwork.node.loxone.protocol.ws.MessageType;
 import net.solarnetwork.node.loxone.protocol.ws.handler.StructureFileLastModifiedDateCommandHandler;
-import net.solarnetwork.util.StaticOptionalService;
+import net.solarnetwork.service.StaticOptionalService;
 
 /**
  * Unit tests for the {@link StructureFileLastModifiedDateCommandHandler} class.
  * 
  * @author matt
- * @version 1.0
+ * @version 2.0
  */
 public class StructureFileLastModifiedDateCommandHandlerTests {
 
@@ -68,7 +68,7 @@ public class StructureFileLastModifiedDateCommandHandlerTests {
 		session = EasyMock.createMock(Session.class);
 
 		handler = new StructureFileLastModifiedDateCommandHandler();
-		handler.setEventAdmin(new StaticOptionalService<EventAdmin>(eventAdmin));
+		handler.setEventAdmin(new StaticOptionalService<>(eventAdmin));
 	}
 
 	@Test
