@@ -31,32 +31,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import javax.websocket.CloseReason;
 import javax.websocket.EndpointConfig;
 import javax.websocket.Session;
 import org.osgi.service.event.Event;
-import org.quartz.JobBuilder;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SimpleScheduleBuilder;
-import org.quartz.SimpleTrigger;
-import org.quartz.TriggerBuilder;
-import org.quartz.TriggerKey;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.Trigger;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import net.solarnetwork.domain.BasicNodeControlInfo;
@@ -66,7 +57,8 @@ import net.solarnetwork.domain.NodeControlPropertyType;
 import net.solarnetwork.domain.SortDescriptor;
 import net.solarnetwork.node.dao.SettingDao;
 import net.solarnetwork.node.domain.datum.SimpleNodeControlInfoDatum;
-import net.solarnetwork.node.job.DatumDataSourcePollJob;
+import net.solarnetwork.node.job.DatumDataSourcePollManagedJob;
+import net.solarnetwork.node.job.JobUtils;
 import net.solarnetwork.node.loxone.LoxoneService;
 import net.solarnetwork.node.loxone.LoxoneSourceMappingParser;
 import net.solarnetwork.node.loxone.dao.ConfigurationEntityDao;
@@ -146,13 +138,20 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	private ControlDao controlDao;
 	private SourceMappingDao sourceMappingDao;
 	private OptionalService<DatumQueue> datumQueue;
-	private Scheduler scheduler;
 	private int datumLoggerFrequencySeconds = DATUM_LOGGER_JOB_INTERVAL;
 	private MessageSource messageSource;
 	private TaskExecutor taskExecutor;
 
 	private ControlDatumDataSource datumDataSource;
-	private SimpleTrigger datumLoggerTrigger;
+	private ScheduledDatumDataSourcePollJob datumLoggerTrigger;
+
+	private static final class ScheduledDatumDataSourcePollJob {
+
+		private Runnable task;
+		private ScheduledFuture<?> future;
+		private long interval;
+
+	}
 
 	@Override
 	public void init() {
@@ -560,7 +559,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	}
 
 	private void scheduleDatumLoggerJobIfNeeded() {
-		configureLoxoneDatumLoggerJob(datumLoggerFrequencySeconds * 1000L);
+		configureLoxoneDatumLoggerJob(datumLoggerFrequencySeconds);
 	}
 
 	private boolean configureLoxoneDatumLoggerJob(final long interval) {
@@ -569,7 +568,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 			return false;
 		}
 		final String configIdDisplay = config.idToExternalForm();
-		final Scheduler sched = scheduler;
+		final TaskScheduler sched = getTaskScheduler();
 
 		if ( sched == null ) {
 			log.info("No scheduler avaialable, cannot schedule Loxone {} datum poll job",
@@ -582,36 +581,26 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 					configIdDisplay);
 			return false;
 		}
-		SimpleTrigger trigger = datumLoggerTrigger;
-		if ( trigger != null ) {
+		ScheduledDatumDataSourcePollJob trigger = datumLoggerTrigger;
+		if ( trigger != null && trigger.future != null && !trigger.future.isDone()
+				&& trigger.task != null ) {
 			// check if interval actually changed
-			if ( trigger.getRepeatInterval() == interval ) {
+			if ( trigger.interval == interval ) {
 				log.debug("Loxone {} datum poll interval unchanged at {}s", configIdDisplay, interval);
 				return true;
 			}
 			// trigger has changed!
 			if ( interval == 0 ) {
 				try {
-					sched.unscheduleJob(trigger.getKey());
+					trigger.future.cancel(true);
 					log.info("Unscheduled Loxone {} datum poll job", configIdDisplay);
-				} catch ( SchedulerException e ) {
-					log.error("Error unscheduling Loxone {} datum poll job", configIdDisplay, e);
 				} finally {
 					datumLoggerTrigger = null;
 				}
 			} else {
-				trigger = TriggerBuilder.newTrigger().withIdentity(trigger.getKey())
-						.forJob(DATUM_POLL_JOB_NAME, SCHEDULER_GROUP)
-						.withSchedule(
-								SimpleScheduleBuilder.repeatMinutelyForever((int) (interval / (60000L))))
-						.build();
-				try {
-					sched.rescheduleJob(trigger.getKey(), trigger);
-				} catch ( SchedulerException e ) {
-					log.error("Error rescheduling Loxone {} datum poll job", configIdDisplay, e);
-				} finally {
-					datumLoggerTrigger = null;
-				}
+				Trigger t = JobUtils.triggerForExpression(String.valueOf(interval), TimeUnit.SECONDS,
+						false);
+				trigger.future = sched.schedule(trigger.task, t);
 			}
 			return true;
 		} else if ( interval == 0 ) {
@@ -620,28 +609,30 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 
 		synchronized ( sched ) {
 			try {
-				final JobKey jobKey = new JobKey(DATUM_POLL_JOB_NAME, SCHEDULER_GROUP);
-				JobDetail jobDetail = sched.getJobDetail(jobKey);
-				if ( jobDetail == null ) {
-					jobDetail = JobBuilder.newJob(DatumDataSourcePollJob.class).withIdentity(jobKey)
-							.storeDurably().build();
-					sched.addJob(jobDetail, true);
+				Trigger t = JobUtils.triggerForExpression(String.valueOf(interval), TimeUnit.SECONDS,
+						false);
+				DatumDataSourcePollManagedJob job = new DatumDataSourcePollManagedJob();
+				job.setDatumQueue(datumQueue);
+				job.setDatumDataSource(datumDataSource);
+				if ( trigger == null ) {
+					trigger = new ScheduledDatumDataSourcePollJob();
+					datumLoggerTrigger = trigger;
 				}
-				final TriggerKey triggerKey = new TriggerKey(
-						DATUM_POLL_JOB_NAME + config.idToExternalForm(), SCHEDULER_GROUP);
-				final Map<String, Object> jd = new HashMap<>();
-				jd.put("datumDataSource", datumDataSource);
-				jd.put("datumQueue", queue);
-				trigger = TriggerBuilder.newTrigger().withIdentity(triggerKey).forJob(jobKey)
-						.startAt(new Date(System.currentTimeMillis() + interval))
-						.usingJobData(new JobDataMap(jd))
-						.withSchedule(
-								SimpleScheduleBuilder.repeatSecondlyForever((int) (interval / (1000L)))
-										.withMisfireHandlingInstructionNextWithExistingCount())
-						.build();
-				sched.scheduleJob(trigger);
+				trigger.interval = interval;
+				trigger.future = sched.schedule(new Runnable() {
+
+					@Override
+					public void run() {
+						try {
+							job.executeJobService();
+						} catch ( Exception e ) {
+							log.error("Error polling Loxone {} datum logger job", configIdDisplay, e);
+						}
+					}
+
+				}, t);
 				log.info("Scheduled Loxone {} datum logger job to run every {} seconds", configIdDisplay,
-						(interval / 1000));
+						interval);
 				datumLoggerTrigger = trigger;
 				return true;
 			} catch ( Exception e ) {
@@ -794,10 +785,6 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		this.datumLoggerFrequencySeconds = datumLoggerFrequencySeconds;
 		configureLoxoneDatumLoggerJob(0);
 		configureLoxoneDatumLoggerJob(datumLoggerFrequencySeconds * 1000);
-	}
-
-	public void setScheduler(Scheduler scheduler) {
-		this.scheduler = scheduler;
 	}
 
 	public void setDatumQueue(OptionalService<DatumQueue> datumQueue) {
