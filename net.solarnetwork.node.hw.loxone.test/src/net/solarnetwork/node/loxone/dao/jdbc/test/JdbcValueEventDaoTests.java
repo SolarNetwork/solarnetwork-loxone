@@ -22,7 +22,7 @@
 
 package net.solarnetwork.node.loxone.dao.jdbc.test;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Resource;
@@ -43,7 +43,7 @@ import net.solarnetwork.node.test.AbstractNodeTransactionalTest;
  * Unit tests for the {@link JdbcValueEventDao} class.
  * 
  * @author matt
- * @version 1.0
+ * @version 2.0
  */
 public class JdbcValueEventDaoTests extends AbstractNodeTransactionalTest {
 
@@ -98,7 +98,7 @@ public class JdbcValueEventDaoTests extends AbstractNodeTransactionalTest {
 		insert();
 		ValueEvent orig = dao.loadEvent(TEST_CONFIG_ID, lastValueEvent.getUuid());
 		ValueEvent modified = new ValueEvent(orig.getUuid(), TEST_CONFIG_ID,
-				new Date(System.currentTimeMillis() + 1000), 234.5);
+				Instant.ofEpochMilli(System.currentTimeMillis() + 1000), 234.5);
 		Assert.assertNotEquals("Updated dates differ", orig.getCreated(), modified.getCreated());
 		dao.storeEvent(modified);
 		ValueEvent updated = dao.loadEvent(TEST_CONFIG_ID, orig.getUuid());

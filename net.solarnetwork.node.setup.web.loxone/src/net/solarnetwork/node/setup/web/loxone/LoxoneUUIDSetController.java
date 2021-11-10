@@ -70,7 +70,8 @@ public class LoxoneUUIDSetController extends BaseLoxoneWebServiceController {
 	 * @param configId
 	 *        The config ID to add or remove UUIDs to or from.
 	 * @param patchSet
-	 * @return
+	 *        the patch set
+	 * @return the UUID set
 	 */
 	@RequestMapping(value = "/datum", method = RequestMethod.PATCH)
 	public Response<Object> updateDatumUUIDSet(@PathVariable("configId") String configId,
@@ -98,7 +99,8 @@ public class LoxoneUUIDSetController extends BaseLoxoneWebServiceController {
 	 * @param configId
 	 *        The config ID to add or remove property UUIDs to or from.
 	 * @param patchSet
-	 * @return
+	 *        the patch set
+	 * @return the UUID set
 	 */
 	@RequestMapping(value = "/props", method = RequestMethod.PATCH)
 	public Response<Object> updateDatumPropertyUUIDSet(@PathVariable("configId") String configId,

@@ -42,7 +42,7 @@ public class Config {
 	/**
 	 * Construct with just an ID.
 	 * 
-	 * The modified date will be set to {@code null}.
+	 * The modified date will be set to {@literal null}.
 	 * 
 	 * @param configId
 	 *        The config ID.
@@ -123,7 +123,7 @@ public class Config {
 	/**
 	 * Get the last modified date.
 	 * 
-	 * @return The modified date, or {@code null}.
+	 * @return The modified date, or {@literal null}.
 	 */
 	public Date getLastModified() {
 		return lastModified;
@@ -185,8 +185,8 @@ public class Config {
 	 * 
 	 * @param id
 	 *        The ID to translate into external form.
-	 * @return The external ID form, or {@code null} if {code id} is
-	 *         {@code null}.
+	 * @return The external ID form, or {@literal null} if {code id} is
+	 *         {@literal null}.
 	 */
 	public static final String idToExternalForm(Long id) {
 		if ( id == null ) {
@@ -230,7 +230,7 @@ public class Config {
 	 * 
 	 * @param s
 	 *        The ID in external form.
-	 * @return The {@code Long} value, or {@code null} if the string cannot be
+	 * @return The {@code Long} value, or {@literal null} if the string cannot be
 	 *         parsed.
 	 */
 	public static final Long idFromExternalForm(String s) {

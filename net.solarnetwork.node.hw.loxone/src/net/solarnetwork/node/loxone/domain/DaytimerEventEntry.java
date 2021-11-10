@@ -22,13 +22,13 @@
 
 package net.solarnetwork.node.loxone.domain;
 
-import org.joda.time.LocalTime;
+import java.time.LocalTime;
 
 /**
  * An entry in a daytimer event.
  * 
  * @author matt
- * @version 1.0
+ * @version 2.0
  */
 public class DaytimerEventEntry {
 
@@ -55,8 +55,8 @@ public class DaytimerEventEntry {
 	public DaytimerEventEntry(int mode, int from, int to, int needActivate, double value) {
 		super();
 		this.mode = mode;
-		this.from = LocalTime.fromMillisOfDay(from * 60L * 1000L);
-		this.to = LocalTime.fromMillisOfDay(to * 60L * 1000L);
+		this.from = LocalTime.ofSecondOfDay(from * 60);
+		this.to = LocalTime.ofSecondOfDay(to * 60L);
 		this.needActivate = needActivate;
 		this.value = value;
 	}

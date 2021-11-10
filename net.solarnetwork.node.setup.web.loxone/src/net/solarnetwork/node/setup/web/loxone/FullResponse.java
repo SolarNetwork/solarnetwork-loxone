@@ -29,6 +29,8 @@ import net.solarnetwork.web.domain.Response;
  * Extension of {@link Response} so that {@literal null} values are always
  * included, even in returned {@code Map} objects with {@literal null} values.
  * 
+ * @param <T>
+ *        the response value type
  * @author matt
  * @version 1.0
  * @since 1.1.1
@@ -84,6 +86,8 @@ public class FullResponse<T> extends Response<T> {
 	 * {@code new Response&lt;Object&gt;(myData)}.
 	 * </p>
 	 * 
+	 * @param <V>
+	 *        the response value type
 	 * @param data
 	 *        the data
 	 * @return the response

@@ -22,28 +22,28 @@
 
 package net.solarnetwork.node.loxone.domain;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 /**
  * Base class for event entities.
  * 
  * @author matt
- * @version 1.0
+ * @version 2.0
  */
 public abstract class BaseEventEntity extends BasicUUIDEntity implements EventEntity {
 
-	private final Date created;
+	private final Instant created;
 
-	public BaseEventEntity(UUID uuid, Long configId, Date created) {
+	public BaseEventEntity(UUID uuid, Long configId, Instant created) {
 		super();
 		setUuid(uuid);
 		setConfigId(configId);
-		this.created = (created == null ? new Date() : created);
+		this.created = (created == null ? Instant.now() : created);
 	}
 
 	@Override
-	public Date getCreated() {
+	public Instant getCreated() {
 		return created;
 	}
 

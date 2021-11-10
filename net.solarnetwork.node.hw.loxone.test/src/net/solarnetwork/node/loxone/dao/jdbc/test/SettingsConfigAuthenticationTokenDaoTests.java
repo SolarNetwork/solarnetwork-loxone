@@ -28,12 +28,12 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import org.easymock.EasyMock;
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -85,14 +85,14 @@ public class SettingsConfigAuthenticationTokenDaoTests extends AbstractNodeTest 
 	@Test
 	public void getAuthToken() {
 		// given
-		ConfigAuthenticationToken expected = new ConfigAuthenticationToken(1L, "2", new DateTime(),
+		ConfigAuthenticationToken expected = new ConfigAuthenticationToken(1L, "2", Instant.now(),
 				EnumSet.of(AuthenticationTokenPermission.App), false, "abff");
 		List<KeyValuePair> settings = Arrays.asList(
 				new KeyValuePair(SettingsConfigAuthenticationTokenDao.KEY_SETTING, expected.getKeyHex()),
 				new KeyValuePair(SettingsConfigAuthenticationTokenDao.TOKEN_SETTING,
 						expected.getToken()),
 				new KeyValuePair(SettingsConfigAuthenticationTokenDao.VALID_UNTIL_SETTING,
-						String.valueOf(expected.getValidUntil().getMillis())),
+						String.valueOf(expected.getValidUntil().toEpochMilli())),
 				new KeyValuePair(SettingsConfigAuthenticationTokenDao.PERMISSIONS_SETTING,
 						String.valueOf(expected.getPermissionsBitmask())),
 				new KeyValuePair(SettingsConfigAuthenticationTokenDao.PASSWORD_UNSECURE_SETTING,
@@ -116,7 +116,7 @@ public class SettingsConfigAuthenticationTokenDaoTests extends AbstractNodeTest 
 	@Test
 	public void storeAuthToken() {
 		// given
-		ConfigAuthenticationToken authToken = new ConfigAuthenticationToken(1L, "2", new DateTime(),
+		ConfigAuthenticationToken authToken = new ConfigAuthenticationToken(1L, "2", Instant.now(),
 				EnumSet.of(AuthenticationTokenPermission.App), false, "abff");
 
 		settingDao.storeSetting("loxone/1/auth-token", SettingsConfigAuthenticationTokenDao.KEY_SETTING,
@@ -125,7 +125,7 @@ public class SettingsConfigAuthenticationTokenDaoTests extends AbstractNodeTest 
 				SettingsConfigAuthenticationTokenDao.TOKEN_SETTING, authToken.getToken());
 		settingDao.storeSetting("loxone/1/auth-token",
 				SettingsConfigAuthenticationTokenDao.VALID_UNTIL_SETTING,
-				String.valueOf(authToken.getValidUntil().getMillis()));
+				String.valueOf(authToken.getValidUntil().toEpochMilli()));
 		settingDao.storeSetting("loxone/1/auth-token",
 				SettingsConfigAuthenticationTokenDao.PERMISSIONS_SETTING,
 				String.valueOf(authToken.getPermissionsBitmask()));

@@ -23,8 +23,8 @@
 package net.solarnetwork.node.loxone.protocol.ws.handler;
 
 import java.nio.ByteBuffer;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import javax.websocket.Session;
@@ -38,7 +38,7 @@ import net.solarnetwork.node.loxone.protocol.ws.MessageType;
  * {@link BinaryFileHandler} for daytimer-type event binary messages.
  * 
  * @author matt
- * @version 1.0
+ * @version 2.0
  */
 public class DaytimerEventBinaryFileHandler extends BaseEventBinaryFileHandler<DaytimerEvent> {
 
@@ -51,7 +51,7 @@ public class DaytimerEventBinaryFileHandler extends BaseEventBinaryFileHandler<D
 	protected boolean handleDataMessage(MessageHeader header, Session session, ByteBuffer buffer,
 			Long configId) {
 		int end = buffer.position() + (int) header.getLength();
-		Date now = new Date();
+		Instant now = Instant.now();
 		while ( buffer.hasRemaining() && buffer.position() < end ) {
 			UUID uuid = readUUID(buffer);
 			double defaultValue = buffer.getDouble();

@@ -66,7 +66,7 @@ public interface EventEntityDao<T extends EventEntity> {
 	 * Get a list of persisted entities, optionally sorted in some way.
 	 * 
 	 * <p>
-	 * The {@code sortDescriptors} parameter can be {@code null}, in which case
+	 * The {@code sortDescriptors} parameter can be {@literal null}, in which case
 	 * the sort order should default to the {@link EventEntity#getCreated()} in
 	 * descending order followed by {@link EventEntity#getUuid()} in ascending
 	 * order.

@@ -44,13 +44,13 @@ import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.protocol.ws.BinaryFileHandler;
 import net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint;
 import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
-import net.solarnetwork.util.OptionalService;
+import net.solarnetwork.service.OptionalService;
 
 /**
  * Base class for binary event data handlers.
  * 
  * @author matt
- * @version 1.1
+ * @version 2.0
  */
 public abstract class BaseEventBinaryFileHandler<T extends BaseEventEntity>
 		implements BinaryFileHandler {

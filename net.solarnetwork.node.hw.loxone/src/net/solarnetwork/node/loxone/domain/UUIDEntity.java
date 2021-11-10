@@ -62,7 +62,7 @@ public interface UUIDEntity {
 	 * 
 	 * @param entity
 	 *        The entity to derive the source ID value from.
-	 * @return The source ID, or {@code null} if either {@code configId} or
+	 * @return The source ID, or {@literal null} if either {@code configId} or
 	 *         {@code uuid} are null.
 	 */
 	static String sourceIdForUUIDEntity(UUIDEntity entity) {

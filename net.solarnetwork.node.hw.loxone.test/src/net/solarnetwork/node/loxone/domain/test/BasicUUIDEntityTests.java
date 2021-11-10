@@ -29,17 +29,17 @@ import org.junit.Before;
 import org.junit.Test;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.solarnetwork.codec.ObjectMapperFactoryBean;
 import net.solarnetwork.node.loxone.domain.BasicUUIDEntity;
 import net.solarnetwork.node.loxone.domain.UUIDDeserializer;
 import net.solarnetwork.node.loxone.domain.UUIDEntity;
 import net.solarnetwork.node.loxone.domain.UUIDSerializer;
-import net.solarnetwork.util.ObjectMapperFactoryBean;
 
 /**
  * Test cases for the {@link BasicUUIDEntity} class.
  * 
  * @author matt
- * @version 1.0
+ * @version 2.0
  */
 public class BasicUUIDEntityTests {
 

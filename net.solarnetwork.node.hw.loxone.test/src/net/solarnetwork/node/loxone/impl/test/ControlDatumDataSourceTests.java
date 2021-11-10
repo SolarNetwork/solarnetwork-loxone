@@ -23,6 +23,9 @@
 package net.solarnetwork.node.loxone.impl.test;
 
 import static java.lang.Long.parseLong;
+import static net.solarnetwork.domain.datum.DatumSamplesType.Accumulating;
+import static net.solarnetwork.domain.datum.DatumSamplesType.Instantaneous;
+import static net.solarnetwork.domain.datum.DatumSamplesType.Status;
 import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.Matchers.closeTo;
@@ -47,10 +50,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osgi.service.event.Event;
 import net.solarnetwork.domain.KeyValuePair;
-import net.solarnetwork.node.Setting;
-import net.solarnetwork.node.dao.DatumDao;
 import net.solarnetwork.node.dao.SettingDao;
-import net.solarnetwork.node.domain.GeneralNodeDatum;
+import net.solarnetwork.node.domain.Setting;
+import net.solarnetwork.node.domain.datum.NodeDatum;
 import net.solarnetwork.node.loxone.dao.ControlDao;
 import net.solarnetwork.node.loxone.domain.BasicControlDatumParameters;
 import net.solarnetwork.node.loxone.domain.BasicDatumUUIDEntityParameters;
@@ -65,13 +67,14 @@ import net.solarnetwork.node.loxone.domain.ValueEventDatumParameters;
 import net.solarnetwork.node.loxone.impl.ControlDatumDataSource;
 import net.solarnetwork.node.loxone.protocol.ws.LoxoneEvents;
 import net.solarnetwork.node.loxone.protocol.ws.handler.ValueEventBinaryFileHandler;
-import net.solarnetwork.util.StaticOptionalService;
+import net.solarnetwork.node.service.DatumQueue;
+import net.solarnetwork.service.StaticOptionalService;
 
 /**
  * Test cases for the {@link ControlDatumDataSource} class.
  * 
  * @author matt
- * @version 1.2
+ * @version 2.0
  */
 public class ControlDatumDataSourceTests {
 
@@ -79,17 +82,16 @@ public class ControlDatumDataSourceTests {
 
 	private ControlDao controlDao;
 	private SettingDao settingDao;
-	DatumDao<GeneralNodeDatum> datumDao;
+	DatumQueue datumQueue;
 	private ControlDatumDataSource dataSource;
 
-	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() {
 		controlDao = EasyMock.createMock(ControlDao.class);
 		settingDao = EasyMock.createMock(SettingDao.class);
-		datumDao = EasyMock.createMock(DatumDao.class);
+		datumQueue = EasyMock.createMock(DatumQueue.class);
 		dataSource = new ControlDatumDataSource(TEST_CONFIG_ID, controlDao, settingDao);
-		dataSource.setDatumDao(new StaticOptionalService<>(datumDao));
+		dataSource.setDatumQueue(new StaticOptionalService<>(datumQueue));
 	}
 
 	@After
@@ -98,11 +100,11 @@ public class ControlDatumDataSourceTests {
 	}
 
 	private void replayAll() {
-		EasyMock.replay(controlDao, settingDao, datumDao);
+		EasyMock.replay(controlDao, settingDao, datumQueue);
 	}
 
 	private void verifyAll() {
-		EasyMock.verify(controlDao, settingDao, datumDao);
+		EasyMock.verify(controlDao, settingDao, datumQueue);
 	}
 
 	private String settingKey() {
@@ -126,8 +128,8 @@ public class ControlDatumDataSourceTests {
 		valueParams.setValue(valueEvent.getValue());
 		controlParams
 				.setDatumPropertyParameters(Collections.singletonMap(valueEvent.getUuid(), valueParams));
-		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays.asList(
-				new UUIDEntityParametersPair<Control, ControlDatumParameters>(control, controlParams));
+		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays
+				.asList(new UUIDEntityParametersPair<>(control, controlParams));
 		expect(settingDao.getSettingValues(settingKey)).andReturn(Collections.emptyList());
 		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
@@ -136,7 +138,7 @@ public class ControlDatumDataSourceTests {
 
 		replayAll();
 
-		Collection<GeneralNodeDatum> results = dataSource.readMultipleDatum();
+		Collection<NodeDatum> results = dataSource.readMultipleDatum();
 
 		verifyAll();
 
@@ -148,9 +150,9 @@ public class ControlDatumDataSourceTests {
 		Assert.assertEquals("Setting value is now-ish",
 				Long.parseLong(savedSetting.getValue(), 16) / 1000.0, now / 1000.0, 0.5);
 
-		GeneralNodeDatum datum = results.iterator().next();
+		NodeDatum datum = results.iterator().next();
 		assertEquals("Datum value", Double.valueOf(valueEvent.getValue()),
-				datum.getInstantaneousSampleDouble("foo"));
+				datum.asSampleOperations().getSampleDouble(Instantaneous, "foo"));
 	}
 
 	@Test
@@ -169,8 +171,8 @@ public class ControlDatumDataSourceTests {
 		valueParams.setValue(valueEvent.getValue());
 		controlParams
 				.setDatumPropertyParameters(Collections.singletonMap(valueEvent.getUuid(), valueParams));
-		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays.asList(
-				new UUIDEntityParametersPair<Control, ControlDatumParameters>(control, controlParams));
+		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays
+				.asList(new UUIDEntityParametersPair<>(control, controlParams));
 		expect(settingDao.getSettingValues(settingKey)).andReturn(Collections.emptyList());
 		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
@@ -179,7 +181,7 @@ public class ControlDatumDataSourceTests {
 
 		replayAll();
 
-		Collection<GeneralNodeDatum> results = dataSource.readMultipleDatum();
+		Collection<NodeDatum> results = dataSource.readMultipleDatum();
 
 		verifyAll();
 
@@ -191,9 +193,9 @@ public class ControlDatumDataSourceTests {
 		Assert.assertEquals("Setting value is now-ish",
 				Long.parseLong(savedSetting.getValue(), 16) / 1000.0, now / 1000.0, 0.5);
 
-		GeneralNodeDatum datum = results.iterator().next();
+		NodeDatum datum = results.iterator().next();
 		assertEquals("Datum value", Double.valueOf(valueEvent.getValue()),
-				datum.getAccumulatingSampleDouble("foo"));
+				datum.asSampleOperations().getSampleDouble(Accumulating, "foo"));
 	}
 
 	@Test
@@ -212,8 +214,8 @@ public class ControlDatumDataSourceTests {
 		valueParams.setValue(valueEvent.getValue());
 		controlParams
 				.setDatumPropertyParameters(Collections.singletonMap(valueEvent.getUuid(), valueParams));
-		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays.asList(
-				new UUIDEntityParametersPair<Control, ControlDatumParameters>(control, controlParams));
+		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays
+				.asList(new UUIDEntityParametersPair<>(control, controlParams));
 		final List<KeyValuePair> saveSettings = Arrays
 				.asList(new KeyValuePair(sourceId, Long.toString(now - 100000, 16)));
 		expect(settingDao.getSettingValues(settingKey)).andReturn(saveSettings);
@@ -221,7 +223,7 @@ public class ControlDatumDataSourceTests {
 
 		replayAll();
 
-		Collection<GeneralNodeDatum> results = dataSource.readMultipleDatum();
+		Collection<NodeDatum> results = dataSource.readMultipleDatum();
 
 		assertNotNull("Result list", results);
 		assertEquals("Result list size", 0, results.size());
@@ -255,7 +257,7 @@ public class ControlDatumDataSourceTests {
 
 		replayAll();
 
-		Collection<GeneralNodeDatum> results = dataSource.readMultipleDatum();
+		Collection<NodeDatum> results = dataSource.readMultipleDatum();
 
 		verifyAll();
 
@@ -267,9 +269,9 @@ public class ControlDatumDataSourceTests {
 		Assert.assertEquals("Setting value is now-ish",
 				Long.parseLong(savedSetting.getValue(), 16) / 1000.0, now / 1000.0, 0.5);
 
-		GeneralNodeDatum datum = results.iterator().next();
+		NodeDatum datum = results.iterator().next();
 		assertEquals("Datum value", Double.valueOf(valueEvent.getValue()),
-				datum.getInstantaneousSampleDouble("foo"));
+				datum.asSampleOperations().getSampleDouble(Instantaneous, "foo"));
 	}
 
 	@Test
@@ -293,8 +295,8 @@ public class ControlDatumDataSourceTests {
 				new UUIDEntityParametersPair<Control, ControlDatumParameters>(control, controlParams));
 		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
-		Capture<GeneralNodeDatum> datumCaptor = new Capture<>();
-		datumDao.storeDatum(capture(datumCaptor));
+		Capture<NodeDatum> datumCaptor = new Capture<>();
+		expect(datumQueue.offer(capture(datumCaptor))).andReturn(true);
 
 		// WHEN
 		replayAll();
@@ -308,11 +310,11 @@ public class ControlDatumDataSourceTests {
 
 		verifyAll();
 
-		GeneralNodeDatum d = datumCaptor.getValue();
+		NodeDatum d = datumCaptor.getValue();
 		assertThat("Datum persisted", d, notNullValue());
 		assertThat("Datum source ID", d.getSourceId(), equalTo(sourceId));
-		assertThat("Datum has status property value", d.getStatusSampleDouble("foo"),
-				equalTo(valueEvent.getValue()));
+		assertThat("Datum has status property value",
+				d.asSampleOperations().getSampleDouble(Status, "foo"), equalTo(valueEvent.getValue()));
 	}
 
 	@Test
@@ -341,12 +343,12 @@ public class ControlDatumDataSourceTests {
 		controlMap.put(valueEvent2.getUuid(), valueParams2);
 		controlParams.setDatumPropertyParameters(controlMap);
 
-		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays.asList(
-				new UUIDEntityParametersPair<Control, ControlDatumParameters>(control, controlParams));
+		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays
+				.asList(new UUIDEntityParametersPair<>(control, controlParams));
 		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
-		Capture<GeneralNodeDatum> datumCaptor = new Capture<>();
-		datumDao.storeDatum(capture(datumCaptor));
+		Capture<NodeDatum> datumCaptor = new Capture<>();
+		expect(datumQueue.offer(capture(datumCaptor))).andReturn(true);
 
 		// WHEN
 		replayAll();
@@ -360,12 +362,13 @@ public class ControlDatumDataSourceTests {
 
 		verifyAll();
 
-		GeneralNodeDatum d = datumCaptor.getValue();
+		NodeDatum d = datumCaptor.getValue();
 		assertThat("Datum persisted", d, notNullValue());
 		assertThat("Datum source ID", d.getSourceId(), equalTo(sourceId));
-		assertThat("Datum has status property value", d.getStatusSampleDouble("foo"),
-				equalTo(valueEvent.getValue()));
-		assertThat("Datum has instantaneous property value", d.getInstantaneousSampleDouble("bar"),
+		assertThat("Datum has status property value",
+				d.asSampleOperations().getSampleDouble(Status, "foo"), equalTo(valueEvent.getValue()));
+		assertThat("Datum has instantaneous property value",
+				d.asSampleOperations().getSampleDouble(Instantaneous, "bar"),
 				equalTo(valueEvent2.getValue()));
 	}
 
@@ -394,8 +397,8 @@ public class ControlDatumDataSourceTests {
 		controlMap.put(valueEvent2.getUuid(), valueParams2);
 		controlParams.setDatumPropertyParameters(controlMap);
 
-		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays.asList(
-				new UUIDEntityParametersPair<Control, ControlDatumParameters>(control, controlParams));
+		final List<UUIDEntityParametersPair<Control, ControlDatumParameters>> uuidSet = Arrays
+				.asList(new UUIDEntityParametersPair<>(control, controlParams));
 		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
 		// WHEN
@@ -432,7 +435,7 @@ public class ControlDatumDataSourceTests {
 
 		replayAll();
 
-		Collection<GeneralNodeDatum> results = dataSource.readMultipleDatum();
+		Collection<NodeDatum> results = dataSource.readMultipleDatum();
 
 		verifyAll();
 
@@ -475,7 +478,7 @@ public class ControlDatumDataSourceTests {
 
 		replayAll();
 
-		Collection<GeneralNodeDatum> results = dataSource.readMultipleDatum();
+		Collection<NodeDatum> results = dataSource.readMultipleDatum();
 
 		verifyAll();
 
@@ -486,10 +489,11 @@ public class ControlDatumDataSourceTests {
 		assertThat("Setting value is now-ish", parseLong(savedSetting.getValue(), 16) / 1000.0,
 				closeTo(now / 1000.0, 0.5));
 
-		GeneralNodeDatum datum = results.iterator().next();
-		assertThat("Foo property", datum.getInstantaneousSampleDouble("foo"),
+		NodeDatum datum = results.iterator().next();
+		assertThat("Foo property", datum.asSampleOperations().getSampleDouble(Instantaneous, "foo"),
 				equalTo(valueEvent.getValue()));
-		assertThat("Bar property", datum.getStatusSampleDouble("bar"), equalTo(valueEvent2.getValue()));
+		assertThat("Bar property", datum.asSampleOperations().getSampleDouble(Status, "bar"),
+				equalTo(valueEvent2.getValue()));
 	}
 
 }

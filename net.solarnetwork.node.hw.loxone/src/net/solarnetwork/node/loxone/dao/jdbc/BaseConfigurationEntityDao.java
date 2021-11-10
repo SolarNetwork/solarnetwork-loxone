@@ -251,7 +251,7 @@ public abstract class BaseConfigurationEntityDao<T extends BaseConfigurationEnti
 	 * </p>
 	 * 
 	 * @param entityNameCache
-	 *        The cache to use, or {@code null} to not use one.
+	 *        The cache to use, or {@literal null} to not use one.
 	 * @since 1.2
 	 */
 	public void setEntityNameCache(Cache<ConfigNameKey, List<T>> entityNameCache) {

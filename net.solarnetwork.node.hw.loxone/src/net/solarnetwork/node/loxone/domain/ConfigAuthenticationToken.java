@@ -22,14 +22,14 @@
 
 package net.solarnetwork.node.loxone.domain;
 
+import java.time.Instant;
 import java.util.Set;
-import org.joda.time.DateTime;
 
 /**
  * An {@link AuthenticationToken} associated with a {@link Config}.
  * 
  * @author matt
- * @version 1.0
+ * @version 2.0
  * @since 1.3
  */
 public class ConfigAuthenticationToken extends AuthenticationToken {
@@ -70,7 +70,7 @@ public class ConfigAuthenticationToken extends AuthenticationToken {
 	 * @throws IllegalArgumentException
 	 *         if {@code configId} is null
 	 */
-	public ConfigAuthenticationToken(Long configId, String token, DateTime validUntil,
+	public ConfigAuthenticationToken(Long configId, String token, Instant validUntil,
 			Set<AuthenticationTokenPermission> permissions, boolean passwordUnsecure, String keyHex) {
 		super(token, validUntil, permissions, passwordUnsecure, keyHex);
 		if ( configId == null ) {

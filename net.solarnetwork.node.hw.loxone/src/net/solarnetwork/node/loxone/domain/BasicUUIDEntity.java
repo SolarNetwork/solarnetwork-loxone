@@ -70,7 +70,7 @@ public class BasicUUIDEntity implements UUIDEntity {
 	/**
 	 * Get a {@code sourceId} value from this entity.
 	 * 
-	 * @return The source ID, or {@code null} if unavailable.
+	 * @return The source ID, or {@literal null} if unavailable.
 	 * @see #sourceIdValue(String)
 	 */
 	@JsonGetter("sourceId")
@@ -81,14 +81,14 @@ public class BasicUUIDEntity implements UUIDEntity {
 	/**
 	 * Get a source ID value from a given {@code sourceId}.
 	 * 
-	 * If {@code sourceId} is {@code null}, this will return a derived value via
+	 * If {@code sourceId} is {@literal null}, this will return a derived value via
 	 * {@link UUIDEntity#sourceIdForUUIDEntity(UUIDEntity)}. Otherwise, a
 	 * combination of the configured {@code configId} and the {@code sourceId}
 	 * value will be returned.
 	 * 
 	 * @param sourceId
 	 *        The source ID to construct a value from.
-	 * @return The source ID value, or {@code null} if unavailable.
+	 * @return The source ID value, or {@literal null} if unavailable.
 	 * @see UUIDEntity#sourceIdForUUIDEntity(UUIDEntity)
 	 */
 	protected String sourceIdValue(String sourceId) {

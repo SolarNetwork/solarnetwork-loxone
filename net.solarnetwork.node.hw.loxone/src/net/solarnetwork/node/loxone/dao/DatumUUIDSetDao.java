@@ -27,7 +27,7 @@ import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
 
 /**
  * DAO to track a list of UUID values that should be allowed to be persisted as
- * {@link net.solarnetwork.node.domain.Datum} objects.
+ * {@link net.solarnetwork.domain.datum.Datum} objects.
  * 
  * @author matt
  * @version 1.0

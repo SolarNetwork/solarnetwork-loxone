@@ -40,13 +40,13 @@ import net.solarnetwork.node.loxone.protocol.ws.LoxoneEndpoint;
 import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
 import net.solarnetwork.node.loxone.protocol.ws.MessageType;
 import net.solarnetwork.node.loxone.protocol.ws.handler.DaytimerEventBinaryFileHandler;
-import net.solarnetwork.util.StaticOptionalService;
+import net.solarnetwork.service.StaticOptionalService;
 
 /**
  * Unit tests for the {@link DaytimerEventBinaryFileHandler} class.
  * 
  * @author matt
- * @version 1.0
+ * @version 2.0
  */
 public class DaytimerEventBinaryFileHandlerTests {
 
@@ -62,7 +62,7 @@ public class DaytimerEventBinaryFileHandlerTests {
 		session = EasyMock.createMock(Session.class);
 		eventAdmin = EasyMock.createMock(EventAdmin.class);
 		handler = new DaytimerEventBinaryFileHandler();
-		handler.setEventAdmin(new StaticOptionalService<EventAdmin>(eventAdmin));
+		handler.setEventAdmin(new StaticOptionalService<>(eventAdmin));
 	}
 
 	@Test

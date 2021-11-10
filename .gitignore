@@ -3,3 +3,4 @@ target/
 solarnode/
 derby.log
 test.jpage
+junit*.properties

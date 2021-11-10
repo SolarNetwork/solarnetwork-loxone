@@ -22,24 +22,24 @@
 
 package net.solarnetwork.node.loxone.domain;
 
+import java.time.Instant;
 import java.util.Set;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.HmacUtils;
-import org.joda.time.DateTime;
 import net.solarnetwork.node.loxone.protocol.ws.CommandType;
 
 /**
  * An authentication token.
  * 
  * @author matt
- * @version 1.0
+ * @version 2.0
  * @since 1.3
  */
 public class AuthenticationToken {
 
 	private final String token;
-	private final DateTime validUntil;
+	private final Instant validUntil;
 	private final Set<AuthenticationTokenPermission> permissions;
 	private final boolean passwordUnsecure;
 	private final byte[] key;
@@ -59,7 +59,7 @@ public class AuthenticationToken {
 	 * @param keyHex
 	 *        the hex-encoded key to use for commands
 	 */
-	public AuthenticationToken(String token, DateTime validUntil,
+	public AuthenticationToken(String token, Instant validUntil,
 			Set<AuthenticationTokenPermission> permissions, boolean passwordUnsecure, String keyHex) {
 		super();
 		this.token = token;
@@ -125,9 +125,9 @@ public class AuthenticationToken {
 	 *        the seconds
 	 * @return the date
 	 */
-	public static final DateTime dateForOffsetSeconds(long seconds) {
+	public static final Instant dateForOffsetSeconds(long seconds) {
 		long ms = (seconds * 1000) + LOXONE_EPOCH;
-		return new DateTime(ms);
+		return Instant.ofEpochMilli(ms);
 	}
 
 	/**
@@ -163,14 +163,14 @@ public class AuthenticationToken {
 	 * @return {@literal true} if the token is not valid right now
 	 */
 	public boolean isExpired() {
-		return validUntil == null || validUntil.isBeforeNow();
+		return validUntil == null || validUntil.isBefore(Instant.now());
 	}
 
 	public String getToken() {
 		return token;
 	}
 
-	public DateTime getValidUntil() {
+	public Instant getValidUntil() {
 		return validUntil;
 	}
 
