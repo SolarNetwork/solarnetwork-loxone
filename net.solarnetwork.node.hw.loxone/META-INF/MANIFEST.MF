@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Loxone Miniserver
 Bundle-SymbolicName: net.solarnetwork.node.hw.loxone
 Automatic-Module-Name: net.solarnetwork.node.hw.loxone
-Bundle-Version: 2.0.0
+Bundle-Version: 2.0.1
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Evident
 Export-Package: 
@@ -77,7 +77,6 @@ Import-Package:
  org.springframework.messaging.simp;version="[4.3,5.0)",
  org.springframework.messaging.support;version="[4.3,5.0)",
  org.springframework.scheduling;version="[4.3,5.0)",
- org.springframework.scheduling.quartz;version="[4.3,5.0)",
  org.springframework.transaction;version="[4.3,5.0)",
  org.springframework.transaction.annotation;version="[4.3,5.0)",
  org.springframework.transaction.support;version="[4.3,5.0)",
