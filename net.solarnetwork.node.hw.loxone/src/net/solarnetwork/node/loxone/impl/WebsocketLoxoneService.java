@@ -613,7 +613,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 						false);
 				DatumDataSourcePollManagedJob job = new DatumDataSourcePollManagedJob();
 				job.setDatumQueue(datumQueue);
-				job.setDatumDataSource(datumDataSource);
+				job.setMultiDatumDataSource(datumDataSource);
 				if ( trigger == null ) {
 					trigger = new ScheduledDatumDataSourcePollJob();
 					datumLoggerTrigger = trigger;
