@@ -28,7 +28,7 @@ import java.time.LocalTime;
  * An entry in a daytimer event.
  * 
  * @author matt
- * @version 2.0
+ * @version 2.1
  */
 public class DaytimerEventEntry {
 
@@ -44,9 +44,11 @@ public class DaytimerEventEntry {
 	 * @param mode
 	 *        The mode.
 	 * @param from
-	 *        The from time, in minutes since midnight.
+	 *        The from time, in minutes since midnight. Note that a value >=
+	 *        1440 will be stored as {@link LocalTime#MAX}.
 	 * @param to
-	 *        The to time, in minutes since midnight.
+	 *        The to time, in minutes since midnight. Note that a value >= 1440
+	 *        will be stored as {@link LocalTime#MAX}.
 	 * @param needActivate
 	 *        Need trigger activate.
 	 * @param value
@@ -55,8 +57,8 @@ public class DaytimerEventEntry {
 	public DaytimerEventEntry(int mode, int from, int to, int needActivate, double value) {
 		super();
 		this.mode = mode;
-		this.from = LocalTime.ofSecondOfDay(from * 60);
-		this.to = LocalTime.ofSecondOfDay(to * 60L);
+		this.from = (from < 1440 ? LocalTime.ofSecondOfDay(from * 60) : LocalTime.MAX);
+		this.to = (to < 1440 ? LocalTime.ofSecondOfDay(to * 60) : LocalTime.MAX);
 		this.needActivate = needActivate;
 		this.value = value;
 	}
