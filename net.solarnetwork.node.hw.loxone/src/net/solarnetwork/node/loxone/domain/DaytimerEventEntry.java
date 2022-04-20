@@ -44,11 +44,11 @@ public class DaytimerEventEntry {
 	 * @param mode
 	 *        The mode.
 	 * @param from
-	 *        The from time, in minutes since midnight. Note that a value >=
+	 *        The from time, in minutes since midnight. Note that a value &gt;=
 	 *        1440 will be stored as {@link LocalTime#MAX}.
 	 * @param to
-	 *        The to time, in minutes since midnight. Note that a value >= 1440
-	 *        will be stored as {@link LocalTime#MAX}.
+	 *        The to time, in minutes since midnight. Note that a value &gt;=
+	 *        1440 will be stored as {@link LocalTime#MAX}.
 	 * @param needActivate
 	 *        Need trigger activate.
 	 * @param value
