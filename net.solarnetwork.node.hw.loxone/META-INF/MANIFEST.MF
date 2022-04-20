@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Loxone Miniserver
 Bundle-SymbolicName: net.solarnetwork.node.hw.loxone
 Automatic-Module-Name: net.solarnetwork.node.hw.loxone
-Bundle-Version: 2.0.2
+Bundle-Version: 2.0.3
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Evident
 Export-Package: 

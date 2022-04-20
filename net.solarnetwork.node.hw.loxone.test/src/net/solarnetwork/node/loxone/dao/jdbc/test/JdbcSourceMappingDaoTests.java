@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import javax.annotation.Resource;
-import javax.sql.DataSource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,15 +40,12 @@ import net.solarnetwork.node.test.AbstractNodeTransactionalTest;
  * Unit tests for the {@link JdbcSourceMappingDao} class.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class JdbcSourceMappingDaoTests extends AbstractNodeTransactionalTest {
 
 	private static final Long TEST_CONFIG_ID = 123L;
 	private static final String TEST_SOURCE_ID = "Test Source";
-
-	@Resource(name = "dataSource")
-	private DataSource dataSource;
 
 	private JdbcSourceMappingDao dao;
 	private SourceMapping lastSourceMapping;

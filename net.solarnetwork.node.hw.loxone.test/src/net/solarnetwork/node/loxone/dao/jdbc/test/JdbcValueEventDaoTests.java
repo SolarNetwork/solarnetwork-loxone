@@ -25,10 +25,8 @@ package net.solarnetwork.node.loxone.dao.jdbc.test;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
-import javax.annotation.Resource;
 import javax.cache.Cache;
 import javax.cache.CacheManager;
-import javax.sql.DataSource;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -43,15 +41,12 @@ import net.solarnetwork.node.test.AbstractNodeTransactionalTest;
  * Unit tests for the {@link JdbcValueEventDao} class.
  * 
  * @author matt
- * @version 2.0
+ * @version 2.1
  */
 public class JdbcValueEventDaoTests extends AbstractNodeTransactionalTest {
 
 	private static final Long TEST_CONFIG_ID = 123L;
 	private static final double TEST_DOUBLE = 123.4;
-
-	@Resource(name = "dataSource")
-	private DataSource dataSource;
 
 	private JdbcValueEventDao dao;
 	private ValueEvent lastValueEvent;
