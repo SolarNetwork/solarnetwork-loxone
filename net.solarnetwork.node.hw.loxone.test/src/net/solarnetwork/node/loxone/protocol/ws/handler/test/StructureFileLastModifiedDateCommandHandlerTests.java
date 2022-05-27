@@ -82,7 +82,7 @@ public class StructureFileLastModifiedDateCommandHandlerTests {
 		expect(session.getUserProperties()).andReturn(
 				Collections.singletonMap(LoxoneEndpoint.CONFIG_ID_USER_PROPERTY, TEST_CONFIG_ID));
 
-		Capture<Event> eventCapture = new Capture<>();
+		Capture<Event> eventCapture = Capture.newInstance();
 		eventAdmin.postEvent(capture(eventCapture));
 
 		final String testDate = "2016-09-19 10:10:10";
