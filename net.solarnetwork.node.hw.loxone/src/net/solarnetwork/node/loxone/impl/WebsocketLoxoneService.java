@@ -115,8 +115,8 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 
 	/**
 	 * The job and trigger group used to schedule the
-	 * {@link DatumDataSourcePollJob} with. Note the trigger name will be the
-	 * {@link #getUid()} property value.
+	 * {@link ScheduledDatumDataSourcePollJob} with. Note the trigger name will
+	 * be the {@link #getUid()} property value.
 	 */
 	public static final String SCHEDULER_GROUP = "Loxone";
 
@@ -613,7 +613,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 						false);
 				DatumDataSourcePollManagedJob job = new DatumDataSourcePollManagedJob();
 				job.setDatumQueue(datumQueue);
-				job.setDatumDataSource(datumDataSource);
+				job.setMultiDatumDataSource(datumDataSource);
 				if ( trigger == null ) {
 					trigger = new ScheduledDatumDataSourcePollJob();
 					datumLoggerTrigger = trigger;

@@ -106,7 +106,7 @@ public class WebsocketLoxoneServiceTests {
 
 	@Test
 	public void importSourceMapping() throws IOException {
-		Capture<SourceMapping> mappingCapture = new Capture<>(CaptureType.ALL);
+		Capture<SourceMapping> mappingCapture = Capture.newInstance(CaptureType.ALL);
 
 		sourceMappingDao.store(EasyMock.capture(mappingCapture));
 		EasyMock.expectLastCall().times(447);

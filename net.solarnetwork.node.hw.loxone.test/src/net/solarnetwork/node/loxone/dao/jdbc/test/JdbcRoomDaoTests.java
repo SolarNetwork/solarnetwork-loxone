@@ -27,8 +27,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import javax.annotation.Resource;
-import javax.sql.DataSource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,16 +41,13 @@ import net.solarnetwork.node.test.AbstractNodeTransactionalTest;
  * Unit tests for the {@link JdbcRoomDao} class.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class JdbcRoomDaoTests extends AbstractNodeTransactionalTest {
 
 	private static final Long TEST_CONFIG_ID = 123L;
 	private static final String TEST_NAME = "Test Name";
 	private static final Integer TEST_DEFAULT_RATING = 1;
-
-	@Resource(name = "dataSource")
-	private DataSource dataSource;
 
 	private JdbcRoomDao dao;
 	private Room lastRoom;

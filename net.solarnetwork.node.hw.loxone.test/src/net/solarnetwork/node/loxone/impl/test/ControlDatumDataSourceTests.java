@@ -133,7 +133,7 @@ public class ControlDatumDataSourceTests {
 		expect(settingDao.getSettingValues(settingKey)).andReturn(Collections.emptyList());
 		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
-		Capture<Setting> settingCapture = new Capture<>();
+		Capture<Setting> settingCapture = Capture.newInstance();
 		settingDao.storeSetting(capture(settingCapture));
 
 		replayAll();
@@ -176,7 +176,7 @@ public class ControlDatumDataSourceTests {
 		expect(settingDao.getSettingValues(settingKey)).andReturn(Collections.emptyList());
 		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
-		Capture<Setting> settingCapture = new Capture<>();
+		Capture<Setting> settingCapture = Capture.newInstance();
 		settingDao.storeSetting(capture(settingCapture));
 
 		replayAll();
@@ -252,7 +252,7 @@ public class ControlDatumDataSourceTests {
 		expect(settingDao.getSettingValues(settingKey)).andReturn(saveSettings);
 		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
-		Capture<Setting> settingCapture = new Capture<>();
+		Capture<Setting> settingCapture = Capture.newInstance();
 		settingDao.storeSetting(capture(settingCapture));
 
 		replayAll();
@@ -295,7 +295,7 @@ public class ControlDatumDataSourceTests {
 				new UUIDEntityParametersPair<Control, ControlDatumParameters>(control, controlParams));
 		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
-		Capture<NodeDatum> datumCaptor = new Capture<>();
+		Capture<NodeDatum> datumCaptor = Capture.newInstance();
 		expect(datumQueue.offer(capture(datumCaptor))).andReturn(true);
 
 		// WHEN
@@ -347,7 +347,7 @@ public class ControlDatumDataSourceTests {
 				.asList(new UUIDEntityParametersPair<>(control, controlParams));
 		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
-		Capture<NodeDatum> datumCaptor = new Capture<>();
+		Capture<NodeDatum> datumCaptor = Capture.newInstance();
 		expect(datumQueue.offer(capture(datumCaptor))).andReturn(true);
 
 		// WHEN
@@ -473,7 +473,7 @@ public class ControlDatumDataSourceTests {
 		expect(settingDao.getSettingValues(settingKey)).andReturn(Collections.emptyList());
 		expect(controlDao.findAllForDatumPropertyUUIDEntities(TEST_CONFIG_ID)).andReturn(uuidSet);
 
-		Capture<Setting> settingCapture = new Capture<>();
+		Capture<Setting> settingCapture = Capture.newInstance();
 		settingDao.storeSetting(capture(settingCapture));
 
 		replayAll();

@@ -101,7 +101,7 @@ public class ValueEventBinaryFileHandlerTests {
 		expect(valueEventDao.loadEvent(EasyMock.anyObject(Long.class), EasyMock.anyObject(UUID.class)))
 				.andReturn(null).times(111);
 
-		Capture<ValueEvent> valueEventCapture = new Capture<>(CaptureType.ALL);
+		Capture<ValueEvent> valueEventCapture = Capture.newInstance(CaptureType.ALL);
 		valueEventDao.storeEvent(capture(valueEventCapture));
 		expectLastCall().times(111);
 
@@ -151,7 +151,7 @@ public class ValueEventBinaryFileHandlerTests {
 		expect(valueEventDao.loadEvent(EasyMock.anyObject(Long.class), EasyMock.anyObject(UUID.class)))
 				.andReturn(seenValueEvent);
 
-		Capture<ValueEvent> valueEventCapture = new Capture<>(CaptureType.ALL);
+		Capture<ValueEvent> valueEventCapture = Capture.newInstance(CaptureType.ALL);
 		valueEventDao.storeEvent(capture(valueEventCapture));
 		expectLastCall().times(1);
 
@@ -189,7 +189,7 @@ public class ValueEventBinaryFileHandlerTests {
 
 		// should NOT query for existing data
 
-		Capture<ValueEvent> valueEventCapture = new Capture<>(CaptureType.ALL);
+		Capture<ValueEvent> valueEventCapture = Capture.newInstance(CaptureType.ALL);
 		valueEventDao.storeEvent(capture(valueEventCapture));
 		expectLastCall().times(2);
 

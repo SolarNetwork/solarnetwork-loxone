@@ -151,29 +151,29 @@ public class GetStructureFileCommandHandlerTests {
 		expect(configDao.getConfig(TEST_CONFIG_ID)).andReturn(null);
 
 		// now we find the categories; first delete existing...
-		Capture<Category> categoryCapture = new Capture<>();
+		Capture<Category> categoryCapture = Capture.newInstance();
 		expect(categoryDao.deleteAllForConfig(TEST_CONFIG_ID)).andReturn(0);
 		categoryDao.store(capture(categoryCapture));
 		expectLastCall().times(11);
 
 		// next up, controls
-		Capture<Control> controlCapture = new Capture<>();
+		Capture<Control> controlCapture = Capture.newInstance();
 		expect(controlDao.deleteAllForConfig(TEST_CONFIG_ID)).andReturn(0);
 		controlDao.store(capture(controlCapture));
 		expectLastCall().times(37);
 
 		// next up, rooms
-		Capture<Room> roomCapture = new Capture<>();
+		Capture<Room> roomCapture = Capture.newInstance();
 		expect(roomDao.deleteAllForConfig(TEST_CONFIG_ID)).andReturn(0);
 		roomDao.store(capture(roomCapture));
 		expectLastCall().times(4);
 
 		// store our config
-		Capture<Config> configCapture = new Capture<>();
+		Capture<Config> configCapture = Capture.newInstance();
 		configDao.storeConfig(capture(configCapture));
 
 		// post "last modified date" event
-		Capture<Event> eventCapture = new Capture<>();
+		Capture<Event> eventCapture = Capture.newInstance();
 		eventAdmin.postEvent(capture(eventCapture));
 
 		replayAll();
@@ -242,29 +242,29 @@ public class GetStructureFileCommandHandlerTests {
 		expect(configDao.getConfig(TEST_CONFIG_ID)).andReturn(null);
 
 		// now we find the categories; first delete existing...
-		Capture<Category> categoryCapture = new Capture<>(CaptureType.ALL);
+		Capture<Category> categoryCapture = Capture.newInstance(CaptureType.ALL);
 		expect(categoryDao.deleteAllForConfig(TEST_CONFIG_ID)).andReturn(0);
 		categoryDao.store(capture(categoryCapture));
 		expectLastCall().times(6);
 
 		// next up, controls
-		Capture<Control> controlCapture = new Capture<>(CaptureType.ALL);
+		Capture<Control> controlCapture = Capture.newInstance(CaptureType.ALL);
 		expect(controlDao.deleteAllForConfig(TEST_CONFIG_ID)).andReturn(0);
 		controlDao.store(capture(controlCapture));
 		expectLastCall().times(46);
 
 		// next up, rooms
-		Capture<Room> roomCapture = new Capture<>(CaptureType.ALL);
+		Capture<Room> roomCapture = Capture.newInstance(CaptureType.ALL);
 		expect(roomDao.deleteAllForConfig(TEST_CONFIG_ID)).andReturn(0);
 		roomDao.store(capture(roomCapture));
 		expectLastCall().times(11);
 
 		// store our config
-		Capture<Config> configCapture = new Capture<>();
+		Capture<Config> configCapture = Capture.newInstance();
 		configDao.storeConfig(capture(configCapture));
 
 		// post "last modified date" event
-		Capture<Event> eventCapture = new Capture<>();
+		Capture<Event> eventCapture = Capture.newInstance();
 		eventAdmin.postEvent(capture(eventCapture));
 
 		replayAll();

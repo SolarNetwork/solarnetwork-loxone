@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import javax.annotation.Resource;
-import javax.sql.DataSource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,14 +43,11 @@ import net.solarnetwork.node.test.AbstractNodeTransactionalTest;
  * Unit tests for the {@link JdbcDatumUUIDSetDaoTests} class.
  * 
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class JdbcDatumUUIDSetDaoTests extends AbstractNodeTransactionalTest {
 
 	private static final Long TEST_CONFIG_ID = 123L;
-
-	@Resource(name = "dataSource")
-	private DataSource dataSource;
 
 	private JdbcDatumUUIDSetDao dao;
 	private BasicDatumUUIDEntity lastEntity;

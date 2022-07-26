@@ -26,10 +26,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.annotation.Resource;
 import javax.cache.Cache;
 import javax.cache.CacheManager;
-import javax.sql.DataSource;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -64,7 +62,7 @@ import net.solarnetwork.node.test.AbstractNodeTransactionalTest;
  * Unit tests for the {@link JdbcControlDao} class.
  * 
  * @author matt
- * @version 1.2
+ * @version 1.3
  */
 public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 
@@ -73,8 +71,6 @@ public class JdbcControlDaoTests extends AbstractNodeTransactionalTest {
 	private static final Integer TEST_DEFAULT_RATING = 1;
 	private static final String TEST_SOURCE_ID = "Test Source";
 
-	@Resource(name = "dataSource")
-	private DataSource dataSource;
 	private DatumUUIDSetDao datumSetDao;
 	private DatumPropertyUUIDSetDao datumPropSetDao;
 	private ValueEventDao valueEventDao;
