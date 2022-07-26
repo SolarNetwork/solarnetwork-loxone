@@ -1,6 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Loxone Miniserver
+Bundle-Description: Integration with Loxone Miniserver to generate datum streams and expose
+ controls.
 Bundle-SymbolicName: net.solarnetwork.node.hw.loxone
 Automatic-Module-Name: net.solarnetwork.node.hw.loxone
 Bundle-Version: 2.0.3
