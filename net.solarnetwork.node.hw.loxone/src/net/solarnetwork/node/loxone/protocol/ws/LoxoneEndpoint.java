@@ -106,7 +106,7 @@ import net.solarnetwork.service.OptionalService;
  * date changes will request the structure file again from the Loxone server.
  * 
  * @author matt
- * @version 2.9
+ * @version 2.10
  */
 public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<ByteBuffer>, EventHandler {
 
@@ -270,7 +270,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	private ConfigApi getConfigApiForHost(String host) throws IOException, URISyntaxException {
 		log.debug("Testing Loxone connection to {}", host);
-		URL connUrl = new URL("http://" + host + "/jdev/cfg/api");
+		URL connUrl = new URI("http://" + host + "/jdev/cfg/api").toURL();
 		HttpURLConnection conn = (HttpURLConnection) connUrl.openConnection();
 		conn.setRequestMethod("GET");
 		conn.setConnectTimeout(30000);
@@ -286,7 +286,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 			case 307:
 				String loc = conn.getHeaderField("Location");
 				if ( loc != null ) {
-					URL locURL = new URL(loc);
+					URL locURL = new URI(loc).toURL();
 					return getConfigApiForHost(locURL.getHost() + ":" + locURL.getPort());
 				}
 				break;
@@ -303,7 +303,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		}
 
 		// now get public key
-		URL pubKeyUrl = new URL("http://" + host + "/jdev/sys/getPublicKey");
+		URL pubKeyUrl = new URI("http://" + host + "/jdev/sys/getPublicKey").toURL();
 		conn = (HttpURLConnection) pubKeyUrl.openConnection();
 		conn.setRequestMethod("GET");
 		conn.setConnectTimeout(30000);
