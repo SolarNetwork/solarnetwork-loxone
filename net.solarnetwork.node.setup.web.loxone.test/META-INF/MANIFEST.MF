@@ -21,4 +21,4 @@ Import-Package:
  org.easymock;version="[3.1,4.0)",
  org.junit;version="[4.5,5.0)",
  org.junit.runner;version="[4.5,5.0)",
- org.springframework.beans.factory;version="[4.3,5.0)"
+ org.springframework.beans.factory;version="[5.3,6.0)"
