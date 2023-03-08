@@ -5,7 +5,7 @@ Bundle-Description: Integration with Loxone Miniserver to generate datum streams
  controls.
 Bundle-SymbolicName: net.solarnetwork.node.hw.loxone
 Automatic-Module-Name: net.solarnetwork.node.hw.loxone
-Bundle-Version: 2.0.4
+Bundle-Version: 3.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Evident
 Export-Package: 
@@ -58,28 +58,28 @@ Import-Package:
  org.osgi.framework;version="[1.7,2.0)",
  org.osgi.service.event;version="[1.2,2.0)",
  org.slf4j;version="[1.7,2.0)",
- org.springframework.aop;version="[4.3,5.0)",
- org.springframework.aop.framework;version="[4.3,5.0)",
- org.springframework.beans;version="[4.3,5.0)",
- org.springframework.context;version="[4.3,5.0)",
- org.springframework.context.support;version="[4.3,5.0)",
- org.springframework.core;version="[4.3,5.0)",
- org.springframework.core.io;version="[4.3,5.0)",
- org.springframework.core.task;version="[4.3,5.0)",
- org.springframework.dao;version="[4.3,5.0)",
- org.springframework.dao.support;version="[4.3,5.0)",
- org.springframework.jdbc;version="[4.3,5.0)",
- org.springframework.jdbc.core;version="[4.3,5.0)",
- org.springframework.jdbc.core.simple;version="[4.3,5.0)",
- org.springframework.jdbc.core.support;version="[4.3,5.0)",
- org.springframework.jdbc.datasource;version="[4.3,5.0)",
- org.springframework.jdbc.support;version="[4.3,5.0)",
- org.springframework.messaging;version="[4.3,5.0)",
- org.springframework.messaging.core;version="[4.3,5.0)",
- org.springframework.messaging.simp;version="[4.3,5.0)",
- org.springframework.messaging.support;version="[4.3,5.0)",
- org.springframework.scheduling;version="[4.3,5.0)",
- org.springframework.transaction;version="[4.3,5.0)",
- org.springframework.transaction.annotation;version="[4.3,5.0)",
- org.springframework.transaction.support;version="[4.3,5.0)",
- org.springframework.util;version="[4.3,5.0)"
+ org.springframework.aop;version="[5.3,6.0)",
+ org.springframework.aop.framework;version="[5.3,6.0)",
+ org.springframework.beans;version="[5.3,6.0)",
+ org.springframework.context;version="[5.3,6.0)",
+ org.springframework.context.support;version="[5.3,6.0)",
+ org.springframework.core;version="[5.3,6.0)",
+ org.springframework.core.io;version="[5.3,6.0)",
+ org.springframework.core.task;version="[5.3,6.0)",
+ org.springframework.dao;version="[5.3,6.0)",
+ org.springframework.dao.support;version="[5.3,6.0)",
+ org.springframework.jdbc;version="[5.3,6.0)",
+ org.springframework.jdbc.core;version="[5.3,6.0)",
+ org.springframework.jdbc.core.simple;version="[5.3,6.0)",
+ org.springframework.jdbc.core.support;version="[5.3,6.0)",
+ org.springframework.jdbc.datasource;version="[5.3,6.0)",
+ org.springframework.jdbc.support;version="[5.3,6.0)",
+ org.springframework.messaging;version="[5.3,6.0)",
+ org.springframework.messaging.core;version="[5.3,6.0)",
+ org.springframework.messaging.simp;version="[5.3,6.0)",
+ org.springframework.messaging.support;version="[5.3,6.0)",
+ org.springframework.scheduling;version="[5.3,6.0)",
+ org.springframework.transaction;version="[5.3,6.0)",
+ org.springframework.transaction.annotation;version="[5.3,6.0)",
+ org.springframework.transaction.support;version="[5.3,6.0)",
+ org.springframework.util;version="[5.3,6.0)"
