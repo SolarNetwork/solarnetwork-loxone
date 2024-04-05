@@ -5,7 +5,7 @@ Bundle-SymbolicName: net.solarnetwork.node.setup.web.loxone
 Automatic-Module-Name: net.solarnetwork.node.setup.web.loxone
 Bundle-Description: Loxone integration with the SolarNode Setup Web App that
  allows configuring what data SolarNode captures from Loxone Miniservers.
-Bundle-Version: 3.0.2
+Bundle-Version: 3.0.3
 Fragment-Host: net.solarnetwork.node.setup.web;bundle-version="[3.0,5.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Evident
