@@ -32,7 +32,7 @@ body {
 
 .loxone-row {
   width: calc(100% - 40px);
-  height: 20px;
+  height: 54px;
   padding: 15px 20px;
   margin: 5px 0px;
   background-color: #fff;
@@ -47,13 +47,12 @@ body {
 
 .loxone-list .dropdown .state-row {
   width: calc(100% - 40px);
-  height: 20px;
+  height: 34px;
   padding: 5px 20px;
 }
 
 .loxone-heading #filter-input {
   width: 300px;
-  height: 14px;
   margin: 20px 0px;
 }
 
