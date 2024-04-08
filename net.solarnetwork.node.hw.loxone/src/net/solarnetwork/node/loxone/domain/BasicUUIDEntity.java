@@ -1,21 +1,21 @@
 /* ==================================================================
  * BasicUUIDEntity.java - 19/09/2016 7:29:42 AM
- * 
+ *
  * Copyright 2007-2016 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -26,12 +26,14 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Base entity that uses a UUID as its primary key.
- * 
+ *
  * @author matt
- * @version 1.1
+ * @version 1.2
  */
 public class BasicUUIDEntity implements UUIDEntity {
 
@@ -57,7 +59,7 @@ public class BasicUUIDEntity implements UUIDEntity {
 
 	/**
 	 * Set a specific source ID.
-	 * 
+	 *
 	 * @param sourceId
 	 *        The source ID to use.
 	 * @since 1.1
@@ -69,7 +71,7 @@ public class BasicUUIDEntity implements UUIDEntity {
 
 	/**
 	 * Get a {@code sourceId} value from this entity.
-	 * 
+	 *
 	 * @return The source ID, or {@literal null} if unavailable.
 	 * @see #sourceIdValue(String)
 	 */
@@ -80,12 +82,12 @@ public class BasicUUIDEntity implements UUIDEntity {
 
 	/**
 	 * Get a source ID value from a given {@code sourceId}.
-	 * 
-	 * If {@code sourceId} is {@literal null}, this will return a derived value via
-	 * {@link UUIDEntity#sourceIdForUUIDEntity(UUIDEntity)}. Otherwise, a
+	 *
+	 * If {@code sourceId} is {@literal null}, this will return a derived value
+	 * via {@link UUIDEntity#sourceIdForUUIDEntity(UUIDEntity)}. Otherwise, a
 	 * combination of the configured {@code configId} and the {@code sourceId}
 	 * value will be returned.
-	 * 
+	 *
 	 * @param sourceId
 	 *        The source ID to construct a value from.
 	 * @return The source ID value, or {@literal null} if unavailable.
@@ -114,10 +116,12 @@ public class BasicUUIDEntity implements UUIDEntity {
 	}
 
 	@Override
+	@JsonSerialize(using = UUIDSerializer.class)
 	public UUID getUuid() {
 		return uuid;
 	}
 
+	@JsonDeserialize(using = UUIDDeserializer.class)
 	public void setUuid(UUID uuid) {
 		this.uuid = uuid;
 	}
