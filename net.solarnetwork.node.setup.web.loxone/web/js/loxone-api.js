@@ -87,7 +87,9 @@ Loxone.api = (function() {
     this.api.request({ method: 'PATCH', path: 'uuidsets/datum', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body), csrf: true }, function(err, response) {
       if(!err && response.success) {
         if(uuid in this.resources['uuidsets/datum']) {
-          if(typeof this.resources['uuidsets/datum'][uuid] != 'object') this.resources['uuidsets/datum'][uuid] = {};
+          if(this.resources['uuidsets/datum'][uuid] === null) {
+		    this.resources['uuidsets/datum'][uuid] = {};
+		  }
           this.resources['uuidsets/datum'][uuid].saveFrequencySeconds = frequency;
         }
       }
@@ -100,7 +102,9 @@ Loxone.api = (function() {
     this.api.request({ method: 'PATCH', path: 'uuidsets/props', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body), csrf: true }, function(err, response) {
       if(!err && response.success) {
         if(uuid in this.resources['uuidsets/props']) {
-          if(typeof this.resources['uuidsets/props'][uuid] != 'object') this.resources['uuidsets/props'][uuid] = {};
+          if(this.resources['uuidsets/props'][uuid] === null) {
+			this.resources['uuidsets/props'][uuid] = {};
+		  }
           this.resources['uuidsets/props'][uuid].datumValueType = type;
         } else {
           this.resources['uuidsets/props'][uuid] = { datumValueType: type };
