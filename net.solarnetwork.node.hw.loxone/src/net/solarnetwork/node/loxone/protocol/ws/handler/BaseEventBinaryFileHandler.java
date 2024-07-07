@@ -1,21 +1,21 @@
 /* ==================================================================
  * BaseEventBinaryFileHandler.java - 20/09/2016 4:59:03 PM
- * 
+ *
  * Copyright 2007-2016 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -48,7 +48,9 @@ import net.solarnetwork.service.OptionalService;
 
 /**
  * Base class for binary event data handlers.
- * 
+ *
+ * @param <T>
+ *        the entity type
  * @author matt
  * @version 2.0
  */
@@ -66,6 +68,13 @@ public abstract class BaseEventBinaryFileHandler<T extends BaseEventEntity>
 
 	/** A class-level logger. */
 	protected final Logger log = LoggerFactory.getLogger(getClass());
+
+	/**
+	 * Constructor.
+	 */
+	public BaseEventBinaryFileHandler() {
+		super();
+	}
 
 	@Override
 	public boolean supportsTextMessage(MessageHeader header, Reader reader, int limit)
@@ -97,7 +106,7 @@ public abstract class BaseEventBinaryFileHandler<T extends BaseEventEntity>
 
 	/**
 	 * Handle the data message for the session's config ID.
-	 * 
+	 *
 	 * @param header
 	 *        The message header.
 	 * @param session
@@ -113,7 +122,7 @@ public abstract class BaseEventBinaryFileHandler<T extends BaseEventEntity>
 
 	/**
 	 * Get the session's config ID value.
-	 * 
+	 *
 	 * @param session
 	 *        The current session.
 	 * @return The ID, or <em>null</em> if not found.
@@ -129,10 +138,10 @@ public abstract class BaseEventBinaryFileHandler<T extends BaseEventEntity>
 
 	/**
 	 * Read a UUID from a buffer.
-	 * 
+	 *
 	 * This method will force the buffer into {@code LITTLE_ENDIAN} order before
 	 * returning.
-	 * 
+	 *
 	 * @param buffer
 	 *        The buffer to use.
 	 * @return The parsed UUID.
@@ -150,7 +159,7 @@ public abstract class BaseEventBinaryFileHandler<T extends BaseEventEntity>
 	/**
 	 * Post an event. Will silently ignore the event if no {@link EventAdmin} is
 	 * available.
-	 * 
+	 *
 	 * @param e
 	 *        The event to post.
 	 */
@@ -163,12 +172,12 @@ public abstract class BaseEventBinaryFileHandler<T extends BaseEventEntity>
 
 	/**
 	 * Post a message without any headers, converting it first.
-	 * 
+	 *
 	 * <p>
 	 * Will silently ignore the event if no {@link MessageSendingOperations} is
 	 * available.
 	 * </p>
-	 * 
+	 *
 	 * @param dest
 	 *        The destination to post to.
 	 * @param body
@@ -183,7 +192,7 @@ public abstract class BaseEventBinaryFileHandler<T extends BaseEventEntity>
 	/**
 	 * Post a message. Will silently ignore the event if no
 	 * {@link MessageSendingOperations} is available.
-	 * 
+	 *
 	 * <p>
 	 * If {@code convert} is {@literal true} the message will be sent via the
 	 * {@link MessageSendingOperations#convertAndSend(Object, Object, Map)}
@@ -191,7 +200,7 @@ public abstract class BaseEventBinaryFileHandler<T extends BaseEventEntity>
 	 * {@link MessageSendingOperations#send(Object, Message)} method will be
 	 * used to send the body as-is.
 	 * </p>
-	 * 
+	 *
 	 * @param dest
 	 *        The destination to post to.
 	 * @param body
@@ -222,7 +231,7 @@ public abstract class BaseEventBinaryFileHandler<T extends BaseEventEntity>
 
 	/**
 	 * Set the DAO to use.
-	 * 
+	 *
 	 * @param eventDao
 	 *        The DAO.
 	 */
@@ -234,7 +243,7 @@ public abstract class BaseEventBinaryFileHandler<T extends BaseEventEntity>
 	 * Work-around for OSGi Blueprint failures to populate via
 	 * {@link #setEventDao(EventEntityDao)}. Calls
 	 * {@link #setEventDao(EventEntityDao)}.
-	 * 
+	 *
 	 * @param o
 	 *        The DAO to set.
 	 */
@@ -247,7 +256,7 @@ public abstract class BaseEventBinaryFileHandler<T extends BaseEventEntity>
 
 	/**
 	 * Set an {@link EventAdmin} to publish events with.
-	 * 
+	 *
 	 * @param eventAdmin
 	 *        The event admin service.
 	 */
@@ -257,7 +266,7 @@ public abstract class BaseEventBinaryFileHandler<T extends BaseEventEntity>
 
 	/**
 	 * Set a {@link SimpMessageSendingOperations} to publish messages with.
-	 * 
+	 *
 	 * @param messagingOps
 	 *        The service to use.
 	 */

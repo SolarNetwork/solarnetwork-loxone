@@ -214,6 +214,13 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	private final AtomicInteger authKeyState = new AtomicInteger(0);
 
+	/**
+	 * Constructor.
+	 */
+	public LoxoneEndpoint() {
+		super();
+	}
+
 	private synchronized void connect() {
 		ClientManager container = ClientManager.createClient(JdkClientContainer.class.getName());
 		if ( clientProperties != null ) {
@@ -1190,10 +1197,21 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		}
 	}
 
+	/**
+	 * Get the host.
+	 *
+	 * @return the host
+	 */
 	public String getHost() {
 		return host;
 	}
 
+	/**
+	 * Set the host.
+	 *
+	 * @param host
+	 *        the host to set
+	 */
 	public void setHost(String host) {
 		if ( this.host == null || !this.host.equals(host) ) {
 			this.host = host;
@@ -1201,10 +1219,21 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		}
 	}
 
+	/**
+	 * Get the username.
+	 *
+	 * @return the username
+	 */
 	public String getUsername() {
 		return username;
 	}
 
+	/**
+	 * Set the username.
+	 *
+	 * @param username
+	 *        the username
+	 */
 	public void setUsername(String username) {
 		if ( this.username == null || !this.username.equals(username) ) {
 			this.username = username;
@@ -1214,10 +1243,21 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		}
 	}
 
+	/**
+	 * Get the password.
+	 *
+	 * @return the password
+	 */
 	public String getPassword() {
 		return password;
 	}
 
+	/**
+	 * Set the password.
+	 *
+	 * @param password
+	 *        the password to set
+	 */
 	public void setPassword(String password) {
 		if ( this.password == null || !this.password.equals(password) ) {
 			this.password = password;
@@ -1254,51 +1294,117 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		}
 	}
 
+	/**
+	 * Get the object mapper.
+	 *
+	 * @return the mapper
+	 */
 	public ObjectMapper getObjectMapper() {
 		return objectMapper;
 	}
 
+	/**
+	 * Set the object mapper.
+	 *
+	 * @param objectMapper
+	 *        the mapper to set
+	 */
 	public void setObjectMapper(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
 	}
 
+	/**
+	 * Get the command handlers.
+	 *
+	 * @return the command handlers
+	 */
 	public CommandHandler[] getCommandHandlers() {
 		return commandHandlers;
 	}
 
+	/**
+	 * Set the command handlers.
+	 *
+	 * @param commandHandlers
+	 *        the handlers to set
+	 */
 	public void setCommandHandlers(CommandHandler[] commandHandlers) {
 		this.commandHandlers = commandHandlers;
 	}
 
+	/**
+	 * Get the binary file handlers.
+	 *
+	 * @return the handlers
+	 */
 	public BinaryFileHandler[] getBinaryFileHandlers() {
 		return binaryFileHandlers;
 	}
 
+	/**
+	 * Set the binary file handlers.
+	 *
+	 * @param binaryFileHandlers
+	 *        the handlers to set
+	 */
 	public void setBinaryFileHandlers(BinaryFileHandler[] binaryFileHandlers) {
 		this.binaryFileHandlers = binaryFileHandlers;
 	}
 
+	/**
+	 * Get the event admin.
+	 *
+	 * @return the event admin
+	 */
 	public OptionalService<EventAdmin> getEventAdmin() {
 		return eventAdmin;
 	}
 
+	/**
+	 * Set the event admin.
+	 *
+	 * @param eventAdmin
+	 *        the event admin to set
+	 */
 	public void setEventAdmin(OptionalService<EventAdmin> eventAdmin) {
 		this.eventAdmin = eventAdmin;
 		internalCommandHandler.setEventAdmin(eventAdmin);
 	}
 
+	/**
+	 * Get the task scheduler.
+	 *
+	 * @return the scheduler
+	 */
 	public TaskScheduler getTaskScheduler() {
 		return taskScheduler;
 	}
 
+	/**
+	 * Set the task scheduler.
+	 *
+	 * @param taskScheduler
+	 *        the scheduler to set
+	 */
 	public void setTaskScheduler(TaskScheduler taskScheduler) {
 		this.taskScheduler = taskScheduler;
 	}
 
+	/**
+	 * Get the configuration DAO.
+	 *
+	 * @return the DAO
+	 */
 	public ConfigDao getConfigDao() {
 		return configDao;
 	}
 
+	/**
+	 * Set the configuration DAO.
+	 *
+	 * @param configDao
+	 *        the DAO to set
+	 */
 	public void setConfigDao(ConfigDao configDao) {
 		this.configDao = configDao;
 	}

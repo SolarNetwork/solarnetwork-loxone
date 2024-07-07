@@ -1,21 +1,21 @@
 /* ==================================================================
  * AuthenticationTokenPermission.java - 4/04/2018 1:58:23 PM
- * 
+ *
  * Copyright 2018 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -29,15 +29,17 @@ import java.util.Set;
 
 /**
  * Authentication token permission values.
- * 
+ *
  * @author matt
  * @version 1.0
  * @since 1.3
  */
 public enum AuthenticationTokenPermission {
 
+	/** Web type. */
 	Web(2),
 
+	/** App type. */
 	App(4);
 
 	private final int code;
@@ -48,7 +50,7 @@ public enum AuthenticationTokenPermission {
 
 	/**
 	 * Get the code associated with this permission.
-	 * 
+	 *
 	 * @return the code
 	 */
 	public int getCode() {
@@ -57,7 +59,7 @@ public enum AuthenticationTokenPermission {
 
 	/**
 	 * Get an enum for a code value.
-	 * 
+	 *
 	 * @param code
 	 *        the code to get the enum for
 	 * @return the enum
@@ -75,7 +77,7 @@ public enum AuthenticationTokenPermission {
 
 	/**
 	 * Get a set of permissions out of a bitmask of permission codes.
-	 * 
+	 *
 	 * @param bitmask
 	 *        the bitmask of permission codes
 	 * @return the set of permissions, never {@literal null}
@@ -93,7 +95,7 @@ public enum AuthenticationTokenPermission {
 
 	/**
 	 * Get a bitmask out of a set of permissions.
-	 * 
+	 *
 	 * @param permissions
 	 *        the set of permissions
 	 * @return the bitmask of permission codes

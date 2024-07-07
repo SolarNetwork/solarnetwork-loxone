@@ -37,7 +37,10 @@ public class ConfigUUIDKey implements Serializable {
 
 	private static final long serialVersionUID = 2754323180632544113L;
 
+	/** The configuration ID. */
 	private final Long configId;
+
+	/** The UUID. */
 	private final UUID uuid;
 
 	/**

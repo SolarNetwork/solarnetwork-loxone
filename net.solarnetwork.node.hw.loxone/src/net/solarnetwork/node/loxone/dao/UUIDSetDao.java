@@ -1,21 +1,21 @@
 /* ==================================================================
  * UUIDSetDao.java - 27/09/2016 3:54:53 PM
- * 
+ *
  * Copyright 2007-2016 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -33,13 +33,17 @@ import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
 
 /**
  * DAO to track a list of UUID values.
- * 
+ *
  * This API is meant to facility managing a subset list of UUID values out of a
  * possibly very large total list, so that any number of UUID values can be
  * added and then {@link #contains(Long, UUID)} can be used to query for the
  * existence of individual values or {@link #findAllForConfig(Long, List)} can
  * be used to get the complete subset list.
- * 
+ *
+ * @param <T>
+ *        the entity type
+ * @param <P>
+ *        the entity parameters type
  * @author matt
  * @version 1.0
  */
@@ -47,14 +51,14 @@ public interface UUIDSetDao<T extends UUIDSetEntity<P>, P extends UUIDEntityPara
 
 	/**
 	 * Get the class of the entity managed by this DAO.
-	 * 
+	 *
 	 * @return The class.
 	 */
 	Class<T> entityClass();
 
 	/**
 	 * Get the class of the parameters managed by this DAO.
-	 * 
+	 *
 	 * @return The class.
 	 */
 	Class<P> parametersClass();
@@ -62,7 +66,7 @@ public interface UUIDSetDao<T extends UUIDSetEntity<P>, P extends UUIDEntityPara
 	/**
 	 * Store (create or update) an entity. The {@code uuid} value is the primary
 	 * key.
-	 * 
+	 *
 	 * @param entity
 	 *        The entity to store.
 	 */
@@ -70,7 +74,7 @@ public interface UUIDSetDao<T extends UUIDSetEntity<P>, P extends UUIDEntityPara
 
 	/**
 	 * Get an entity for a given UUID.
-	 * 
+	 *
 	 * @param configId
 	 *        The config ID to match.
 	 * @param uuid
@@ -81,7 +85,7 @@ public interface UUIDSetDao<T extends UUIDSetEntity<P>, P extends UUIDEntityPara
 
 	/**
 	 * Test if an entity exists for a given UUID.
-	 * 
+	 *
 	 * @param configId
 	 *        The config ID to match.
 	 * @param uuid
@@ -92,7 +96,7 @@ public interface UUIDSetDao<T extends UUIDSetEntity<P>, P extends UUIDEntityPara
 
 	/**
 	 * Delete an entity.
-	 * 
+	 *
 	 * @param configId
 	 *        The config ID to match.
 	 * @param uuid
@@ -103,7 +107,7 @@ public interface UUIDSetDao<T extends UUIDSetEntity<P>, P extends UUIDEntityPara
 
 	/**
 	 * Delete all entities matching a given configuration.
-	 * 
+	 *
 	 * @param configId
 	 *        The config ID to match.
 	 * @return The count of deleted items.
@@ -112,14 +116,14 @@ public interface UUIDSetDao<T extends UUIDSetEntity<P>, P extends UUIDEntityPara
 
 	/**
 	 * Get a list of persisted entities, optionally sorted in some way.
-	 * 
+	 *
 	 * <p>
-	 * The {@code sortDescriptors} parameter can be {@literal null}, in which case
-	 * the sort order should default to the
+	 * The {@code sortDescriptors} parameter can be {@literal null}, in which
+	 * case the sort order should default to the
 	 * {@link ConfigurationEntity#getDefaultRating()} followed by
 	 * {@link ConfigurationEntity#getName()}.
 	 * </p>
-	 * 
+	 *
 	 * @param configId
 	 *        The config ID to match.
 	 * @param sortDescriptors
@@ -130,10 +134,10 @@ public interface UUIDSetDao<T extends UUIDSetEntity<P>, P extends UUIDEntityPara
 
 	/**
 	 * Add and remove UUIDs from the set managed by this DAO.
-	 * 
+	 *
 	 * If a UUID exists in both {@code add} and {@code remove}, it will be
 	 * removed.
-	 * 
+	 *
 	 * @param configId
 	 *        The config ID to match.
 	 * @param add

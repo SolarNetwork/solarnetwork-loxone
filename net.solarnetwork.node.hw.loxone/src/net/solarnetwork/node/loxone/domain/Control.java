@@ -48,23 +48,32 @@ public class Control extends BaseConfigurationEntity {
 
 	private ControlType type;
 	private UUID room;
+	private Map<String, UUID> states;
+	private String details;
 
+	@JsonProperty("cat")
+	private UUID category;
+
+	/**
+	 * Constructor.
+	 */
 	public Control() {
 		super();
 	}
 
+	/**
+	 * Constructor.
+	 *
+	 * @param uuid
+	 *        the UUID
+	 * @param configId
+	 *        the configuration ID
+	 */
 	public Control(UUID uuid, Long configId) {
 		super();
 		setUuid(uuid);
 		setConfigId(configId);
 	}
-
-	@JsonProperty("cat")
-	private UUID category;
-
-	private Map<String, UUID> states;
-
-	private String details;
 
 	@Override
 	@JsonIgnore
@@ -106,49 +115,104 @@ public class Control extends BaseConfigurationEntity {
 		setUuid(uuid);
 	}
 
+	/**
+	 * Get the control type.
+	 *
+	 * @return the type
+	 */
 	public ControlType getType() {
 		return type;
 	}
 
+	/**
+	 * Set the control type.
+	 *
+	 * @param type
+	 *        the type to set
+	 */
 	public void setType(ControlType type) {
 		this.type = type;
 	}
 
+	/**
+	 * Get the room.
+	 *
+	 * @return the room
+	 */
 	@JsonSerialize(using = UUIDSerializer.class)
 	public UUID getRoom() {
 		return room;
 	}
 
+	/**
+	 * Set the room.
+	 *
+	 * @param room
+	 *        the room to set
+	 */
 	@JsonDeserialize(using = UUIDDeserializer.class)
 	public void setRoom(UUID room) {
 		this.room = room;
 	}
 
+	/**
+	 * Get the category.
+	 *
+	 * @return the category
+	 */
 	@JsonSerialize(using = UUIDSerializer.class)
 	public UUID getCategory() {
 		return category;
 	}
 
+	/**
+	 * Set the category.
+	 *
+	 * @param category
+	 *        the category to set
+	 */
 	@JsonDeserialize(using = UUIDDeserializer.class)
 	public void setCategory(UUID category) {
 		this.category = category;
 	}
 
+	/**
+	 * Get the states.
+	 *
+	 * @return the states
+	 */
 	@JsonSerialize(contentUsing = UUIDSerializer.class)
 	public Map<String, UUID> getStates() {
 		return states;
 	}
 
+	/**
+	 * Set the states.
+	 *
+	 * @param states
+	 *        the states to set
+	 */
 	@JsonDeserialize(using = net.solarnetwork.node.loxone.domain.UUIDMapDeserializer.class)
 	public void setStates(Map<String, UUID> states) {
 		this.states = states;
 	}
 
+	/**
+	 * Get the details.
+	 *
+	 * @return the details
+	 */
 	@JsonRawValue
 	public String getDetails() {
 		return details;
 	}
 
+	/**
+	 * Set the details.
+	 *
+	 * @param details
+	 *        the details to set
+	 */
 	@JsonSetter("details")
 	public void setDetailsJson(JsonNode details) {
 		this.details = details.toString();

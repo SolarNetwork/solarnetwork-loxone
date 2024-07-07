@@ -1,21 +1,21 @@
 /* ==================================================================
  * SettingsConfigDao.java - 19/09/2016 1:56:38 PM
- * 
+ *
  * Copyright 2007-2016 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -31,7 +31,7 @@ import net.solarnetwork.node.loxone.domain.Config;
 
 /**
  * {@link ConfigDao} that persists data via a {@link SettingDao}.
- * 
+ *
  * @author matt
  * @version 1.1
  */
@@ -39,7 +39,7 @@ public class SettingsConfigDao implements ConfigDao {
 
 	/**
 	 * A global setting key used for the client UUID.
-	 * 
+	 *
 	 * @since 1.1
 	 */
 	public static final String GLOBAL_UUID_SETTING_KEY = "loxone/uuid";
@@ -47,6 +47,13 @@ public class SettingsConfigDao implements ConfigDao {
 	private static final AtomicReference<UUID> GLOBAL_UUID = new AtomicReference<UUID>(null);
 
 	private SettingDao settingDao;
+
+	/**
+	 * Constructor.
+	 */
+	public SettingsConfigDao() {
+		super();
+	}
 
 	private static String lastModifiedDateSettingKey(Long configId) {
 		return "loxone/" + Config.idToExternalForm(configId) + "/lastModified";
@@ -104,10 +111,21 @@ public class SettingsConfigDao implements ConfigDao {
 		return new Config(id, (ts > 0 ? new Date(ts) : null), globalUuid);
 	}
 
+	/**
+	 * Get the setting DAO.
+	 *
+	 * @return the DAO
+	 */
 	public SettingDao getSettingDao() {
 		return settingDao;
 	}
 
+	/**
+	 * Set the setting DAO.
+	 *
+	 * @param settingDao
+	 *        the DAO to set
+	 */
 	public void setSettingDao(SettingDao settingDao) {
 		this.settingDao = settingDao;
 	}

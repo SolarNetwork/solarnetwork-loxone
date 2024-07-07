@@ -158,6 +158,13 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 
 	}
 
+	/**
+	 * Constructor.
+	 */
+	public WebsocketLoxoneService() {
+		super();
+	}
+
 	@Override
 	public void serviceDidStartup() {
 		init();
@@ -445,14 +452,31 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		return uid;
 	}
 
+	/**
+	 * Set the UID.
+	 *
+	 * @param uid
+	 *        the UID
+	 */
 	public void setUid(String uid) {
 		this.uid = uid;
 	}
 
+	/**
+	 * Get the UID.
+	 *
+	 * @return the UID
+	 */
 	public String getUID() {
 		return getUid();
 	}
 
+	/**
+	 * Set the UID.
+	 *
+	 * @param uid
+	 *        the UID to set
+	 */
 	public void setUID(String uid) {
 		setUid(uid);
 	}
@@ -462,14 +486,31 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		return groupUid;
 	}
 
+	/**
+	 * Set the group UID.
+	 *
+	 * @param groupUid
+	 *        the group UID to set
+	 */
 	public void setGroupUid(String groupUid) {
 		this.groupUid = groupUid;
 	}
 
+	/**
+	 * Get the group UID.
+	 *
+	 * @return the group UID
+	 */
 	public String getGroupUID() {
 		return getGroupUid();
 	}
 
+	/**
+	 * Set the group UID.
+	 *
+	 * @param groupUID
+	 *        the group UID
+	 */
 	public void setGroupUID(String groupUID) {
 		setGroupUid(groupUID);
 	}
@@ -494,6 +535,12 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		return messageSource;
 	}
 
+	/**
+	 * Set the message source.
+	 *
+	 * @param messageSource
+	 *        the message source to set
+	 */
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
@@ -784,15 +831,33 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 
 	// General getters/setters
 
+	/**
+	 * Set the configuration DAOs.
+	 *
+	 * @param configurationDaos
+	 *        the DAOs to set
+	 */
 	public void setConfigurationDaos(
 			List<ConfigurationEntityDao<ConfigurationEntity>> configurationDaos) {
 		this.configurationDaos = configurationDaos;
 	}
 
+	/**
+	 * Set the event DAOs.
+	 *
+	 * @param eventDaos
+	 *        the DAOs to set
+	 */
 	public void setEventDaos(List<EventEntityDao<? extends EventEntity>> eventDaos) {
 		this.eventDaos = eventDaos;
 	}
 
+	/**
+	 * Set the UUID set DAOs.
+	 *
+	 * @param uuidSetDaos
+	 *        the DAOs to set
+	 */
 	public void setUuidSetDaos(
 			List<UUIDSetDao<UUIDSetEntity<UUIDEntityParameters>, UUIDEntityParameters>> uuidSetDaos) {
 		this.uuidSetDaos = uuidSetDaos;
@@ -803,6 +868,12 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		return datumDataSource;
 	}
 
+	/**
+	 * Set the setting resource provider.
+	 *
+	 * @param settingResourceProvider
+	 *        the provider to set
+	 */
 	public void setSettingResourceProvider(SetupResourceProvider settingResourceProvider) {
 		this.settingResourceProvider = settingResourceProvider;
 	}
@@ -817,18 +888,42 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		configureLoxoneDatumLoggerJob(datumLoggerFrequencySeconds * 1000);
 	}
 
+	/**
+	 * Set the datum queue.
+	 *
+	 * @param datumQueue
+	 *        the queue
+	 */
 	public void setDatumQueue(OptionalService<DatumQueue> datumQueue) {
 		this.datumQueue = datumQueue;
 	}
 
+	/**
+	 * Set the setting DAO.
+	 *
+	 * @param settingDao
+	 *        the DAO to set
+	 */
 	public void setSettingDao(SettingDao settingDao) {
 		this.settingDao = settingDao;
 	}
 
+	/**
+	 * Set the control DAO.
+	 *
+	 * @param controlDao
+	 *        the DAO to set
+	 */
 	public void setControlDao(ControlDao controlDao) {
 		this.controlDao = controlDao;
 	}
 
+	/**
+	 * Set the source mapping DAO.
+	 *
+	 * @param sourceMappingDao
+	 *        the DAO to set
+	 */
 	public void setSourceMappingDao(SourceMappingDao sourceMappingDao) {
 		this.sourceMappingDao = sourceMappingDao;
 	}

@@ -41,17 +41,35 @@ public class BasicUUIDEntity implements UUIDEntity {
 	private UUID uuid;
 	private String sourceId;
 
+	/**
+	 * Constructor.
+	 */
+	public BasicUUIDEntity() {
+		super();
+	}
+
 	@Override
 	@JsonIgnore
 	public Long getConfigId() {
 		return configId;
 	}
 
+	/**
+	 * Set the configuration ID.
+	 *
+	 * @param configId
+	 *        the configuration ID to set
+	 */
 	@JsonIgnore
 	public void setConfigId(Long configId) {
 		this.configId = configId;
 	}
 
+	/**
+	 * Get the source ID.
+	 *
+	 * @return the source ID
+	 */
 	@JsonIgnore
 	public String getSourceId() {
 		return this.sourceId;
@@ -121,6 +139,12 @@ public class BasicUUIDEntity implements UUIDEntity {
 		return uuid;
 	}
 
+	/**
+	 * Set the UUID.
+	 *
+	 * @param uuid
+	 *        the UUID to set
+	 */
 	@JsonDeserialize(using = UUIDDeserializer.class)
 	public void setUuid(UUID uuid) {
 		this.uuid = uuid;

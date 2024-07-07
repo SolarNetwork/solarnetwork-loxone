@@ -1,21 +1,21 @@
 /* ==================================================================
  * BaseCommandHandler.java - 17/09/2016 4:37:07 PM
- * 
+ *
  * Copyright 2007-2016 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -43,7 +43,7 @@ import net.solarnetwork.service.RemoteServiceException;
 
 /**
  * Supporting abstract class for {@link CommandHandler} implementations.
- * 
+ *
  * @author matt
  * @version 2.0
  */
@@ -56,8 +56,15 @@ public abstract class BaseCommandHandler implements CommandHandler {
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
 	/**
+	 * Constructor.
+	 */
+	public BaseCommandHandler() {
+		super();
+	}
+
+	/**
 	 * The {@link EventAdmin} to use for publishing events.
-	 * 
+	 *
 	 * @param eventAdmin
 	 *        The service to use.
 	 */
@@ -67,11 +74,11 @@ public abstract class BaseCommandHandler implements CommandHandler {
 
 	/**
 	 * Extract a {@code Code} response value.
-	 * 
+	 *
 	 * <p>
 	 * This method also handles the lower-case version {@code code}.
 	 * </p>
-	 * 
+	 *
 	 * @param tree
 	 *        the response JSON
 	 * @return the code
@@ -100,7 +107,7 @@ public abstract class BaseCommandHandler implements CommandHandler {
 
 	/**
 	 * Get the session's config ID value.
-	 * 
+	 *
 	 * @param session
 	 *        The current session.
 	 * @return The ID, or {@literal null} if not found.
@@ -122,10 +129,10 @@ public abstract class BaseCommandHandler implements CommandHandler {
 	 * Internal method called by
 	 * {@link #handleCommand(CommandType, MessageHeader, Session, JsonNode)}
 	 * with the parsed command value.
-	 * 
+	 *
 	 * This implementation simply returns <em>false</em>. Extending classes can
 	 * override this to do something useful.
-	 * 
+	 *
 	 * @param command
 	 *        The command.
 	 * @param header
@@ -147,7 +154,7 @@ public abstract class BaseCommandHandler implements CommandHandler {
 
 	/**
 	 * Handle an error command.
-	 * 
+	 *
 	 * <p>
 	 * This method is called from
 	 * {@link #handleCommand(CommandType, MessageHeader, Session, JsonNode)} if
@@ -155,7 +162,7 @@ public abstract class BaseCommandHandler implements CommandHandler {
 	 * returns {@literal false} but extending implementations may need to
 	 * perform further processing.
 	 * </p>
-	 * 
+	 *
 	 * @param command
 	 *        The command.
 	 * @param header
@@ -196,18 +203,18 @@ public abstract class BaseCommandHandler implements CommandHandler {
 	/**
 	 * Send a command asynchronously, handling encryption if a
 	 * {@link SecurityHelper} is available.
-	 * 
+	 *
 	 * <p>
 	 * If a {@link SecurityHelper} is available via
 	 * {@link #getSecurityHelper(Session)}, then the command will be encrypted
 	 * using {@link SecurityHelper#encryptCommand(CommandType, String)}.
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * <b>Note</b> that the {@code command} value is used for logic purposes
 	 * only; it will <b>not</b> be prepended to {@code text} before sending.
 	 * </p>
-	 * 
+	 *
 	 * @param session
 	 *        the session
 	 * @param type
@@ -243,13 +250,13 @@ public abstract class BaseCommandHandler implements CommandHandler {
 
 	/**
 	 * Get the session {@link SecurityHelper}.
-	 * 
+	 *
 	 * <p>
 	 * This method looks for a {@link SecurityHelper} on the
 	 * {@link LoxoneEndpoint#SECURITY_HELPER_USER_PROPERTY} session user
 	 * property.
 	 * </p>
-	 * 
+	 *
 	 * @param session
 	 *        the session
 	 * @return the helper, or {@literal null} if none available
@@ -266,7 +273,7 @@ public abstract class BaseCommandHandler implements CommandHandler {
 	/**
 	 * Post an event. Will silently ignore the event if no {@link EventAdmin} is
 	 * available.
-	 * 
+	 *
 	 * @param e
 	 *        The event to post.
 	 */

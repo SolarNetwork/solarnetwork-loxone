@@ -1,21 +1,21 @@
 /* ==================================================================
  * AuthenticationToken.java - 4/04/2018 2:01:44 PM
- * 
+ *
  * Copyright 2018 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -31,7 +31,7 @@ import net.solarnetwork.node.loxone.protocol.ws.CommandType;
 
 /**
  * An authentication token.
- * 
+ *
  * @author matt
  * @version 2.0
  * @since 1.3
@@ -46,7 +46,7 @@ public class AuthenticationToken {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param token
 	 *        the token value for authenticating with
 	 * @param validUntil
@@ -75,7 +75,7 @@ public class AuthenticationToken {
 
 	/**
 	 * Construct from epoch seconds and a permissions bitmask.
-	 * 
+	 *
 	 * @param token
 	 *        the token value for authenticating with
 	 * @param validUntilSeconds
@@ -98,7 +98,7 @@ public class AuthenticationToken {
 	/**
 	 * Create a new instance as a copy of this with updated properties from a
 	 * refresh operation.
-	 * 
+	 *
 	 * @param validUntilSeconds
 	 *        the valid until date, as Loxone epoch seconds
 	 * @param passwordUnsecure
@@ -120,7 +120,7 @@ public class AuthenticationToken {
 	/**
 	 * Convert a Loxone epoch of seconds since 1 Jan 2009 UTC into a date
 	 * object.
-	 * 
+	 *
 	 * @param seconds
 	 *        the seconds
 	 * @return the date
@@ -132,7 +132,7 @@ public class AuthenticationToken {
 
 	/**
 	 * Encode a username for use with token authentication.
-	 * 
+	 *
 	 * @param username
 	 *        the username
 	 * @return the hashed token value to authenticate with
@@ -145,7 +145,7 @@ public class AuthenticationToken {
 
 	/**
 	 * Encode this token for use with token refresh.
-	 * 
+	 *
 	 * @param key
 	 *        the key to use, which is the result of a
 	 *        {@link CommandType#GetAuthenticationKey} request
@@ -159,38 +159,63 @@ public class AuthenticationToken {
 
 	/**
 	 * Test if the token has expired.
-	 * 
+	 *
 	 * @return {@literal true} if the token is not valid right now
 	 */
 	public boolean isExpired() {
 		return validUntil == null || validUntil.isBefore(Instant.now());
 	}
 
+	/**
+	 * Get the token.
+	 *
+	 * @return the token
+	 */
 	public String getToken() {
 		return token;
 	}
 
+	/**
+	 * Get the expiration date.
+	 *
+	 * @return the date
+	 */
 	public Instant getValidUntil() {
 		return validUntil;
 	}
 
+	/**
+	 * Get the permissions.
+	 *
+	 * @return the permissions
+	 */
 	public Set<AuthenticationTokenPermission> getPermissions() {
 		return permissions;
 	}
 
 	/**
 	 * Get the permissions as a bitmask.
-	 * 
+	 *
 	 * @return the permissions bitmask
 	 */
 	public int getPermissionsBitmask() {
 		return AuthenticationTokenPermission.bitmaskForPermissions(permissions);
 	}
 
+	/**
+	 * Get the unsecure password flag.
+	 *
+	 * @return {@literal true} if unsecure passwords are used
+	 */
 	public boolean isPasswordUnsecure() {
 		return passwordUnsecure;
 	}
 
+	/**
+	 * Get the key as hex.
+	 *
+	 * @return the key
+	 */
 	public String getKeyHex() {
 		return new String(Hex.encodeHex(key, false));
 	}

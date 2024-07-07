@@ -1,21 +1,21 @@
 /* ==================================================================
  * SettingsConfigAuthenticationTokenDao.java - 6/04/2018 8:44:14 AM
- * 
+ *
  * Copyright 2018 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -35,7 +35,7 @@ import net.solarnetwork.node.loxone.domain.ConfigAuthenticationToken;
 /**
  * {@link ConfigAuthenticationTokenDao} that persists data via a
  * {@link SettingDao}.
- * 
+ *
  * @author matt
  * @version 2.0
  * @since 1.3
@@ -58,6 +58,13 @@ public class SettingsConfigAuthenticationTokenDao implements ConfigAuthenticatio
 	public static final String KEY_SETTING = "key";
 
 	private SettingDao settingDao;
+
+	/**
+	 * Constructor.
+	 */
+	public SettingsConfigAuthenticationTokenDao() {
+		super();
+	}
 
 	private static String settingKey(Long configId) {
 		return "loxone/" + Config.idToExternalForm(configId) + "/auth-token";
@@ -86,7 +93,7 @@ public class SettingsConfigAuthenticationTokenDao implements ConfigAuthenticatio
 		if ( configId == null ) {
 			return;
 		}
-		// deleting the token is sufficient for getConfigAuthenticationToken() to think it's not there 
+		// deleting the token is sufficient for getConfigAuthenticationToken() to think it's not there
 		settingDao.deleteSetting(settingKey(configId), TOKEN_SETTING);
 	}
 
@@ -126,10 +133,21 @@ public class SettingsConfigAuthenticationTokenDao implements ConfigAuthenticatio
 				(unsec != null ? Boolean.parseBoolean(unsec) : true), key);
 	}
 
+	/**
+	 * Get the setting DAO.
+	 *
+	 * @return the DAO
+	 */
 	public SettingDao getSettingDao() {
 		return settingDao;
 	}
 
+	/**
+	 * Set the setting DAO.
+	 *
+	 * @param settingDao
+	 *        the DAO to set
+	 */
 	public void setSettingDao(SettingDao settingDao) {
 		this.settingDao = settingDao;
 	}
