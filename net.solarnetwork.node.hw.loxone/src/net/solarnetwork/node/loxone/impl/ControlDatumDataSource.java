@@ -1,21 +1,21 @@
 /* ==================================================================
  * ControlDatumDataSource.java - 2/10/2016 11:09:59 AM
- * 
+ *
  * Copyright 2007-2016 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -38,6 +38,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.osgi.service.event.Event;
@@ -64,15 +65,17 @@ import net.solarnetwork.node.service.DatumDataSource;
 import net.solarnetwork.node.service.DatumQueue;
 import net.solarnetwork.node.service.MultiDatumDataSource;
 import net.solarnetwork.node.service.support.DatumDataSourceSupport;
+import net.solarnetwork.settings.SettingSpecifier;
+import net.solarnetwork.settings.SettingSpecifierProvider;
 
 /**
  * A {@link DatumDataSource} to upload Loxone values on a fixed schedule.
- * 
+ *
  * @author matt
- * @version 2.0
+ * @version 2.1
  */
 public class ControlDatumDataSource extends DatumDataSourceSupport
-		implements MultiDatumDataSource, DatumDataSource, EventHandler {
+		implements MultiDatumDataSource, EventHandler, SettingSpecifierProvider {
 
 	/**
 	 * The default interval at which to save {@code Datum} instances from Loxone
@@ -82,13 +85,14 @@ public class ControlDatumDataSource extends DatumDataSourceSupport
 
 	/**
 	 * The default {@code datumDaoPersistOnlyStatusUpdates} property value.
-	 * 
+	 *
 	 * @since 1.6
 	 */
 	public static final boolean DEFAULT_PERSIST_ONLY_STATUS_UPDATES = true;
 
 	private final ControlDao controlDao;
 	private final SettingDao settingDao;
+	private final String settingUid;
 	private Long configId;
 	private int defaultFrequencySeconds = DEFAULT_FREQUENCY_SECONDS;
 	private boolean datumPersistOnlyStatusUpdates = DEFAULT_PERSIST_ONLY_STATUS_UPDATES;
@@ -101,7 +105,9 @@ public class ControlDatumDataSource extends DatumDataSourceSupport
 
 	/**
 	 * Construct with values.
-	 * 
+	 *
+	 * @param settingUid
+	 *        the setting UID
 	 * @param configId
 	 *        The config ID.
 	 * @param controlDao
@@ -109,11 +115,24 @@ public class ControlDatumDataSource extends DatumDataSourceSupport
 	 * @param settingDao
 	 *        The setting DAO to use.
 	 */
-	public ControlDatumDataSource(Long configId, ControlDao controlDao, SettingDao settingDao) {
+	public ControlDatumDataSource(String settingUid, Long configId, ControlDao controlDao,
+			SettingDao settingDao) {
 		super();
+		this.settingUid = settingUid;
 		this.configId = configId;
 		this.controlDao = controlDao;
 		this.settingDao = settingDao;
+		setDisplayName("Loxone Miniserver");
+	}
+
+	@Override
+	public String getSettingUid() {
+		return settingUid;
+	}
+
+	@Override
+	public List<SettingSpecifier> getSettingSpecifiers() {
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -124,17 +143,6 @@ public class ControlDatumDataSource extends DatumDataSourceSupport
 	@Override
 	public String getGroupUID() {
 		return null;
-	}
-
-	@Override
-	public Class<? extends NodeDatum> getDatumType() {
-		return NodeDatum.class;
-	}
-
-	@Override
-	public NodeDatum readCurrentDatum() {
-		Collection<NodeDatum> multi = readMultipleDatum();
-		return (multi == null || multi.isEmpty() ? null : multi.iterator().next());
 	}
 
 	@Override
@@ -188,6 +196,27 @@ public class ControlDatumDataSource extends DatumDataSourceSupport
 		}
 
 		return results;
+	}
+
+	@Override
+	public Collection<String> publishedSourceIds() {
+		List<UUIDEntityParametersPair<Control, ControlDatumParameters>> datumParameters = controlDao
+				.findAllForDatumPropertyUUIDEntities(configId);
+
+		if ( datumParameters == null ) {
+			return Collections.emptySet();
+		}
+
+		Set<String> result = new TreeSet<>();
+		for ( UUIDEntityParametersPair<Control, ControlDatumParameters> pair : datumParameters ) {
+			final Control valueEvent = pair.getEntity();
+			String sourceId = resolvePlaceholders(valueEvent.getSourceIdValue());
+			if ( sourceId != null && !sourceId.isEmpty() ) {
+				result.add(sourceId);
+			}
+		}
+
+		return result;
 	}
 
 	@Override
@@ -359,7 +388,7 @@ public class ControlDatumDataSource extends DatumDataSourceSupport
 
 	/**
 	 * Set the default frequency seconds.
-	 * 
+	 *
 	 * @param defaultFrequencySeconds
 	 *        the default frequency, in seconds
 	 */
@@ -369,7 +398,7 @@ public class ControlDatumDataSource extends DatumDataSourceSupport
 
 	/**
 	 * Set the config ID.
-	 * 
+	 *
 	 * @param configId
 	 *        the config ID
 	 */
@@ -379,7 +408,7 @@ public class ControlDatumDataSource extends DatumDataSourceSupport
 
 	/**
 	 * Get the status-change-only datum persistence setting.
-	 * 
+	 *
 	 * @return {@literal true} to only persist datum that are updated;
 	 *         {@literal false} to persist all updates; defaults to
 	 *         {@link #DEFAULT_PERSIST_ONLY_STATUS_UPDATES}
@@ -391,7 +420,7 @@ public class ControlDatumDataSource extends DatumDataSourceSupport
 
 	/**
 	 * Toggle the status-change-only datum persistence setting.
-	 * 
+	 *
 	 * @param datumPersistOnlyStatusUpdates
 	 *        {@literal true} to only persist datum that are updated from status
 	 *        property type changes
@@ -403,7 +432,7 @@ public class ControlDatumDataSource extends DatumDataSourceSupport
 
 	/**
 	 * Get the task executor.
-	 * 
+	 *
 	 * @return the executor
 	 * @since 1.6
 	 */
@@ -413,11 +442,11 @@ public class ControlDatumDataSource extends DatumDataSourceSupport
 
 	/**
 	 * Set the task executor.
-	 * 
+	 *
 	 * <p>
 	 * This must be configured for status update events to be handled.
 	 * </p>
-	 * 
+	 *
 	 * @param taskExecutor
 	 *        the executor to set
 	 * @since 1.6

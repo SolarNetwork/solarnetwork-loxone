@@ -1,21 +1,21 @@
 /* ==================================================================
  * LoxoneEndpoint.java - 17/09/2016 7:40:39 AM
- * 
+ *
  * Copyright 2007-2016 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -88,7 +88,7 @@ import net.solarnetwork.service.OptionalService;
 
 /**
  * Endpoint for the Loxone miniserver websocket API.
- * 
+ *
  * The Loxone server responds to all websocket message requests with a pair of
  * response messages: first a binary "message header" message and then another
  * binary or text message with the actual payload of the response. This class
@@ -96,17 +96,17 @@ import net.solarnetwork.service.OptionalService;
  * connection. It then relies on {@link CommandHandler} instances to deal with
  * all other messages, configured via
  * {@link #setCommandHandlers(CommandHandler[])}.
- * 
+ *
  * This class also relies on a list of {@link BinaryFileHandler} instances to
  * deal with the {@code BinaryFile} message type, configured via
  * {@link #setBinaryFileHandlers(BinaryFileHandler[])}.
- * 
+ *
  * This class listens for the
  * {@code LoxoneEvents#STRUCTURE_FILE_MODIFICATION_DATE_EVENT} event and if that
  * date changes will request the structure file again from the Loxone server.
- * 
+ *
  * @author matt
- * @version 2.10
+ * @version 2.11
  */
 public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<ByteBuffer>, EventHandler {
 
@@ -121,7 +121,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	/**
 	 * A session user property key that can provide the {@link SecurityHelper}
 	 * ID value to use.
-	 * 
+	 *
 	 * @since 1.8
 	 */
 	public static final String SECURITY_HELPER_USER_PROPERTY = "security-helper";
@@ -202,6 +202,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	private final ReconnectHandler reconnectHandler = new ReconnectHandler();
 
+	private boolean initialized;
 	private Session session;
 	private ScheduledFuture<?> keepAliveFuture = null;
 	private ScheduledFuture<?> connectFuture = null;
@@ -257,7 +258,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	/**
 	 * Get the URI to connect to a Loxone websocket, with support for Loxone's
 	 * CloudDNS style redirects.
-	 * 
+	 *
 	 * @return The API configuration to use.
 	 * @throws IOException
 	 *         If a problem occurs connecting to the host.
@@ -347,12 +348,23 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	 * Initialize after all properties are configured.
 	 */
 	public void init() {
-		// subslasses might do something
+		initialized = true;
+		connectionDetailsChanged();
+	}
+
+	/**
+	 * Shutdown and close the connection.
+	 *
+	 * @since 2.11
+	 */
+	public void close() {
+		initialized = false;
+		disconnect();
 	}
 
 	/**
 	 * Get the configuration for this service.
-	 * 
+	 *
 	 * @return The configuration.
 	 */
 	public Config getConfiguration() {
@@ -381,7 +393,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	/**
 	 * Get the API configuration of this service.
-	 * 
+	 *
 	 * @return the configuration, or {@literal null} if not known
 	 */
 	public ConfigApi getApiConfiguration() {
@@ -391,7 +403,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	/**
 	 * Called when the configuration at {@link #getConfiguration()} ID has
 	 * changed.
-	 * 
+	 *
 	 * @return a new {@link Config} if it should be changed in some way,
 	 *         {@literal null} otherwise
 	 */
@@ -419,8 +431,8 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	}
 
 	private synchronized void connectionDetailsChanged() {
-		if ( host == null || username == null || password == null || host.isEmpty() || username.isEmpty()
-				|| password.isEmpty() ) {
+		if ( !initialized || host == null || username == null || password == null || host.isEmpty()
+				|| username.isEmpty() || password.isEmpty() ) {
 			return;
 		}
 
@@ -469,7 +481,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 				log.debug("Dropping message: {}", h);
 			}
 		} else {
-			// this should be a message header message, and another message will follow 
+			// this should be a message header message, and another message will follow
 			// from the Loxone that logically refers to this header
 			try {
 				MessageHeader header = new MessageHeader(buf);
@@ -903,7 +915,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 			// take our corresponding message header
 			final MessageHeader header = headerQueue.poll();
 			if ( header == null ) {
-				// we expect to have that header, but we should also be able to continue 
+				// we expect to have that header, but we should also be able to continue
 				// without it so just log a message
 				log.debug("MessageHeader not available for text message!");
 			}
@@ -966,6 +978,9 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 			if ( DISCONNECT_USER_INITIATED.equals(closeReason.getCloseCode()) ) {
 				counter = 0;
 				return false;
+			} else if ( !initialized ) {
+				log.info("Loxone {} connection closed.", configuredConfigIdExternalForm());
+				return false;
 			}
 			counter++;
 			log.warn("Loxone {} disconnected ({}), will attempt to reconnect in {}s",
@@ -993,7 +1008,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	/**
 	 * Attempt to send a command to the Loxone device using a configured
 	 * {@link CommandHandler}.
-	 * 
+	 *
 	 * @param command
 	 *        The command to send.
 	 * @param args
@@ -1040,7 +1055,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	/**
 	 * Attempt to handle a {@code BinaryFile} message type with text content.
-	 * 
+	 *
 	 * @param header
 	 *        The current message header.
 	 * @param reader
@@ -1069,7 +1084,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	/**
 	 * Attempt to handle a {@code BinaryFile} message type with text content.
-	 * 
+	 *
 	 * @param header
 	 *        The current message header.
 	 * @param buffer
@@ -1146,7 +1161,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	/**
 	 * Handle a Loxone event.
-	 * 
+	 *
 	 * @param event
 	 *        the event
 	 * @param configId
@@ -1214,7 +1229,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	/**
 	 * Get the config key.
-	 * 
+	 *
 	 * @return The config key, or {@literal null}.
 	 * @since 1.1
 	 */
@@ -1224,10 +1239,10 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	/**
 	 * Set an explicit config ID value to use, as a string.
-	 * 
+	 *
 	 * At most 8 characters will be used from this value, which will be turned
 	 * into a {@code Long} {@code configId} value.
-	 * 
+	 *
 	 * @param configKey
 	 *        The config ID to use, in string form.
 	 * @since 1.1
@@ -1290,7 +1305,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	/**
 	 * Get the status message count.
-	 * 
+	 *
 	 * @return The status message count.
 	 */
 	public int getStatusMessageCount() {
@@ -1299,7 +1314,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	/**
 	 * Set a frequency of processed messages at which to log a status message.
-	 * 
+	 *
 	 * @param statusMessageCount
 	 *        The message frequency.
 	 */
@@ -1309,12 +1324,12 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	/**
 	 * Test if an authentication failure has occurred.
-	 * 
+	 *
 	 * If an authentication error occurs when connecting to the Loxone device,
 	 * this flag will be set to <em>true</em>. It will be reset when either
 	 * {@link #setUsername(String)} or {@link #setPassword(String)} are called
 	 * with updated values.
-	 * 
+	 *
 	 * @return authentication failure flag
 	 * @since 1.3
 	 */
@@ -1324,7 +1339,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	/**
 	 * Get the configured extra websocket client properties.
-	 * 
+	 *
 	 * @return the client properties, or {@literal null}
 	 */
 	public Map<String, Object> getClientProperties() {
@@ -1333,7 +1348,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	/**
 	 * Set extra websocket client properties to use when connecting.
-	 * 
+	 *
 	 * @param clientProperties
 	 *        the properties to use, or {@literal null}
 	 * @since 1.7
@@ -1344,7 +1359,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	/**
 	 * Get the configured authentication type.
-	 * 
+	 *
 	 * @return the type
 	 * @since 1.8
 	 */
@@ -1354,7 +1369,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	/**
 	 * Set the authentication type to use.
-	 * 
+	 *
 	 * @param authenticationType
 	 *        the type to use; defaults to {@link AuthenticationType#Auto}
 	 * @since 1.8
@@ -1366,7 +1381,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	/**
 	 * Set the auth token DAO to use.
-	 * 
+	 *
 	 * @param configAuthTokenDao
 	 *        the DAO to use
 	 * @since 1.8
@@ -1377,7 +1392,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	/**
 	 * Get the permission to request for authentication tokens.
-	 * 
+	 *
 	 * @return the permission
 	 * @since 1.8
 	 */
@@ -1387,7 +1402,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	/**
 	 * Set the permission to request for authentication tokens.
-	 * 
+	 *
 	 * @param tokenRequestPermission
 	 *        the permission to use; defaults to {@literal App}
 	 * @throws IllegalArgumentException
@@ -1403,7 +1418,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	/**
 	 * Get the number of hours before a token expires to try and refresh it.
-	 * 
+	 *
 	 * @return the refresh hours
 	 * @since 1.8
 	 */
@@ -1413,12 +1428,12 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	/**
 	 * Set the number of hours before a token expires to try and refresh it.
-	 * 
+	 *
 	 * <p>
 	 * This time will be adjusted smaller if less time is available before the
 	 * token expires.
 	 * </p>
-	 * 
+	 *
 	 * @param tokenRefreshOffsetHours
 	 *        the maximum number of hours before a token expires to refresh it
 	 * @throws IllegalArgumentException

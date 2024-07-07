@@ -34,6 +34,8 @@
 
 	<reference id="taskExecutor" interface="org.springframework.core.task.TaskExecutor"
 		filter="(function=node)"/>
+		
+	<reference id="serviceRegistry" interface="net.solarnetwork.service.ServiceRegistry"/>
 
 	<bean id="datumQueue" class="net.solarnetwork.common.osgi.service.DynamicServiceTracker">
 		<argument ref="bundleContext"/>
@@ -273,7 +275,7 @@
 				</beans:list>
 			</beans:entry>
 		</osgix:service-properties>
-		<bean class="net.solarnetwork.node.loxone.impl.WebsocketLoxoneService" init-method="init" destroy-method="disconnect">
+		<bean class="net.solarnetwork.node.loxone.impl.WebsocketLoxoneService" init-method="serviceDidStartup" destroy-method="serviceDidShutdown">
 			<property name="taskScheduler" ref="taskScheduler"/>
 			<property name="taskExecutor" ref="taskExecutor"/>
 			<property name="configDao" ref="configDao"/>
@@ -291,6 +293,7 @@
 			<property name="datumQueue" ref="datumQueue"/>
 			<property name="settingDao" ref="settingDao"/>
 			<property name="sourceMappingDao" ref="sourceMappingDao"/>
+			<property name="serviceRegistry" ref="serviceRegistry"/>
 		</bean>
 	</osgix:managed-service-factory>
 	
