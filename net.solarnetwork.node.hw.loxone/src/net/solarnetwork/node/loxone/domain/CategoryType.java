@@ -1,21 +1,21 @@
 /* ==================================================================
  * CategoryType.java - 20/09/2016 5:42:59 AM
- * 
+ *
  * Copyright 2007-2016 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -27,22 +27,28 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * Category type values.
- * 
+ *
  * @author matt
  * @version 1.0
  */
 public enum CategoryType {
 
+	/** Unknonw. */
 	Unknown("unknown", -1),
 
+	/** Undefined. */
 	Undefined("undefined", 0),
 
+	/** Indoor temperature. */
 	Indoortemperature("indoortemperature", 1),
 
+	/** Lights. */
 	Lights("lights", 2),
 
+	/** Shading. */
 	Shading("shading", 3),
 
+	/** Media. */
 	Media("media", 4);
 
 	private String key;
@@ -55,7 +61,7 @@ public enum CategoryType {
 
 	/**
 	 * Get the key value for this type.
-	 * 
+	 *
 	 * @return The key value.
 	 */
 	@JsonValue
@@ -65,13 +71,20 @@ public enum CategoryType {
 
 	/**
 	 * Get the index value for this type.
-	 * 
+	 *
 	 * @return The index value.
 	 */
 	public short getIndex() {
 		return index;
 	}
 
+	/**
+	 * Get an enum value for an index.
+	 *
+	 * @param index
+	 *        the index to get the enum value for
+	 * @return the enum value, or {@link #Unknown}
+	 */
 	public static CategoryType forIndexValue(int index) {
 		// for now index + 1 == ordinal order
 		CategoryType[] values = CategoryType.values();
@@ -84,7 +97,7 @@ public enum CategoryType {
 
 	/**
 	 * Get an enum from a category value.
-	 * 
+	 *
 	 * @param value
 	 *        The category value.
 	 * @return The enum, or <em>null</em> if not known.

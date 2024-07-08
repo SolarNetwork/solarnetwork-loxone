@@ -1,21 +1,21 @@
 /* ==================================================================
  * ConfigurationEntityDao.java - 19/09/2016 4:47:48 PM
- * 
+ *
  * Copyright 2007-2016 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -29,7 +29,9 @@ import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
 
 /**
  * DAO API for configuration entities.
- * 
+ *
+ * @param <T>
+ *        the entity type
  * @author matt
  * @version 1.1
  */
@@ -37,7 +39,7 @@ public interface ConfigurationEntityDao<T extends ConfigurationEntity> {
 
 	/**
 	 * Get the class of the entity managed by this DAO.
-	 * 
+	 *
 	 * @return The class.
 	 */
 	Class<T> entityClass();
@@ -45,7 +47,7 @@ public interface ConfigurationEntityDao<T extends ConfigurationEntity> {
 	/**
 	 * Store (create or update) an entity. The {@code uuid} value is the primary
 	 * key.
-	 * 
+	 *
 	 * @param entity
 	 *        The entity to store.
 	 */
@@ -53,7 +55,7 @@ public interface ConfigurationEntityDao<T extends ConfigurationEntity> {
 
 	/**
 	 * Get an entity for a given UUID.
-	 * 
+	 *
 	 * @param configId
 	 *        The config ID to match.
 	 * @param uuid
@@ -64,7 +66,7 @@ public interface ConfigurationEntityDao<T extends ConfigurationEntity> {
 
 	/**
 	 * Delete all entities matching a given configuration.
-	 * 
+	 *
 	 * @param configId
 	 *        The config ID to match.
 	 * @return The count of deleted items.
@@ -73,14 +75,14 @@ public interface ConfigurationEntityDao<T extends ConfigurationEntity> {
 
 	/**
 	 * Get a list of persisted entities, optionally sorted in some way.
-	 * 
+	 *
 	 * <p>
-	 * The {@code sortDescriptors} parameter can be {@literal null}, in which case
-	 * the sort order should default to the
+	 * The {@code sortDescriptors} parameter can be {@literal null}, in which
+	 * case the sort order should default to the
 	 * {@link ConfigurationEntity#getDefaultRating()} followed by
 	 * {@link ConfigurationEntity#getName()}.
 	 * </p>
-	 * 
+	 *
 	 * @param configId
 	 *        The config ID to match.
 	 * @param sortDescriptors
@@ -92,14 +94,14 @@ public interface ConfigurationEntityDao<T extends ConfigurationEntity> {
 	/**
 	 * Get a list of persisted entities matching a given name, optionally sorted
 	 * in some way.
-	 * 
+	 *
 	 * <p>
-	 * The {@code sortDescriptors} parameter can be {@literal null}, in which case
-	 * the sort order should default to the
+	 * The {@code sortDescriptors} parameter can be {@literal null}, in which
+	 * case the sort order should default to the
 	 * {@link ConfigurationEntity#getDefaultRating()} followed by
 	 * {@link ConfigurationEntity#getName()}.
 	 * </p>
-	 * 
+	 *
 	 * @param configId
 	 *        The config ID to match.
 	 * @param name

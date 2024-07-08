@@ -1,21 +1,21 @@
 /* ==================================================================
  * WebsocketLoxoneService.java - 21/09/2016 4:37:10 PM
- * 
+ *
  * Copyright 2007-2016 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -86,11 +86,15 @@ import net.solarnetwork.node.reactor.InstructionHandler;
 import net.solarnetwork.node.reactor.InstructionStatus;
 import net.solarnetwork.node.reactor.InstructionUtils;
 import net.solarnetwork.node.service.DatumQueue;
+import net.solarnetwork.node.service.MultiDatumDataSource;
 import net.solarnetwork.node.service.NodeControlProvider;
 import net.solarnetwork.node.settings.support.BasicSetupResourceSettingSpecifier;
 import net.solarnetwork.node.setup.SetupResourceProvider;
 import net.solarnetwork.service.OptionalService;
+import net.solarnetwork.service.RegisteredService;
 import net.solarnetwork.service.RemoteServiceException;
+import net.solarnetwork.service.ServiceLifecycleObserver;
+import net.solarnetwork.service.ServiceRegistry;
 import net.solarnetwork.settings.SettingSpecifier;
 import net.solarnetwork.settings.SettingSpecifierProvider;
 import net.solarnetwork.settings.support.BasicMultiValueSettingSpecifier;
@@ -100,13 +104,13 @@ import net.solarnetwork.settings.support.BasicToggleSettingSpecifier;
 
 /**
  * Websocket based implementation of {@link LoxoneService}.
- * 
+ *
  * @author matt
- * @version 2.0
+ * @version 2.1
  */
 public class WebsocketLoxoneService extends LoxoneEndpoint
 		implements LoxoneService, SettingSpecifierProvider, WebsocketLoxoneServiceSettings,
-		NodeControlProvider, InstructionHandler {
+		NodeControlProvider, InstructionHandler, ServiceLifecycleObserver {
 
 	/**
 	 * The name used to schedule the {@link ControlDatumDataSource} as.
@@ -141,9 +145,11 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	private int datumLoggerFrequencySeconds = DATUM_LOGGER_JOB_INTERVAL;
 	private MessageSource messageSource;
 	private TaskExecutor taskExecutor;
+	private ServiceRegistry serviceRegistry;
 
 	private ControlDatumDataSource datumDataSource;
 	private ScheduledDatumDataSourcePollJob datumLoggerTrigger;
+	private RegisteredService<MultiDatumDataSource> datumDataSourceRegistration;
 
 	private static final class ScheduledDatumDataSourcePollJob {
 
@@ -153,18 +159,49 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 
 	}
 
+	/**
+	 * Constructor.
+	 */
+	public WebsocketLoxoneService() {
+		super();
+	}
+
 	@Override
-	public void init() {
-		super.init();
-		datumDataSource = new ControlDatumDataSource(null, controlDao, settingDao);
+	public void serviceDidStartup() {
+		init();
+	}
+
+	@Override
+	public void serviceDidShutdown() {
+		close();
+		if ( datumDataSourceRegistration != null && serviceRegistry != null ) {
+			serviceRegistry.unregisterService(datumDataSourceRegistration);
+			datumDataSourceRegistration = null;
+		}
+	}
+
+	@Override
+	public synchronized void init() {
+		if ( datumDataSourceRegistration != null && serviceRegistry != null ) {
+			serviceRegistry.unregisterService(datumDataSourceRegistration);
+			datumDataSourceRegistration = null;
+		}
+		datumDataSource = new ControlDatumDataSource(getSettingUid(), null, controlDao, settingDao);
+		datumDataSource.setMessageSource(messageSource);
 		datumDataSource.setDatumQueue(datumQueue);
 		datumDataSource.setTaskExecutor(taskExecutor);
+		datumDataSource.setUid(getConfigurationIdExternalForm());
+		super.init();
+		if ( serviceRegistry != null ) {
+			datumDataSourceRegistration = serviceRegistry.registerService(
+					(MultiDatumDataSource) datumDataSource, null, MultiDatumDataSource.class);
+		}
 	}
 
 	@Override
 	public synchronized void disconnect() {
-		super.disconnect();
 		configureLoxoneDatumLoggerJob(0);
+		super.disconnect();
 	}
 
 	@Override
@@ -416,14 +453,31 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		return uid;
 	}
 
+	/**
+	 * Set the UID.
+	 *
+	 * @param uid
+	 *        the UID
+	 */
 	public void setUid(String uid) {
 		this.uid = uid;
 	}
 
+	/**
+	 * Get the UID.
+	 *
+	 * @return the UID
+	 */
 	public String getUID() {
 		return getUid();
 	}
 
+	/**
+	 * Set the UID.
+	 *
+	 * @param uid
+	 *        the UID to set
+	 */
 	public void setUID(String uid) {
 		setUid(uid);
 	}
@@ -433,14 +487,31 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		return groupUid;
 	}
 
+	/**
+	 * Set the group UID.
+	 *
+	 * @param groupUid
+	 *        the group UID to set
+	 */
 	public void setGroupUid(String groupUid) {
 		this.groupUid = groupUid;
 	}
 
+	/**
+	 * Get the group UID.
+	 *
+	 * @return the group UID
+	 */
 	public String getGroupUID() {
 		return getGroupUid();
 	}
 
+	/**
+	 * Set the group UID.
+	 *
+	 * @param groupUID
+	 *        the group UID
+	 */
 	public void setGroupUID(String groupUID) {
 		setGroupUid(groupUID);
 	}
@@ -465,6 +536,12 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		return messageSource;
 	}
 
+	/**
+	 * Set the message source.
+	 *
+	 * @param messageSource
+	 *        the message source to set
+	 */
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
@@ -548,6 +625,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		}
 
 		datumDataSource.setConfigId(config.getId());
+		datumDataSource.setUid(config.idToExternalForm());
 
 		return result;
 	}
@@ -754,15 +832,33 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 
 	// General getters/setters
 
+	/**
+	 * Set the configuration DAOs.
+	 *
+	 * @param configurationDaos
+	 *        the DAOs to set
+	 */
 	public void setConfigurationDaos(
 			List<ConfigurationEntityDao<ConfigurationEntity>> configurationDaos) {
 		this.configurationDaos = configurationDaos;
 	}
 
+	/**
+	 * Set the event DAOs.
+	 *
+	 * @param eventDaos
+	 *        the DAOs to set
+	 */
 	public void setEventDaos(List<EventEntityDao<? extends EventEntity>> eventDaos) {
 		this.eventDaos = eventDaos;
 	}
 
+	/**
+	 * Set the UUID set DAOs.
+	 *
+	 * @param uuidSetDaos
+	 *        the DAOs to set
+	 */
 	public void setUuidSetDaos(
 			List<UUIDSetDao<UUIDSetEntity<UUIDEntityParameters>, UUIDEntityParameters>> uuidSetDaos) {
 		this.uuidSetDaos = uuidSetDaos;
@@ -773,6 +869,12 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		return datumDataSource;
 	}
 
+	/**
+	 * Set the setting resource provider.
+	 *
+	 * @param settingResourceProvider
+	 *        the provider to set
+	 */
 	public void setSettingResourceProvider(SetupResourceProvider settingResourceProvider) {
 		this.settingResourceProvider = settingResourceProvider;
 	}
@@ -787,30 +889,54 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		configureLoxoneDatumLoggerJob(datumLoggerFrequencySeconds * 1000);
 	}
 
+	/**
+	 * Set the datum queue.
+	 *
+	 * @param datumQueue
+	 *        the queue
+	 */
 	public void setDatumQueue(OptionalService<DatumQueue> datumQueue) {
 		this.datumQueue = datumQueue;
 	}
 
+	/**
+	 * Set the setting DAO.
+	 *
+	 * @param settingDao
+	 *        the DAO to set
+	 */
 	public void setSettingDao(SettingDao settingDao) {
 		this.settingDao = settingDao;
 	}
 
+	/**
+	 * Set the control DAO.
+	 *
+	 * @param controlDao
+	 *        the DAO to set
+	 */
 	public void setControlDao(ControlDao controlDao) {
 		this.controlDao = controlDao;
 	}
 
+	/**
+	 * Set the source mapping DAO.
+	 *
+	 * @param sourceMappingDao
+	 *        the DAO to set
+	 */
 	public void setSourceMappingDao(SourceMappingDao sourceMappingDao) {
 		this.sourceMappingDao = sourceMappingDao;
 	}
 
 	/**
 	 * Configure the {@link AuthenticationType} via a code value.
-	 * 
+	 *
 	 * <p>
 	 * If {@code code} is not supported, then {@link AuthenticationType#Auto}
 	 * will be used.
 	 * </p>
-	 * 
+	 *
 	 * @param code
 	 *        the {@link AuthenticationType#getCode()} value to use
 	 * @see #setAuthenticationType(AuthenticationType)
@@ -828,7 +954,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 
 	/**
 	 * Get the {@link AuthenticationType} as a code value.
-	 * 
+	 *
 	 * @return the {@link AuthenticationType} code
 	 * @see #getAuthenticationType()
 	 * @since 1.7
@@ -841,7 +967,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 	/**
 	 * Get the {@link AuthenticationTokenPermission} code to request for
 	 * authentication tokens.
-	 * 
+	 *
 	 * @return the permission code
 	 * @since 1.7
 	 */
@@ -875,7 +1001,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 
 	/**
 	 * Get the task executor.
-	 * 
+	 *
 	 * @return the executor
 	 * @since 1.9
 	 */
@@ -885,11 +1011,11 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 
 	/**
 	 * Set the task executor.
-	 * 
+	 *
 	 * <p>
 	 * This must be configured for status update events to be handled.
 	 * </p>
-	 * 
+	 *
 	 * @param taskExecutor
 	 *        the executor to set
 	 * @since 1.9
@@ -899,6 +1025,27 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 		if ( datumDataSource != null ) {
 			datumDataSource.setTaskExecutor(taskExecutor);
 		}
+	}
+
+	/**
+	 * Get the service registry.
+	 *
+	 * @return the service registry
+	 * @since 2.1
+	 */
+	public final ServiceRegistry getServiceRegistry() {
+		return serviceRegistry;
+	}
+
+	/**
+	 * Set the service registry.
+	 *
+	 * @param serviceRegistry
+	 *        the service registry to set
+	 * @since 2.1
+	 */
+	public final void setServiceRegistry(ServiceRegistry serviceRegistry) {
+		this.serviceRegistry = serviceRegistry;
 	}
 
 }

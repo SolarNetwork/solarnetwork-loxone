@@ -67,12 +67,12 @@ Loxone.websocket = (function() {
 			setInterval(function() {
 				Loxone.api.ping(function(err, response) {
 					if(err) return console.log(`Error pinging: ${err}`);
-					if(!response.success) console.log('Ping failed');
+					if(!response || !response.success) console.log('Ping failed');
 				})
 			},60000);
 
 		}, function (error) {
-	    console.log('STOMP protocol error %s', error);
+	    	console.log('STOMP protocol error %s', error);
 		});
 	})();
 })();

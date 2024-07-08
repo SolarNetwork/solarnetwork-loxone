@@ -1,21 +1,21 @@
 /* ==================================================================
  * QueuedCommandHandler.java - 12/06/2017 9:30:08 AM
- * 
+ *
  * Copyright 2017 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -41,12 +41,16 @@ import net.solarnetwork.service.RemoteServiceException;
 
 /**
  * Support {@link CommandHandler} for future-based request/response exchanges.
- * 
+ *
  * <p>
  * Queues of requests are managed per {@literal configId}, so that multiple
  * Loxone devices can be handled.
  * </p>
- * 
+ *
+ * @param <K>
+ *        the command type
+ * @param <V>
+ *        the command result type
  * @author matt
  * @version 2.0
  * @since 1.1
@@ -69,7 +73,7 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 
 	/**
 	 * Construct with a queue size.
-	 * 
+	 *
 	 * @param queueSize
 	 *        the queue size
 	 */
@@ -99,7 +103,7 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 
 		/**
 		 * Set the result object.
-		 * 
+		 *
 		 * @param result
 		 *        The resolved object.
 		 */
@@ -112,7 +116,7 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 
 		/**
 		 * Set a result error.
-		 * 
+		 *
 		 * @param t
 		 *        The error exception.
 		 */
@@ -177,7 +181,7 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 
 	/**
 	 * Set a future-based text request.
-	 * 
+	 *
 	 * <p>
 	 * Calling this method will queue a {@link Future} for the provided
 	 * {@code key}. Later on, when the response comes (for example, via
@@ -185,12 +189,12 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 	 * then {@link #handleNextResult(Session, Object)} can be called to add the
 	 * result to the {@code Future}.
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * If a request exists already for {@code key} then that request will be
 	 * cancelled via {@link Future#cancel(boolean)}.
 	 * </p>
-	 * 
+	 *
 	 * @param session
 	 *        the websocket session
 	 * @param configId
@@ -243,7 +247,7 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 	/**
 	 * See what the next result key in the queue is, leaving it as the next
 	 * result key.
-	 * 
+	 *
 	 * @param session
 	 *        the session of the queue to manage
 	 * @return the next result key, or {@literal null} if not available
@@ -255,7 +259,7 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 
 	/**
 	 * Get the next result key is, removing it from the queue.
-	 * 
+	 *
 	 * @param session
 	 *        the session of the queue to manage
 	 * @return the next result key, or {@literal null} if not available
@@ -267,13 +271,13 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 
 	/**
 	 * Handle the next result for the queue.
-	 * 
+	 *
 	 * <p>
 	 * This will call {@link #popNextResultKey(Session)} to get the next result
 	 * key, and then set {@code result} on the {@link Future} associated with
 	 * that key.
 	 * </p>
-	 * 
+	 *
 	 * @param session
 	 *        the session of the queue to manage
 	 * @param result
@@ -292,7 +296,7 @@ public abstract class QueuedCommandHandler<K, V> extends BaseCommandHandler {
 
 	/**
 	 * Handle the next result for the queue as an error.
-	 * 
+	 *
 	 * @param session
 	 *        the session of the queue to manage
 	 * @param t

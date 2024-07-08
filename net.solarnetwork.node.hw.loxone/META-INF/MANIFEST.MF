@@ -5,7 +5,7 @@ Bundle-Description: Integration with Loxone Miniserver to generate datum streams
  controls.
 Bundle-SymbolicName: net.solarnetwork.node.hw.loxone
 Automatic-Module-Name: net.solarnetwork.node.hw.loxone
-Bundle-Version: 3.0.0
+Bundle-Version: 3.1.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Evident
 Export-Package: 
@@ -39,15 +39,15 @@ Import-Package:
  net.solarnetwork.node.domain.datum;version="[1.0,2.0)",
  net.solarnetwork.node.job;version="[2.0,3.0)",
  net.solarnetwork.node.reactor;version="[2.0,3.0)",
- net.solarnetwork.node.service;version="[1.0,2.0)",
- net.solarnetwork.node.service.support;version="[1.0,2.0)",
+ net.solarnetwork.node.service;version="[1.10,2.0)",
+ net.solarnetwork.node.service.support;version="[1.6,2.0)",
  net.solarnetwork.node.settings;version="[2.0,3.0)",
  net.solarnetwork.node.settings.support;version="[2.0,3.0)",
  net.solarnetwork.node.setup;version="[1.0,2.0)",
- net.solarnetwork.service;version="[1.0,2.0)",
+ net.solarnetwork.service;version="[1.1,2.0)",
  net.solarnetwork.service.support;version="[1.0,2.0)",
- net.solarnetwork.settings;version="[2.0,3.0)",
- net.solarnetwork.settings.support;version="[2.0,3.0)",
+ net.solarnetwork.settings;version="[2.3,3.0)",
+ net.solarnetwork.settings.support;version="[2.3,3.0)",
  net.solarnetwork.util;version="[2.0,3.0)",
  org.aopalliance.aop;version="1.0.0",
  org.apache.commons.codec;version="1.10.0",

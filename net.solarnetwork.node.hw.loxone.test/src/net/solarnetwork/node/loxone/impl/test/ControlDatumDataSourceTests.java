@@ -1,21 +1,21 @@
 /* ==================================================================
  * ControlDatumDataSourceTests.java - 2/10/2016 3:15:26 PM
- * 
+ *
  * Copyright 2007-2016 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -72,12 +72,13 @@ import net.solarnetwork.service.StaticOptionalService;
 
 /**
  * Test cases for the {@link ControlDatumDataSource} class.
- * 
+ *
  * @author matt
  * @version 2.0
  */
 public class ControlDatumDataSourceTests {
 
+	private static final String TEST_SETTING_UID = "test.uid";
 	private static final Long TEST_CONFIG_ID = 321L;
 
 	private ControlDao controlDao;
@@ -90,7 +91,8 @@ public class ControlDatumDataSourceTests {
 		controlDao = EasyMock.createMock(ControlDao.class);
 		settingDao = EasyMock.createMock(SettingDao.class);
 		datumQueue = EasyMock.createMock(DatumQueue.class);
-		dataSource = new ControlDatumDataSource(TEST_CONFIG_ID, controlDao, settingDao);
+		dataSource = new ControlDatumDataSource(TEST_SETTING_UID, TEST_CONFIG_ID, controlDao,
+				settingDao);
 		dataSource.setDatumQueue(new StaticOptionalService<>(datumQueue));
 	}
 

@@ -1,21 +1,21 @@
 /* ==================================================================
  * BaseUUIDEntityDao.java - 18/09/2016 7:39:28 AM
- * 
+ *
  * Copyright 2007-2016 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -46,7 +46,9 @@ import net.solarnetwork.node.loxone.domain.UUIDEntity;
 
 /**
  * Base class for supporting DAO operations on {@link UUIDEntity} objects.
- * 
+ *
+ * @param <T>
+ *        the entity type
  * @author matt
  * @version 1.2
  */
@@ -73,8 +75,13 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 	 */
 	public static final String INIT_SQL_FORMAT = "%s-init.sql";
 
+	/** SQL resource to insert. */
 	public static final String SQL_INSERT = "insert";
+
+	/** SQL resource to update. */
 	public static final String SQL_UPDATE = "update";
+
+	/** SQL resource to get by primary key. */
 	public static final String SQL_GET_BY_PK = "get-pk";
 
 	/**
@@ -106,7 +113,7 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 	/**
 	 * Init with an an entity name and table version, deriving various names
 	 * based on conventions.
-	 * 
+	 *
 	 * @param entityClass
 	 *        The class of the entity managed by this DAO.
 	 * @param entityName
@@ -126,7 +133,7 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 	/**
 	 * Init with an an entity name and table version, deriving various names
 	 * based on conventions.
-	 * 
+	 *
 	 * @param sqlResourcePrefixTemplate
 	 *        a template with a single {@code %s} parameter for the SQL resource
 	 *        prefix
@@ -162,13 +169,13 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 	/**
 	 * Get the base SQL resource template, as originally passed to the
 	 * constructor.
-	 * 
+	 *
 	 * <p>
 	 * The {@link #getSqlResourcePrefix()} method will return this prefix with
 	 * the entity named appended, so this method can be used to get the original
 	 * value.
 	 * </p>
-	 * 
+	 *
 	 * @return the baseSqlResourceTemplate
 	 */
 	public String getBaseSqlResourceTemplate() {
@@ -177,7 +184,7 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 
 	/**
 	 * Get the entity class managed by this DAO.
-	 * 
+	 *
 	 * @return The class.
 	 */
 	public Class<T> entityClass() {
@@ -186,7 +193,7 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 
 	/**
 	 * Get the default row mapper.
-	 * 
+	 *
 	 * @return The row mapper.
 	 */
 	protected RowMapper<T> getRowMapper() {
@@ -195,11 +202,11 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 
 	/**
 	 * Insert or update an entity.
-	 * 
+	 *
 	 * <p>
 	 * The object will also be added to the entity cache, if configured.
 	 * </p>
-	 * 
+	 *
 	 * @param entity
 	 *        The entity to store.
 	 */
@@ -216,11 +223,11 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 
 	/**
 	 * Store an entity in the entity cache.
-	 * 
+	 *
 	 * <p>
 	 * This method does nothing if the entity cache is not configured.
 	 * </p>
-	 * 
+	 *
 	 * @param entity
 	 *        The entity to cache.
 	 * @since 1.2
@@ -234,11 +241,11 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 
 	/**
 	 * Load an entity by its UUID.
-	 * 
+	 *
 	 * <p>
 	 * The entity cache, if configured, will be used.
 	 * </p>
-	 * 
+	 *
 	 * @param configId
 	 *        The config ID to match.
 	 * @param uuid
@@ -261,7 +268,7 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 
 	/**
 	 * Get a previously cached entity from the entity cache.
-	 * 
+	 *
 	 * @param configId
 	 *        The configuration ID of the entity to get.
 	 * @param uuid
@@ -283,7 +290,7 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 	 * Set a UUID value on a {@code PreparedStatement}. Two {@code BIGINT}
 	 * columns are used to store the value, first the most significant bits and
 	 * then the least significant bits.
-	 * 
+	 *
 	 * @param uuid
 	 *        The UUID to set, or <em>null</em> to set {@code NULL} values.
 	 * @param ps
@@ -312,7 +319,7 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 	 * Read a UUID value from a {@link ResultSet}. Two {@code BIGINT} columns
 	 * are expected for the value, first the most significant bits and then the
 	 * least significant bits.
-	 * 
+	 *
 	 * @param col
 	 *        The starting column on the {@code ResultSet} to use for the most
 	 *        significant bits. The least significant bits will be read from
@@ -338,12 +345,12 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 
 	/**
 	 * Delete all entities matching a specific {@code configId}.
-	 * 
+	 *
 	 * <p>
 	 * All matching entities will also be removed from the entity cache, if
 	 * configured.
 	 * </p>
-	 * 
+	 *
 	 * @param configId
 	 *        The ID of the {@link Config} to delete all entities for.
 	 * @return The number of deleted entities
@@ -357,11 +364,11 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 	/**
 	 * Remove all entities matching a specific {@code configId} from the entity
 	 * cache.
-	 * 
+	 *
 	 * <p>
 	 * This method does nothing if the entity cache is not configured.
 	 * </p>
-	 * 
+	 *
 	 * @param configId
 	 *        The ID of the {@link Config} to delete all entities for.
 	 * @since 1.2
@@ -384,12 +391,12 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 
 	/**
 	 * Delete an entity matching a specific {@code configId} and {@code uuid}.
-	 * 
+	 *
 	 * <p>
 	 * The {@link BaseUUIDEntityDao#SQL_DELETE_BY_PK} resource is used. The
 	 * entity will also be removed from the entity cache, if configured.
 	 * </p>
-	 * 
+	 *
 	 * @param configId
 	 *        The ID of the {@link Config} of the entity to delete.
 	 * @param uuid
@@ -405,11 +412,11 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 
 	/**
 	 * Delete an entity from the entity cache.
-	 * 
+	 *
 	 * <p>
 	 * This method does nothing if the entity cache is not configured.
 	 * </p>
-	 * 
+	 *
 	 * @param configId
 	 *        The configuration ID of the entity to remove.
 	 * @param uuid
@@ -428,11 +435,11 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 
 	/**
 	 * Find all entities for a specific {@code configId}.
-	 * 
+	 *
 	 * This will call {@link #sortDescriptorColumnMapping()} to get the mapping
 	 * of supported sort descriptor keys, and pass that to
 	 * {@link #handleSortDescriptors(String, List, Map)}.
-	 * 
+	 *
 	 * @param configId
 	 *        The ID of the {@link Config} to get all entities for.
 	 * @param sortDescriptors
@@ -449,10 +456,10 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 	/**
 	 * Get a mapping of sort descriptor keys to associated SQL column values for
 	 * use in an {@code ORDER BY} clause.
-	 * 
+	 *
 	 * This method returns mappings for the {@code name} and
 	 * {@code defaultrating} keys.
-	 * 
+	 *
 	 * @return The mapping.
 	 */
 	protected Map<String, String> sortDescriptorColumnMapping() {
@@ -466,20 +473,20 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 	/**
 	 * Add an {@code ORDER BY} clause to a SQL query based on a set of sort
 	 * descriptors.
-	 * 
+	 *
 	 * If {@code sortDescriptors} is {@literal null} or empty, this method does
 	 * nothing.
-	 * 
+	 *
 	 * Otherwise, the method will look for an existing {@code ORDER BY} clause
 	 * (case sensitive!) and replace it with one generated by the descriptors.
 	 * This allows the SQL to be written with a default ordering, which is only
 	 * changed if specific sort descriptors are provided. If an existing
 	 * {@code ORDER BY} clause is not present, the method will append the
 	 * generated clause.
-	 * 
+	 *
 	 * <b>Note:</b> the sort keys will be forced to lower case. The
 	 * {@code columnMapping} keys should all be lower case already.
-	 * 
+	 *
 	 * @param sql
 	 *        The original SQL statement.
 	 * @param sortDescriptors
@@ -524,7 +531,7 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 
 	/**
 	 * Get the entity cache.
-	 * 
+	 *
 	 * @return The cache, or {@literal null} if not configured.
 	 * @since 1.2
 	 */
@@ -534,12 +541,12 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 
 	/**
 	 * Set an entity cache.
-	 * 
+	 *
 	 * <p>
 	 * The entity cache will be used to cache entities fetched from the
 	 * underlying database.
 	 * </p>
-	 * 
+	 *
 	 * @param entityCache
 	 *        The cache to use, or {@literal null} to not use one.
 	 * @since 1.2

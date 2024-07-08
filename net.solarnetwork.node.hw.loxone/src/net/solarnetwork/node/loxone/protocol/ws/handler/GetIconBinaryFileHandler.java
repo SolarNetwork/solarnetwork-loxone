@@ -1,21 +1,21 @@
 /* ==================================================================
  * GetIconBinaryFileHandler.java - 23/09/2016 4:56:26 PM
- * 
+ *
  * Copyright 2007-2016 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -37,7 +37,7 @@ import net.solarnetwork.node.loxone.protocol.ws.MessageType;
 
 /**
  * Request and handle image resources.
- * 
+ *
  * @author matt
  * @version 1.2
  */
@@ -46,6 +46,13 @@ public class GetIconBinaryFileHandler extends QueuedCommandHandler<String, Resou
 
 	private static final byte[] PNG_HEADER = new byte[] { (byte) 0x89, (byte) 0x50, (byte) 0x4E,
 			(byte) 0x47 };
+
+	/**
+	 * Constructor.
+	 */
+	public GetIconBinaryFileHandler() {
+		super();
+	}
 
 	@Override
 	public boolean supportsCommand(CommandType command) {

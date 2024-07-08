@@ -1,21 +1,21 @@
 /* ==================================================================
  * JdbcControlDao.java - 18/09/2016 12:40:16 PM
- * 
+ *
  * Copyright 2007-2016 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -57,14 +57,14 @@ import net.solarnetwork.node.loxone.domain.UUIDEntityParametersPair;
 
 /**
  * JDBC implementation of {@link ControlDao}.
- * 
+ *
  * <b>Note</b> that the {@link Control#getSourceId()} value will not be
  * saved/updated when persisting entities. When querying via
  * {@link #findAllForConfig(Long, List)} or
  * {@link #findAllForDatumPropertyUUIDEntities(Long)}, however, the
  * {@code sourceId} will be populated by a matching row from the
  * {@link SourceMappingDao} data.
- * 
+ *
  * @author matt
  * @version 1.3
  */
@@ -73,14 +73,25 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 	/** The default tables version. */
 	public static final int TABLES_VERSION = 2;
 
+	/** SQL resource for find for property set. */
 	public static final String SQL_FIND_FOR_DATUM_PROPSET = "find-for-propset";
 
+	/** SQL resource for find for state UUID. */
 	public static final String SQL_FIND_FOR_STATE_UUID = "find-for-state-uuid";
 
+	/** SQL resource for control states. */
 	public static final String CONTROL_STATES_NAME = "control_states";
+
+	/** SQL resource for delete for control. */
 	public static final String SQL_CONTROL_STATES_DELETE_FOR_CONTROL = "delete-for-control";
+
+	/** SQL resource for insert. */
 	public static final String SQL_CONTROL_STATES_INSERT = "insert";
+
+	/** SQL resource for find for control. */
 	public static final String SQL_CONTROL_STATES_FIND_FOR_CONTROL = "find-for-control";
+
+	/** SQL resource for count for config. */
 	public static final String SQL_COUNT_FOR_CONFIG = "count-for-config";
 
 	/**
@@ -92,7 +103,7 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 
 	/**
 	 * Construct with custom SQL settings.
-	 * 
+	 *
 	 * @param sqlResourcePrefixTemplate
 	 *        a template with a single {@code %s} parameter for the SQL resource
 	 *        prefix
@@ -392,7 +403,7 @@ public class JdbcControlDao extends BaseConfigurationEntityDao<Control> implemen
 					results.add(lastPair);
 				}
 
-				// after control and datum params, columns start at 13 and are 
+				// after control and datum params, columns start at 13 and are
 				// st.event_hi, st.event_lo, st.name AS event_name
 				// ps.dtype,
 				// ve.fvalue

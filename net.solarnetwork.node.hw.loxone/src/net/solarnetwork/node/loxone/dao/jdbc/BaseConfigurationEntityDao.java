@@ -1,21 +1,21 @@
 /* ==================================================================
  * BaseConfigurationEntityDao.java - 19/09/2016 4:53:25 PM
- * 
+ *
  * Copyright 2007-2016 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -39,7 +39,9 @@ import net.solarnetwork.node.loxone.domain.ConfigNameKey;
 
 /**
  * Base DAO for {@link BaseConfigurationEntity} classes.
- * 
+ *
+ * @param <T>
+ *        the entity type
  * @author matt
  * @version 1.2
  */
@@ -57,7 +59,7 @@ public abstract class BaseConfigurationEntityDao<T extends BaseConfigurationEnti
 	/**
 	 * Init with an an entity name and table version, deriving various names
 	 * based on conventions.
-	 * 
+	 *
 	 * @param entityClass
 	 *        The class of the entity managed by this DAO.
 	 * @param entityName
@@ -77,7 +79,7 @@ public abstract class BaseConfigurationEntityDao<T extends BaseConfigurationEnti
 	/**
 	 * Init with an an entity name and table version, deriving various names
 	 * based on conventions.
-	 * 
+	 *
 	 * @param sqlResourcePrefixTemplate
 	 *        a template with a single {@code %s} parameter for the SQL resource
 	 *        prefix
@@ -131,11 +133,11 @@ public abstract class BaseConfigurationEntityDao<T extends BaseConfigurationEnti
 	/**
 	 * Remove all entities matching a specific {@code configId} from the entity
 	 * cache.
-	 * 
+	 *
 	 * <p>
 	 * This method does nothing if the entity cache is not configured.
 	 * </p>
-	 * 
+	 *
 	 * @param configId
 	 *        The ID of the {@link Config} to delete all entities for.
 	 * @since 1.2
@@ -165,9 +167,9 @@ public abstract class BaseConfigurationEntityDao<T extends BaseConfigurationEnti
 	/**
 	 * Get a list of persisted entities matching a given name, optionally sorted
 	 * in some way.
-	 * 
+	 *
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * <p>
 	 * This method will return cached entities if {@code sortDescriptors} is
 	 * {@literal null} and the entity name cache is configured.
@@ -193,11 +195,11 @@ public abstract class BaseConfigurationEntityDao<T extends BaseConfigurationEnti
 
 	/**
 	 * Store a list of entities in the entity name cache.
-	 * 
+	 *
 	 * <p>
 	 * This method does nothing if the entity cache is not configured.
 	 * </p>
-	 * 
+	 *
 	 * @param configId
 	 *        The configuration ID of the entities.
 	 * @param name
@@ -216,7 +218,7 @@ public abstract class BaseConfigurationEntityDao<T extends BaseConfigurationEnti
 	/**
 	 * Get a list of persisted entities matching a given name from the entity
 	 * name cache.
-	 * 
+	 *
 	 * @param configId
 	 *        The config ID to match.
 	 * @param name
@@ -234,7 +236,7 @@ public abstract class BaseConfigurationEntityDao<T extends BaseConfigurationEnti
 
 	/**
 	 * Get the entity name cache.
-	 * 
+	 *
 	 * @return The cache, or {@literal null} if not configured.
 	 * @since 1.2
 	 */
@@ -244,12 +246,12 @@ public abstract class BaseConfigurationEntityDao<T extends BaseConfigurationEnti
 
 	/**
 	 * Set an entity name cache.
-	 * 
+	 *
 	 * <p>
 	 * The entity name cache will be used to cache collections of entities
 	 * fetched from the underlying database by their name.
 	 * </p>
-	 * 
+	 *
 	 * @param entityNameCache
 	 *        The cache to use, or {@literal null} to not use one.
 	 * @since 1.2

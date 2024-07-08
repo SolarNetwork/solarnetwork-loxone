@@ -1,21 +1,21 @@
 /* ==================================================================
  * ValueEventBinaryFileHandler.java - 19/09/2016 6:23:50 AM
- * 
+ *
  * Copyright 2007-2016 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -42,7 +42,7 @@ import net.solarnetwork.node.loxone.protocol.ws.MessageType;
 
 /**
  * {@link BinaryFileHandler} for value-type event binary messages.
- * 
+ *
  * @author matt
  * @version 2.0
  */
@@ -53,7 +53,7 @@ public class ValueEventBinaryFileHandler extends BaseEventBinaryFileHandler<Valu
 	 * file after it has been successfully saved. The
 	 * {@link LoxoneEvents#EVENT_PROPERTY_CONFIG_ID} and
 	 * {@link LoxoneEvents#EVENT_PROPERTY_DATE} properties will be available.
-	 * 
+	 *
 	 * @since 1.1
 	 */
 	public static final String VALUE_EVENTS_UPDATED_EVENT = "net/solarnetwork/node/loxone/VALUE_EVENTS_UPDATED";
@@ -61,13 +61,20 @@ public class ValueEventBinaryFileHandler extends BaseEventBinaryFileHandler<Valu
 	/**
 	 * The Event property used to convey a {@code Collection} of
 	 * {@link ValueEvent} instances associated with the event.
-	 * 
+	 *
 	 * @since 1.1
 	 */
 	public static final String EVENT_PROPERTY_VALUE_EVENTS = "valueEvents";
 
 	private boolean sendValueEventsUpdatedEvents = false;
 	private boolean ignoreUnchangedValues = true;
+
+	/**
+	 * Constructor.
+	 */
+	public ValueEventBinaryFileHandler() {
+		super();
+	}
 
 	@Override
 	public boolean supportsDataMessage(MessageHeader header, ByteBuffer buffer) {
@@ -124,11 +131,11 @@ public class ValueEventBinaryFileHandler extends BaseEventBinaryFileHandler<Valu
 
 	/**
 	 * Toggle the sending of {@link #VALUE_EVENTS_UPDATED_EVENT} events.
-	 * 
+	 *
 	 * <p>
 	 * This property defaults to {@literal false}.
 	 * </p>
-	 * 
+	 *
 	 * @param sendValueEventsUpdatedEvents
 	 *        {@literal true} to enable sending value events updated events
 	 * @since 1.1
@@ -139,7 +146,7 @@ public class ValueEventBinaryFileHandler extends BaseEventBinaryFileHandler<Valu
 
 	/**
 	 * Toggle the flag to ignore unchanged value event values.
-	 * 
+	 *
 	 * <p>
 	 * When {@literal true} (the default) then if the value of the control has
 	 * not changed from the last seen value for the same control, no updated
@@ -148,7 +155,7 @@ public class ValueEventBinaryFileHandler extends BaseEventBinaryFileHandler<Valu
 	 * their value, which can be useful if dealing with devices like RFID card
 	 * readers where the event must always be processed.
 	 * </p>
-	 * 
+	 *
 	 * @param ignoreUnchangedValues
 	 *        {@literal true} to ignore processing unchanged value events;
 	 *        defaults to {@literal true}
