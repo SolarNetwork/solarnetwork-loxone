@@ -91,6 +91,7 @@ import net.solarnetwork.node.service.NodeControlProvider;
 import net.solarnetwork.node.settings.support.BasicSetupResourceSettingSpecifier;
 import net.solarnetwork.node.setup.SetupResourceProvider;
 import net.solarnetwork.service.OptionalService;
+import net.solarnetwork.service.RegisteredService;
 import net.solarnetwork.service.RemoteServiceException;
 import net.solarnetwork.service.ServiceLifecycleObserver;
 import net.solarnetwork.service.ServiceRegistry;
@@ -148,7 +149,7 @@ public class WebsocketLoxoneService extends LoxoneEndpoint
 
 	private ControlDatumDataSource datumDataSource;
 	private ScheduledDatumDataSourcePollJob datumLoggerTrigger;
-	private ServiceRegistry.RegisteredService<MultiDatumDataSource> datumDataSourceRegistration;
+	private RegisteredService<MultiDatumDataSource> datumDataSourceRegistration;
 
 	private static final class ScheduledDatumDataSourcePollJob {
 
