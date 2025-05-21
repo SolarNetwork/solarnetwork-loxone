@@ -6,7 +6,7 @@ Bundle-Description: Integration with Loxone Miniserver to generate datum streams
 Bundle-SymbolicName: net.solarnetwork.node.hw.loxone
 Automatic-Module-Name: net.solarnetwork.node.hw.loxone
 Bundle-Version: 3.1.0
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Evident
 Export-Package: 
  net.solarnetwork.node.loxone;version="2.0.0",
