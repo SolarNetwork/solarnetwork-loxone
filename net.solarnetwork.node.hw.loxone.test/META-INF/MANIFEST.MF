@@ -3,9 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Loxone Test
 Bundle-SymbolicName: net.solarnetwork.node.hw.loxone.test
 Automatic-Module-Name: net.solarnetwork.node.hw.loxone.test
-Bundle-Version: 3.1.0
+Bundle-Version: 4.0.0
 Bundle-Vendor: Evident
-Fragment-Host: net.solarnetwork.node.hw.loxone;bundle-version="[3.1,4.0)"
+Fragment-Host: net.solarnetwork.node.hw.loxone;bundle-version="[4.0,5.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: 
  com.fasterxml.jackson.databind.annotation,
