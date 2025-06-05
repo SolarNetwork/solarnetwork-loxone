@@ -50,15 +50,15 @@ import net.solarnetwork.node.loxone.domain.UUIDEntity;
  * @param <T>
  *        the entity type
  * @author matt
- * @version 1.2
+ * @version 1.3
  */
 public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJdbcDao<T> {
 
 	/** The table name format for data, e.g. {@code loxone_N}. */
 	public static final String TABLE_NAME_FORMAT = "loxone_%s";
 
-	/** Prefix format for SQL resources, e.g. {@code derby-N}. */
-	public static final String SQL_RESOURCE_PREFIX = "derby-%s";
+	/** Prefix format for SQL resources. */
+	public static final String SQL_RESOURCE_PREFIX = "%s";
 
 	/**
 	 * The default SQL format for the {@code sqlGetTablesVersion} property. The

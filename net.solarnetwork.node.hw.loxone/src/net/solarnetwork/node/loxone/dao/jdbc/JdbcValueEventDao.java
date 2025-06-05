@@ -1,21 +1,21 @@
 /* ==================================================================
  * JdbcValueEventDao.java - 19/09/2016 7:28:31 AM
- * 
+ *
  * Copyright 2007-2016 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -35,9 +35,9 @@ import net.solarnetwork.node.loxone.domain.ValueEvent;
 
 /**
  * JDBC implementation of {@link ValueEventDao}.
- * 
+ *
  * @author matt
- * @version 2.0
+ * @version 2.1
  */
 public class JdbcValueEventDao extends BaseEventEntityDao<ValueEvent> implements ValueEventDao {
 
@@ -45,7 +45,7 @@ public class JdbcValueEventDao extends BaseEventEntityDao<ValueEvent> implements
 	public static final int TABLES_VERSION = 1;
 
 	/** SQL resource to find value events for a datum set. */
-	public static final String SQL_FIND_FOR_DATUMSET = "derby-vevent-find-for-datumset";
+	public static final String SQL_FIND_FOR_DATUMSET = "vevent-find-for-datumset";
 
 	/**
 	 * Constructor.
@@ -56,7 +56,7 @@ public class JdbcValueEventDao extends BaseEventEntityDao<ValueEvent> implements
 
 	/**
 	 * Construct with custom SQL settings.
-	 * 
+	 *
 	 * @param sqlResourcePrefixTemplate
 	 *        a template with a single {@code %s} parameter for the SQL resource
 	 *        prefix
