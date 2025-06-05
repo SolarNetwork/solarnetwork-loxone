@@ -1,21 +1,21 @@
 /* ==================================================================
  * SettingsConfigAuthenticationTokenDaoTests.java - 6/04/2018 9:25:27 AM
- * 
+ *
  * Copyright 2018 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -28,7 +28,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
-import java.time.Instant;
+import java.time.Clock;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -46,11 +47,13 @@ import net.solarnetwork.node.test.AbstractNodeTest;
 
 /**
  * Test cases for the {@link SettingsConfigAuthenticationTokenDao} class.
- * 
+ *
  * @author matt
  * @version 1.1
  */
 public class SettingsConfigAuthenticationTokenDaoTests extends AbstractNodeTest {
+
+	private static final Clock MS_CLOCK = Clock.tickMillis(ZoneOffset.UTC);
 
 	private SettingDao settingDao;
 
@@ -85,7 +88,7 @@ public class SettingsConfigAuthenticationTokenDaoTests extends AbstractNodeTest 
 	@Test
 	public void getAuthToken() {
 		// given
-		ConfigAuthenticationToken expected = new ConfigAuthenticationToken(1L, "2", Instant.now(),
+		ConfigAuthenticationToken expected = new ConfigAuthenticationToken(1L, "2", MS_CLOCK.instant(),
 				EnumSet.of(AuthenticationTokenPermission.App), false, "abff");
 		List<KeyValuePair> settings = Arrays.asList(
 				new KeyValuePair(SettingsConfigAuthenticationTokenDao.KEY_SETTING, expected.getKeyHex()),
@@ -116,7 +119,7 @@ public class SettingsConfigAuthenticationTokenDaoTests extends AbstractNodeTest 
 	@Test
 	public void storeAuthToken() {
 		// given
-		ConfigAuthenticationToken authToken = new ConfigAuthenticationToken(1L, "2", Instant.now(),
+		ConfigAuthenticationToken authToken = new ConfigAuthenticationToken(1L, "2", MS_CLOCK.instant(),
 				EnumSet.of(AuthenticationTokenPermission.App), false, "abff");
 
 		settingDao.storeSetting("loxone/1/auth-token", SettingsConfigAuthenticationTokenDao.KEY_SETTING,
