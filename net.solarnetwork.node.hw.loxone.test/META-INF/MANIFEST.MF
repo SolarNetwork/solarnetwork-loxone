@@ -9,6 +9,7 @@ Fragment-Host: net.solarnetwork.node.hw.loxone;bundle-version="[4.0,5.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: 
  com.fasterxml.jackson.databind.annotation,
+ com.sun.xml.bind.v2;resolution:=optional,
  javax.cache;version="[1.0,2.0)",
  javax.cache.configuration;version="[1.0,2.0)",
  javax.cache.expiry;version="[1.0,2.0)",

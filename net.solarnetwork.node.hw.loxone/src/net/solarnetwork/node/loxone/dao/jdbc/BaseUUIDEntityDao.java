@@ -26,13 +26,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.UUID;
 import javax.cache.Cache;
 import javax.cache.Cache.Entry;
@@ -50,15 +48,15 @@ import net.solarnetwork.node.loxone.domain.UUIDEntity;
  * @param <T>
  *        the entity type
  * @author matt
- * @version 1.2
+ * @version 1.3
  */
 public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJdbcDao<T> {
 
 	/** The table name format for data, e.g. {@code loxone_N}. */
 	public static final String TABLE_NAME_FORMAT = "loxone_%s";
 
-	/** Prefix format for SQL resources, e.g. {@code derby-N}. */
-	public static final String SQL_RESOURCE_PREFIX = "derby-%s";
+	/** Prefix format for SQL resources. */
+	public static final String SQL_RESOURCE_PREFIX = "%s";
 
 	/**
 	 * The default SQL format for the {@code sqlGetTablesVersion} property. The
@@ -100,9 +98,6 @@ public abstract class BaseUUIDEntityDao<T extends UUIDEntity> extends AbstractJd
 	 * SQL resource to find by config ID. Accepts a {@code configId}.
 	 */
 	public static final String SQL_FIND_FOR_CONFIG = "find-for-config";
-
-	/** A static calendar in the UTC time zone, to use for reference only. */
-	protected static Calendar UTC_CALENDAR = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
 	private final String baseSqlResourceTemplate;
 	private final Class<T> entityClass;
