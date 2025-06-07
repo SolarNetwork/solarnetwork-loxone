@@ -22,14 +22,14 @@
 
 package net.solarnetwork.node.loxone.dao.jdbc;
 
+import static net.solarnetwork.node.dao.jdbc.JdbcUtils.setUtcTimestampStatementValue;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.Calendar;
 import java.util.UUID;
 import org.springframework.jdbc.core.RowMapper;
+import net.solarnetwork.node.dao.jdbc.JdbcUtils;
 import net.solarnetwork.node.loxone.dao.ValueEventDao;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
 
@@ -75,9 +75,7 @@ public class JdbcValueEventDao extends BaseEventEntityDao<ValueEvent> implements
 		// Row order is: (uuid_hi, uuid_lo, config_id, created, value)
 		prepareUUID(1, event.getUuid(), ps);
 		ps.setObject(3, event.getConfigId());
-		ps.setTimestamp(4,
-				Timestamp.from(event.getCreated() != null ? event.getCreated() : Instant.now()),
-				(Calendar) UTC_CALENDAR.clone());
+		setUtcTimestampStatementValue(ps, 4, event.getCreated() != null ? event.getCreated() : Instant.now());
 		ps.setDouble(5, event.getValue());
 	}
 
@@ -85,9 +83,7 @@ public class JdbcValueEventDao extends BaseEventEntityDao<ValueEvent> implements
 	protected void setUpdateStatementValues(ValueEvent event, PreparedStatement ps) throws SQLException {
 		// cols: created = ?, value = ?
 		//       uuid_hi, uuid_lo, config_id
-		ps.setTimestamp(1,
-				Timestamp.from(event.getCreated() != null ? event.getCreated() : Instant.now()),
-				(Calendar) UTC_CALENDAR.clone());
+		setUtcTimestampStatementValue(ps, 1, event.getCreated() != null ? event.getCreated() : Instant.now());
 		ps.setDouble(2, event.getValue());
 		prepareUUID(3, event.getUuid(), ps);
 		ps.setObject(5, event.getConfigId());
@@ -100,11 +96,7 @@ public class JdbcValueEventDao extends BaseEventEntityDao<ValueEvent> implements
 			// Row order is: uuid_hi, uuid_lo, config_id, created, value
 			UUID uuid = readUUID(1, rs);
 			Long configId = rs.getLong(3);
-			Instant created = null;
-			Timestamp ts = rs.getTimestamp(4, (Calendar) UTC_CALENDAR.clone());
-			if ( ts != null ) {
-				created = ts.toInstant();
-			}
+			Instant created = JdbcUtils.getUtcTimestampColumnValue(rs, 4);
 			double value = rs.getDouble(5);
 			return new ValueEvent(uuid, configId, created, value);
 		}

@@ -36,14 +36,14 @@ import java.util.EnumSet;
 import java.util.List;
 import org.easymock.EasyMock;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import org.springframework.test.context.transaction.BeforeTransaction;
 import net.solarnetwork.domain.KeyValuePair;
 import net.solarnetwork.node.dao.SettingDao;
 import net.solarnetwork.node.loxone.dao.jdbc.SettingsConfigAuthenticationTokenDao;
 import net.solarnetwork.node.loxone.domain.AuthenticationTokenPermission;
 import net.solarnetwork.node.loxone.domain.ConfigAuthenticationToken;
-import net.solarnetwork.node.test.AbstractNodeTest;
+import net.solarnetwork.node.test.AbstractNodeTransactionalTest;
 
 /**
  * Test cases for the {@link SettingsConfigAuthenticationTokenDao} class.
@@ -51,7 +51,7 @@ import net.solarnetwork.node.test.AbstractNodeTest;
  * @author matt
  * @version 1.1
  */
-public class SettingsConfigAuthenticationTokenDaoTests extends AbstractNodeTest {
+public class SettingsConfigAuthenticationTokenDaoTests extends AbstractNodeTransactionalTest {
 
 	private static final Clock MS_CLOCK = Clock.tickMillis(ZoneOffset.UTC);
 
@@ -59,7 +59,7 @@ public class SettingsConfigAuthenticationTokenDaoTests extends AbstractNodeTest 
 
 	private SettingsConfigAuthenticationTokenDao authTokenDao;
 
-	@Before
+	@BeforeTransaction
 	public void setup() {
 		settingDao = EasyMock.createMock(SettingDao.class);
 		authTokenDao = new SettingsConfigAuthenticationTokenDao();
