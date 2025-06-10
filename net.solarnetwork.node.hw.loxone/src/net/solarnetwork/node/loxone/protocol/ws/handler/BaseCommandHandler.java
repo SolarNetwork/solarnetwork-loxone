@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
-import javax.websocket.Session;
+import jakarta.websocket.Session;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;

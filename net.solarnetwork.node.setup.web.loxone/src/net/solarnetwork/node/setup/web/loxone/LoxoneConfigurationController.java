@@ -43,7 +43,7 @@ import net.solarnetwork.node.loxone.domain.ConfigurationEntity;
 import net.solarnetwork.node.loxone.domain.Control;
 import net.solarnetwork.node.loxone.domain.Room;
 import net.solarnetwork.node.loxone.domain.SourceMapping;
-import net.solarnetwork.web.domain.Response;
+import net.solarnetwork.web.jakarta.domain.Response;
 
 /**
  * Controller for Loxone configuration data.

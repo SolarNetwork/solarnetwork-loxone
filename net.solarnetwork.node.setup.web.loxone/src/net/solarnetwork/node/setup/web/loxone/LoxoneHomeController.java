@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import net.solarnetwork.node.loxone.LoxoneService;
 import net.solarnetwork.node.loxone.domain.Config;
-import net.solarnetwork.web.domain.Response;
+import net.solarnetwork.web.jakarta.domain.Response;
 
 /**
  * Entry point for Loxone app.

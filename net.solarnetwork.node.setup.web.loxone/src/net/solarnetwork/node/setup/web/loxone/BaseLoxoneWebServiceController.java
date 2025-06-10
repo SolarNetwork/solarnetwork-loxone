@@ -24,7 +24,7 @@ package net.solarnetwork.node.setup.web.loxone;
 
 import java.util.List;
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import net.solarnetwork.node.loxone.LoxoneService;
 import net.solarnetwork.node.loxone.domain.Config;
-import net.solarnetwork.web.domain.Response;
+import net.solarnetwork.web.jakarta.domain.Response;
 
 /**
  * Base class for web service support.

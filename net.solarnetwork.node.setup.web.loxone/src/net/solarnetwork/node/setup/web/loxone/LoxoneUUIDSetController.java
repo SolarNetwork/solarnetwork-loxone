@@ -39,7 +39,7 @@ import net.solarnetwork.node.loxone.domain.DatumUUIDEntity;
 import net.solarnetwork.node.loxone.domain.DatumUUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.UUIDEntityParameters;
 import net.solarnetwork.node.loxone.domain.UUIDSetEntity;
-import net.solarnetwork.web.domain.Response;
+import net.solarnetwork.web.jakarta.domain.Response;
 
 /**
  * Controller for managing UUID sets.

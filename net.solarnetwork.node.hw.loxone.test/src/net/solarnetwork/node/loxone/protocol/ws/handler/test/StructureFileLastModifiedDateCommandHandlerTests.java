@@ -28,7 +28,7 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import java.io.IOException;
 import java.util.Collections;
-import javax.websocket.Session;
+import jakarta.websocket.Session;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.junit.Assert;

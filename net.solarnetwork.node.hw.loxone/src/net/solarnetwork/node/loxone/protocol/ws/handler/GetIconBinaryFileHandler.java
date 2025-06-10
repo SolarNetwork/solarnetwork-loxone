@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Future;
-import javax.websocket.Session;
+import jakarta.websocket.Session;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.FileCopyUtils;

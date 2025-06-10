@@ -33,7 +33,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TimeZone;
-import javax.websocket.Session;
+import jakarta.websocket.Session;
 import org.osgi.service.event.Event;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

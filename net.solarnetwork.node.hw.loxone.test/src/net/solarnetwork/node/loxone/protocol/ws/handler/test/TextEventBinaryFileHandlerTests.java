@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Base64;
 import java.util.Collections;
-import javax.websocket.Session;
+import jakarta.websocket.Session;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;

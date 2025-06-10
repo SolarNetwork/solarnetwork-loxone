@@ -25,7 +25,7 @@ package net.solarnetwork.node.loxone.protocol.ws;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.ByteBuffer;
-import javax.websocket.Session;
+import jakarta.websocket.Session;
 
 /**
  * API for handling binary file data from the Loxone.
