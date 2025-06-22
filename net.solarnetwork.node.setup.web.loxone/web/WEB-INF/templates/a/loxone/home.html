@@ -1,19 +1,43 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="setup" uri="http://solarnetwork.net/taglib/setup" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<!DOCTYPE html>
+<html data-th-replace="~{layout :: layout(
+		title = ~{::title},
+		body = ~{::body},
+		footer = ~{footer-top :: content},
+		navloc = 'settings',
+		headExtra = ~{::loxone-head-extra})}"
+	xmlns:snode="http://solarnetwork.net/taglib/thymeleaf-solarnode-setup">
+<head>
+    <title data-th-text="#{app.title(#{loxone.title})}">SolarNode Services</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../../../css/bootstrap.css">
+	<link rel="stylesheet" href="../../../css/solarnode.css">
+	<link rel="stylesheet" href="../../../css/fonts.css">
+	<link rel="stylesheet" href="../../../css/bootstrap-icons.css">
+	
+	<!--/*/ <th:block th:fragment="loxone-head-extra"> /*/-->
+	<meta name="loxone-config-id" data-th-content="${configId}" data-th-if="${configId}">
+	<meta name="loxone-config-ids" data-th-content="${configIds}" data-th-if="${configIds}">
+
+	<link rel="stylesheet" href="@{/css/loxone.css}">
+
+	<script type="application/javascript" src="/js-lib/knockout-3.4.0.js" data-th-src="@{/js-lib/knockout-3.4.0.js}"></script>
+	<script type="application/javascript" src="/js-lib/jquery.form.js" data-th-src="@{/js-lib/jquery.form.js}"></script>
+
+	<script type="application/javascript" src="/js/loxone.js" data-th-src="@{/js/loxone.js}"></script>
+	<script type="application/javascript" src="/js/loxone-api.js" data-th-src="@{/js/loxone-api.js}"></script>
+	<script type="application/javascript" src="/js/loxone-utils.js" data-th-src="@{/js/loxone-utils.js}"></script>
+   	<!--/*/ </th:block> /*/-->		
+</head>
+<body data-th-remove="tag">
 
 <div class="loxone-heading">
 	<div class="loxone-upload-file" onclick="Loxone.controlView.openFileInput()">Upload</div>
 
 	<div class="title">Device configuration</div>
 
-	<setup:url value="/a/loxone/{configId}/sources" var="uploadSourcesUrl">
-		<spring:param name="configId" value="${configId}" />
-	</setup:url>
-
-	<form id="loxone-file-upload-form" action="${uploadSourcesUrl}"  method="post" onchange="" enctype="multipart/form-data" hidden>
+	<form id="loxone-file-upload-form" action="/a/loxone/XYZ/sources"  method="post" onchange="" enctype="multipart/form-data" hidden
+			data-th-action="@{/a/loxone/{configId}/sources(configId=${configId})}">
 		<input id="loxone-file-input" type="file" name="file" onchange="Loxone.controlView.submitFile()">
-		<sec:csrfInput/>
 	</form>
 
   <input id="filter-input" type="text" placeholder="filter" onkeyup="Loxone.controlView.draw()">
@@ -54,5 +78,8 @@
 
 <div id="control-view" class="loxone-list"></div>
 
-<script type="application/javascript" src="<setup:url value='/js/loxone-view-control.js'/>"></script>
-<script type="application/javascript" src="<setup:url value='/js/loxone-websocket.js'/>"></script>
+<script type="application/javascript" src="@{/js/loxone-view-control.js}"></script>
+<script type="application/javascript" src="@{/js/loxone-websocket.js}"></script>
+
+</body>
+</html>
