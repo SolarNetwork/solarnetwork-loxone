@@ -8,7 +8,7 @@ Bundle-Vendor: Evident/SolarNetwork
 Fragment-Host: net.solarnetwork.node.hw.loxone;bundle-version="[4.0,5.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Import-Package: 
- com.fasterxml.jackson.databind.annotation,
+ com.fasterxml.jackson.databind.annotation;version="[2.19,3.0)",
  com.sun.xml.bind.v2;resolution:=optional,
  javax.cache;version="[1.0,2.0)",
  javax.cache.configuration;version="[1.0,2.0)",
