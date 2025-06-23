@@ -22,10 +22,6 @@
 		http://www.springframework.org/schema/util
 		http://www.springframework.org/schema/util/spring-util-4.2.xsd">
 
-	<bean id="loxoneMessageSource" 
-		class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
-		p:cacheSeconds="-1" p:basename="WEB-INF/loxone-messages"/>
-
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/a/loxone/**"/>
