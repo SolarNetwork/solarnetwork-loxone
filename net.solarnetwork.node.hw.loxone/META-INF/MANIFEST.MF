@@ -28,8 +28,6 @@ Import-Package:
  javax.cache;version="[1.0,2.0)",
  javax.sql,
  jakarta.websocket;version="2.2.0",
- jakarta.xml.bind;version="[4.0,5.0)",
- jakarta.xml.bind.annotation;version="[4.0,5.0)",
  javax.xml.stream,
  net.solarnetwork.codec;version="[2.0,3.0)",
  net.solarnetwork.common.osgi.service;version="[1.0,2.0)",
