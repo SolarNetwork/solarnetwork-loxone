@@ -23,7 +23,7 @@
 package net.solarnetwork.node.setup.web.loxone;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import net.solarnetwork.web.domain.Response;
+import net.solarnetwork.web.jakarta.domain.Response;
 
 /**
  * Extension of {@link Response} so that {@literal null} values are always

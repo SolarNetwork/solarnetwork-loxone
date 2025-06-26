@@ -28,7 +28,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Map;
 import java.util.UUID;
-import javax.websocket.Session;
+import jakarta.websocket.Session;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;

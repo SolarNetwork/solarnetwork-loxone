@@ -32,7 +32,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import javax.websocket.Session;
+import jakarta.websocket.Session;
 import com.fasterxml.jackson.databind.JsonNode;
 import net.solarnetwork.node.loxone.protocol.ws.CommandHandler;
 import net.solarnetwork.node.loxone.protocol.ws.CommandType;

@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
-import javax.websocket.Session;
+import jakarta.websocket.Session;
 import org.osgi.service.event.Event;
 import com.fasterxml.jackson.databind.JsonNode;
 import net.solarnetwork.node.loxone.protocol.ws.CommandHandler;

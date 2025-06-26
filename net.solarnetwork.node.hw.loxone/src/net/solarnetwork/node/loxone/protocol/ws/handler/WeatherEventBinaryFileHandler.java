@@ -30,7 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.websocket.Session;
+import jakarta.websocket.Session;
 import org.osgi.service.event.Event;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.WeatherEvent;

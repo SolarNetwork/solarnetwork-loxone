@@ -27,7 +27,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import javax.websocket.Session;
+import jakarta.websocket.Session;
 import net.solarnetwork.node.loxone.domain.DaytimerEvent;
 import net.solarnetwork.node.loxone.domain.DaytimerEventEntry;
 import net.solarnetwork.node.loxone.protocol.ws.BinaryFileHandler;

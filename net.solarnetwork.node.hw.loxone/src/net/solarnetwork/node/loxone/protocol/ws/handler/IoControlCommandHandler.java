@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Future;
 import java.util.regex.Matcher;
-import javax.websocket.Session;
+import jakarta.websocket.Session;
 import com.fasterxml.jackson.databind.JsonNode;
 import net.solarnetwork.node.loxone.domain.UUIDDeserializer;
 import net.solarnetwork.node.loxone.domain.UUIDSerializer;
