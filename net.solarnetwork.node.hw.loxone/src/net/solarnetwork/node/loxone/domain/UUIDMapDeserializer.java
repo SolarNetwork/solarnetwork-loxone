@@ -63,7 +63,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
  * </pre>
  *
  * @author matt
- * @version 1.1
+ * @version 1.2
  * @since 1.0.4
  */
 public class UUIDMapDeserializer extends StdDeserializer<Map<String, UUID>> {
@@ -83,11 +83,11 @@ public class UUIDMapDeserializer extends StdDeserializer<Map<String, UUID>> {
 		Map<String, UUID> result = new LinkedHashMap<>();
 		JsonToken tok = parser.getCurrentToken();
 		while ( tok != null && tok != JsonToken.END_OBJECT ) {
-			if ( tok == JsonToken.VALUE_STRING && parser.getCurrentName() != null ) {
-				result.put(parser.getCurrentName(), UUIDDeserializer.deserializeUUID(parser.getText()));
-			} else if ( tok == JsonToken.START_ARRAY && parser.getCurrentName() != null ) {
+			if ( tok == JsonToken.VALUE_STRING && parser.currentName() != null ) {
+				result.put(parser.currentName(), UUIDDeserializer.deserializeUUID(parser.getText()));
+			} else if ( tok == JsonToken.START_ARRAY && parser.currentName() != null ) {
 				// parse array values using indexed key names
-				String baseName = parser.getCurrentName();
+				String baseName = parser.currentName();
 				int idx = 0;
 				for ( tok = parser.nextValue(); tok != null
 						&& tok != JsonToken.END_ARRAY; tok = parser.nextToken(), idx++ ) {

@@ -29,17 +29,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TimeZone;
-import javax.websocket.Session;
 import org.osgi.service.event.Event;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.websocket.Session;
 import net.solarnetwork.node.loxone.dao.CategoryDao;
 import net.solarnetwork.node.loxone.dao.ConfigDao;
 import net.solarnetwork.node.loxone.dao.ControlDao;
@@ -57,7 +56,7 @@ import net.solarnetwork.node.loxone.protocol.ws.MessageHeader;
  * Handle the Loxone structure file.
  *
  * @author matt
- * @version 1.0
+ * @version 1.1
  */
 public class GetStructureFileCommandHandler extends BaseCommandHandler implements BinaryFileHandler {
 
@@ -125,8 +124,7 @@ public class GetStructureFileCommandHandler extends BaseCommandHandler implement
 			log.trace("Got structure file: {}",
 					objectMapper.writer(new DefaultPrettyPrinter()).writeValueAsString(json));
 		}
-		for ( Iterator<Entry<String, JsonNode>> itr = json.fields(); itr.hasNext(); ) {
-			Entry<String, JsonNode> entry = itr.next();
+		for ( final Entry<String, JsonNode> entry : json.properties() ) {
 			if ( "lastModified".equals(entry.getKey()) ) {
 				SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
 				sdf.setTimeZone(TimeZone.getTimeZone("UTC"));

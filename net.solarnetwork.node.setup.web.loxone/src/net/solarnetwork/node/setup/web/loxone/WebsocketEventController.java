@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import net.solarnetwork.node.loxone.LoxoneService;
 import net.solarnetwork.node.loxone.domain.ValueEvent;
-import net.solarnetwork.web.domain.Response;
+import net.solarnetwork.web.jakarta.domain.Response;
 
 /**
  * Controller for websocket event publishing.

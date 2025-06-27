@@ -35,11 +35,11 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.security.PublicKey;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.Date;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Queue;
@@ -51,19 +51,12 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
-import javax.websocket.ClientEndpointConfig;
-import javax.websocket.CloseReason;
-import javax.websocket.Endpoint;
-import javax.websocket.EndpointConfig;
-import javax.websocket.MessageHandler;
-import javax.websocket.Session;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.glassfish.tyrus.client.ClientManager;
 import org.glassfish.tyrus.client.ClientProperties;
-import org.glassfish.tyrus.container.jdk.client.JdkClientContainer;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 import org.osgi.service.event.EventHandler;
@@ -73,6 +66,12 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.util.FileCopyUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.websocket.ClientEndpointConfig;
+import jakarta.websocket.CloseReason;
+import jakarta.websocket.Endpoint;
+import jakarta.websocket.EndpointConfig;
+import jakarta.websocket.MessageHandler;
+import jakarta.websocket.Session;
 import net.solarnetwork.codec.JsonUtils;
 import net.solarnetwork.node.loxone.dao.ConfigAuthenticationTokenDao;
 import net.solarnetwork.node.loxone.dao.ConfigDao;
@@ -222,7 +221,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	}
 
 	private synchronized void connect() {
-		ClientManager container = ClientManager.createClient(JdkClientContainer.class.getName());
+		ClientManager container = ClientManager.createClient();
 		if ( clientProperties != null ) {
 			container.getProperties().putAll(clientProperties);
 		}
@@ -463,8 +462,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 			public void run() {
 				connect();
 			}
-		}, new Date(
-				System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(reconnectHandler.getDelay())));
+		}, Instant.ofEpochMilli(System.currentTimeMillis()).plusSeconds(reconnectHandler.getDelay()));
 	}
 
 	@Override
@@ -826,9 +824,9 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 
 	private synchronized void scheduleKeepAliveTask() {
 		if ( keepAliveFuture == null || keepAliveFuture.isDone() && taskScheduler != null ) {
-			long period = TimeUnit.SECONDS.toMillis(keepAliveSeconds);
 			keepAliveFuture = taskScheduler.scheduleAtFixedRate(new KeepAliveTask(),
-					new Date(System.currentTimeMillis() + period), period);
+					Instant.ofEpochMilli(System.currentTimeMillis()).plusSeconds(keepAliveSeconds),
+					Duration.ofSeconds(keepAliveSeconds));
 		}
 	}
 
@@ -846,10 +844,10 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		Instant expires = token.getValidUntil();
 		long expiresAt = expires.toEpochMilli();
 		long now = System.currentTimeMillis();
-		Date runTime;
+		Instant runTime;
 		if ( expiresAt <= now ) {
 			// token already expired; schedule refresh in a few seconds
-			runTime = new Date(System.currentTimeMillis() + 10000L);
+			runTime = Instant.ofEpochMilli(System.currentTimeMillis() + 10000L);
 		} else {
 			long runAt = expiresAt;
 			long offset = TimeUnit.HOURS.toMillis(tokenRefreshOffsetHours);
@@ -857,7 +855,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 				offset /= 2;
 			}
 			runAt -= offset;
-			runTime = new Date(runAt);
+			runTime = Instant.ofEpochMilli(runAt);
 		}
 		log.info("Scheduling {} token refresh for {}", configuredConfigIdExternalForm(), runTime);
 		tokenRefreshFuture = taskScheduler.schedule(new TokenRefreshTask(), runTime);
@@ -915,7 +913,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	 * Text message handler that acts as a broker for {@link CommandHandler}
 	 * instances to process messages.
 	 */
-	private class TextMessageHandler implements javax.websocket.MessageHandler.Whole<String> {
+	private class TextMessageHandler implements jakarta.websocket.MessageHandler.Whole<String> {
 
 		@Override
 		public void onMessage(String payload) {

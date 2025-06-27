@@ -23,8 +23,8 @@
 package net.solarnetwork.node.loxone.domain.test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.assertThat;
 import java.util.EnumSet;
 import java.util.Set;
 import org.junit.Test;

@@ -24,7 +24,7 @@ package net.solarnetwork.node.loxone.protocol.ws;
 
 import java.io.IOException;
 import java.util.concurrent.Future;
-import javax.websocket.Session;
+import jakarta.websocket.Session;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**

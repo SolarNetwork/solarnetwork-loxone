@@ -28,7 +28,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import javax.websocket.Session;
+import jakarta.websocket.Session;
 import net.solarnetwork.node.loxone.domain.Config;
 import net.solarnetwork.node.loxone.domain.TextEvent;
 import net.solarnetwork.node.loxone.protocol.ws.BinaryFileHandler;
