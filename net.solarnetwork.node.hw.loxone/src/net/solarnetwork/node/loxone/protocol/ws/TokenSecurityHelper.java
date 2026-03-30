@@ -1,21 +1,21 @@
 /* ==================================================================
  * TokenSecurityHelper.java - 5/04/2018 11:36:47 AM
- * 
+ *
  * Copyright 2018 SolarNetwork.net Dev Team
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of 
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
  * 02111-1307 USA
  * ==================================================================
  */
@@ -41,13 +41,14 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.solarnetwork.node.loxone.domain.AuthenticationHashAlgorithm;
 import net.solarnetwork.node.loxone.domain.AuthenticationKey;
 import net.solarnetwork.node.loxone.domain.AuthenticationToken;
 import net.solarnetwork.node.loxone.domain.ConfigApi;
 
 /**
  * Helper class for token based authenticated and encrypted connections.
- * 
+ *
  * @author matt
  * @version 1.0
  * @since 1.3
@@ -87,7 +88,7 @@ public class TokenSecurityHelper implements SecurityHelper {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param apiConfig
 	 *        the API configuration to use
 	 * @throws IllegalArgumentException
@@ -226,7 +227,9 @@ public class TokenSecurityHelper implements SecurityHelper {
 	public AuthenticationKey extractAuthenticationKey(Map<String, Object> data) {
 		AuthenticationKey key = null;
 		if ( data != null && data.containsKey("key") && data.containsKey("salt") ) {
-			key = new AuthenticationKey(data.get("key").toString(), data.get("salt").toString());
+			Object algKey = data.get("hashAlg");
+			key = new AuthenticationKey(data.get("key").toString(), data.get("salt").toString(),
+					AuthenticationHashAlgorithm.forKey(algKey != null ? algKey.toString() : null));
 		}
 		return key;
 	}
@@ -302,7 +305,7 @@ public class TokenSecurityHelper implements SecurityHelper {
 
 	/**
 	 * Get the configured encryption salt length.
-	 * 
+	 *
 	 * @return the number of bytes of random encryption salt to use
 	 */
 	public int getSaltLength() {
@@ -311,12 +314,12 @@ public class TokenSecurityHelper implements SecurityHelper {
 
 	/**
 	 * Set the number of bytes of encryption salt to use.
-	 * 
+	 *
 	 * <p>
 	 * Changes to this property only affects salt generated in the future, after
 	 * any existing salt expires.
 	 * </p>
-	 * 
+	 *
 	 * @param saltLength
 	 *        the number of bytes of random encryption salt to use
 	 * @throws IllegalArgumentException
@@ -335,7 +338,7 @@ public class TokenSecurityHelper implements SecurityHelper {
 	/**
 	 * Get the maximum age of encryption salt, before new salt must be
 	 * generated.
-	 * 
+	 *
 	 * @return the maximum age, in milliseconds; defaults to
 	 *         {@link #DEFAULT_SALT_MAX_AGE}
 	 */
@@ -346,12 +349,12 @@ public class TokenSecurityHelper implements SecurityHelper {
 	/**
 	 * Set the maximum age of encryption salt, before new salt must be
 	 * generated.
-	 * 
+	 *
 	 * <p>
 	 * Changes to this property only affects salt generated in the future, after
 	 * any existing salt expires.
 	 * </p>
-	 * 
+	 *
 	 * @param saltMaxAge
 	 *        the maximum age, in milliseconds
 	 */
@@ -362,7 +365,7 @@ public class TokenSecurityHelper implements SecurityHelper {
 	/**
 	 * Get the maximum times the encryption salt may be used before new salt
 	 * must be generated.
-	 * 
+	 *
 	 * @return the maximum times a specific salt may be used; defaults to
 	 *         {@link #DEFAULT_SALT_MAX_USE_COUNT}
 	 */
@@ -373,12 +376,12 @@ public class TokenSecurityHelper implements SecurityHelper {
 	/**
 	 * Set the maximum times the encryption salt may be used before new salt
 	 * must be generated.
-	 * 
+	 *
 	 * <p>
 	 * Changes to this property only affects salt generated in the future, after
 	 * any existing salt expires.
 	 * </p>
-	 * 
+	 *
 	 * @param saltMaxUse
 	 *        the maximum use count
 	 */

@@ -31,13 +31,14 @@ import org.apache.commons.codec.digest.HmacUtils;
  * An authentication key.
  *
  * @author matt
- * @version 1.0
+ * @version 1.1
  * @since 1.3
  */
 public class AuthenticationKey {
 
 	private final byte[] key;
 	private final String saltHex;
+	private final AuthenticationHashAlgorithm hashAlg;
 
 	/**
 	 * Constructor.
@@ -48,6 +49,21 @@ public class AuthenticationKey {
 	 *        the salt value, in hex
 	 */
 	public AuthenticationKey(String keyHex, String saltHex) {
+		this(keyHex, saltHex, null);
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * @param keyHex
+	 *        the key value, in hex
+	 * @param saltHex
+	 *        the salt value, in hex
+	 * @param hashAlg
+	 *        the hash algorithm to use; if {@code null} then {@code SHA1} will
+	 *        be used
+	 */
+	public AuthenticationKey(String keyHex, String saltHex, AuthenticationHashAlgorithm hashAlg) {
 		super();
 		try {
 			this.key = Hex.decodeHex(keyHex.toCharArray());
@@ -55,6 +71,7 @@ public class AuthenticationKey {
 			throw new RuntimeException(e);
 		}
 		this.saltHex = saltHex;
+		this.hashAlg = (hashAlg != null ? hashAlg : AuthenticationHashAlgorithm.SHA1);
 	}
 
 	/**
@@ -68,6 +85,11 @@ public class AuthenticationKey {
 	 */
 	@SuppressWarnings("deprecation")
 	public String hash(String username, String password) {
+		if ( hashAlg == AuthenticationHashAlgorithm.SHA256 ) {
+			String pwHash = DigestUtils.sha256Hex(password + ":" + saltHex).toUpperCase();
+			String authString = username + ":" + pwHash;
+			return HmacUtils.hmacSha256Hex(this.key, authString.getBytes()).toUpperCase();
+		}
 		String pwHash = DigestUtils.sha1Hex(password + ":" + saltHex).toUpperCase();
 		String authString = username + ":" + pwHash;
 		return HmacUtils.hmacSha1Hex(this.key, authString.getBytes()).toUpperCase();
@@ -89,6 +111,15 @@ public class AuthenticationKey {
 	 */
 	public String getSaltHex() {
 		return saltHex;
+	}
+
+	/**
+	 * Get the hash algorithm.
+	 *
+	 * @return the hash algorithm
+	 */
+	public final AuthenticationHashAlgorithm getHashAlg() {
+		return hashAlg;
 	}
 
 }
