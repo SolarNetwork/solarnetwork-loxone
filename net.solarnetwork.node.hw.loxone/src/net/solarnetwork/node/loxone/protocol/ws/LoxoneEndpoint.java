@@ -105,7 +105,7 @@ import net.solarnetwork.service.OptionalService;
  * date changes will request the structure file again from the Loxone server.
  *
  * @author matt
- * @version 2.11
+ * @version 2.12
  */
 public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<ByteBuffer>, EventHandler {
 
@@ -131,6 +131,13 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	 */
 	public static final CloseReason.CloseCode DISCONNECT_USER_INITIATED = CloseReason.CloseCodes
 			.getCloseCode(3000);
+
+	/**
+	 * The {@code containerProviderClassName} property default value.
+	 *
+	 * @since 2.12
+	 */
+	public static final String DEFAULT_CONTAINER_PROVIDER_CLASS_NAME = "org.glassfish.tyrus.container.jdk.client.JdkClientContainer";
 
 	private static final Set<CommandType> INTERNAL_CMDS = EnumSet.of(CommandType.GetAuthenticationKey,
 			CommandType.Authenticate, CommandType.Auth, CommandType.EnableInputStatusUpdate,
@@ -175,6 +182,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	private String password = null;
 	private String configKey = null;
 
+	private String containerProviderClassName = DEFAULT_CONTAINER_PROVIDER_CLASS_NAME;
 	private ObjectMapper objectMapper = new ObjectMapper();
 	private CommandHandler[] commandHandlers = null;
 	private BinaryFileHandler[] binaryFileHandlers = null;
@@ -221,7 +229,7 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 	}
 
 	private synchronized void connect() {
-		ClientManager container = ClientManager.createClient();
+		ClientManager container = ClientManager.createClient(containerProviderClassName);
 		if ( clientProperties != null ) {
 			container.getProperties().putAll(clientProperties);
 		}
@@ -384,8 +392,9 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 		boolean newId = false;
 		if ( configuration == null && config != null && config.getId() != null ) {
 			newId = true;
-		} else if ( configuration != null && ((configuration.getId() == null && config.getId() != null)
-				|| !configuration.getId().equals(config.getId())) ) {
+		} else if ( configuration != null
+				&& ((configuration.getId() == null && config != null && config.getId() != null)
+						|| (config != null && !configuration.getId().equals(config.getId()))) ) {
 			newId = true;
 		}
 		configuration = config;
@@ -1549,6 +1558,31 @@ public class LoxoneEndpoint extends Endpoint implements MessageHandler.Whole<Byt
 			throw new IllegalArgumentException("Token refresh offset hours must be at least 0");
 		}
 		this.tokenRefreshOffsetHours = tokenRefreshOffsetHours;
+	}
+
+	/**
+	 * Get the Tyrus container provider class name.
+	 *
+	 * @return the class name; defaults to
+	 *         {@link #DEFAULT_CONTAINER_PROVIDER_CLASS_NAME}
+	 * @since 2.12
+	 */
+	public final String getContainerProviderClassName() {
+		return containerProviderClassName;
+	}
+
+	/**
+	 * Set the Tyrus container provider class name.
+	 *
+	 * @param containerProviderClassName
+	 *        the class name to set; if {@code null} or empty then
+	 *        {@link #DEFAULT_CONTAINER_PROVIDER_CLASS_NAME} will be used
+	 * @since 2.12
+	 */
+	public final void setContainerProviderClassName(String containerProviderClassName) {
+		this.containerProviderClassName = (containerProviderClassName != null
+				&& !containerProviderClassName.isEmpty() ? containerProviderClassName
+						: DEFAULT_CONTAINER_PROVIDER_CLASS_NAME);
 	}
 
 }
