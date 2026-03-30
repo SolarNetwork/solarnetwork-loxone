@@ -5,6 +5,7 @@
 		footer = ~{footer-top :: content},
 		navloc = 'settings',
 		headExtra = ~{::loxone-head-extra})}"
+	xmlns:th="http://www.thymeleaf.org"
 	xmlns:snode="http://solarnetwork.net/taglib/thymeleaf-solarnode-setup">
 <head>
     <title data-th-text="#{app.title(#{loxone.title})}">SolarNode Services</title>
@@ -17,8 +18,9 @@
 	<!--/*/ <th:block th:fragment="loxone-head-extra"> /*/-->
 	<meta name="loxone-config-id" data-th-content="${configId}" data-th-if="${configId}">
 	<meta name="loxone-config-ids" data-th-content="${configIds}" data-th-if="${configIds}">
+	<meta name="loxone-config-id-test" data-th-content="${configId}">
 
-	<link rel="stylesheet" href="@{/css/loxone.css}">
+	<link rel="stylesheet" href="/css/loxone.css" data-th-href="@{/css/loxone.css}">
 
 	<script type="application/javascript" src="/js-lib/knockout-3.4.0.js" data-th-src="@{/js-lib/knockout-3.4.0.js}"></script>
 	<script type="application/javascript" src="/js-lib/jquery.form.js" data-th-src="@{/js-lib/jquery.form.js}"></script>
@@ -78,8 +80,8 @@
 
 <div id="control-view" class="loxone-list"></div>
 
-<script type="application/javascript" src="@{/js/loxone-view-control.js}"></script>
-<script type="application/javascript" src="@{/js/loxone-websocket.js}"></script>
+<script type="application/javascript" src="/js/loxone-view-control.js" data-th-src="@{/js/loxone-view-control.js}"></script>
+<script type="application/javascript" src="/js/loxone-websocket.js" data-th-src="@{/js/loxone-websocket.js}"></script>
 
 </body>
 </html>
